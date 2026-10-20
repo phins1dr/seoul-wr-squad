@@ -1,0 +1,1597 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"></head><body><script>
+/* 공유용 화면: 저장소 대신 snapshot.json 을 읽어요. 수정 불가, 개인정보 없음 */
+(function(){
+  let snapP = null;
+  const load = () => snapP || (snapP = fetch('snapshot.json', {cache: 'no-store'}).then(r => r.json()));
+  const docsOf = (s, col) => Object.entries(s.data[col] || {}).map(([id, v]) => ({ id, data: () => v }));
+  const db = {
+    collection: col => ({ onSnapshot: (next) => { load().then(s => next({ docs: docsOf(s, col) })); return () => {}; } }),
+    doc: () => ({ set: async () => {}, update: async () => {}, delete: async () => {} })
+  };
+  // 앱 코드의 window.claude 는 빌드할 때 window.__claudeSnap 으로 바꿔 둬요 (플랫폼 객체는 건드리지 않음)
+  window.__claudeSnap = { use: async n => {
+    if (n === 'db') return db;
+    if (n === 'user') return { canEdit: async () => false, isOwner: async () => false };
+    if (n === 'assets') return null;
+    const r = window.claude; if (r && r.use) return r.use(n);
+    // claude.ai 밖(깃허브 페이지)에서는 브라우저 기본 다운로드로 저장
+    if (n === 'downloads') return { save: async ({ filename, data }) => { const b = data instanceof Blob ? data : new Blob([data]); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = filename; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); return { status: 'saved' }; } };
+    return null; } };
+  load().then(s => {
+    const put = () => { const m = document.getElementById('mode'); if (!m) return setTimeout(put, 100); m.className = 'pill ro'; m.textContent = '공유용 · ' + s.asOf.replace(/-/g, '.') + ' 기준'; };
+    const keep = () => { put(); setTimeout(keep, 1500); }; keep();
+  });
+})();
+</script>
+<style>.tab[data-tab="home"],.tab[data-tab="players"],.tab[data-tab="events"],.tab[data-tab="export"],[data-act="fitTab"][data-v="std"]{display:none!important}</style>
+<title>선수단 공유용</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@500;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<style>
+/* Layout: sticky header + scrollable tab strip, single column of working panels; drawer for editing */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --sunk:#e8ecf0; --line:#d5dbe2;
+  --ink:#16202b; --ink2:#4a5866; --ink3:#7d8996;
+  --accent:#1d5fb8; --accent-ink:#ffffff; --accent-soft:#dde8f7;
+  --quad:#8a4fc4; --quad-soft:#efe5f9; --open:#c26a12; --open-soft:#fbeedd;
+  --good:#1f8a4c; --good-soft:#dcf1e4; --warn:#b7791f; --warn-soft:#f8ecd3; --bad:#c23b3b; --bad-soft:#f8dfdf;
+  --f-display:"Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141a; --surface:#171e26; --sunk:#1f2832; --line:#2c3743;
+  --ink:#e6ebf0; --ink2:#a7b3bf; --ink3:#77838f;
+  --accent:#5b9bf0; --accent-ink:#0b1420; --accent-soft:#1c2c42;
+  --quad:#b88ae8; --quad-soft:#2b2238; --open:#e59a4f; --open-soft:#33261a;
+  --good:#4cc07c; --good-soft:#163222; --warn:#e0a94a; --warn-soft:#33291a; --bad:#ef7070; --bad-soft:#3a1d1f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --surface:#171e26; --sunk:#1f2832; --line:#2c3743;
+  --ink:#e6ebf0; --ink2:#a7b3bf; --ink3:#77838f;
+  --accent:#5b9bf0; --accent-ink:#0b1420; --accent-soft:#1c2c42;
+  --quad:#b88ae8; --quad-soft:#2b2238; --open:#e59a4f; --open-soft:#33261a;
+  --good:#4cc07c; --good-soft:#163222; --warn:#e0a94a; --warn-soft:#33291a; --bad:#ef7070; --bad-soft:#3a1d1f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+button,input,select,textarea{font:inherit;color:inherit}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1100px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px;padding-block:12px 8px;flex-wrap:wrap}
+.brand h1{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.brand .sub{color:var(--ink3);font-size:12px}
+.brand .sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:12px;background:var(--sunk);color:var(--ink2);white-space:nowrap}
+.pill.ok{background:var(--good-soft);color:var(--good)}
+.pill.ro{background:var(--warn-soft);color:var(--warn)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-block:0}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:10px 12px;font-weight:600;color:var(--ink3);border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+.tab:focus-visible,.btn:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-block:16px 80px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.bar .sp{flex:1}
+.seg{display:inline-flex;background:var(--sunk);border-radius:8px;padding:2px}
+.seg button{border:0;background:none;padding:6px 11px;border-radius:6px;cursor:pointer;color:var(--ink2);font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.btn{border:1px solid var(--line);background:var(--surface);padding:7px 12px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border-color:transparent;background:none;color:var(--accent)}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:4px 9px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:default}
+select.in,input.in,textarea.in{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 9px;min-width:0}
+textarea.in{width:100%;min-height:60px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;min-width:0}
+.panel>h2{font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.panel>h2 .sp{flex:1}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.kpi .l{font-size:12px;color:var(--ink3)}
+.kpi .v{font-family:var(--f-display);font-weight:800;font-size:26px;letter-spacing:-.02em;margin-top:2px}
+.kpi .s{font-size:12px;color:var(--ink2)}
+.muted{color:var(--ink3)}
+.small{font-size:12px}
+.tag{display:inline-block;padding:1px 7px;border-radius:5px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.tag.q{background:var(--quad-soft);color:var(--quad)}
+.tag.o{background:var(--open-soft);color:var(--open)}
+.tag.n{background:var(--sunk);color:var(--ink2)}
+.tag.good{background:var(--good-soft);color:var(--good)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.t{border-collapse:collapse;width:100%;font-size:13px}
+table.t th,table.t td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+table.t th{font-size:11.5px;color:var(--ink3);font-weight:600;background:var(--surface);position:sticky;top:0}
+table.t td.r,table.t th.r{text-align:right}
+table.t td.c,table.t th.c{text-align:center}
+table.t tr.grp td{background:var(--sunk);font-weight:700;font-size:12px;color:var(--ink2)}
+table.t tr.click{cursor:pointer}
+table.t tr.click:hover td{background:var(--accent-soft)}
+table.t .stick{position:sticky;left:0;background:var(--surface);z-index:1}
+.mk{display:inline-block;width:20px;height:20px;line-height:20px;border-radius:5px;text-align:center;font-size:11px;font-weight:700}
+.mk.a{background:var(--good-soft);color:var(--good)}
+.mk.l{background:var(--warn-soft);color:var(--warn)}
+.mk.e{background:var(--accent-soft);color:var(--accent)}
+.mk.x{color:var(--line)}
+.heat{display:inline-block;min-width:42px;padding:2px 6px;border-radius:5px;text-align:right}
+.meter{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.meter>i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.rows{display:flex;flex-direction:column;gap:6px}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface)}
+.prow.on{border-color:var(--good);background:var(--good-soft)}
+.prow.late{border-color:var(--warn);background:var(--warn-soft)}
+.prow.exc{border-color:var(--accent);background:var(--accent-soft)}
+.prow .who{display:flex;align-items:center;gap:8px;min-width:0;cursor:pointer;border:0;background:none;text-align:left;padding:4px 0}
+.prow .nm{font-weight:600;font-size:15px}
+.prow .no{font-family:var(--f-mono);font-size:12px;color:var(--ink3);min-width:22px}
+.chips{display:flex;gap:4px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:5px 9px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink2)}
+.chip[aria-pressed="true"].a{background:var(--good);border-color:var(--good);color:#fff}
+.chip[aria-pressed="true"].l{background:var(--warn);border-color:var(--warn);color:#fff}
+.chip[aria-pressed="true"].e{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card:hover{border-color:var(--accent)}
+.card .hd{display:flex;align-items:baseline;gap:8px}
+.card .hd b{font-family:var(--f-display);font-size:17px;font-weight:800}
+.card .hd .no{margin-left:auto;font-family:var(--f-mono);color:var(--ink3)}
+.card.dim{opacity:.6}
+.ev{display:grid;grid-template-columns:92px minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:7px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.ev:hover{background:var(--accent-soft)}
+.ev .d{font-family:var(--f-mono);font-size:12px;color:var(--ink2);white-space:nowrap}
+.ev .n{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev .n .muted{font-weight:400;margin-left:6px}
+.ev .amt{font-family:var(--f-mono);font-size:12.5px;min-width:84px;text-align:right}
+.ev .car{color:var(--ink3);font-size:11px;transition:transform .15s}
+.ev.open{background:var(--accent-soft);border-bottom-color:transparent}
+.ev.open .car{transform:rotate(180deg)}
+.evd{border-bottom:2px solid var(--accent);background:var(--bg)}
+.evd .dh{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--accent-soft)}
+.evd .dh h2{font-size:16px;font-weight:800;flex:1;min-width:0}
+.evd .db{padding:14px;display:flex;flex-direction:column;gap:14px}
+.evd .db>*{flex-shrink:0}
+.ytabs{display:flex;gap:4px;flex-wrap:wrap}
+@media (max-width:640px){.ev{grid-template-columns:74px minmax(0,1fr) auto;row-gap:2px}.ev .amt,.ev .np{display:none}}
+.empty{padding:28px 12px;text-align:center;color:var(--ink3)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(10,15,20,.38);z-index:40}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--bg);z-index:41;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.18);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.drawer .dh{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.drawer .dh h2{font-size:17px;font-weight:800;flex:1;min-width:0}
+.drawer .db{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.drawer .db>*{flex-shrink:0}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink3);min-width:0}
+.form label.full{grid-column:1/-1}
+.form .in{width:100%;color:var(--ink);font-size:14px}
+.sec{font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:8px;margin-top:4px}
+.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+.lock{padding:10px 12px;border-radius:8px;background:var(--sunk);color:var(--ink2);font-size:13px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:9px;z-index:60;font-size:13px;max-width:calc(100% - 32px)}
+.spark{display:block;width:100%;height:auto}
+.av{width:40px;height:40px;border-radius:50%;object-fit:cover;background:var(--sunk);flex:none;display:inline-grid;place-items:center;font-family:var(--f-display);font-weight:700;color:var(--ink2);font-size:14px;overflow:hidden}
+.av.lg{width:96px;height:96px;font-size:28px}
+.av.sm{width:30px;height:30px;font-size:12px}
+.thumb{width:44px;height:44px;border-radius:7px;object-fit:cover;background:var(--sunk);display:block}
+.photoBox{display:flex;gap:14px;align-items:center}
+.photoBox .ph{width:140px;aspect-ratio:4/3;border-radius:10px;object-fit:cover;background:var(--sunk);display:grid;place-items:center;color:var(--ink3);font-size:12px;max-width:100%}
+.upl{position:relative;overflow:hidden}
+.upl input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.band{margin-bottom:14px}
+.drawer.wide{width:min(980px,100%)}
+.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+.ptile{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--surface);cursor:pointer;text-align:left;min-width:0;font:inherit;color:inherit}
+.ptile span:nth-child(2){font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptile.on{border-color:var(--good);background:var(--good-soft)}
+.ptile:disabled{cursor:default}
+.nchips{display:flex;flex-wrap:wrap;gap:4px}
+.nchips .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.gbox,.rbox{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.rrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:8px}
+.rbox.drop{border-color:var(--accent);border-style:dashed;cursor:pointer;background:var(--accent-soft)}
+.ptile.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent)}
+.occ{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 9px;border-radius:7px;background:var(--sunk);font-weight:600;font-size:13px}
+.occ .x{border:0;background:none;color:var(--ink3);cursor:pointer;padding:0 4px;font-size:12px}
+table.sched th,table.sched td{padding:3px 3px}
+.pdfbox{position:fixed;left:-99999px;top:0;width:1400px;padding:24px;background:var(--surface)}
+.pdfbox .t{width:100%}
+.pdfbox .stick{position:static !important;left:auto !important}
+.report .rhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+table.rep th,table.rep td{padding:5px 5px;font-size:12.5px}
+table.rep .heat{min-width:30px;display:inline-block;text-align:center}
+table.budget tbody tr:hover td{background:var(--accent-soft)}
+table.budget th,table.budget td{padding:7px 6px;font-size:12.5px}
+table.budget tr.dim td{opacity:.5}
+table.budget tfoot td{font-weight:700;background:var(--sunk)}
+.pn{touch-action:pan-y;user-select:none;-webkit-user-select:none}
+table.sched tr.grp td{padding:6px 3px}
+table.sched tr.grp .dchip{background:var(--surface)}
+table.sched tr.grp .dchip.on{background:var(--accent)}
+.dchip{padding:3px 6px;font-size:11.5px;min-width:30px}
+.unp{border:1px dashed var(--line);border-radius:10px;padding:10px}
+.pchips{display:flex;flex-wrap:wrap;gap:5px}
+.pchip{display:inline-flex;gap:5px;align-items:baseline;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--surface);cursor:pointer;font:inherit;font-weight:600;font-size:13px;color:inherit}
+.pchip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pchip.on .muted{color:inherit;opacity:.8}
+table.rooms td{vertical-align:middle}
+.cost{display:flex;flex-direction:column;gap:8px}
+.cblk{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.cblk.tot{background:var(--sunk)}
+.ch{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ch .num{font-weight:700;font-size:15px}
+.cl{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;font-size:13px}
+.cl label{display:flex;gap:6px;align-items:center;color:var(--ink2)}
+.cl .in{width:96px;text-align:right;padding:4px 6px}
+.cl>.num{min-width:90px;text-align:right}
+.dchip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.cgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:12px}
+.cgc{display:flex;flex-direction:column;padding:0;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden;cursor:pointer;text-align:left;min-width:0}
+.cgc:hover{border-color:var(--accent)}
+.cgc img,.cgc .cph{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--sunk);display:grid;place-items:center;color:var(--ink3);font-size:12px}
+.cgb{padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.radarBox{padding:12px}
+.radarBox svg{max-width:420px;margin:0 auto}
+.lg{display:inline-block;width:14px;height:8px;border-radius:2px;vertical-align:middle}
+.lg.cur{background:var(--good);opacity:.6}
+.lg.best{height:0;border-top:2.5px solid var(--accent)}
+.evid{border:1px dashed var(--line);border-radius:10px;padding:10px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
+.evh{display:flex;align-items:center;gap:8px}
+.evg{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}
+.evt{border:0;padding:0;background:var(--sunk);border-radius:8px;overflow:hidden;cursor:pointer;aspect-ratio:1/1}
+.evt img{width:100%;height:100%;object-fit:cover;display:block}
+.evday{padding:10px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.ysort{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ychip{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:13px;font-weight:600}
+.ychip>b{color:var(--accent);margin-right:2px}
+.ychip .chip{padding:2px 7px;font-size:12px}
+.sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sides4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.sides4 figcaption{justify-content:center}
+.side{margin:0;display:flex;flex-direction:column;gap:4px;min-width:0}
+.side img,.side .ph{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;background:var(--sunk);display:grid;place-items:center;color:var(--ink3);font-size:12px}
+.side figcaption{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--ink2);font-weight:600}
+.bandh{display:flex;align-items:baseline;gap:8px;margin:0 0 8px;font-family:var(--f-mono);font-size:12px;color:var(--ink3)}
+.bandh b{font-family:var(--f-display);font-size:20px;color:var(--ink);font-weight:800}
+.card .top{display:flex;gap:10px;align-items:center;min-width:0}
+.card .top .hd{flex:1;min-width:0}
+button.prow{width:100%;cursor:pointer;text-align:left;font:inherit;color:inherit}
+button.prow:disabled{cursor:default}
+.trial{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+@media (max-width:560px){.form{grid-template-columns:minmax(0,1fr)}.brand h1{font-size:16px}.kpi .v{font-size:22px}}
+@media (prefers-reduced-motion:no-preference){.drawer{animation:slide .18s ease-out}@keyframes slide{from{transform:translateX(24px);opacity:.6}}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <h1>서울휠체어럭비 선수단</h1>
+      <span class="sub">우림맨테크 · 송파씨젠</span>
+      <span class="sp"></span>
+      <span id="mode" class="pill">불러오는 중</span>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs">
+<button class="tab" role="tab" data-act="tab" data-v="home" data-tab="home">홈</button>
+      <button class="tab" role="tab" data-act="tab" data-v="players" data-tab="players">선수정보</button>
+      <button class="tab" role="tab" data-act="tab" data-v="att" data-tab="att">출석부</button>
+      <button class="tab" role="tab" data-act="tab" data-v="fit" data-tab="fit">체력테스트</button>
+      <button class="tab" role="tab" data-act="tab" data-v="chairs" data-tab="chairs">휠체어</button>
+      <button class="tab" role="tab" data-act="tab" data-v="events" data-tab="events">대회·숙박</button>
+      <button class="tab" role="tab" data-act="tab" data-v="export" data-tab="export">내보내기</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap" id="main"><div class="empty">선수단 데이터를 불러오는 중이에요.</div></main>
+<div id="drawerHost"></div>
+<div id="toastHost"></div>
+
+<script>
+(() => {
+'use strict';
+// ---------- utils ----------
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const won = n => (Math.round(+n || 0)).toLocaleString('ko-KR');
+const pct = r => r == null || isNaN(r) ? '–' : Math.round(r * 100) + '%';
+const DOW = ['일','월','화','수','목','금','토'];
+const dow = iso => DOW[new Date(iso + 'T00:00:00').getDay()];
+const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+const clsNum = c => { const n = parseFloat(String(c ?? '').replace(/[^0-9.]/g, '')); return isNaN(n) ? null : n; };
+function toast(msg) { const h = $('#toastHost'); h.innerHTML = `<div class="toast" role="status">${esc(msg)}</div>`; clearTimeout(toast.t); toast.t = setTimeout(() => h.innerHTML = '', 2600); }
+const store = { get(k, d) { try { const v = localStorage.getItem('sq:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem('sq:' + k, JSON.stringify(v)); } catch {} } };
+
+// ---------- state ----------
+const S = {
+  players: {}, pinfo: {}, att: {}, fit: {}, chairs: {}, events: {}, config: { standards: {}, pointThreshold: 0.85 },
+  ready: false, canEdit: false, db: null, offline: false,
+  tab: 'att', ysort: store.get('ysort', [{ k: 'rate', d: -1 }]), csort: store.get('csort', [{ k: 'owner', d: 1 }, { k: 'code', d: 1 }]), chairView: store.get('chairView', 'list'), cgroup: store.get('cgroup', ''), cval: store.get('cval', ''), team: store.get('team', '전체'), attView: 'month',
+  evView: store.get('evView', 'list'), date: todayISO(), month: null, fitMonth: null, fitPlayer: null, year: '2026',
+};
+const STATUS = { '출석': 'a', '지각': 'l', '사유': 'e' };
+
+// ---------- db ----------
+const queues = {};
+function saveDoc(path, data) {
+  if (!S.db || !S.canEdit) { toast('편집 권한이 없어 저장되지 않았어요'); return Promise.resolve(); }
+  const q = queues[path] || (queues[path] = { p: Promise.resolve(), pending: null, timer: null });
+  q.pending = data;
+  clearTimeout(q.timer);
+  return new Promise(res => {
+    q.timer = setTimeout(() => {
+      const body = q.pending; q.pending = null;
+      q.p = q.p.then(() => S.db.doc(path).set(body)).then(() => setMode()).catch(e => {
+        console.warn(e); toast(e && e.code === 'quota_exceeded' ? '저장 공간이 가득 찼어요. 오래된 기록을 정리해 주세요.' : '저장하지 못했어요. 잠시 후 다시 시도해 주세요.');
+        if (e && e.code === 'invalid_argument') { S.canEdit = false; setMode(); render(); }
+      }).then(res);
+    }, 350);
+  });
+}
+function delDoc(path) { if (!S.db || !S.canEdit) return; S.db.doc(path).delete().catch(() => toast('삭제하지 못했어요')); }
+const clone = o => JSON.parse(JSON.stringify(o || {}));
+
+function subscribe(colPath, key) {
+  S.db.collection(colPath).onSnapshot(snap => {
+    const o = {}; snap.docs.forEach(d => { o[d.id] = d.data(); });
+    S[key] = o; S.loaded[key] = true;
+    if (key === 'config') S.config = Object.assign({ standards: {}, pointThreshold: 0.85 }, o.main || {});
+    scheduleRender();
+  }, e => { console.warn(key, e); });
+}
+let rT = null; function scheduleRender() { clearTimeout(rT); rT = setTimeout(render, 30); }
+
+async function boot() {
+  S.loaded = {};
+  render();
+  const db = window.__claudeSnap && window.__claudeSnap.use ? await window.__claudeSnap.use('db') : null;
+  const user = window.__claudeSnap && window.__claudeSnap.use ? await window.__claudeSnap.use('user') : null;
+  if (!db) { S.offline = true; S.ready = true; setMode(); render(); return; }
+  S.db = db;
+  try { S.canEdit = user ? !!(await user.canEdit()) : false; } catch { S.canEdit = false; }
+  if (S.canEdit) { try { S.assets = await window.__claudeSnap.use('assets'); } catch { S.assets = null; } }
+  setMode();
+  subscribe('players', 'players'); subscribe('attendance', 'att'); subscribe('fitness', 'fit');
+  subscribe('chairs', 'chairs'); subscribe('events', 'events'); subscribe('config', 'config');
+  if (S.canEdit) subscribe('private/pinfo/people', 'pinfo');
+  S.ready = true;
+}
+function setMode() {
+  const m = $('#mode');
+  if (S.offline) { m.className = 'pill ro'; m.textContent = '저장소 연결 안 됨'; return; }
+  if (!S.db) { m.className = 'pill'; m.textContent = '불러오는 중'; return; }
+  if (S.canEdit) { m.className = 'pill ok'; m.textContent = '편집 가능'; } else { m.className = 'pill ro'; m.textContent = '보기 전용'; }
+}
+
+// ---------- derived ----------
+const P = id => S.players[id] || { name: id, team: '', div: '' };
+const pname = id => (S.players[id] && S.players[id].name) || id;
+const isAthlete = p => (p.role || '선수') === '선수';
+function divTag(d) { return d === '쿼드' ? '<span class="tag q">쿼드</span>' : d === '오픈' ? '<span class="tag o">오픈</span>' : d ? `<span class="tag n">${esc(d)}</span>` : ''; }
+function teamOk(p) { return S.team === '전체' || p.team === S.team; }
+// 정렬: 등급 내림차순 → 나이 많은 순 → 이름 내림차순
+function playerSort([, a], [, b]) {
+  const ca = clsNum(a.cls), cb = clsNum(b.cls);
+  if (ca !== cb) return (cb ?? -1) - (ca ?? -1);
+  const ya = +a.birthYear || 9999, yb = +b.birthYear || 9999;
+  if (ya !== yb) return ya - yb;
+  return (b.name || '').localeCompare(a.name || '', 'ko');
+}
+const bandOf = p => { const n = clsNum(p.cls); return n == null ? 'N' : (Math.round(n * 2) / 2).toFixed(1); };
+const fmtCls = c => { const n = clsNum(c); if (n != null) return n.toFixed(1); const t = String(c ?? '').trim(); return /^n/i.test(t) ? 'N' : (t || '–'); };
+const SIDES = [['front', '전'], ['back', '후'], ['left', '좌'], ['right', '우']];
+const BANDS = [['3.5', ''], ['3.0', ''], ['2.5', ''], ['2.0', ''], ['1.5', ''], ['1.0', ''], ['0.5', ''], ['N', '등급 받기 전']];
+const TEAM_ORDER = ['우림맨테크', '송파씨젠', '미배정'];
+const teamIdx = p => { const i = TEAM_ORDER.indexOf(p.team || '미배정'); return i < 0 ? 9 : i; };
+function avatar(p, cls = '') { return p && p.photo ? `<img class="av ${cls}" src="img/${esc(p.photo)}" alt="" loading="lazy">` : `<span class="av ${cls}" aria-hidden="true">${esc((p && p.name || '?').slice(-2))}</span>`; }
+async function uploadImage(file, maxSide = 1000) {
+  if (!S.assets) throw { code: 'not_granted' };
+  let blob = file, type = file.type;
+  try {
+    const bmp = await createImageBitmap(file); const s = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    blob = await new Promise(r => c.toBlob(r, 'image/jpeg', .85)); type = 'image/jpeg';
+  } catch { if (!/^image\/(png|jpeg|webp|gif)$/.test(type)) throw { code: 'unsupported_type' }; }
+  return S.assets.upload(blob, { type });
+}
+function athletes({ all = false } = {}) {
+  return Object.entries(S.players).filter(([, p]) => isAthlete(p) && teamOk(p) && (p.team || '미배정') !== '미배정' && (all || (p.status || '활동') === '활동'))
+    .sort((x, y) => teamIdx(x[1]) - teamIdx(y[1]) || (x[1].div === y[1].div ? 0 : x[1].div === '쿼드' ? -1 : 1) || playerSort(x, y));
+}
+const monthsWithData = () => Object.keys(S.att).filter(k => (S.att[k].days || []).length).sort();
+function monthStats(mk) {
+  const m = S.att[mk]; if (!m) return null;
+  const days = (m.days || []).slice().sort(); const out = {};
+  for (const d of days) { const mm = (m.marks || {})[d] || {}; for (const [pid, st] of Object.entries(mm)) { if (st !== '출석') continue; const o = out[pid] || (out[pid] = { a: 0 }); o.a++; } }
+  // 등록일(처음 온 날) 이전 훈련일은 그 선수 분모에서 빼요
+  return { days, per: out, n: days.length, nOf: pid => { const j = joinedOf(pid); return j ? days.filter(d => d >= j).length : days.length; },
+    aOf: pid => { const j = joinedOf(pid); return days.filter(d => (!j || d >= j) && ((m.marks || {})[d] || {})[pid] === '출석').length; } };
+}
+const joinedOf = pid => (S.players[pid] || {}).joined || '';
+function rateOf(st, n) { if (!st || !n) return 0; return st.a / n; }
+// 출석포인트: 한 달에 1회까지 빠지는 건 휴가로 인정, 2회부터 0점
+const allowedAbs = () => S.config.allowedAbsence ?? 1;
+const absOf = (st, n) => n - (st ? st.a : 0);
+const pointOf = (st, n) => n && absOf(st, n) <= allowedAbs() ? 1 : 0;
+function yearStats(year) {
+  const res = {}; const months = monthsWithData().filter(k => k.startsWith(year));
+  for (const mk of months) { const s = monthStats(mk); for (const pid of Object.keys(S.players)) { const st = s.per[pid]; (res[pid] || (res[pid] = { months: {}, att: 0, n: 0, pt: 0 })); const n = s.nOf(pid), a = s.aOf(pid); res[pid].months[mk] = n ? a / n : null; res[pid].att += a; res[pid].n += n; res[pid].pt += pointOf(st, n); } }
+  return { months, res };
+}
+function heatStyle(r) { if (r == null) return ''; const c = r >= .85 ? 'var(--good-soft)' : r >= .6 ? 'var(--accent-soft)' : r >= .35 ? 'var(--warn-soft)' : 'var(--bad-soft)'; const f = r >= .85 ? 'var(--good)' : r >= .6 ? 'var(--accent)' : r >= .35 ? 'var(--warn)' : 'var(--bad)'; return `background:${c};color:${f}`; }
+
+// fitness
+// 정확성 = 10 / (1 + 표준편차/평균)  (엑셀 3월~ 수식, 0점 투구 포함·빈칸 제외)
+function accOf(throws) {
+  const t = (throws || []).filter(x => x != null && x !== '' && !isNaN(+x)).map(Number);
+  if (t.length < 2) return null; const mean = t.reduce((a, b) => a + b, 0) / t.length; if (!mean) return null;
+  const sd = Math.sqrt(t.reduce((a, b) => a + (b - mean) ** 2, 0) / (t.length - 1));
+  return 10 / (1 + sd / mean);
+}
+function fitFinal(r) {
+  if (!r) return {};
+  const throws = (r.throws || []).filter(x => x != null && x !== '').map(Number);
+  const sl = r.sl || []; const slv = [];
+  for (let i = 0; i < 4; i += 2) { const t = +sl[i]; if (t > 0) slv.push(t * (1 + 0.02 * (+sl[i + 1] || 0))); }
+  const m20 = (r.m20 || []).filter(x => x > 0);
+  const m28 = (Array.isArray(r.m28) ? r.m28 : [r.m28]).filter(x => x > 0);
+  return { throw: throws.length ? Math.max(...throws) : null, acc: r.acc ?? accOf(r.throws), slalom: slv.length ? Math.min(...slv) : null,
+    crossL: r.crossL > 0 ? +r.crossL : null, crossR: r.crossR > 0 ? +r.crossR : null, m20: m20.length ? Math.min(...m20) : null, m28: m28.length ? Math.min(...m28) : null };
+}
+// 점수 환산 (엑셀 '개인증감' 시트 수식 그대로)
+const SCORE = {
+  throw: v => v, acc: v => v,
+  slalom: v => Math.min(10, 15 / v * 10),
+  crossL: v => v ? Math.max(0, 10 - (v - 17) / 20 * 10) : 0,
+  crossR: v => v ? Math.max(0, 10 - (v - 17) / 20 * 10) : 0,
+  m20: v => Math.min(10, Math.max(0, 10 - (v - 5) / (12 - 5) * 10)),
+  m28: v => Math.min(10, Math.max(0, 10 - (v - 13) / (30 - 13) * 10)),
+};
+const scoreOf = f => { const o = {}; for (const k in SCORE) o[k] = f[k] == null ? null : SCORE[k](f[k]); return o; };
+const FIT_COLS = [
+  ['throw', '던지기(거리)', 'hi'], ['acc', '던지기(정확도)', 'hi'], ['slalom', '슬라럼', 'lo'], ['crossL', '십자런 좌', 'lo'], ['crossR', '십자런 우', 'lo'], ['m20', '20m', 'lo'], ['m28', '28m', 'lo']];
+const CLS_KEYS = ['3.5', '3.0', '2.5', '2.0', '1.5', '1.0', '0.5'];
+// 던지기 국대 기준은 엑셀에 없어 추정값(국대 출신 송문령 1.0·최찬광 1.5 기록 기준, 0.5~1.5는 당겨서 같은 방식 측정) — 기준표에서 수정 가능
+const EST_STD = { throw: { '3.5': 9, '3.0': 9, '2.5': 8, '2.0': 8, '1.5': 7, '1.0': 7, '0.5': 7 }, acc: 10 };
+const clsKey = cls => { const n = clsNum(cls); return n == null ? null : (Math.min(3.5, Math.max(.5, Math.round(n * 2) / 2))).toFixed(1); };
+// 오픈 비율: 2.0 이상 / 1.5 이하 따로
+const openFHi = () => S.config.openFactorHi ?? S.config.openFactor ?? 0.15;
+const openFLo = () => S.config.openFactorLo ?? 0.30;
+const openF = cls => { const n = clsNum(cls); return n != null && n < 2 ? openFLo() : openFHi(); };
+// 오픈: 쿼드 국대 기준보다 높게 (시간은 빠르게, 거리는 멀게, 정확도는 그대로)
+function stdFor(cls, div) {
+  const k = clsKey(cls); if (!k) return null; const b = (S.config.standards || {})[k] || {};
+  const q = Object.assign({ throw: EST_STD.throw[k], acc: EST_STD.acc }, b);
+  if (div !== '오픈') return q;
+  const f = openF(k), o = {};
+  for (const key in q) { const v = q[key]; o[key] = v == null ? v : key === 'acc' ? v : key === 'throw' ? +(v * (1 + f)).toFixed(2) : +(v * (1 - f)).toFixed(2); }
+  return o;
+}
+const HI = { throw: 1, acc: 1 };
+// 종합 점수(100점) = 7개 항목 환산 점수 평균 × 10 (없는 항목은 빼고 평균)
+const total100 = sc => { const v = Object.values(sc).filter(x => x != null); return v.length ? { t: v.reduce((a, b) => a + b, 0) / v.length * 10, n: v.length } : null; };
+// 등급 환산 점수: 자기 등급 국대 기준 = 10점 (넘으면 10점)
+function clsScore(f, std) { const o = {}; for (const [k] of FIT_COLS) { const v = f[k], sd = std && std[k]; o[k] = v == null || !sd ? null : Math.min(10, HI[k] ? v / sd * 10 : sd / v * 10); } return o; }
+function fitCell(key, v, std) {
+  if (v == null) return '<td class="r muted">–</td>';
+  const s = std && std[key];
+  let cls = '';
+  if (s) { const gap = HI[key] ? s / v : v / s; cls = gap <= 1 ? 'good' : gap <= 1.15 ? 'warn' : ''; }
+  const txt = key === 'throw' ? v : key === 'acc' ? v.toFixed(1) : v.toFixed(2);
+  return `<td class="r num">${cls ? `<span class="tag ${cls}">${txt}</span>` : txt}</td>`;
+}
+const fitMonths = () => Object.keys(S.fit).sort();
+
+// ---------- render ----------
+function render() {
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === S.tab)));
+  const main = $('#main');
+  if (!S.ready || (S.db && !S.loaded.players)) { main.innerHTML = '<div class="empty">선수단 데이터를 불러오는 중이에요.</div>'; return; }
+  if (S.offline) { main.innerHTML = '<div class="empty">선수단 기록은 claude.ai에 로그인해야 보여요.<br>위쪽 [로그인]을 누르거나, 카카오톡에서 열었다면 Safari·Chrome으로 열어 주세요.</div>'; return; }
+  if (!Object.keys(S.players).length) { main.innerHTML = `<div class="empty">아직 등록된 선수가 없어요.<br>${S.canEdit ? '<button class="btn pri" data-act="newPlayer" style="margin-top:12px">첫 선수 등록</button>' : ''}</div>`; return; }
+  const fn = { home: vHome, att: vAtt, players: vPlayers, fit: vFit, chairs: vChairs, events: vEvents, export: vExport }[S.tab] || vHome;
+  const sx = window.scrollX, sy = window.scrollY;
+  const evOpen = D && D.kind === 'event';
+  if (evOpen && $('#evHost')) readEventForm();
+  if (evOpen && S.tab !== 'events') D = null;
+  main.innerHTML = fn();
+  if (D && D.kind === 'event' && $('#evHost')) $('#evHost').innerHTML = dEvent();
+  window.scrollTo(sx, sy);
+}
+function teamSeg() {
+  if (S.team === '미배정' && S.tab !== 'players') S.team = '전체';
+  return `<div class="seg" role="group" aria-label="팀">${['전체', '우림맨테크', '송파씨젠'].concat(S.tab === 'players' ? ['미배정'] : []).map(t => `<button data-act="team" data-v="${t}" aria-pressed="${S.team === t}">${t}</button>`).join('')}</div>`;
+}
+function monthSel(id, cur, list) {
+  return `<select class="in" id="${id}">${list.map(m => `<option value="${m}" ${m === cur ? 'selected' : ''}>${m.slice(0, 4)}년 ${+m.slice(5)}월</option>`).join('')}</select>`;
+}
+
+// HOME
+function vHome() {
+  const months = monthsWithData(); const cur = todayISO().slice(0, 7);
+  const mk = S.att[cur] && (S.att[cur].days || []).length ? cur : months[months.length - 1];
+  const st = mk ? monthStats(mk) : null;
+  const list = athletes();
+  const rates = list.map(([id, p]) => { const n = st ? st.nOf(id) : 0; return [id, p, n ? st.aOf(id) / n : null]; });
+  const rv = rates.filter(r => r[2] != null);
+  const avg = rv.length && st && st.n ? rv.reduce((a, r) => a + r[2], 0) / rv.length : null;
+  const upcoming = Object.entries(S.events).filter(([, e]) => (e.end || e.start) >= todayISO()).sort((a, b) => a[1].start.localeCompare(b[1].start));
+  const nx = upcoming[0];
+  const dday = nx ? Math.ceil((new Date(nx[1].start + 'T00:00:00') - new Date(todayISO() + 'T00:00:00')) / 864e5) : null;
+  const fm = fitMonths(); const lastFit = fm[fm.length - 1];
+  const low = rates.filter(r => r[2] != null && r[2] <= .2).sort((a, b) => a[2] - b[2]);
+  const todayDone = S.att[cur] && (S.att[cur].days || []).includes(todayISO());
+  return `
+  <div class="bar">${teamSeg()}<span class="sp"></span>${S.canEdit ? `<button class="btn pri" data-act="goCheck">${todayDone ? '오늘 출석 이어서 체크' : '오늘 출석 체크'}</button>` : ''}</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">활동 선수</div><div class="v num">${list.length}</div><div class="s">쿼드 ${list.filter(x => x[1].div === '쿼드').length} · 오픈 ${list.filter(x => x[1].div === '오픈').length}</div></div>
+    <div class="kpi"><div class="l">${mk ? `${+mk.slice(5)}월 훈련` : '훈련'}</div><div class="v num">${st ? st.n : 0}회</div><div class="s">${mk && mk !== cur ? '이번 달 기록 없음 · 최근 달 기준' : '이번 달'}</div></div>
+    <div class="kpi"><div class="l">평균 출석률</div><div class="v num">${pct(avg)}</div><div class="s">${esc(S.team)} 활동 선수</div></div>
+    <div class="kpi ${nx ? 'click' : ''}" ${nx ? `data-act="openEvent" data-id="${nx[0]}" role="button" style="cursor:pointer"` : ''}><div class="l">다음 대회</div><div class="v num">${nx ? (dday <= 0 ? '진행 중' : 'D-' + dday) : '–'}</div><div class="s">${nx ? `<b style="color:var(--ink)">${esc(nx[1].name)}</b><br>${esc(evDates(nx[1]))} · ${esc(nx[1].place || '장소 미정')}` : '예정된 대회 없음'}</div></div>
+  </div>
+  <div class="grid g2">
+    <section class="panel"><h2>${mk ? `${+mk.slice(5)}월 선수별 출석률` : '출석률'}<span class="sp"></span><button class="btn ghost sm" data-act="tab" data-v="att">출석부 보기</button></h2>
+      ${st ? `<div class="rows">${rates.sort((a, b) => (b[2] ?? -1) - (a[2] ?? -1)).map(([id, p, r]) => `
+        <div style="display:grid;grid-template-columns:72px minmax(0,1fr) 44px;gap:10px;align-items:center">
+          <span style="font-weight:600">${esc(p.name)}</span><div class="meter"><i style="width:${Math.round((r || 0) * 100)}%;background:${r >= .85 ? 'var(--good)' : r >= .6 ? 'var(--accent)' : r >= .35 ? 'var(--warn)' : 'var(--bad)'}"></i></div><span class="num r small" style="text-align:right">${r == null ? '<span class="muted">등록 전</span>' : pct(r)}</span></div>`).join('')}</div>` : '<div class="empty">출석 기록이 아직 없어요.</div>'}
+    </section>
+    <div class="grid" style="align-content:start">
+      ${bdayPanel()}
+      <section class="panel"><h2>챙겨볼 선수<span class="sp"></span><span class="muted small">출석률 20% 이하</span></h2>
+        ${low.length ? `<div class="rows">${low.map(([id, p, r]) => `<div style="display:flex;gap:8px;align-items:center"><button class="btn ghost sm" data-act="openPlayer" data-id="${id}" style="padding-left:0">${esc(p.name)}</button>${divTag(p.div)}<span class="sp" style="flex:1"></span><span class="tag bad num">${pct(r)}</span></div>`).join('')}</div>` : '<div class="muted">20% 이하인 선수가 없어요.</div>'}
+      </section>
+      <section class="panel"><h2>체력테스트</h2>
+        <div class="muted">${lastFit ? `최근 측정 ${+lastFit.slice(5)}월 · ${Object.keys(S.fit[lastFit].records || {}).length}명` : '측정 기록 없음'}</div>
+      </section>
+    </div>
+  </div>`;
+}
+function bdayPanel() {
+  const t = todayISO(), mm = t.slice(5, 7), dd = +t.slice(8);
+  const l = Object.entries(S.players).filter(([, p]) => p.birth && p.birth.slice(5, 7) === mm && (p.status || '활동') !== '퇴단' && (teamOk(p) || p.team === '공통'))
+    .sort((a, b) => a[1].birth.slice(8).localeCompare(b[1].birth.slice(8)));
+  return `<section class="panel"><h2>${+mm}월 생일<span class="sp"></span><span class="muted small">${l.length}명</span></h2>
+    ${l.length ? `<div class="rows">${l.map(([id, p]) => { const d = +p.birth.slice(8); const age = +t.slice(0, 4) - +p.birth.slice(0, 4); const tag = d === dd ? '<span class="tag good">오늘</span>' : d > dd ? `<span class="tag n num">D-${d - dd}</span>` : '<span class="tag n">지남</span>'; return `<div style="display:flex;gap:10px;align-items:center;cursor:pointer" data-act="openPlayer" data-id="${id}">${avatar(p, 'sm')}<b>${esc(p.name)}</b><span class="muted small num">${+mm}월 ${d}일 · ${age}세</span><span style="flex:1"></span>${tag}</div>`; }).join('')}</div>` : '<div class="muted">이번 달 생일인 사람이 없어요.</div>'}
+  </section>`;
+}
+// 목록·연간 합계에 쓰는 금액: 방 배정을 했으면 계산값, 아니면 엑셀에서 가져온 금액 (방 배정 전 예상치는 빼요)
+function evListAmt(e) { const c = evCost(e); return (e.rooms || []).length ? c.net : (e.costs ? c.legacy : 0); }
+function evDates(e) {
+  const f = d => `${+d.slice(5, 7)}.${+d.slice(8)}`; if (!e.end || e.end === e.start) return f(e.start);
+  return e.end.slice(0, 7) === e.start.slice(0, 7) ? `${f(e.start)}~${+e.end.slice(8)}` : `${f(e.start)}~${f(e.end)}`;
+}
+function evRow(id, e) {
+  const st = e.status === '참가' ? 'good' : e.status === '불참' ? 'bad' : 'warn';
+  const n = (e.roster || []).filter(r => r.role === '선수').length; const open = D && D.kind === 'event' && D.id === id;
+  const amt = evListAmt(e);
+  return `<div class="ev ${open ? 'open' : ''}" data-act="openEvent" data-id="${id}" role="button" aria-expanded="${open}"><div class="d">${esc(evDates(e))}</div><div class="n">${esc(e.name)}<span class="muted small">${esc(e.place || '')}</span></div><span class="muted small num np">${n ? `선수 ${n}` : ''}</span><span class="amt num np">${amt ? won(amt) : ''}</span><span style="display:flex;gap:8px;align-items:center"><span class="tag ${st}">${esc(e.status || '미정')}</span><span class="car">▼</span></span></div>${open ? '<div class="evd" id="evHost"></div>' : ''}`;
+}
+
+// ATTENDANCE
+function vAtt() {
+  const months = monthsWithData();
+  if (!S.month) S.month = months[months.length - 1] || todayISO().slice(0, 7);
+  const views = [['month', '월별 출석부'], ['year', '연간 통계'], ['report', '선수 평가']];
+  const head = `<div class="bar"><div class="seg" role="group">${views.map(([k, l]) => `<button data-act="attView" data-v="${k}" aria-pressed="${S.attView === k}">${l}</button>`).join('')}</div><span class="sp"></span>${teamSeg()}</div>`;
+  if (S.attView === 'check') return head + vCheck();
+  if (S.attView === 'month') return head + vMonth(months);
+  if (S.attView === 'photos') return head + vPhotos();
+  if (S.attView === 'report') return head + vReport();
+  return head + vYear();
+}
+function vCheck() {
+  const d = S.date, mk = d.slice(0, 7), m = S.att[mk] || { days: [], marks: {} };
+  const isDay = (m.days || []).includes(d); const marks = (m.marks || {})[d] || {};
+  const list = athletes();
+  const on = list.filter(([id]) => marks[id] === '출석').length;
+  const ro = !S.canEdit;
+  return `
+  <section class="panel">
+    <div class="bar" style="margin-bottom:10px">
+      <input class="in" type="date" id="attDate" value="${d}"> <span class="muted">${dow(d)}요일</span>
+      <span class="sp"></span>
+      ${isDay ? `<span class="tag good">훈련일</span>` : `<span class="tag n">훈련일 아님</span>`}
+      ${!ro ? (isDay ? `<button class="btn sm danger" data-act="toggleDay">훈련일 해제</button>` : `<button class="btn sm pri" data-act="toggleDay">훈련일로 추가</button>`) : ''}
+    </div>
+    <div class="legend" style="margin-bottom:10px"><span>출석 <b class="num">${on}</b></span><span>결석 <b class="num">${list.length - on}</b></span>${!ro && isDay ? `<span class="sp" style="flex:1"></span><button class="btn sm" data-act="allPresent">전원 출석</button>` : ''}</div>
+    ${!isDay && !ro ? '<div class="lock" style="margin-bottom:10px">선수를 누르면 이 날짜가 훈련일로 자동 추가되고 출석으로 체크돼요. 한 번 더 누르면 취소돼요.</div>' : ''}
+    ${photoStrip(d, m)}
+    <div class="rows">${list.map(([id, p]) => {
+      const s = marks[id] === '출석';
+      return `<button class="prow ${s ? 'on' : ''}" data-act="tapName" data-id="${id}" aria-pressed="${s}" ${ro ? 'disabled' : ''}>
+        <span class="who">${avatar(p, 'sm')}<span class="no">${p.num ?? ''}</span><span class="nm">${esc(p.name)}</span>${divTag(p.div)}<span class="muted small num">${esc(fmtCls(p.cls))}</span></span>
+        <span class="${s ? 'tag good' : 'muted small'}">${s ? '출석' : '–'}</span>
+      </button>`; }).join('')}</div>
+  </section>`;
+}
+function vMonth(months) {
+  const mk = S.month; const st = monthStats(mk) || { days: [], per: {}, n: 0 };
+  const m = S.att[mk] || {}; const list = athletes();
+  const all = months.includes(mk) ? months : months.concat(mk).sort();
+  let rows = '', lastDiv = null;
+  for (const [id, p] of list) {
+    if (p.div !== lastDiv) { lastDiv = p.div; rows += `<tr class="grp"><td class="stick">${esc(p.div || '기타')}</td><td colspan="${st.days.length + 1}"></td></tr>`; }
+    const s = st.per[id]; const nn = st.nOf(id); const r = nn ? st.aOf(id) / nn : null; const jd = joinedOf(id);
+    rows += `<tr class="click" data-act="openPlayer" data-id="${id}"><td class="stick"><b>${esc(p.name)}</b> <span class="muted small num">${esc(fmtCls(p.cls))}</span></td>${st.days.map(d => { const v = ((m.marks || {})[d] || {})[id] === '출석'; if (jd && d < jd && !v) return '<td class="c"></td>'; return `<td class="c"><span class="mk ${v ? 'a' : 'x'}">${v ? 'v' : '·'}</span></td>`; }).join('')}
+      <td class="r"><span class="heat num" style="${heatStyle(r)}">${pct(r)}</span></td></tr>`;
+  }
+  const totals = st.days.map(d => athletes({ all: true }).filter(([id]) => ((m.marks || {})[d] || {})[id] === '출석').length);
+  return `<section class="panel"><h2>${monthSel('monthSel', mk, all)}<span class="muted small">훈련 ${st.n}회</span></h2>
+    ${st.n ? `<div class="scroll"><table class="t"><thead><tr><th class="stick">이름</th>${st.days.map(d => `<th class="c">${+d.slice(8)}<br><span style="font-weight:400">${dow(d)}</span></th>`).join('')}<th class="r">출석률</th></tr></thead>
+    <tbody>${rows}<tr class="grp"><td class="stick">참가인원</td>${totals.map(t => `<td class="c num">${t}</td>`).join('')}<td></td></tr></tbody></table></div>
+    <p class="muted small" style="margin:10px 0 0">출석률 = 출석 ÷ 그 달 훈련일수</p>` : '<div class="empty">이 달에는 훈련일이 없어요. 출석 체크 화면에서 훈련일을 추가해 주세요.</div>'}
+  </section>`;
+}
+function vYear() {
+  const years = [...new Set(monthsWithData().map(k => k.slice(0, 4)))]; if (!years.includes(S.year)) S.year = years[years.length - 1] || S.year;
+  const { months, res } = yearStats(S.year);
+  const list = athletes();
+  const rows = list.map(([id, p]) => [id, p, res[id] && res[id].n ? res[id].att / res[id].n : null]);
+  const sorted = rows.slice().sort(ysortCmp);
+  return `<section class="panel"><h2><select class="in" id="yearSel">${years.map(y => `<option ${y === S.year ? 'selected' : ''}>${y}</option>`).join('')}</select> 연간 출석 통계</h2>
+  <div class="bar" style="margin-bottom:10px"><span class="muted small">정렬</span>${ysortUI()}</div>
+  <div class="scroll"><table class="t"><thead><tr><th class="stick">이름</th><th>구분</th><th>등급</th>${months.map(m => `<th class="r">${+m.slice(5)}월</th>`).join('')}<th class="r">누적</th></tr></thead><tbody>
+  ${sorted.map(([id, p, r]) => `<tr class="click" data-act="openPlayer" data-id="${id}"><td class="stick"><b>${esc(p.name)}</b></td><td>${divTag(p.div)}</td><td class="num">${esc(fmtCls(p.cls))}</td>${months.map(m => `<td class="r"><span class="heat num" style="${heatStyle(res[id].months[m])}">${pct(res[id].months[m])}</span></td>`).join('')}<td class="r"><b class="num">${pct(r)}</b></td></tr>`).join('')}
+  </tbody></table></div></section>`;
+}
+
+// 선수 평가 보고서: 훈련 출석 + 대회 참가를 한 장에
+// 대회 참가 = 그 선수 팀이 '참가'한 대회(팀 선수가 명단에 1명 이상) 중 본인이 명단에 든 대회. 등록일 이전 대회는 빼요
+function reportData(y, team) {
+  const { months, res } = yearStats(y);
+  const list = Object.entries(S.players).filter(([, p]) => isAthlete(p) && ['우림맨테크', '송파씨젠'].includes(p.team) && (team === '전체' || p.team === team) && (p.status || '활동') === '활동').sort((x, z) => teamIdx(x[1]) - teamIdx(z[1]) || (x[1].div === z[1].div ? 0 : x[1].div === '쿼드' ? -1 : 1) || playerSort(x, z));
+  const evs = Object.entries(S.events).filter(([, e]) => (e.start || '').startsWith(y) && e.status === '참가').sort((a, b) => a[1].start.localeCompare(b[1].start));
+  const teamIn = (e, t) => (e.roster || []).some(x => x.role === '선수' && P(x.pid).team === t);
+  const rows = list.map(([id, p]) => {
+    const r = res[id] || { att: 0, n: 0, months: {} }; const j = joinedOf(id);
+    const cells = evs.map(([, e]) => { const mine = (e.roster || []).some(x => x.pid === id); if (mine) return 'in'; if (!teamIn(e, p.team) || (j && (e.end || e.start) < j)) return 'na'; return 'out'; });
+    const K = cells.filter(c => c !== 'na').length, k = cells.filter(c => c === 'in').length;
+    return { id, p, r, rate: r.n ? r.att / r.n : null, cells, K, k, erate: K ? k / K : null };
+  });
+  const avg = f => { const v = rows.map(f).filter(x => x != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  return { y, team, months, evs, rows, nTrain: months.reduce((a, m) => a + monthStats(m).n, 0), avgRate: avg(x => x.rate), avgE: avg(x => x.erate) };
+}
+const repShort = n => n.replace(/^제\d+회\s*/, '').replace(/대회$/, '').slice(0, 7);
+function reportHTML(R, forPdf) {
+  const { y, months, evs, rows } = R;
+  const mark = c => c === 'in' ? '<span class="mk a">●</span>' : c === 'out' ? '<span class="mk x">○</span>' : '<span class="muted">–</span>';
+  return `<div class="rhead"><div><h2 style="margin:0">${y} 선수 평가 보고서</h2><div class="muted small">${esc(R.team === '전체' ? '우림맨테크 · 송파씨젠' : R.team)} · 활동 선수 ${rows.length}명 · ${todayISO().replace(/-/g, '.')} 기준</div></div>
+      ${forPdf ? '<div class="muted small">서울휠체어럭비 선수단</div>' : ''}</div>
+    <div class="kpis" style="margin:12px 0">
+      <div class="kpi"><div class="l">훈련</div><div class="v num">${R.nTrain}회</div><div class="s">${months.length}개월</div></div>
+      <div class="kpi"><div class="l">평균 출석률</div><div class="v num">${pct(R.avgRate)}</div><div class="s">등록일 이후 기준</div></div>
+      <div class="kpi"><div class="l">참가 대회</div><div class="v num">${evs.length}개</div><div class="s">불참 대회 제외</div></div>
+      <div class="kpi"><div class="l">평균 대회 참가율</div><div class="v num">${pct(R.avgE)}</div><div class="s">팀이 나간 대회 기준</div></div>
+    </div>
+    <div class="${forPdf ? '' : 'scroll'}"><table class="t rep"><thead>
+      <tr><th class="stick" rowspan="2">이름</th><th rowspan="2">등급</th><th class="c" colspan="${months.length + 2}">훈련 출석</th><th class="c" colspan="${evs.length + 2}">대회 참가</th></tr>
+      <tr>${months.map(m => `<th class="c">${+m.slice(5)}월</th>`).join('')}<th class="r">횟수</th><th class="r">출석률</th>${evs.map(([, e]) => `<th class="c" title="${esc(e.name)}">${esc(repShort(e.name))}<br><span style="font-weight:400">${+e.start.slice(5, 7)}월</span></th>`).join('')}<th class="r">횟수</th><th class="r">참가율</th></tr>
+    </thead><tbody>
+    ${rows.map((x, i) => `${i === 0 || rows[i - 1].p.team !== x.p.team ? `<tr class="grp"><td class="stick" colspan="${months.length + evs.length + 6}">${esc(x.p.team)}</td></tr>` : ''}<tr class="click" data-act="openPlayer" data-id="${x.id}">
+      <td class="stick" style="white-space:nowrap"><b>${esc(x.p.name)}</b>${x.p.joined && x.p.joined.startsWith(y) ? ` <span class="muted small">${+x.p.joined.slice(5, 7)}월~</span>` : ''}</td><td class="num">${esc(fmtCls(x.p.cls))}</td>
+      ${months.map(m => `<td class="c"><span class="heat num small" style="${heatStyle(x.r.months[m])}">${x.r.months[m] == null ? '' : Math.round(x.r.months[m] * 100)}</span></td>`).join('')}
+      <td class="r num muted">${x.r.att}/${x.r.n}</td><td class="r"><span class="heat num" style="${heatStyle(x.rate)}">${pct(x.rate)}</span></td>
+      ${x.cells.map(c => `<td class="c">${mark(c)}</td>`).join('')}
+      <td class="r num muted">${x.k}/${x.K}</td><td class="r"><span class="heat num" style="${heatStyle(x.erate)}">${pct(x.erate)}</span></td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="legend" style="margin-top:10px"><span>● 대회 명단에 들어감</span><span>○ 팀은 나갔는데 명단에 없음</span><span>– 팀이 안 나간 대회 · 등록 전</span><span>월별 칸 숫자 = 그 달 출석률(%)</span></div>`;
+}
+function vReport() {
+  const years = [...new Set(monthsWithData().map(k => k.slice(0, 4)).concat(Object.values(S.events).map(e => (e.start || '').slice(0, 4)).filter(Boolean)))].sort();
+  if (!years.includes(S.year)) S.year = years[years.length - 1] || S.year;
+  const R = reportData(S.year, S.team);
+  return `<div class="bar" style="margin-bottom:10px"><select class="in" id="yearSel" style="width:auto">${years.map(v => `<option ${v === S.year ? 'selected' : ''}>${v}</option>`).join('')}</select><span class="sp"></span><button class="btn" data-act="reportPdf">PDF로 저장</button><button class="btn" data-act="reportXlsx">엑셀로 저장</button></div>
+  <section class="panel report">${reportHTML(R)}</section>`;
+}
+// 보고서 PDF: 화면을 그대로 그림으로 떠서 A4 가로 한 장에 맞춰요 (도구는 필요할 때만 불러와요)
+const loadJs = src => new Promise((ok, no) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const t = document.createElement('script'); t.src = src; t.onload = ok; t.onerror = no; document.head.appendChild(t); });
+async function reportPdf(y, team) {
+  toast('PDF 만드는 중…');
+  try {
+    await loadJs('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    await loadJs('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  } catch { toast('PDF 도구를 불러오지 못했어요'); return; }
+  const box = document.createElement('div'); box.className = 'panel report pdfbox'; box.innerHTML = reportHTML(reportData(y, team), true);
+  document.body.appendChild(box);
+  try {
+    const cv = await window.html2canvas(box, { scale: 2, backgroundColor: getComputedStyle(document.body).backgroundColor || '#fff' });
+    const { jsPDF } = window.jspdf; const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const W = 297, H = 210, M = 8; const r = Math.min((W - 2 * M) / cv.width, (H - 2 * M) / cv.height);
+    const w = cv.width * r, h = cv.height * r;
+    pdf.addImage(cv.toDataURL('image/jpeg', 0.92), 'JPEG', (W - w) / 2, M, w, h);
+    const dl = window.__claudeSnap && window.__claudeSnap.use ? await window.__claudeSnap.use('downloads') : null;
+    if (!dl) { toast('이 화면에서는 파일을 내려받을 수 없어요'); return; }
+    await dl.save({ filename: `선수평가_${y}${team !== '전체' ? '_' + team : ''}.pdf`, data: pdf.output('blob') }); toast('PDF를 저장했어요');
+  } catch (e) { if (!e || e.code !== 'declined') { console.warn(e); toast('PDF를 만들지 못했어요'); } }
+  finally { box.remove(); }
+}
+function reportSheet(X, R) {
+  const head = ['팀', '이름', '등급', '등록일', ...R.months.map(m => `${+m.slice(5)}월`), '출석', '훈련', '출석률', ...R.evs.map(([, e]) => e.name), '대회 참가', '팀 참가 대회', '대회 참가율'];
+  const p100 = v => v == null ? '' : Math.round(v * 1000) / 10 + '%';
+  return [[`${R.y} 선수 평가 보고서 (${R.team === '전체' ? '우림맨테크 · 송파씨젠' : R.team})`], [`훈련 ${R.nTrain}회 · 평균 출석률 ${pct(R.avgRate)} · 참가 대회 ${R.evs.length}개 · 평균 대회 참가율 ${pct(R.avgE)}`], [], head,
+    ...R.rows.map(x => [x.p.team, x.p.name, fmtCls(x.p.cls), x.p.joined || '', ...R.months.map(m => p100(x.r.months[m])), x.r.att, x.r.n, p100(x.rate), ...x.cells.map(c => c === 'in' ? '●' : c === 'out' ? '○' : '–'), x.k, x.K, p100(x.erate)]),
+    [], ['● 명단에 들어감 · ○ 팀은 나갔는데 명단에 없음 · – 팀이 안 나간 대회 또는 등록 전']];
+}
+function photoStrip(d, m) {
+  const ph = ((m.photos || {})[d]) || [];
+  if (!ph.length && !S.assets) return '';
+  return `<div class="evid"><div class="evh"><b>증빙 사진</b><span class="muted small">${ph.length}장</span><span style="flex:1"></span>${S.assets ? `<label class="btn sm upl">사진 추가<input type="file" accept="image/*" multiple class="attPhotoIn" data-date="${d}"></label>` : ''}</div>
+    ${S.assets ? '<div class="muted small">PC에서는 사진을 복사한 뒤 이 화면에서 Ctrl+V로 바로 붙여넣을 수 있어요.</div>' : ''}
+    ${ph.length ? `<div class="evg">${ph.map((id, i) => `<button class="evt" data-act="viewPhoto" data-date="${d}" data-i="${i}"><img src="img/${esc(id)}" alt="${d} 증빙 ${i + 1}" loading="lazy"></button>`).join('')}</div>` : '<div class="muted small">아직 올린 사진이 없어요.</div>'}</div>`;
+}
+function vPhotos() {
+  const all = Object.entries(S.att).flatMap(([mk, m]) => Object.entries(m.photos || {}).filter(([, l]) => l && l.length).map(([d, l]) => [d, l])).sort((a, b) => b[0].localeCompare(a[0]));
+  const months = [...new Set(all.map(([d]) => d.slice(0, 7)))];
+  if (!S.photoMonth || !months.includes(S.photoMonth)) S.photoMonth = months[0] || null;
+  const list = all.filter(([d]) => d.startsWith(S.photoMonth || ''));
+  return `<section class="panel"><h2>${months.length ? monthSel('photoMonthSel', S.photoMonth, months) : '증빙 사진'}<span class="muted small">${list.length}일 · ${list.reduce((a, [, l]) => a + l.length, 0)}장</span></h2>
+  ${list.length ? list.map(([d, l]) => `<div class="evday"><div class="evh"><b class="num">${+d.slice(5, 7)}월 ${+d.slice(8)}일 (${dow(d)})</b><span class="muted small">${l.length}장</span></div><div class="evg">${l.map((id, i) => `<button class="evt" data-act="viewPhoto" data-date="${d}" data-i="${i}"><img src="img/${esc(id)}" alt="${d} 증빙 ${i + 1}" loading="lazy"></button>`).join('')}</div></div>`).join('') : '<div class="empty">아직 올린 증빙 사진이 없어요. 출석 체크 화면에서 그날 사진을 올리면 여기에 날짜별로 모여요.</div>'}
+  </section>`;
+}
+function dPhoto() {
+  const { date, i } = D; const l = ((S.att[date.slice(0, 7)] || {}).photos || {})[date] || []; const id = l[i];
+  return `<div class="dh"><h2>${+date.slice(5, 7)}월 ${+date.slice(8)}일 (${dow(date)}) 증빙 ${i + 1}/${l.length}</h2>${S.canEdit && id ? '<button class="btn sm danger" data-act="delPhoto">삭제</button>' : ''}<button class="btn sm" data-act="close">닫기</button></div>
+  <div class="db">${id ? `<img src="img/${esc(id)}" alt="" style="width:100%;border-radius:10px;background:var(--sunk)">` : '<div class="empty">사진이 없어요.</div>'}
+  <div style="display:flex;gap:8px;justify-content:space-between"><button class="btn" data-act="photoNav" data-v="-1" ${i <= 0 ? 'disabled' : ''}>이전</button><button class="btn" data-act="photoNav" data-v="1" ${i >= l.length - 1 ? 'disabled' : ''}>다음</button></div></div>`;
+}
+const YKEYS = {
+  team: ['팀', (a, b) => teamIdx(a[1]) - teamIdx(b[1]), ['우림→씨젠', '씨젠→우림']],
+  div: ['구분', (a, b) => (a[1].div === b[1].div ? 0 : a[1].div === '쿼드' ? -1 : 1), ['쿼드→오픈', '오픈→쿼드']],
+  cls: ['등급', (a, b) => (clsNum(a[1].cls) ?? -1) - (clsNum(b[1].cls) ?? -1), ['낮은 순', '높은 순']],
+  rate: ['출석률', (a, b) => (a[2] ?? -1) - (b[2] ?? -1), ['낮은 순', '높은 순']],
+  age: ['나이', (a, b) => (b[1].birth || '9999').localeCompare(a[1].birth || '9999'), ['적은 순', '많은 순']],
+  name: ['이름', (a, b) => (a[1].name || '').localeCompare(b[1].name || '', 'ko'), ['가나다', '역순']],
+};
+function ysortUI() {
+  const ks = S.ysort; const left = Object.keys(YKEYS).filter(k => !ks.some(x => x.k === k));
+  return `<div class="ysort">${ks.map((x, i) => `<span class="ychip"><b class="num">${i + 1}</b>${YKEYS[x.k][0]}<button class="chip" data-act="ysDir" data-i="${i}" title="방향 바꾸기">${YKEYS[x.k][2][x.d < 0 ? 1 : 0]}</button>${i ? `<button class="chip" data-act="ysUp" data-i="${i}" aria-label="우선순위 올리기">▲</button>` : ''}${ks.length > 1 ? `<button class="chip" data-act="ysRm" data-i="${i}" aria-label="빼기">✕</button>` : ''}</span>`).join('')}
+    ${left.length ? `<select class="in" id="ysAdd" aria-label="정렬 기준 추가"><option value="">+ 기준 추가</option>${left.map(k => `<option value="${k}">${YKEYS[k][0]}</option>`).join('')}</select>` : ''}</div>`;
+}
+function ysortCmp(a, b) { for (const { k, d } of S.ysort) { const c = YKEYS[k][1](a, b) * d; if (c) return c; } return 0; }
+
+// PLAYERS
+function pcard(id, p, res, chairOf) {
+  const r = res[id] && res[id].n ? res[id].att / res[id].n : null; const ch = chairOf(id); const st = p.status || '활동';
+  return `<button class="card ${st !== '활동' ? 'dim' : ''}" data-act="openPlayer" data-id="${id}">
+    <div class="top">${avatar(p)}<div class="hd"><b>${esc(p.name)}</b>${p.captain ? ' <span class="tag warn">주장</span>' : ''}</div><span class="no mono muted">${p.num != null ? '#' + esc(p.num) : ''}</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${isAthlete(p) ? divTag(p.div) + `<span class="tag n">${esc(p.cls || '등급 미정')}</span>` : `<span class="tag n">${esc(p.note || '임원')}</span>`}${p.birth ? `<span class="muted small num">${esc(p.birth.replace(/-/g, '.'))}</span>` : p.birthYear ? `<span class="muted small num">${esc(p.birthYear)}년생</span>` : ''}</div>
+    ${isAthlete(p) ? `<div class="muted small">올해 출석 <b class="num" style="color:var(--ink)">${pct(r)}</b> · 휠체어 ${ch ? esc(ch.code) : '없음'}</div>` : ''}
+  </button>`;
+}
+function vPlayers() {
+  const all = Object.entries(S.players).filter(([, p]) => teamOk(p) || (S.team !== '전체' && p.team === '공통'));
+  const stOf = p => p.status || '활동';
+  const { res } = yearStats(String(new Date().getFullYear()));
+  const chairOf = id => Object.values(S.chairs).find(c => c.player === id);
+  const act = all.filter(([, p]) => isAthlete(p) && stOf(p) === '활동').sort(playerSort);
+  const teams = [...new Set(['우림맨테크', '송파씨젠', ...act.map(([, p]) => p.team || '미배정')])].filter(t => act.some(([, p]) => (p.team || '미배정') === t));
+  let html = `<div class="bar">${teamSeg()}<span class="sp"></span>${S.canEdit ? '<button class="btn pri" data-act="newPlayer">선수 등록</button>' : ''}</div>`;
+  for (const t of teams) {
+    const l = act.filter(([, p]) => (p.team || '미배정') === t); const divs = [...new Set(l.map(([, p]) => p.div).filter(Boolean))];
+    html += `<h3 class="sec" style="margin:6px 0 12px">${esc(t)} ${divs.map(divTag).join(' ')} <span class="muted num" style="font-weight:500">${l.length}명</span></h3>`;
+    for (const [b, label] of BANDS) {
+      const g = l.filter(([, p]) => bandOf(p) === b); if (!g.length) continue;
+      html += `<div class="band"><div class="bandh"><b>${b}</b>${label ? label + ' · ' : ''}${g.length}명</div><div class="cards">${g.map(([id, p]) => pcard(id, p, res, chairOf)).join('')}</div></div>`;
+    }
+  }
+  const rest = [['선수 · 휴면', all.filter(([, p]) => isAthlete(p) && stOf(p) === '휴면')], ['임원 · 지도자', all.filter(([, p]) => !isAthlete(p))], ['팀에서 제외', all.filter(([, p]) => isAthlete(p) && stOf(p) === '퇴단')]];
+  for (const [t, l] of rest) if (l.length) html += `<h3 class="sec" style="margin:18px 0 10px">${t} <span class="muted num" style="font-weight:500">${l.length}</span></h3><div class="cards" style="margin-bottom:14px">${l.sort(playerSort).map(([id, p]) => pcard(id, p, res, chairOf)).join('')}</div>`;
+  return html;
+}
+
+// FITNESS
+function vFit() {
+  const ft = S.fitTab || 'team';
+  const seg = `<div class="seg" role="group" style="margin-bottom:12px"><button data-act="fitTab" data-v="team" aria-pressed="${ft === 'team'}">팀 측정 결과</button><button data-act="fitTab" data-v="player" aria-pressed="${ft === 'player'}">개인 분석</button><button data-act="fitTab" data-v="std" aria-pressed="${ft === 'std'}">국대 기준표</button></div>`;
+  if (ft === 'player') return seg + vFitPlayer();
+  if (ft === 'std') return seg + vFitStd();
+  return seg + vFitTeam();
+}
+function vFitTeam() {
+  const months = fitMonths();
+  if (!S.fitMonth || !S.fit[S.fitMonth]) S.fitMonth = months[months.length - 1] || null;
+  const recs = S.fitMonth ? (S.fit[S.fitMonth].records || {}) : {};
+  const rows = Object.entries(recs).filter(([id]) => S.players[id] && teamOk(P(id))).map(([id, r]) => [id, P(id), r, fitFinal(r)])
+    .sort((a, b) => teamIdx(a[1]) - teamIdx(b[1]) || (clsNum(b[2].cls || b[1].cls) ?? -1) - (clsNum(a[2].cls || a[1].cls) ?? -1) || playerSort([0, a[1]], [0, b[1]]));
+  const ath = athletes();
+  if (!S.fitPlayer || !S.players[S.fitPlayer]) S.fitPlayer = (rows[0] && rows[0][0]) || (ath[0] && ath[0][0]);
+  const sv = S.fitView === 'score';
+  return `<div class="bar">${months.length ? monthSel('fitMonthSel', S.fitMonth, months) : ''}${teamSeg()}<span class="sp"></span>${S.canEdit ? `<button class="btn" data-act="newFitMonth">측정 월 추가</button>${S.fitMonth ? '<button class="btn danger" data-act="delFitMonth">이 달 삭제</button>' : ''}<button class="btn" data-act="fitImport">엑셀 가져오기</button>${S.fitMonth ? '<button class="btn pri" data-act="fitEntry">기록 입력</button>' : ''}` : ''}</div>
+  <section class="panel" style="margin-bottom:14px"><h2>${S.fitMonth ? `${S.fitMonth.slice(0, 4)}년 ${+S.fitMonth.slice(5)}월 측정 결과` : '측정 결과'}<span class="sp"></span><div class="seg" role="group"><button data-act="fitView" data-v="raw" aria-pressed="${!sv}">기록</button><button data-act="fitView" data-v="score" aria-pressed="${sv}">점수</button></div></h2>
+  ${rows.length ? `<div class="scroll"><table class="t"><thead><tr><th class="stick">이름</th><th>등급</th>${FIT_COLS.map(c => `<th class="r">${c[1]}<br><span style="font-weight:400">${sv ? '점수' : c[0] === 'throw' ? 'm · 최대' : c[0] === 'acc' ? '일관성' : '초 · 낮을수록'}</span></th>`).join('')}<th class="r">체력 점수<br><span style="font-weight:400">100점</span></th></tr></thead><tbody>
+  ${rows.map(([id, p, r, f]) => { const std = stdFor(p.cls, p.div); const sc = clsScore(f, std); return `<tr class="click" data-act="fitEntry" data-id="${id}"><td class="stick"><b>${esc(p.name)}</b> ${divTag(p.div)}</td><td class="num">${esc(fmtCls(p.cls))}</td>${FIT_COLS.map(c => sv ? `<td class="r num">${sc[c[0]] == null ? '<span class="muted">–</span>' : sc[c[0]].toFixed(1)}</td>` : fitCell(c[0], f[c[0]], std)).join('')}<td class="r num muted small">${(() => { const T = total100(sc); return T ? `${Math.round(T.t)}${T.n < 7 ? ` (${T.n}항목)` : ''}` : '–'; })()}</td></tr>`; }).join('')}
+  </tbody></table></div><p class="muted small" style="margin:10px 0 0">${sv ? '점수 = 자기 등급 국대 기준을 10점으로 환산 (기준을 넘으면 10점)' : '<span class="tag good">값</span> 국가대표 기준 달성 · <span class="tag warn">값</span> 기준 15% 이내 · 이름을 누르면 기록을 볼 수 있어요'}</p>` : '<div class="empty">이 달에 측정한 기록이 없어요.</div>'}
+  </section>`;
+}
+function vFitPlayer() {
+  const ath = athletes({ all: true }).filter(([pid, p]) => (p.status || '활동') === '활동' || fitMonths().some(m => (S.fit[m].records || {})[pid]));
+  if (!S.fitPlayer || !ath.some(([pid]) => pid === S.fitPlayer)) { S.fitPlayer = ath[0] && ath[0][0]; S.fitPMonth = null; }
+  const id = S.fitPlayer; if (!id) return '<div class="empty">선수가 없어요.</div>';
+  const p = P(id);
+  const months = fitMonths(); const series = months.map(m => [m, fitFinal((S.fit[m].records || {})[id]), (S.fit[m].records || {})[id]]).filter(([, f]) => Object.values(f).some(v => v != null));
+  const mine = series.map(s => s[0]);
+  if (!S.fitPMonth || !mine.includes(S.fitPMonth)) S.fitPMonth = mine[mine.length - 1] || null;
+  const mode = 'cls';
+  const cur = series.find(s => s[0] === S.fitPMonth);
+  const std = stdFor(p.cls, p.div);
+  const best = {}; FIT_COLS.forEach(([k, , dir]) => { const vals = series.map(s => s[1][k]).filter(v => v != null); best[k] = vals.length ? (dir === 'hi' ? Math.max(...vals) : Math.min(...vals)) : null; });
+  const sc = f => mode === 'cls' ? clsScore(f, std) : scoreOf(f);
+  const opts = ath.map(([pid, q]) => `<option value="${pid}" ${pid === id ? 'selected' : ''}>${esc(q.name)} · ${esc(fmtCls(q.cls))}</option>`).join('');
+  const curS = cur ? sc(cur[1]) : {}, bestS = sc(best);
+  return `<div class="bar"><select class="in" id="fitPlayerSel" aria-label="선수">${opts}</select>${mine.length ? monthSel('fitPMonthSel', S.fitPMonth, mine) : ''}<span class="sp"></span>${teamSeg()}</div>
+  ${series.length ? `<div class="grid g2" style="margin-bottom:14px">
+    <section class="panel radarBox">${radar(curS, bestS, S.fitPMonth)}<p class="muted small" style="margin:6px 0 0">${esc(fmtCls(p.cls))}등급 ${p.div === '오픈' ? `오픈 기준(쿼드 국대 +${Math.round(openF(p.cls) * 100)}%)` : '국대 기준'}을 10점으로 환산 · 기준을 넘으면 10점 · 역대 최고는 해가 바뀌어도 이어져요</p></section>
+    <section class="panel"><h2>${S.fitPMonth.slice(2, 4)}년 ${+S.fitPMonth.slice(5)}월 기록</h2><div class="scroll"><table class="t"><thead><tr><th>항목</th><th class="r">기록</th><th class="r">역대 최고</th><th class="r">${p.div === '오픈' ? '오픈 기준' : '국대 기준'}</th><th class="r">점수</th></tr></thead><tbody>
+      ${FIT_COLS.map(([k, l]) => { const v = cur[1][k]; const fm = x => x == null ? '–' : k === 'throw' ? x : k === 'acc' ? x.toFixed(2) : x.toFixed(2); return `<tr><td>${l}</td><td class="r num">${fm(v)}</td><td class="r num muted">${fm(best[k])}</td><td class="r num muted">${std && std[k] != null ? std[k] + (k === 'throw' ? '<span title="추정값">*</span>' : '') : '–'}</td><td class="r"><b class="num">${curS[k] == null ? '–' : curS[k].toFixed(1)}</b></td></tr>`; }).join('')}
+      <tr><td class="muted small">체력 점수 (100점)</td><td colspan="3" class="muted small">7개 항목 점수 평균 × 10 · 경기력 점수 아님</td><td class="r num muted">${total100(curS) ? Math.round(total100(curS).t) : '–'}</td></tr>
+    </tbody></table></div><p class="muted small" style="margin:8px 0 0">* 던지기 거리 기준은 추정값 · 국대 기준표에서 고칠 수 있어요</p>${S.canEdit ? `<button class="btn sm" style="margin-top:8px" data-act="fitEntryP">이 달 기록 수정</button>` : ''}</section>
+  </div>
+  <section class="panel"><h2>월별 변화</h2><p class="muted small" style="margin:-4px 0 10px"><span style="display:inline-block;width:18px;border-top:1.5px dashed var(--good);vertical-align:middle"></span> 초록 점선 = ${p.div === '오픈' ? '오픈 기준' : '국대 기준'} (닿거나 넘으면 10점) · 시간 항목도 위로 갈수록 좋은 기록 · 오른쪽 위 숫자 = 가장 최근 기록과 환산 점수</p><div class="cards">${FIT_COLS.map(([k, label, dir]) => spark(series.map(s => [s[0], s[1][k]]), label, dir, std && std[k], best[k], k)).join('')}</div></section>` : '<div class="empty">이 선수는 측정 기록이 없어요.</div>'}`;
+}
+function vFitStd() {
+  const st = S.config.standards || {}; const ed = S.canEdit;
+  const keys = [['throw', '던지기 거리(m)*'], ['acc', '정확도'], ['slalom', '슬라럼(초)'], ['crossL', '십자런 좌'], ['crossR', '십자런 우'], ['m20', '20m'], ['m28', '28m']];
+  return `<section class="panel"><h2>등급별 국가대표 기준<span class="sp"></span>${ed ? '<button class="btn pri sm" data-act="saveStd">저장</button>' : ''}</h2>
+  <div class="scroll"><table class="t"><thead><tr><th>등급</th>${keys.map(([, l]) => `<th class="r">${l}</th>`).join('')}</tr></thead><tbody>
+  ${CLS_KEYS.map(c => { const s = stdFor(c); return `<tr><td class="num"><b>${c}</b></td>${keys.map(([k]) => `<td class="r">${ed ? `<input class="in num" style="width:64px;text-align:right" type="number" step="0.1" data-std="${c}|${k}" value="${s[k] ?? ''}">` : `<span class="num">${s[k] ?? '–'}</span>`}</td>`).join('')}</tr>`; }).join('')}
+  </tbody></table></div>
+  <h3 class="sec" style="margin:18px 0 8px">오픈 기준 <span class="muted small" style="font-weight:500">쿼드 기준보다 2.0 이상 ${Math.round(openFHi() * 100)}% · 1.5 이하 ${Math.round(openFLo() * 100)}% 높게 · 시간은 빠르게, 던지기 거리는 멀게, 정확도는 그대로</span></h3>
+  ${ed ? `<div class="bar"><label class="small muted" style="display:flex;gap:6px;align-items:center">2.0 이상 <input class="in num" style="width:64px;text-align:right" type="number" step="1" min="0" max="50" id="openPctHi" value="${Math.round(openFHi() * 100)}"> %</label><label class="small muted" style="display:flex;gap:6px;align-items:center">1.5 이하 <input class="in num" style="width:64px;text-align:right" type="number" step="1" min="0" max="50" id="openPctLo" value="${Math.round(openFLo() * 100)}"> %</label></div>` : ''}
+  <div class="scroll"><table class="t"><thead><tr><th>등급</th>${keys.map(([, l]) => `<th class="r">${l}</th>`).join('')}</tr></thead><tbody>
+  ${CLS_KEYS.map(c => { const s = stdFor(c, '오픈'); return `<tr><td class="num"><b>${c}</b></td>${keys.map(([k]) => `<td class="r num muted">${s[k] ?? '–'}</td>`).join('')}</tr>`; }).join('')}
+  </tbody></table></div><p class="muted small" style="margin:10px 0 0">* 던지기 거리 기준은 엑셀에 없어 추정한 값이에요. 국대 출신 송문령(1.0)·최찬광(1.5) 최고 기록 7m를 0.5~1.5 기준으로 잡고(당겨서 같은 방식 측정), 2.0~2.5는 8m, 3.0~3.5는 9m로 올렸어요. 정확도는 10(완벽한 일관성)이 기준이에요.</p></section>`;
+}
+function radar(cur, best, mk) {
+  const T = total100(cur), TB = total100(best);
+  const W = 340, H = 300, cx = W / 2, cy = 150, R = 105, N = FIT_COLS.length;
+  const mx = 10;
+  const ang = i => (-90 + i * 360 / N) * Math.PI / 180;
+  const pt = (i, v) => [cx + Math.cos(ang(i)) * R * Math.max(0, Math.min(v || 0, mx)) / mx, cy + Math.sin(ang(i)) * R * Math.max(0, Math.min(v || 0, mx)) / mx];
+  const poly = o => FIT_COLS.map((c, i) => pt(i, o[c[0]]).map(n => n.toFixed(1)).join(',')).join(' ');
+  const rings = [2, 4, 6, 8, 10].filter(v => v <= mx);
+  const short = { throw: '던지기 거리', acc: '던지기 정확도', slalom: '슬라럼', crossL: '십자런 좌', crossR: '십자런 우', m20: '20m', m28: '28m' };
+  return `<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><b>능력치</b>${T ? `<span class="muted small">체력 점수 ${Math.round(T.t)}${TB ? ` · 역대 최고 ${Math.round(TB.t)}` : ''}</span>` : ''}<span class="muted small">${mk ? `${+mk.slice(5)}월 측정` : ''}</span><span style="flex:1"></span><span class="legend"><span><i class="lg cur"></i>${mk ? +mk.slice(5) + '월' : '선택 월'}</span><span><i class="lg best"></i>역대 최고</span></span></div>
+  <svg viewBox="0 0 ${W} ${H}" class="spark" role="img" aria-label="능력치 방사형 그래프">
+    ${rings.map(v => `<polygon points="${FIT_COLS.map((c, i) => pt(i, v).map(n => n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--line)" stroke-width="1"/>`).join('')}
+    ${FIT_COLS.map((c, i) => { const [x, y] = pt(i, mx); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`; }).join('')}
+    ${rings.map(v => { const a = (-90 + 180 / N) * Math.PI / 180; return `<text x="${(cx + Math.cos(a) * R * v / mx).toFixed(1)}" y="${(cy + Math.sin(a) * R * v / mx + 3).toFixed(1)}" font-size="8.5" text-anchor="middle" fill="var(--ink3)" font-family="IBM Plex Mono, monospace">${v}</text>`; }).join('')}
+    <polygon points="${poly(cur)}" fill="var(--good)" fill-opacity=".35" stroke="var(--good)" stroke-width="2" stroke-linejoin="round"/>
+    <polygon points="${poly(best)}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+    ${FIT_COLS.map((c, i) => { const [x, y] = pt(i, best[c[0]]); return best[c[0]] == null ? '' : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="var(--accent)"/>`; }).join('')}
+    ${T ? `<text x="${cx}" y="${cy + 4}" font-size="13" font-weight="600" text-anchor="middle" fill="var(--ink2)" font-family="IBM Plex Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3">${Math.round(T.t)}</text>` : ''}
+    ${FIT_COLS.map((c, i) => { const [x, y] = pt(i, mx * 1.2); const a = Math.cos(ang(i)); const anc = a > .3 ? 'start' : a < -.3 ? 'end' : 'middle'; const v = cur[c[0]]; return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="11" text-anchor="${anc}" fill="var(--ink2)">${short[c[0]]}</text><text x="${x.toFixed(1)}" y="${(y + 13).toFixed(1)}" font-size="11" font-weight="700" text-anchor="${anc}" fill="var(--ink)" font-family="IBM Plex Mono, monospace">${v == null ? '–' : v.toFixed(1)}</text>`; }).join('')}
+  </svg>`;
+}
+function spark(pts, label, dir, std, best, key) {
+  const vals = pts.map(p => p[1]).filter(v => v != null);
+  const W = 220, H = 74, L = 6, R = 6, T = 10, B = 18; const multiYr = new Set(pts.map(p => p[0].slice(0, 4))).size > 1;
+  if (!vals.length) return `<div class="panel" style="padding:10px"><div class="small muted">${label}</div><div class="muted">–</div></div>`;
+  let lo = Math.min(...vals, std ?? Infinity), hi = Math.max(...vals, std ?? -Infinity); if (lo === hi) { lo -= 1; hi += 1; } const padv = (hi - lo) * .12; lo -= padv; hi += padv;
+  const x = i => L + (pts.length === 1 ? (W - L - R) / 2 : i * (W - L - R) / (pts.length - 1));
+  const y = v => dir === 'hi' ? T + (hi - v) / (hi - lo) * (H - T - B) : T + (v - lo) / (hi - lo) * (H - T - B); // lower time drawn higher
+  const P2 = pts.map((p, i) => p[1] == null ? null : [x(i), y(p[1])]).filter(Boolean);
+  const path = P2.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const last = vals[vals.length - 1], first = vals[0]; const better = dir === 'hi' ? last > first : last < first;
+  const fmt = v => key === 'throw' ? v : key === 'acc' ? v.toFixed(1) : v.toFixed(2);
+  const unit = key === 'throw' ? 'm' : key === 'acc' ? '' : '초';
+  const sc = std ? Math.min(10, HI[key] ? last / std * 10 : std / last * 10) : null;
+  return `<div class="panel" style="padding:10px 12px"><div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap"><span class="small muted">${label}</span><span class="sp" style="flex:1"></span><b class="num">${fmt(last)}<span class="small muted" style="font-weight:500">${unit}</span></b>${sc != null ? `<span class="tag n num" title="환산 점수">${sc.toFixed(1)}점</span>` : ''}${vals.length > 1 ? `<span class="tag ${better ? 'good' : last === first ? 'n' : 'bad'} num">${better ? '▲' : last === first ? '–' : '▼'}</span>` : ''}</div>
+  <svg class="spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="${label} 변화">
+    ${std != null ? `<line x1="${L}" x2="${W - R}" y1="${y(std).toFixed(1)}" y2="${y(std).toFixed(1)}" stroke="var(--good)" stroke-dasharray="3 3" stroke-width="1"/>` : ''}
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+    ${P2.map((p, i) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i === P2.length - 1 ? 3.5 : 2.2}" fill="${i === P2.length - 1 ? 'var(--accent)' : 'var(--surface)'}" stroke="var(--accent)" stroke-width="1.5"/>`).join('')}
+    ${pts.map((p, i) => `<text x="${x(i).toFixed(1)}" y="${H - 4}" font-size="9.5" text-anchor="middle" fill="var(--ink3)" font-family="IBM Plex Mono, monospace">${multiYr ? p[0].slice(2, 4) + '.' + +p[0].slice(5) : +p[0].slice(5) + '월'}</text>`).join('')}
+  </svg><div class="small muted">역대 최고 <span class="num">${best != null ? fmt(best) + unit : '–'}</span>${std != null ? ` · 기준 <span class="num">${std}${unit}</span>` : ''}</div></div>`;
+}
+
+// CHAIRS
+const CKEYS = {
+  owner: ['임차처', (a, b) => (a[1].owner || '').localeCompare(b[1].owner || '', 'ko'), ['가나다', '역순']],
+  code: ['관리번호', (a, b) => { const pa = (a[1].owner === '개인') - (b[1].owner === '개인'); return pa || (a[1].code || '').localeCompare(b[1].code || '', 'ko'); }, ['가나다', '역순']],
+  player: ['사용 선수', (a, b) => { const A = a[1].player ? pname(a[1].player) : '', B = b[1].player ? pname(b[1].player) : ''; return !A && !B ? 0 : !A ? 1 : !B ? -1 : A.localeCompare(B, 'ko'); }, ['가나다', '역순']],
+  team: ['선수 팀', (a, b) => teamIdx(P(a[1].player)) - teamIdx(P(b[1].player)), ['우림→씨젠', '씨젠→우림']],
+  status: ['상태', (a, b) => ['사용중', '수리중', '보관', '개인', '폐기예정'].indexOf(a[1].status || '보관') - ['사용중', '수리중', '보관', '개인', '폐기예정'].indexOf(b[1].status || '보관'), ['사용중 먼저', '폐기예정 먼저']],
+  year: ['연도', (a, b) => (+a[1].year || 0) - (+b[1].year || 0), ['오래된 순', '최신 순']],
+  kind: ['종류', (a, b) => (a[1].kind || '').localeCompare(b[1].kind || '', 'ko'), ['공격형 먼저', '수비형 먼저']],
+  camber: ['캠버', (a, b) => (a[1].camber || '').localeCompare(b[1].camber || '', 'ko'), ['대 먼저', '소 먼저']],
+  size: ['사이즈', (a, b) => (+a[1].size || 0) - (+b[1].size || 0), ['작은 순', '큰 순']],
+};
+function csortUI() {
+  const ks = S.csort; const left = Object.keys(CKEYS).filter(k => !ks.some(x => x.k === k));
+  return `<div class="ysort">${ks.map((x, i) => `<span class="ychip"><b class="num">${i + 1}</b>${CKEYS[x.k][0]}<button class="chip" data-act="csDir" data-i="${i}" title="방향 바꾸기">${CKEYS[x.k][2][x.d < 0 ? 1 : 0]}</button>${i ? `<button class="chip" data-act="csUp" data-i="${i}" aria-label="우선순위 올리기">▲</button>` : ''}${ks.length > 1 ? `<button class="chip" data-act="csRm" data-i="${i}" aria-label="빼기">✕</button>` : ''}</span>`).join('')}
+    ${left.length ? `<select class="in" id="csAdd" aria-label="정렬 기준 추가"><option value="">+ 기준 추가</option>${left.map(k => `<option value="${k}">${CKEYS[k][0]}</option>`).join('')}</select>` : ''}</div>`;
+}
+function csortCmp(a, b) { for (const { k, d } of S.csort) { const c = CKEYS[k][1](a, b) * d; if (c) return c; } return 0; }
+const CGROUPS = [['', '전체 보기'], ['team', '선수 팀'], ['owner', '사용처(임차처)'], ['status', '상태'], ['kind', '종류'], ['year', '연도'], ['camber', '캠버'], ['size', '사이즈']];
+const chairStTag = s => `<span class="tag ${s === '사용중' ? 'good' : s === '폐기예정' ? 'bad' : s === '수리중' ? 'warn' : 'n'}">${esc(s || '보관')}</span>`;
+function vChairs() {
+  const list = Object.entries(S.chairs).sort(csortCmp);
+  const by = {}; list.forEach(([, c]) => { by[c.status || '보관'] = (by[c.status || '보관'] || 0) + 1; });
+  const cv = S.chairView || 'list';
+  const head = `<div class="bar"><div class="seg" role="group"><button data-act="chairView" data-v="list" aria-pressed="${cv === 'list'}">목록</button><button data-act="chairView" data-v="photo" aria-pressed="${cv === 'photo'}">사진</button></div><span class="legend">${Object.entries(by).map(([k, v]) => `<span>${chairStTag(k)} <b class="num">${v}</b></span>`).join('')}</span><span class="sp"></span>${S.canEdit ? '<button class="btn pri" data-act="newChair">휠체어 추가</button>' : ''}</div>
+  <div class="bar" style="margin-bottom:12px"><span class="muted small">정렬</span>${csortUI()}</div>`;
+  const gk = S.cgroup || '';
+  const vals = gk ? groupChairs(Object.entries(S.chairs), gk).map(([g, l]) => [g, l.length]) : [];
+  if (gk && S.cval && !vals.some(([g]) => g === S.cval)) S.cval = '';
+  const fbar = `<div class="bar" style="margin-bottom:12px"><span class="muted small">골라 보기</span><select class="in" id="cGroup" aria-label="골라 볼 기준">${CGROUPS.map(([k, l]) => `<option value="${k}" ${k === gk ? 'selected' : ''}>${l}</option>`).join('')}</select>${gk ? `<div class="seg" role="group" style="flex-wrap:wrap">${[['', '전체', Object.keys(S.chairs).length], ...vals.map(([g, n]) => [g, g, n])].map(([v, l, n]) => `<button data-act="cVal" data-v="${esc(v)}" aria-pressed="${(S.cval || '') === v}">${esc(l)} <span class="num muted">${n}</span></button>`).join('')}</div>` : ''}</div>`;
+  const shown = gk && S.cval ? groupChairs(list, gk).filter(([g]) => g === S.cval).flatMap(([, l]) => l) : list;
+  return head + fbar + (shown.length ? (cv === 'photo' ? cardsOf(shown) : tableOf(shown)) : '<div class="empty">해당하는 휠체어가 없어요.</div>');
+}
+function groupChairs(list, gk) {
+  const label = c => { const v = gk === 'team' ? (c.player && S.players[c.player] ? (S.players[c.player].team || '') : '') : gk === 'status' ? (c.status || '보관') : gk === 'size' ? (c.size ? c.size + '인치' : '') : gk === 'camber' ? (c.camber ? '캠버 ' + c.camber : '') : gk === 'year' ? (c.year ? c.year + '년' : '') : (c[gk] || ''); return v || '미입력'; };
+  const m = new Map(); for (const e of list) { const g = label(e[1]); if (!m.has(g)) m.set(g, []); m.get(g).push(e); }
+  const order = gk === 'status' ? ['사용중', '수리중', '보관', '개인', '폐기예정'] : null;
+  return [...m.entries()].sort((a, b) => a[0] === '미입력' ? 1 : b[0] === '미입력' ? -1 : order ? order.indexOf(a[0]) - order.indexOf(b[0]) : gk === 'year' || gk === 'size' ? parseFloat(a[0]) - parseFloat(b[0]) : a[0].localeCompare(b[0], 'ko'));
+}
+function cardsOf(list) {
+  return `<div class="cgal">${list.map(([id, c]) => { const pl = c.player ? P(c.player) : null; return `<button class="cgc" data-act="openChair" data-id="${id}">
+      ${c.photo ? `<img src="img/${esc(c.photo)}" alt="${esc(c.code)}" loading="lazy">` : '<div class="cph">사진 없음</div>'}
+      <div class="cgb"><div class="mono small" style="font-weight:600">${esc(c.code)}</div>
+      <div style="display:flex;gap:6px;align-items:center;min-width:0">${pl ? `${avatar(pl, 'sm')}<b style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(pl.name)}</b>` : '<span class="muted small">사용 선수 없음</span>'}<span style="flex:1"></span>${chairStTag(c.status)}</div>
+      <div class="muted small">${[c.owner, c.kind, c.camber ? '캠버 ' + c.camber : '', c.size ? c.size + '인치' : ''].filter(Boolean).map(esc).join(' · ')}</div></div>
+    </button>`; }).join('')}</div>`;
+}
+function tableOf(list) {
+  return `<section class="panel"><div class="scroll"><table class="t"><thead><tr><th></th><th>관리번호</th><th>사용 선수</th><th>상태</th><th>임차처</th><th>연도</th><th>종류</th><th>캠버</th><th>사이즈</th><th>메모</th></tr></thead><tbody>
+  ${list.map(([id, c]) => `<tr class="click" data-act="openChair" data-id="${id}"><td>${c.photo ? `<img class="thumb" src="img/${esc(c.photo)}" alt="" loading="lazy">` : '<span class="thumb"></span>'}</td><td class="mono">${esc(c.code)}</td><td>${c.player ? `<b>${esc(pname(c.player))}</b> ${divTag(P(c.player).div)}` : '<span class="muted">–</span>'}</td><td>${chairStTag(c.status)}</td><td>${esc(c.owner)}</td><td class="num">${esc(c.year)}</td><td>${esc(c.kind)}</td><td>${esc(c.camber)}</td><td class="num">${esc(c.size)}</td><td class="small muted">${esc(c.note)}</td></tr>`).join('')}
+  </tbody></table></div></section>`;
+}
+
+// EVENTS
+// ===== 대회 숙박·비용 모델 =====
+// 사람마다 숙박한 밤 · 참가한 날이 따로 있음 (보호자는 같이 다니는 선수 일정을 따름)
+// 방값 = 방에 묵는 사람들의 밤을 합친 박수 × 방 종류 단가 · 방 배정 전에는 밤마다 (그날 자는 인원 ÷ 2, 올림) × 2인실 단가로 예상
+// 식비 = 사람마다 (숙박한 밤 + 1)일 × 1일 식비 · 교통비 = 수량 × 단가 · 지출 합계 = 합 − 지원금 · 팀 부담 = 지출 합계 − 개인부담
+const addDays = (iso, n) => { const d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const md = iso => `${+iso.slice(5, 7)}/${+iso.slice(8)}`;
+const range = (a, b) => { const out = []; if (!a || !b) return out; for (let d = a; d <= b; d = addDays(d, 1)) out.push(d); return out; };
+// 리그처럼 2주 넘게 이어지는 대회는 숙박 일정을 받지 않아요
+const isLongEv = e => !!(e.start && e.end && (new Date(e.end + 'T00:00:00') - new Date(e.start + 'T00:00:00')) / 864e5 > 14);
+const evDefNights = e => isLongEv(e) ? [] : e.start ? range(addDays(e.start, -1), addDays(e.end || e.start, -1)) : [];
+const evDefDays = e => e.start ? range(e.start, e.end || e.start) : [];
+const evCandNights = e => isLongEv(e) ? [] : e.start ? range(addDays(e.start, -2), addDays(e.end || e.start, -1)) : [];
+const evCandDays = e => e.start ? range(addDays(e.start, -1), e.end || e.start) : [];
+const RTYPES = [['1인실', 1], ['2인실', 2], ['3인실', 3]];
+const rCap = t => (RTYPES.find(x => x[0] === t) || [0, 2])[1];
+function ensureEv(e) {
+  e.roster = e.roster || []; e.rooms = e.rooms || [];
+  const r0 = e.rates || {};
+  e.rates = Object.assign({ room1: r0.lodging || 0, room2: r0.lodging || 0, room3: r0.lodging || 0, meal: r0.meal || 25000, transport: r0.transport || 0 }, r0);
+  if (e.mealsPerDay == null) e.mealsPerDay = 1;
+  if (e.v2) { if (isLongEv(e)) e.roster.forEach(x => { x.nights = []; }); return e; }
+  // 예전 형식(그룹·이름 방배정) → 사람별 일정 · 방 사람 연결
+  const dn = evDefNights(e), dd = evDefDays(e);
+  const nameKey = {}; e.roster.forEach(x => { nameKey[pname(x.pid)] = x.pid; if (x.guardian && x.guardian !== '보호자') nameKey[x.guardian] = 'g:' + x.pid; });
+  const roomsNew = [];
+  for (const r of e.rooms) {
+    const n = Array.isArray(r.nights) ? r.nights : (+r.nights ? dn.slice(Math.max(0, dn.length - +r.nights)) : []);
+    const occ = (r.occupants || []).map(nm => nameKey[nm] || (nm ? 'n:' + nm : null)).filter(Boolean);
+    occ.forEach(k => { const pid = k.startsWith('g:') ? k.slice(2) : k; const x = e.roster.find(x => x.pid === pid); if (x && !x.nights) x.nights = n.slice(); });
+    const t = /1인|싱글/.test(r.type || '') ? '1인실' : /3인|트리플/.test(r.type || '') ? '3인실' : '2인실';
+    roomsNew.push({ id: 'r' + roomsNew.length, type: t, occ, personal: +r.personal || 0, legacyNights: occ.some(k => k.startsWith('n:')) ? n : undefined });
+  }
+  e.rooms = roomsNew;
+  e.roster.forEach(x => { if (!x.nights) x.nights = dn.slice(); if (!x.days) x.days = dd.slice(); delete x.group; });
+  if (e.groups) { const g = e.groups; e.transCount = g.reduce((a, x) => a + (+x.trans || 0), 0) || e.transCount || null; delete e.groups; }
+  if (isLongEv(e)) e.roster.forEach(x => { x.nights = []; });
+  e.v2 = true; return e;
+}
+// 식비 일수 = 숙박한 밤 + 1 (엑셀: 2박→3일, 3박→4일) · 숙박 없이 하루만 오면 1일
+const mealDays = q => (q.nights || []).length + 1;
+const gName = (x) => x.guardian && x.guardian !== '보호자' ? x.guardian : `${pname(x.pid)} 보호자`;
+function evPeople(e) {
+  const out = [];
+  for (const x of e.roster) {
+    const p = P(x.pid);
+    out.push({ key: x.pid, gender: p.gender || '남', name: p.name, sub: x.role === '임원' ? (p.note || '임원') : fmtCls(p.cls), team: x.role === '임원' ? '임원' : p.team, nights: x.nights || [], days: x.days || [], meals: x.meals, single: x.single, p });
+    if (x.guardian) out.push({ key: 'g:' + x.pid, name: gName(x), sub: '보호자', team: x.role === '임원' ? '임원' : p.team, nights: x.nights || [], days: x.days || [], meals: x.meals, of: x.pid, guardian: true });
+  }
+  return out;
+}
+function roomNights(e, r, ppl) { const m = new Map(ppl.map(q => [q.key, q])); const s2 = new Set(r.legacyNights || []); (r.occ || []).forEach(k => { const q = m.get(k); (q ? q.nights : evDefNights(e)).forEach(d => s2.add(d)); }); return [...s2].sort(); }
+const occName = (k, ppl) => { const q = ppl.find(q => q.key === k); return q ? q.name : k.startsWith('n:') ? k.slice(2) : k; };
+function evCost(e0) {
+  const e = ensureEv(clone(e0)); const R = e.rates; const ppl = evPeople(e);
+  const rate = t => +(t === '1인실' ? R.room1 : t === '3인실' ? R.room3 : R.room2) || 0;
+  const rooms = e.rooms.map(r => { const n = roomNights(e, r, ppl); return { r, nights: n, amount: n.length * rate(r.type) }; });
+  let lodging, est = false;
+  if (rooms.length) lodging = rooms.reduce((a, x) => a + x.amount, 0);
+  else { est = true; const cnt = {}; ppl.forEach(q => q.nights.forEach(d => cnt[d] = (cnt[d] || 0) + 1)); lodging = Object.values(cnt).reduce((a, n) => a + Math.ceil(n / 2), 0) * (+R.room2 || 0); }
+  const mealCount = ppl.reduce((a, q) => a + mealDays(q), 0);
+  const meal = mealCount * (+R.meal || 0), trans = (+e.transCount || 0) * (+R.transport || 0);
+  const gross = lodging + meal + trans; const personal = e.rooms.reduce((a, r) => a + (+r.personal || 0), 0);
+  const legacy = e.costs ? (+e.costs.lodging || 0) + (+e.costs.meal || 0) + (+e.costs.transport || 0) - (+e.subsidy || 0) : 0;
+  const computed = gross > 0; const net = computed ? gross - (+e.subsidy || 0) : legacy;
+  if (e.status === '불참') return { ppl, rooms: rooms.map(x => Object.assign({}, x, { amount: 0 })), lodging: 0, est: false, mealCount: 0, meal: 0, trans: 0, gross: 0, personal: 0, net: 0, team: 0, computed: true, legacy: 0, rate, absent: true };
+  return { ppl, rooms, lodging, est, mealCount, meal, trans, gross, personal, net, team: net - personal, computed, legacy, rate };
+}
+function vEvents() {
+  const cy = todayISO().slice(0, 4);
+  const ys = [...new Set(Object.values(S.events).map(e => e.start.slice(0, 4)).concat(cy))].sort().reverse();
+  if (!S.evYear || !ys.includes(S.evYear)) S.evYear = cy;
+  const y = S.evYear; const isNew = D && D.kind === 'event' && !S.events[D.id];
+  const l = Object.entries(S.events).filter(([, e]) => e.start.startsWith(y)).sort((a, b) => a[1].start.localeCompare(b[1].start));
+  const tot = l.filter(([, e]) => e.status !== '불참').reduce((a, [, e]) => a + evListAmt(e), 0);
+  const bar = `<div class="bar"><div class="seg ytabs" role="tablist" aria-label="연도">${ys.map(v => `<button data-act="evYear" data-v="${v}" aria-pressed="${v === y}">${v}년</button>`).join('')}</div><div class="seg" role="group">${[['list', '대회 목록'], ['budget', '예산 한눈에']].map(([k, t]) => `<button data-act="evView" data-v="${k}" aria-pressed="${(S.evView || 'list') === k}">${t}</button>`).join('')}</div><span class="sp"></span>${S.canEdit ? '<button class="btn pri" data-act="newEvent">대회 추가</button>' : ''}</div>`;
+  if (S.evView === 'budget') return bar + evBudget(l, y);
+  return `${bar}
+  <section class="panel" style="padding:0;overflow:hidden">
+    <div style="display:flex;align-items:baseline;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)"><b>${y}년 대회 ${l.length}개</b><span class="sp" style="flex:1"></span><span class="muted small">불참 제외 지출 합계 <b class="num" style="color:var(--ink)">${won(tot)}원</b></span></div>
+    ${isNew ? '<div class="ev open"><div class="d">새 대회</div><div class="n">대회 추가</div></div><div class="evd" id="evHost"></div>' : ''}
+    ${l.map(([id, e]) => evRow(id, e)).join('') || (isNew ? '' : '<div class="empty">이 해에 등록된 대회가 없어요.</div>')}
+  </section>`;
+}
+
+// 대회별 예산 표: 방 배정을 마친 대회는 앱 계산값, 안 한 대회는 엑셀에서 가져온 금액
+function evBudgetRow(e) {
+  const c = evCost(e); const ee = ensureEv(clone(e)); const sub = +e.subsidy || 0;
+  const pl = ee.roster.filter(x => x.role === '선수').length, st = ee.roster.length - pl, gd = ee.roster.filter(x => x.guardian).length;
+  if (e.status === '불참') return { src: '', absent: true, pl, st, gd };
+  if ((e.rooms || []).length) return { src: '계산', pl, st, gd, lodging: c.lodging, sub, meal: c.meal, trans: c.trans, net: c.net, personal: c.personal, team: c.team };
+  if (e.costs && (+e.costs.lodging || +e.costs.meal || +e.costs.transport)) { const k = e.costs; return { src: '엑셀', pl, st, gd, lodging: +k.lodging || 0, sub, meal: +k.meal || 0, trans: +k.transport || 0, net: c.legacy, personal: 0, team: c.legacy }; }
+  return { src: '', pl, st, gd };
+}
+function evBudget(l, y) {
+  const rows = l.map(([id, e]) => [id, e, evBudgetRow(e)]);
+  const K = ['lodging', 'sub', 'meal', 'trans', 'net', 'personal', 'team'];
+  const sum = {}; K.forEach(k => sum[k] = rows.filter(([, e, r]) => e.status !== '불참' && r.src).reduce((a, [, , r]) => a + (r[k] || 0), 0));
+  const cell = (r, k, neg) => `<td class="r num">${r.src ? (r[k] ? (neg ? '−' : '') + won(r[k]) : '–') : ''}</td>`;
+  return `<section class="panel" style="padding:0;overflow:hidden"><div class="scroll"><table class="t budget">
+    <thead><tr><th>날짜</th><th>대회</th><th class="c">참가</th><th class="r">선수</th><th class="r">임원</th><th class="r">보호자</th><th class="r">숙박비</th><th class="r">지원금</th><th class="r">식비</th><th class="r">교통비</th><th class="r">지출 합계</th><th class="r">개인부담</th><th class="r">팀 부담</th></tr></thead>
+    <tbody>${rows.map(([id, e, r]) => `<tr class="${e.status === '불참' ? 'dim' : ''}" data-act="evBudgetOpen" data-id="${id}" style="cursor:pointer">
+      <td class="num muted" style="white-space:nowrap">${esc(evDates(e))}</td><td style="white-space:nowrap"><b>${esc(e.name)}</b>${r.src === '엑셀' ? ' <span class="tag n">엑셀 금액</span>' : r.absent ? ' <span class="muted small">불참 · 비용 없음</span>' : !r.src ? ' <span class="muted small">방 배정 전</span>' : ''}</td>
+      <td class="c"><span class="tag ${e.status === '참가' ? 'good' : e.status === '불참' ? 'bad' : 'warn'}">${esc(e.status || '미정')}</span></td>
+      <td class="r num">${r.pl || ''}</td><td class="r num">${r.st || ''}</td><td class="r num">${r.gd || ''}</td>
+      ${cell(r, 'lodging')}${cell(r, 'sub', 1)}${cell(r, 'meal')}${cell(r, 'trans')}<td class="r num"><b>${r.src ? won(r.net) : ''}</b></td>${cell(r, 'personal', 1)}<td class="r num"><b>${r.src ? won(r.team) : ''}</b></td></tr>`).join('') || '<tr><td colspan="13" class="empty">이 해에 등록된 대회가 없어요.</td></tr>'}</tbody>
+    <tfoot><tr class="grp"><td colspan="6">${y}년 합계 <span class="muted small" style="font-weight:400">불참·방 배정 전 제외</span></td>${K.map(k => `<td class="r num">${k === 'sub' || k === 'personal' ? (sum[k] ? '−' : '') : ''}${won(sum[k])}</td>`).join('')}</tr></tfoot>
+  </table></div></section>
+  <p class="muted small">줄을 누르면 그 대회가 펼쳐져요. '엑셀 금액'은 예전 엑셀에서 가져온 숫자 그대로고, 방 배정을 하면 앱 계산값으로 바뀌어요.</p>`;
+}
+
+// EXPORT
+function vExport() {
+  const ok = !!window.XLSX;
+  return `<section class="panel" style="max-width:640px"><h2>엑셀로 내보내기</h2>
+  <p class="muted" style="margin-top:0">지금 앱에 있는 기록을 엑셀 파일 하나로 내려받아요. 체육회 보고나 백업용으로 쓰면 돼요.</p>
+  <div class="form" style="margin-bottom:12px">
+    <label>연도<select class="in" id="exYear">${[...new Set(monthsWithData().map(k => k.slice(0, 4)).concat(fitMonths().map(k => k.slice(0, 4)), Object.values(S.events).map(e => (e.start || '').slice(0, 4)).filter(Boolean), String(new Date().getFullYear())))].sort().reverse().map(y => `<option ${y === S.year ? 'selected' : ''}>${y}</option>`).join('')}</select></label>
+    <label>팀<select class="in" id="exTeam">${['전체', '우림맨테크', '송파씨젠'].map(t => `<option ${t === S.team ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+  </div>
+  <div class="rows small" style="margin-bottom:14px">
+    <label><input type="checkbox" id="exAtt" checked> 월별 출석부 + 연간 통계</label>
+    <label><input type="checkbox" id="exFit" checked> 체력테스트 측정 결과</label>
+    <label><input type="checkbox" id="exPl" checked> 선수 명단 ${S.canEdit ? '(연락처·주소 포함)' : '(연락처 제외)'}</label>
+    <label><input type="checkbox" id="exCh" checked> 휠체어 현황</label>
+    <label><input type="checkbox" id="exEv" checked> 대회 참가·숙박 배정</label>
+    <label><input type="checkbox" id="exRep" checked> 선수 평가 보고서 (출석 + 대회 참가)</label>
+  </div>
+  <button class="btn pri" data-act="export" ${ok ? '' : 'disabled'}>${ok ? '엑셀 파일 만들기' : '엑셀 도구 불러오는 중'}</button>
+  </section>
+  <section class="panel" style="max-width:640px;margin-top:14px"><h2>PDF로 내보내기</h2>
+  <p class="muted" style="margin-top:0">선수 평가 보고서를 A4 가로 한 장짜리 PDF로 만들어요. 위에서 고른 연도·팀 기준이에요.</p>
+  <button class="btn pri" data-act="exportPdf">선수 평가 보고서 PDF</button></section>`;
+}
+async function doExport() {
+  const X = window.XLSX; if (!X) return;
+  const year = $('#exYear').value, team = $('#exTeam').value;
+  const okT = p => team === '전체' || p.team === team;
+  const wb = X.utils.book_new(); const used = new Set();
+  const add = (name, aoa, widths) => { let nm = name.replace(/[\\/?*\[\]:]/g, '').slice(0, 31) || '시트'; for (let k = 2; used.has(nm); k++) nm = name.slice(0, 28) + '(' + k + ')'; used.add(nm); const ws = X.utils.aoa_to_sheet(aoa); if (widths) ws['!cols'] = widths.map(w => ({ wch: w })); X.utils.book_append_sheet(wb, ws, nm); };
+  const TEAMS = ['우림맨테크', '송파씨젠'];
+  // 화면과 같은 기준: 팀 순서(우림→송파) → 등급 내림차순 → 나이 → 이름, 미배정 제외
+  const ath = Object.entries(S.players).filter(([, p]) => isAthlete(p) && TEAMS.includes(p.team) && okT(p)).sort((x, y) => teamIdx(x[1]) - teamIdx(y[1]) || playerSort(x, y));
+  const active = ath.filter(([, p]) => (p.status || '활동') === '활동');
+  if ($('#exRep') && $('#exRep').checked) { const R = reportData(year, team); add('선수평가', reportSheet(X, R), [10, 10, 6, 11]); }
+  if ($('#exAtt').checked) {
+    const { months, res } = yearStats(year);
+    add('출석통계', [[`${year} 서울휠체어럭비팀 출석 통계`], ['팀', '이름', '구분', '등급', ...months.map(m => `${+m.slice(5)}월`), '출석', '훈련', '누적 출석률'],
+      ...active.filter(([id]) => res[id]).map(([id, p]) => [p.team, p.name, p.div, fmtCls(p.cls), ...months.map(m => res[id].months[m] == null ? '' : Math.round(res[id].months[m] * 1000) / 10 + '%'), res[id].att, res[id].n, res[id].n ? Math.round(res[id].att / res[id].n * 1000) / 10 + '%' : ''])], [10, 10, 6, 6]);
+    for (const mk of months) {
+      const st = monthStats(mk), m = S.att[mk];
+      add(`${mk.slice(2, 4)}년 ${+mk.slice(5)}월`, [[`${mk.slice(0, 4)}년 ${+mk.slice(5)}월 출석부`], ['팀', '이름', '구분', '등급', ...st.days.map(d => `${+d.slice(8)}(${dow(d)})`), '출석', '출석률'],
+        ...active.map(([id, p]) => { const nn = st.nOf(id); const r = nn ? st.aOf(id) / nn : null; return [p.team, p.name, p.div, fmtCls(p.cls), ...st.days.map(d => (((m.marks || {})[d] || {})[id] === '출석' ? 'O' : '')), (st.per[id] || { a: 0 }).a, r == null ? '등록 전' : Math.round(r * 1000) / 10 + '%']; }),
+        ['', '참가인원', '', '', ...st.days.map(d => active.filter(([id]) => ((m.marks || {})[d] || {})[id] === '출석').length)]], [10, 10, 6, 6]);
+    }
+  }
+  if ($('#exFit').checked) {
+    const rows = [['측정월', '팀', '이름', '구분', '등급(현재)', '던지기1', '던지기2', '던지기3', '던지기4', '던지기5', '던지기(최대)', '정확도', '슬라럼1', '콘1', '슬라럼2', '콘2', '슬라럼(최종)', '십자런 좌', '십자런 우', '20m 1', '20m 2', '20m(최종)', '28m 1', '28m 2', '28m(최종)', '체력 점수(100)']];
+    const ord = Object.fromEntries(ath.map(([id], k) => [id, k]));
+    for (const m of fitMonths().filter(m => m.startsWith(year))) for (const [id, r] of Object.entries(S.fit[m].records || {}).sort((a, b) => (ord[a[0]] ?? 999) - (ord[b[0]] ?? 999))) {
+      const p = P(id); if (!TEAMS.includes(p.team) || !okT(p)) continue;
+      const f = fitFinal(r); const t = r.throws || [], sl = r.sl || [], w = r.m20 || [], m28 = Array.isArray(r.m28) ? r.m28 : [r.m28];
+      const tt = total100(clsScore(f, stdFor(p.cls, p.div)));
+      rows.push([m, p.team, p.name, p.div, fmtCls(p.cls), t[0], t[1], t[2], t[3], t[4], f.throw, f.acc != null ? +f.acc.toFixed(2) : '', sl[0], sl[1], sl[2], sl[3], f.slalom != null ? +f.slalom.toFixed(2) : '', r.crossL, r.crossR, w[0], w[1], f.m20, m28[0], m28[1], f.m28, tt ? Math.round(tt.t) : ''].map(v => v ?? ''));
+    }
+    add('체력테스트', rows, [8, 10, 10]);
+  }
+  if ($('#exPl').checked) {
+    const pl = Object.entries(S.players).filter(([, p]) => (TEAMS.includes(p.team) && okT(p)) || (!isAthlete(p) && (p.team === '공통' || okT(p)))).sort((x, y) => (isAthlete(x[1]) ? 1 : 0) - (isAthlete(y[1]) ? 1 : 0) || teamIdx(x[1]) - teamIdx(y[1]) || playerSort(x, y));
+    add('선수명단', [['이름', '역할', '팀', '구분', '등급', '등번호', '성별', '상태', '생년월일', ...(S.canEdit ? ['연락처', '이메일', '주소', '보호자', '보호자 연락처'] : []), '메모'],
+      ...pl.map(([id, p]) => { const pi = S.pinfo[id] || {}; return [p.name, isAthlete(p) ? (p.captain ? '주장' : '선수') : (p.note || p.role), p.team, p.div, isAthlete(p) ? fmtCls(p.cls) : '', p.num ?? '', p.gender || '', p.status === '퇴단' ? '팀에서 제외' : (p.status || '활동'), p.birth || pi.birth || '', ...(S.canEdit ? [pi.phone, pi.email, pi.address, pi.guardian, pi.guardianPhone] : []), isAthlete(p) ? p.note || '' : '']; })], [10, 8, 10, 6, 6, 6, 5, 8, 12, 14, 22, 40]);
+  }
+  if ($('#exCh').checked) {
+    const cs = Object.values(S.chairs).filter(c => team === '전체' || !c.player || P(c.player).team === team).sort((a, b) => (a.owner === '개인') - (b.owner === '개인') || String(a.owner || '').localeCompare(String(b.owner || ''), 'ko') || String(a.code || '').localeCompare(String(b.code || ''), 'ko', { numeric: true }));
+    add('휠체어현황', [['관리번호', '사용 선수', '선수 팀', '상태', '사용처', '연도', '종류', '캠버', '사이즈', '사진(장)', '메모'], ...cs.map(c => [c.code, c.player ? pname(c.player) : '', c.player ? P(c.player).team || '' : '', c.status, c.owner, c.year, c.kind, c.camber, c.size, SIDES.filter(([k]) => (c.photos || {})[k] || (k === 'front' && c.photo)).length, c.note])], [20, 10, 10, 8, 16]);
+  }
+  if ($('#exEv').checked) {
+    const evs = Object.values(S.events).filter(e => e.start.startsWith(year)).sort((a, b) => a.start.localeCompare(b.start));
+    const K = ['lodging', 'sub', 'meal', 'trans', 'net', 'personal', 'team'];
+    const sum = Object.fromEntries(K.map(k => [k, 0]));
+    const sumRows = evs.map(e => { const r = evBudgetRow(e); if (r.src && e.status !== '불참') K.forEach(k => sum[k] += r[k] || 0);
+      return [e.name, e.start, e.end, e.place, e.status, r.pl || 0, r.st || 0, r.gd || 0, ...K.map(k => r.src ? (k === 'sub' || k === 'personal' ? -(r[k] || 0) : r[k] || 0) : ''), r.absent ? '불참' : r.src === '엑셀' ? '엑셀 금액' : r.src ? '앱 계산' : '방 배정 전', e.note || '']; });
+    add('대회예산', [['대회명', '시작', '종료', '장소', '참가여부', '선수', '임원', '보호자', '숙박비', '지원금', '식비', '교통비', '지출 합계', '개인부담', '팀 부담', '금액 기준', '메모'], ...sumRows,
+      [`${year}년 합계 (불참·방 배정 전 제외)`, '', '', '', '', '', '', '', ...K.map(k => k === 'sub' || k === 'personal' ? -sum[k] : sum[k])]], [24, 11, 11, 18, 8, 6, 6, 6, 12, 12, 12, 10, 12, 10, 12, 10]);
+    for (const e of evs) {
+      if (!(e.roster || []).length && !(e.rooms || []).length) continue;
+      const e2 = ensureEv(clone(e)); const cc = evCost(e2); const cand = evCandNights(e2); const nights = cand.length > 14 ? [] : cand;
+      const aoa = [[e.name, `${e.start} ~ ${e.end}`, e.place || '', e.status || ''], [], ['명단 · 숙박 일정'], ['팀', '이름', '역할', '등급', '보호자', ...(nights.length ? nights.map(md) : ['숙박한 밤']), '박', '1인실 희망']];
+      e2.roster.slice().sort((a, b) => EV_GROUPS.indexOf(evGrp(a)) - EV_GROUPS.indexOf(evGrp(b)) || playerSort([0, P(a.pid)], [0, P(b.pid)])).forEach(x => {
+        const p = P(x.pid); aoa.push([evGrp(x), p.name, x.role === '임원' ? (p.note || '임원') : '선수', x.role === '임원' ? '' : fmtCls(p.cls), x.guardian ? gName(x) : '', ...(nights.length ? nights.map(d => (x.nights || []).includes(d) ? '숙' : '') : [(x.nights || []).map(md).join(' ')]), (x.nights || []).length, x.single ? 'O' : '']);
+      });
+      if (cc.rooms.length) { aoa.push([], ['방 배정'], ['방', '사용자', '숙박일', '박', '1박 단가', '금액', '개인부담']); cc.rooms.forEach(({ r, nights: n, amount }) => aoa.push([r.type, (r.occ || []).map(k => occName(k, cc.ppl)).join(', '), n.map(md).join(' '), n.length, cc.rate(r.type), amount, +r.personal || 0])); }
+      if (!cc.absent) aoa.push([], ['비용'], ['숙박비', cc.lodging], ['지원금 (협회 현장 결제)', -(+e2.subsidy || 0)], ['팀이 낼 숙박비', cc.lodging - (+e2.subsidy || 0)], ['식비', cc.meal, `${cc.mealCount}일 × ${won(e2.rates.meal)}`], ['교통비', cc.trans], ['지출 합계', cc.net], ['개인부담', -cc.personal], ['팀 부담', cc.team]);
+      if (!cc.rooms.length && !cc.absent) aoa.push(['', '', '방 배정 전이라 숙박비는 예상 금액이에요']);
+      add(e.name, aoa, [10, 14, 10, 6, 12, ...nights.map(() => 6)]);
+    }
+  }
+  const out = X.write(wb, { bookType: 'xlsx', type: 'array' });
+  const dl = window.__claudeSnap && window.__claudeSnap.use ? await window.__claudeSnap.use('downloads') : null;
+  if (!dl) { toast('이 화면에서는 파일을 내려받을 수 없어요'); return; }
+  try { await dl.save({ filename: `서울휠체어럭비_선수단_${year}${team !== '전체' ? '_' + team : ''}.xlsx`, data: new Blob([out]) }); toast('엑셀 파일을 저장했어요'); }
+  catch (e) { if (e && e.code !== 'declined') toast('파일을 저장하지 못했어요'); }
+}
+
+// ---------- drawer ----------
+let D = null; // {kind,id,draft}
+function openDrawer(kind, id, draft) { D = { kind, id, draft }; renderDrawer(); }
+// 펼친 대회를 바꿀 때: 이전 대회 입력칸을 지워서 새 대회로 값이 넘어가지 않게
+function dropEvHost() { const h = document.getElementById('evHost'); if (h) h.remove(); }
+function closeDrawer() { const ev = D && D.kind === 'event'; D = null; renderDrawer.kind = null; $('#drawerHost').innerHTML = ''; if (ev) render(); }
+function renderDrawer() {
+  if (!D) return;
+  if (D.kind === 'event') { $('#drawerHost').innerHTML = ''; const h = $('#evHost'); if (h) h.innerHTML = dEvent(); else render(); return; }
+  const body = { player: dPlayer, chair: dChair, event: dEvent, fit: dFit, photo: dPhoto, fitMonth: dFitMonth, fitImport: dFitImport }[D.kind]();
+  const old = document.querySelector('.drawer .db'); const st = old && D.kind === (renderDrawer.kind) ? old.scrollTop : 0; renderDrawer.kind = D.kind;
+  $('#drawerHost').innerHTML = `<div class="scrim" data-act="close"></div><aside class="drawer ${D.kind === 'event' ? 'wide' : ''}" role="dialog" aria-modal="true">${body}</aside>`;
+  const nw = document.querySelector('.drawer .db'); if (nw && st) nw.scrollTop = st;
+}
+const ro = () => S.canEdit ? '' : 'disabled';
+const fld = (label, id, val, opts = {}) => opts.options
+  ? `<label class="${opts.full ? 'full' : ''}">${label}<select class="in" id="${id}" ${ro()}>${opts.options.map(o => { const [v, t] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}" ${String(v) === String(val ?? '') ? 'selected' : ''}>${esc(t)}</option>`; }).join('')}</select></label>`
+  : opts.area ? `<label class="full">${label}<textarea class="in" id="${id}" ${ro()}>${esc(val)}</textarea></label>`
+  : `<label class="${opts.full ? 'full' : ''}">${label}<input class="in" id="${id}" type="${opts.type || 'text'}" value="${esc(val)}" ${opts.step ? `step="${opts.step}"` : ''} ${ro()} ${opts.ph ? `placeholder="${esc(opts.ph)}"` : ''}></label>`;
+const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+
+function dPlayer() {
+  const id = D.id; const p = D.draft.p, pi = D.draft.pi; const isNew = !S.players[id];
+  const months = monthsWithData(); const yr = String(new Date().getFullYear()); const { res } = yearStats(yr);
+  const r = res[id]; const evs = Object.values(S.events).filter(e => (e.roster || []).some(x => x.pid === id) && e.status !== '불참').sort((a, b) => b.start.localeCompare(a.start));
+  const ch = Object.entries(S.chairs).filter(([, c]) => c.player === id);
+  const fm = fitMonths().filter(m => (S.fit[m].records || {})[id]);
+  const st = p.status || '활동';
+  const quick = !isNew && S.canEdit && isAthlete(p) ? `<div class="panel" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="muted small" style="flex:1;min-width:120px">현재 상태 <b style="color:var(--ink)">${st === '퇴단' ? '팀에서 제외됨' : st}</b></span>
+    ${st === '활동' ? '<button class="btn sm" data-act="setStatus" data-v="휴면">휴면으로</button><button class="btn sm danger" data-act="setStatus" data-v="퇴단">팀에서 제외</button>' : ''}
+    ${st === '휴면' ? '<button class="btn sm pri" data-act="setStatus" data-v="활동">휴면 해제</button><button class="btn sm danger" data-act="setStatus" data-v="퇴단">팀에서 제외</button>' : ''}
+    ${st === '퇴단' ? '<button class="btn sm pri" data-act="setStatus" data-v="활동">다시 등록</button>' : ''}</div>` : '';
+  return `<div class="dh"><h2>${isNew ? '선수 등록' : esc(p.name)}</h2>${!isNew && S.canEdit ? '<button class="btn sm danger" data-act="delPlayer">기록까지 삭제</button>' : ''}<button class="btn sm" data-act="close">닫기</button></div>
+  <div class="db">
+    ${!isNew ? `<div class="photoBox">${avatar(p, 'lg')}<div style="display:flex;flex-direction:column;gap:6px">${S.assets ? `<label class="btn sm upl">${p.photo ? '사진 바꾸기' : '사진 올리기'}<input type="file" accept="image/*" class="photoIn" data-kind="player"></label>` : (S.canEdit ? '<span class="muted small">이 화면에서는 사진을 올릴 수 없어요</span>' : '')}<span class="muted small">${esc(p.team || '')} ${p.birth ? '· ' + esc(p.birth.replace(/-/g, '.')) + ' 생' : ''}</span></div></div>` : ''}
+    ${quick}
+    ${!isNew && isAthlete(p) ? `<div class="kpis" style="margin:0"><div class="kpi"><div class="l">${yr} 출석률</div><div class="v num">${pct(r && r.n ? r.att / r.n : null)}</div><div class="s">${r ? r.att : 0} / ${r ? r.n : 0}회</div></div><div class="kpi"><div class="l">대회 참가</div><div class="v num">${evs.length}</div><div class="s">${evs[0] ? esc(evs[0].name) : '–'}</div></div><div class="kpi"><div class="l">체력 측정</div><div class="v num">${fm.length}</div><div class="s">${fm.length ? `최근 ${+fm[fm.length - 1].slice(5)}월` : '–'}</div></div></div>` : ''}
+    <div class="sec">기본 정보</div>
+    <div class="form">
+      ${fld('이름', 'f_name', p.name)}
+      ${fld('역할', 'f_role', p.role || '선수', { options: ['선수', '임원'] })}
+      ${fld('팀', 'f_team', p.team, { options: ['우림맨테크', '송파씨젠', '미배정', '공통'] })}
+      ${fld('구분', 'f_div', p.div, { options: [['', '–'], '쿼드', '오픈'] })}
+      ${fld('등급', 'f_cls', p.cls, { ph: '예: 1.5, 3.0R' })}
+      ${fld('등번호', 'f_num', p.num ?? '', { type: 'number' })}
+      ${fld('상태', 'f_status', p.status || '활동', { options: ['활동', '휴면', ['퇴단', '팀에서 제외']] })}
+      ${fld('성별', 'f_gender', p.gender || '남', { options: ['남', '여'] })}
+      ${fld('등록일 (처음 온 날)', 'f_joined', p.joined || '', { type: 'date' })}
+      ${fld('주장', 'f_cap', p.captain ? '1' : '', { options: [['', '아니오'], ['1', '예']] })}
+      ${fld(isAthlete(p) ? '메모' : '직책·메모', 'f_note', p.note, { area: true })}
+    </div>
+    <div class="sec">개인정보</div>
+    ${S.canEdit ? `<div class="form">
+      ${fld('생년월일', 'f_birth', pi.birth, { type: 'date' })}
+      ${fld('영문명', 'f_eng', pi.engName)}
+      ${fld('연락처', 'f_phone', pi.phone, { type: 'tel' })}
+      ${fld('이메일', 'f_email', pi.email, { type: 'email' })}
+      ${fld('주소', 'f_addr', pi.address, { full: true })}
+      ${fld('보호자', 'f_guard', pi.guardian)}
+      ${fld('보호자 연락처', 'f_gphone', pi.guardianPhone, { type: 'tel' })}
+    </div><p class="muted small" style="margin:0">개인정보는 편집 권한이 있는 사람에게만 보여요. 보기 전용으로 공유한 코치에게는 숨겨져요.</p>` : '<div class="lock">연락처·주소 같은 개인정보는 편집 권한이 있는 사람만 볼 수 있어요.</div>'}
+    ${S.canEdit ? `<div style="display:flex;gap:8px"><button class="btn pri" data-act="savePlayer">${isNew ? '등록' : '저장'}</button><button class="btn" data-act="close">취소</button></div>` : ''}
+    ${!isNew ? `<div class="sec">휠체어</div>${ch.length ? ch.map(([cid, c]) => `<div style="display:flex;gap:8px;align-items:center"><span class="mono">${esc(c.code)}</span><span class="muted small">${esc(c.owner)} · ${esc(c.kind)} · 캠버 ${esc(c.camber || '–')}</span><span class="sp" style="flex:1"></span><button class="btn ghost sm" data-act="openChair" data-id="${cid}">자세히</button></div><div class="sides4">${SIDES.map(([k, l]) => { const pid = (c.photos || {})[k] || (k === 'front' ? c.photo : ''); return `<figure class="side">${pid ? `<img src="img/${esc(pid)}" alt="${esc(c.code)} ${l}" loading="lazy">` : '<div class="ph">없음</div>'}<figcaption>${l}</figcaption></figure>`; }).join('')}</div>`).join('') : '<div class="muted small">배정된 휠체어가 없어요.</div>'}
+    ${isAthlete(p) && r ? `<div class="sec">월별 출석</div><div style="display:flex;flex-wrap:wrap;gap:6px">${months.filter(m => m.startsWith(yr)).map(m => `<span class="heat num small" style="${heatStyle(r.months[m])}">${+m.slice(5)}월 ${pct(r.months[m])}</span>`).join('')}</div>` : ''}
+    ${evs.length ? `<div class="sec">참가 대회</div><div class="small">${evs.map(e => `${esc(e.start.slice(0, 7))} ${esc(e.name)}`).join('<br>')}</div>` : ''}` : ''}
+  </div>`;
+}
+function savePlayer() {
+  const id = D.id; const p = clone(S.players[id] || {}); const pi = clone(S.pinfo[id] || {});
+  const name = val('f_name'); if (!name) { toast('이름을 입력해 주세요'); return; }
+  Object.assign(p, { name, role: val('f_role'), team: val('f_team'), div: val('f_div'), cls: val('f_cls'), num: val('f_num') === '' ? null : +val('f_num'), status: val('f_status'), captain: val('f_cap') === '1', gender: val('f_gender') || '남', joined: val('f_joined'), note: val('f_note') });
+  if (S.canEdit) { p.birth = val('f_birth'); p.birthYear = p.birth ? +p.birth.slice(0, 4) : null; }
+  Object.assign(pi, { birth: val('f_birth'), engName: val('f_eng'), phone: val('f_phone'), email: val('f_email'), address: val('f_addr'), guardian: val('f_guard'), guardianPhone: val('f_gphone') });
+  S.players[id] = p; S.pinfo[id] = pi;
+  saveDoc('players/' + id, p); saveDoc('private/pinfo/people/' + id, pi);
+  toast('저장했어요'); closeDrawer(); render();
+}
+
+function dChair() {
+  const c = D.draft; const isNew = !S.chairs[D.id];
+  const opts = [['', '– 없음 –'], ...athletes({ all: true }).map(([id, p]) => [id, `${p.name} (${p.div || '-'})`])];
+  return `<div class="dh"><h2>${isNew ? '휠체어 추가' : esc(c.code)}</h2>${!isNew && S.canEdit ? '<button class="btn sm danger" data-act="delChair">삭제</button>' : ''}<button class="btn sm" data-act="close">닫기</button></div>
+  <div class="db">
+    ${!isNew ? `<div class="sides">${SIDES.map(([k, l]) => { const id = (c.photos || {})[k] || (k === 'front' ? c.photo : ''); return `<figure class="side">${id ? `<img src="img/${esc(id)}" alt="${esc(c.code)} ${l}" loading="lazy">` : '<div class="ph">사진 없음</div>'}<figcaption>${l}${S.assets ? `<label class="btn ghost sm upl">${id ? '바꾸기' : '올리기'}<input type="file" accept="image/*" class="photoIn" data-kind="chair" data-side="${k}"></label>` : ''}</figcaption></figure>`; }).join('')}</div>` : ''}
+    <div class="form">
+    ${fld('관리번호', 'c_code', c.code, { ph: '예: 서장체-25-01' })}
+    ${fld('사용 선수', 'c_player', c.player, { options: opts })}
+    ${fld('상태', 'c_status', c.status || '보관', { options: ['사용중', '보관', '수리중', '폐기예정', '개인'] })}
+    ${fld('임차처', 'c_owner', c.owner, { options: [['', '–'], '서울장애인체육회', '대한장애인럭비협회', '서울장애인럭비협회', '개인'] })}
+    ${fld('연도', 'c_year', c.year, { type: 'number' })}
+    ${fld('종류', 'c_kind', c.kind, { options: [['', '–'], '공격형', '수비형'] })}
+    ${fld('캠버', 'c_camber', c.camber, { options: [['', '–'], '소', '대'] })}
+    ${fld('사이즈', 'c_size', c.size)}
+    ${fld('메모 (수리 이력, 바퀴 교체 등)', 'c_note', c.note, { area: true })}
+  </div>${S.canEdit ? '<div style="display:flex;gap:8px"><button class="btn pri" data-act="saveChair">저장</button><button class="btn" data-act="close">취소</button></div>' : ''}</div>`;
+}
+function saveChair() {
+  const code = val('c_code'); if (!code) { toast('관리번호를 입력해 주세요'); return; }
+  const c = { photo: (S.chairs[D.id] || {}).photo || '', photos: (S.chairs[D.id] || {}).photos || {}, code, player: val('c_player'), status: val('c_status'), owner: val('c_owner'), year: val('c_year'), kind: val('c_kind'), camber: val('c_camber'), size: val('c_size'), note: val('c_note') };
+  if (c.player && c.status === '보관') c.status = '사용중';
+  S.chairs[D.id] = c; saveDoc('chairs/' + D.id, c); toast('저장했어요'); closeDrawer(); render();
+}
+
+function dEvent() {
+  const e = ensureEv(D.draft); const isNew = !S.events[D.id]; const c = evCost(e); const ed = S.canEdit; const dis = ed ? '' : 'disabled';
+  const inR = new Set(e.roster.map(x => x.pid));
+  const pool = Object.entries(S.players).filter(([id, p]) => ((p.status || '활동') === '활동' && (p.team || '미배정') !== '미배정') || inR.has(id));
+  const secs = [['임원', pool.filter(([, p]) => !isAthlete(p))], ['우림맨테크 · 쿼드', pool.filter(([, p]) => isAthlete(p) && p.team === '우림맨테크').sort(playerSort)], ['송파씨젠 · 오픈', pool.filter(([, p]) => isAthlete(p) && p.team === '송파씨젠').sort(playerSort)], ['기타', pool.filter(([, p]) => isAthlete(p) && !['우림맨테크', '송파씨젠'].includes(p.team))]];
+  const cN = evCandNights(e), cD = evCandDays(e);
+  const ord = (a, b) => (a.role === b.role ? 0 : a.role === '임원' ? -1 : 1) || teamIdx(P(a.pid)) - teamIdx(P(b.pid)) || playerSort([0, P(a.pid)], [0, P(b.pid)]);
+  const rlist = e.roster.map((x, i) => [x, i]).sort((a, b) => ord(a[0], b[0]));
+  const allOn = (k, d) => e.roster.length && e.roster.every(x => (x[k] || []).includes(d));
+  const chip = (on, act, attrs, label) => `<button class="chip dchip ${on ? 'on' : ''}" data-act="${act}" ${attrs} aria-pressed="${on}" ${dis}>${label}</button>`;
+  const ppl = c.ppl; const placed = new Set(e.rooms.flatMap(r => r.occ || []));
+  const unplaced = ppl.filter(q => !placed.has(q.key));
+  const sels = (D.sels || []).filter(k => unplaced.some(q => q.key === k)); D.sels = sels;
+  const players = e.roster.filter(x => x.role === '선수').length, guards = e.roster.filter(x => x.guardian).length;
+  const groups = EV_GROUPS.map(g => [g, rlist.filter(([x]) => evGrp(x) === g)]).filter(([, l]) => l.length);
+  const grpOn = (g, d) => { const l = e.roster.filter(x => evGrp(x) === g); return l.length && l.every(x => (x.nights || []).includes(d)); };
+  const keyGrp = k => { const q = ppl.find(q => q.key === k); return q ? (q.team === '임원' ? '임원' : ['우림맨테크', '송파씨젠'].includes(q.team) ? q.team : '기타') : '기타'; };
+  const roomGrp = r => { const gs = [...new Set((r.occ || []).map(keyGrp))]; return gs.length === 1 ? gs[0] : gs.length ? '여러 팀' : '빈 방'; };
+  const rgroups = EV_GROUPS.concat('여러 팀', '빈 방').map(g => [g, c.rooms.map((x, i) => [x, i]).filter(([x]) => roomGrp(x.r) === g)]).filter(([, l]) => l.length);
+  const ugroups = EV_GROUPS.map(g => [g, unplaced.filter(q => keyGrp(q.key) === g)]).filter(([, l]) => l.length);
+  return `<div class="dh"><h2>${isNew ? '대회 추가' : esc(e.name)}</h2>${!isNew && ed ? '<button class="btn sm danger" data-act="delEvent">삭제</button>' : ''}${ed ? '<button class="btn sm pri" data-act="saveEvent">저장</button>' : ''}<button class="btn sm" data-act="close">접기</button></div>
+  <div class="db">
+    <div class="form">
+      ${fld('대회명', 'e_name', e.name, { full: true })}
+      ${fld('시작일', 'e_start', e.start, { type: 'date' })}
+      ${fld('종료일', 'e_end', e.end, { type: 'date' })}
+      ${fld('장소', 'e_place', e.place)}
+      ${fld('참가여부', 'e_status', e.status || '미정', { options: ['참가', '미정', '불참'] })}
+    </div>
+
+    <div class="sec">1. 명단 <span class="muted num" style="font-weight:500">선수 ${players} · 임원 ${e.roster.length - players} · 보호자 ${guards}</span></div>
+    ${secs.filter(([, l]) => l.length).map(([t, l]) => `<div><div class="small muted" style="margin-bottom:6px;font-weight:600">${t}${ed && (t.startsWith('우림') || t.startsWith('송파')) ? ` <button class="btn ghost sm" data-act="evAll" data-v="${t.startsWith('우림') ? '우림맨테크' : '송파씨젠'}">전원 넣기</button>` : ''}</div>
+      <div class="ptiles">${l.map(([id, p]) => `<button class="ptile ${inR.has(id) ? 'on' : ''}" data-act="evToggle" data-id="${id}" aria-pressed="${inR.has(id)}" ${dis}>${avatar(p, 'sm')}<span>${esc(p.name)}</span><span class="muted small num">${isAthlete(p) ? esc(fmtCls(p.cls)) : esc(p.note || '')}</span></button>`).join('')}</div></div>`).join('')}
+
+    ${e.roster.length ? `<div class="sec">2. 숙박 일정 · 보호자</div>
+    <p class="muted small" style="margin:0"><b>팀 줄의 날짜</b>를 누르면 그 팀 전원이 한 번에 바뀌어요 (맨 윗줄은 전체). 다른 사람만 <b>누른 채로 끌어서</b> 여러 칸을 한꺼번에 칠하거나 지워요. 보호자는 [동반]을 누르면 선수정보에 저장된 이름이 들어가요.</p>
+    ${isLongEv(e) ? '<div class="lock">대회 기간이 2주가 넘어서 (리그처럼 여러 번 나눠 하는 대회) 숙박 일정은 받지 않아요. 숙박이 있는 회차는 대회를 따로 만들어 주세요.</div>' : ''}
+    <div class="scroll"><table class="t sched"><thead>
+      <tr><th>이름</th><th>보호자</th>${cN.map(d => `<th class="c">${chip(allOn('nights', d), 'allNight', `data-d="${d}"`, md(d))}</th>`).join('')}<th class="c">박</th><th class="c">1인실<br>희망</th></tr>
+    </thead><tbody>
+      ${groups.map(([g, l]) => `<tr class="grp"><td colspan="2">${esc(g)} <span class="muted num">${l.length}명</span></td>${cN.map(d => `<td class="c">${chip(grpOn(g, d), 'grpNight', `data-g="${esc(g)}" data-d="${d}"`, md(d))}</td>`).join('')}<td></td><td></td></tr>
+      ${l.map(([x, i]) => `<tr><td style="white-space:nowrap"><b>${esc(pname(x.pid))}</b> <span class="muted small">${x.role === '임원' ? esc(P(x.pid).note || '임원') : esc(fmtCls(P(x.pid).cls))}</span>${P(x.pid).gender === '여' ? ' <span class="tag n">여</span>' : ''}</td>
+        <td style="white-space:nowrap">${chip(!!x.guardian, 'evGuard', `data-i="${i}"`, x.guardian ? '동반' : '없음')}${x.guardian ? ` <input class="in" style="width:84px;padding:3px 6px" data-rr="${i}|guardian" value="${esc(x.guardian === '보호자' ? '' : x.guardian)}" placeholder="이름" ${dis}>` : ''}</td>
+        ${cN.map(d => `<td class="c">${chip((x.nights || []).includes(d), 'pNight', `data-i="${i}" data-d="${d}"`, '숙').replace('class="chip dchip', 'class="pn chip dchip')}</td>`).join('')}
+        <td class="c num">${(x.nights || []).length}</td>
+        <td class="c"><input type="checkbox" data-rr="${i}|single" ${x.single ? 'checked' : ''} ${dis}></td></tr>`).join('')}`).join('')}
+    </tbody></table></div>
+
+    <div class="sec">3. 방 배정 <span class="muted num" style="font-weight:500">${e.rooms.length}실 · 남은 사람 ${unplaced.length}명</span></div>
+    ${ed ? `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><button class="btn sm pri" data-act="autoRooms">자동 배정</button>${e.rooms.length ? '<button class="btn ghost sm danger" data-act="clearRooms">방 배정 모두 지우기</button>' : ''}<span class="muted small">자동 배정: 1인실 희망 → 1인실 · 선수+보호자 → 2인실 · 나머지는 같은 성별·같은 팀·같은 일정끼리 2인실</span></div>` : ''}
+    ${unplaced.length ? `<div class="unp"><div class="small muted" style="margin-bottom:6px">남은 사람 — 눌러서 고른 다음 아래 버튼으로 방을 만들거나, 빈자리가 있는 방의 [여기 넣기]를 눌러요</div>
+      ${ugroups.map(([g, l]) => `<div style="display:flex;gap:8px;align-items:flex-start;margin-top:4px"><span class="small muted" style="min-width:72px;padding-top:6px;font-weight:600">${esc(g)}</span><div class="pchips" style="flex:1">${l.map(q => `<button class="pchip ${sels.includes(q.key) ? 'on' : ''}" data-act="pickPerson" data-k="${esc(q.key)}" ${dis}>${esc(q.name)}${q.guardian ? '' : ` <span class="muted small">${q.gender === '여' ? '여' : ''}</span>`}<span class="muted small">${q.nights.length}박</span></button>`).join('')}</div></div>`).join('')}
+      ${ed ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><span class="small muted" style="align-self:center">고른 ${sels.length}명 →</span>${RTYPES.map(([t, cap]) => `<button class="btn sm" data-act="newRoom" data-v="${t}" ${sels.length && sels.length <= cap ? '' : 'disabled'}>${t}로 만들기</button>`).join('')}</div>` : ''}</div>` : ''}
+    ${e.rooms.length ? `<div class="scroll"><table class="t rooms"><thead><tr><th>#</th><th>방</th><th>사용자</th><th>숙박</th><th class="r">금액</th><th class="r">개인부담</th><th></th></tr></thead><tbody>
+      ${rgroups.map(([g, l]) => `<tr class="grp"><td colspan="4">${esc(g)} <span class="muted num">${l.length}실 · ${l.reduce((a, [x]) => a + (x.r.occ || []).length, 0)}명</span></td><td class="r num">${won(l.reduce((a, [x]) => a + x.amount, 0))}</td><td class="r num">${l.some(([x]) => +x.r.personal) ? won(l.reduce((a, [x]) => a + (+x.r.personal || 0), 0)) : ''}</td><td></td></tr>` + l.map(([{ r, nights, amount }, i], j) => { const space = rCap(r.type) - (r.occ || []).length; return `<tr>
+        <td class="num muted">${j + 1}</td>
+        <td><select class="in" style="padding:3px 6px" data-rm="${i}|type" ${dis}>${RTYPES.map(([t]) => `<option ${t === r.type ? 'selected' : ''}>${t}</option>`).join('')}</select></td>
+        <td><div class="rrow">${(r.occ || []).map(k => `<span class="occ">${esc(occName(k, ppl))}${ed ? `<button class="x" data-act="unplace" data-i="${i}" data-k="${esc(k)}" aria-label="빼기">✕</button>` : ''}</span>`).join('')}${ed && sels.length && sels.length <= space ? `<button class="btn sm pri" data-act="putPerson" data-i="${i}">여기 넣기</button>` : space > 0 ? `<span class="muted small">빈자리 ${space}</span>` : ''}</div></td>
+        <td class="small muted" style="white-space:nowrap">${nights.length}박 ${nights.map(md).join(' ')}</td>
+        <td class="r num">${won(amount)}</td>
+        <td class="r" style="white-space:nowrap"><input class="in num" style="width:80px;text-align:right;padding:3px 6px" type="number" data-rm="${i}|personal" value="${r.personal || ''}" placeholder="0" ${dis}>${ed && amount ? `<button class="btn ghost sm" data-act="personalFull" data-i="${i}">전액</button><button class="btn ghost sm" data-act="personalHalf" data-i="${i}">반액</button>` : ''}</td>
+        <td>${ed ? `<button class="btn ghost sm danger" data-act="rmRoom" data-i="${i}">삭제</button>` : ''}</td></tr>`; }).join('')).join('')}
+    </tbody></table></div>` : ''}` : '<div class="muted small">명단에서 사람을 넣으면 숙박 일정과 방 배정을 할 수 있어요.</div>'}
+
+    <div class="sec">4. 비용</div>
+    ${c.absent ? '<div class="lock">참가여부가 \'불참\'이라 비용을 0원으로 봐요. 참가로 바꾸면 다시 계산돼요.</div>' : ''}
+    <div class="cost">
+      <div class="cblk"><div class="ch"><b>숙박비</b><span class="num">${won(c.lodging)}원</span></div>
+        ${RTYPES.map(([t], k) => { const rs = c.rooms.filter(x => x.r.type === t); const n = rs.reduce((a, x) => a + x.nights.length, 0); return `<div class="cl"><label>${t} 1박 <input class="in num" type="number" id="e_r${k + 1}" value="${e.rates['room' + (k + 1)] ?? ''}" ${dis}></label><span class="muted small">${rs.length}실 · 합계 ${n}박</span><span class="num">${won(rs.reduce((a, x) => a + x.amount, 0))}</span></div>`; }).join('')}
+        ${c.est ? `<div class="muted small">방 배정 전이라 예상 금액이에요 (밤마다 인원 ÷ 2 × 2인실 단가)</div>` : ''}
+        <div class="cl" style="border-top:1px dashed var(--line);padding-top:6px"><label>지원금 (협회 현장 결제) <input class="in num" type="number" id="e_sub" value="${e.subsidy || ''}" ${dis}></label><span></span><span class="num">−${won(e.subsidy)}</span></div>
+        <div class="cl"><b>팀이 낼 숙박비</b><span></span><b class="num">${won(c.lodging - (+e.subsidy || 0))}</b></div></div>
+      <div class="cblk"><div class="ch"><b>식비</b><span class="num">${won(c.meal)}원</span></div>
+        <div class="cl"><label>1인 1일 <input class="in num" type="number" id="e_rm" value="${e.rates.meal ?? ''}" ${dis}></label><span class="muted small">${c.ppl.length}명 · 합계 ${c.mealCount}일 (숙박 + 1일)</span><span class="num">${won(c.meal)}</span></div></div>
+      <div class="cblk"><div class="ch"><b>교통비</b><span class="num">${won(c.trans)}원</span></div>
+        <div class="cl"><label>단가 <input class="in num" type="number" id="e_rt" value="${e.rates.transport ?? ''}" ${dis}></label><label>수량 <input class="in num" type="number" id="e_tc" value="${e.transCount ?? ''}" ${dis}></label><span class="num">${won(c.trans)}</span></div></div>
+      <div class="cblk tot"><div class="ch"><b>지출 합계</b><span class="num">${won(c.net)}원</span></div>
+        <div class="cl"><span class="muted">개인부담 (1인실 등)</span><span></span><span class="num">−${won(c.personal)}</span></div>
+        <div class="ch" style="margin-top:4px"><b>팀 부담</b><span class="num">${won(c.team)}원</span></div></div>
+    </div>
+    ${!c.computed && c.legacy ? `<p class="muted small" style="margin:0">단가를 아직 안 넣어서 엑셀에 있던 금액 ${won(c.legacy)}원을 보여주고 있어요.</p>` : ''}
+    ${fld('메모', 'e_note', e.note, { area: true })}
+    ${ed ? '<div style="display:flex;gap:8px"><button class="btn pri" data-act="saveEvent">저장</button><button class="btn" data-act="close">취소</button></div>' : ''}
+  </div>`;
+}
+function readEventForm() {
+  const e = ensureEv(D.draft); const n = id => { const v = val(id); return v === '' ? null : +v; };
+  if (document.getElementById('e_name')) Object.assign(e, { name: val('e_name'), start: val('e_start'), end: val('e_end') || val('e_start'), place: val('e_place'), status: val('e_status'), note: val('e_note') });
+  if (document.getElementById('e_r1')) { e.rates = Object.assign({}, e.rates, { room1: n('e_r1') || 0, room2: n('e_r2') || 0, room3: n('e_r3') || 0, meal: n('e_rm') || 0, transport: n('e_rt') || 0 }); e.transCount = n('e_tc'); e.subsidy = n('e_sub') || 0; }
+  document.querySelectorAll('[data-rr]').forEach(el => { const [i, k] = el.dataset.rr.split('|'); const x = e.roster[+i]; if (!x) return; x[k] = k === 'single' ? el.checked : k === 'guardian' ? (el.value.trim() || '보호자') : el.value === '' ? null : +el.value; });
+  document.querySelectorAll('[data-rm]').forEach(el => { const [i, k] = el.dataset.rm.split('|'); const r = e.rooms[+i]; if (r) r[k] = k === 'type' ? el.value : (+el.value || 0); });
+  e.rooms.forEach(r => { if ((r.occ || []).length > rCap(r.type)) r.occ = r.occ.slice(0, rCap(r.type)); });
+}
+const EV_GROUPS = ['임원', '우림맨테크', '송파씨젠', '기타'];
+const evGrp = x => x.role === '임원' ? '임원' : ['우림맨테크', '송파씨젠'].includes(P(x.pid).team) ? P(x.pid).team : '기타';
+function autoRooms(e) {
+  const ppl = evPeople(e); const placed = new Set(e.rooms.flatMap(r => r.occ || [])); const left = ppl.filter(q => !placed.has(q.key));
+  const take = k => { const i = left.findIndex(q => q.key === k); return i >= 0 ? left.splice(i, 1)[0] : null; };
+  const add = (type, occ) => e.rooms.push({ id: 'r' + Date.now().toString(36) + e.rooms.length, type, occ, personal: 0 });
+  left.filter(q => q.single && !q.guardian).slice().forEach(q => { take(q.key); add('1인실', [q.key]); const g = take('g:' + q.key); if (g) add('2인실', [g.key]); });
+  left.filter(q => !q.guardian).slice().forEach(q => { const g = left.find(z => z.key === 'g:' + q.key); if (g) { take(q.key); take(g.key); add('2인실', [q.key, g.key]); } });
+  const tOrd = q => q.team === '임원' ? 0 : teamIdx({ team: q.team }) + 1;
+  left.sort((a, b) => tOrd(a) - tOrd(b) || a.nights.join().localeCompare(b.nights.join()));
+  const sameG = (a, b) => !a.guardian && !b.guardian && (a.gender || '남') === (b.gender || '남');
+  while (left.length) { const a = left.shift(); let j = left.findIndex(b => sameG(a, b) && tOrd(b) === tOrd(a) && b.nights.join() === a.nights.join()); if (j < 0) j = left.findIndex(b => sameG(a, b) && tOrd(b) === tOrd(a)); if (j < 0) j = left.findIndex(b => sameG(a, b)); const b = j >= 0 ? left.splice(j, 1)[0] : null; add('2인실', b ? [a.key, b.key] : [a.key]); }
+}
+
+function dFit() {
+  const { month, pid } = D; const r = D.draft; const p = P(pid); const f = fitFinal(r); const std = stdFor(p.cls, p.div);
+  const opts = athletes({ all: true }).map(([id, q]) => [id, `${q.name} (${q.div || '-'} ${q.cls || ''})`]);
+  const n = (k, v, w) => `<input class="in num" type="number" step="0.01" id="${k}" value="${v ?? ''}" ${ro()} style="width:100%">`;
+  const t = r.throws || [], s = r.sl || [], m20 = r.m20 || [];
+  return `<div class="dh"><h2>${month.slice(0, 4)}년 ${+month.slice(5)}월 체력테스트</h2>${S.canEdit && (S.fit[month].records || {})[pid] ? '<button class="btn sm danger" data-act="delFit">기록 삭제</button>' : ''}<button class="btn sm" data-act="close">닫기</button></div>
+  <div class="db">
+    <div class="form">${fld('선수', 'ft_pid', pid, { options: opts })}${fld('측정 당시 등급', 'ft_cls', r.cls || p.cls)}</div>
+    <div class="sec">던지기 (m)</div><div class="trial">${[0, 1, 2, 3, 4].map(i => `<label class="small muted">${i + 1}회${n('ft_t' + i, t[i])}</label>`).join('')}</div>
+    <div class="muted small">정확도(일관성) 자동 계산: <b class="num" style="color:var(--ink)">${f.acc != null ? f.acc.toFixed(2) : '–'}</b> · 10 ÷ (1 + 표준편차/평균), 빗나간 투구는 0으로 입력</div>
+    <div class="sec">슬라럼 (초 · 콘 터치 수)</div>
+    <div class="trial" style="grid-template-columns:repeat(4,minmax(0,1fr))"><label class="small muted">1회 기록${n('ft_s0', s[0])}</label><label class="small muted">1회 콘${n('ft_s1', s[1])}</label><label class="small muted">2회 기록${n('ft_s2', s[2])}</label><label class="small muted">2회 콘${n('ft_s3', s[3])}</label></div>
+    <div class="sec">십자런 · 스프린트 (초)</div>
+    <div class="trial"><label class="small muted">십자런 좌${n('ft_cl', r.crossL)}</label><label class="small muted">십자런 우${n('ft_cr', r.crossR)}</label><label class="small muted">20m 1회${n('ft_m0', m20[0])}</label><label class="small muted">20m 2회${n('ft_m1', m20[1])}</label></div>
+    <div class="trial" style="grid-template-columns:repeat(4,minmax(0,1fr))"><label class="small muted">28m 1회${n('ft_28a', Array.isArray(r.m28) ? r.m28[0] : r.m28)}</label><label class="small muted">28m 2회${n('ft_28b', Array.isArray(r.m28) ? r.m28[1] : null)}</label></div>
+    <div class="panel"><div class="small muted" style="margin-bottom:6px">최종 기록${std ? ' · 국가대표 기준' : ''}</div><div class="scroll"><table class="t"><tr>${FIT_COLS.map(c => `<th class="r">${c[1]}</th>`).join('')}</tr><tr>${FIT_COLS.map(c => fitCell(c[0], f[c[0]], std)).join('')}</tr>${std ? `<tr>${FIT_COLS.map(c => `<td class="r num muted">${std[c[0]] ?? '–'}</td>`).join('')}</tr>` : ''}</table></div></div>
+    ${S.canEdit ? '<div style="display:flex;gap:8px"><button class="btn pri" data-act="saveFit">저장</button><button class="btn" data-act="saveFitNext">저장하고 다음 선수</button></div>' : ''}
+  </div>`;
+}
+function dFitMonth() {
+  return `<div class="dh"><h2>측정 월 추가</h2><button class="btn sm" data-act="close">닫기</button></div>
+  <div class="db"><div class="form"><label class="full">측정한 달<input class="in" type="month" id="fm_month" value="${todayISO().slice(0, 7)}"></label></div>
+  <div style="display:flex;gap:8px"><button class="btn pri" data-act="addFitMonth">추가</button><button class="btn" data-act="close">취소</button></div></div>`;
+}
+function dFitImport() {
+  const pv = D.preview;
+  return `<div class="dh"><h2>엑셀에서 가져오기</h2><button class="btn sm" data-act="close">닫기</button></div>
+  <div class="db">
+    <p class="muted" style="margin:0">지금 쓰는 체력테스트 엑셀 파일을 그대로 올리면 '데이터' 시트에서 기록을 읽어와요. 열 위치는 지금 양식 그대로예요 (B 월 · C 이름 · F~J 던지기 · M~Q 슬라럼 · T,U 십자런 · V,W 20m · Y,Z 28m).</p>
+    <label class="btn upl" style="align-self:flex-start">엑셀 파일 고르기<input type="file" accept=".xlsx,.xls" id="fitXlsx"></label>
+    ${pv ? `<div class="panel"><b>읽은 내용</b><div class="small" style="margin-top:6px">${Object.entries(pv.months).sort().map(([mk, r]) => `${mk.slice(0, 4)}년 ${+mk.slice(5)}월 · ${Object.keys(r).length}명${S.fit[mk] ? ' <span class="tag warn">이미 있는 달 · 같은 선수는 덮어씀</span>' : ''}`).join('<br>') || '가져올 기록이 없어요.'}</div>
+      ${pv.unmatched.length ? `<div class="small" style="margin-top:8px;color:var(--bad)">선수 명단에 없는 이름이라 건너뜀: ${pv.unmatched.map(esc).join(', ')}</div>` : ''}</div>
+      ${Object.keys(pv.months).length ? '<div style="display:flex;gap:8px"><button class="btn pri" data-act="doFitImport">가져오기</button><button class="btn" data-act="close">취소</button></div>' : ''}` : ''}
+  </div>`;
+}
+async function readFitXlsx(file) {
+  const X = window.XLSX; if (!X) { toast('엑셀 도구를 불러오는 중이에요. 잠시 후 다시 해주세요'); return; }
+  try {
+    const wb = X.read(await file.arrayBuffer(), { type: 'array' }); const ws = wb.Sheets['데이터'] || wb.Sheets[wb.SheetNames[0]];
+    const rows = X.utils.sheet_to_json(ws, { header: 1, raw: true, defval: null });
+    const byName = {}; Object.entries(S.players).forEach(([id, p]) => { byName[(p.name || '').replace(/\s/g, '')] = id; });
+    const months = {}, unmatched = new Set(); const nv = x => x == null || x === '' || isNaN(+x) ? null : +x;
+    for (const r of rows) {
+      const ym = String(r[1] ?? '').trim(); if (!/^\d{6}$/.test(ym)) continue;
+      const name = String(r[2] ?? '').replace(/\s/g, ''); if (!name) continue;
+      const pid = byName[name]; if (!pid) { unmatched.add(name); continue; }
+      const throws = [5, 6, 7, 8, 9].map(i => nv(r[i]));
+      if (![...throws, r[12], r[19], r[21], r[24]].some(v => nv(v) != null)) continue;
+      const mk = ym.slice(0, 4) + '-' + ym.slice(4, 6);
+      (months[mk] || (months[mk] = {}))[pid] = { cls: r[4] != null ? String(r[4]) : '', throws, acc: typeof r[11] === 'number' ? r[11] : accOf(throws),
+        sl: [nv(r[12]), nv(r[13]) || 0, nv(r[15]), nv(r[16]) || 0], crossL: nv(r[19]), crossR: nv(r[20]), m20: [nv(r[21]), nv(r[22])], m28: [nv(r[24]), nv(r[25])] };
+    }
+    D.preview = { months, unmatched: [...unmatched] }; renderDrawer();
+  } catch (e) { console.warn(e); toast('엑셀 파일을 읽지 못했어요'); }
+}
+function readFit() {
+  const num = id => { const v = val(id); return v === '' ? null : +v; };
+  const throws = [0, 1, 2, 3, 4].map(i => num('ft_t' + i));
+  return { cls: val('ft_cls'), throws, acc: accOf(throws), sl: [num('ft_s0'), num('ft_s1') || 0, num('ft_s2'), num('ft_s3') || 0], crossL: num('ft_cl'), crossR: num('ft_cr'), m20: [num('ft_m0'), num('ft_m1')], m28: [num('ft_28a'), num('ft_28b')] };
+}
+function saveFit(next) {
+  const pid = val('ft_pid'); const rec = readFit(); const m = D.month;
+  const doc = clone(S.fit[m]); doc.records = doc.records || {}; doc.records[pid] = rec; S.fit[m] = doc;
+  saveDoc('fitness/' + m, doc); toast(`${pname(pid)} 기록을 저장했어요`);
+  if (next) { const list = athletes(); const i = list.findIndex(([id]) => id === pid); const nx = list[i + 1]; if (nx) { openFit(m, nx[0]); render(); return; } }
+  closeDrawer(); render();
+}
+function openFit(month, pid) {
+  const list = athletes(); pid = pid || (list[0] && list[0][0]);
+  D = { kind: 'fit', month, pid, draft: clone((S.fit[month].records || {})[pid] || { cls: P(pid).cls }) }; renderDrawer();
+}
+// ---------- attendance writes ----------
+function monthDoc(mk) { const m = clone(S.att[mk] || { days: [], marks: {} }); m.days = m.days || []; m.marks = m.marks || {}; m.photos = m.photos || {}; return m; }
+function commitMonth(mk, m) { S.att[mk] = m; saveDoc('attendance/' + mk, m); render(); }
+function setMark(pid, v) {
+  const d = S.date, mk = d.slice(0, 7); const m = monthDoc(mk);
+  if (v && !m.days.includes(d)) { m.days.push(d); m.days.sort(); }
+  m.marks[d] = m.marks[d] || {}; m.marks[d][pid] = v || '';
+  if (!v) delete m.marks[d][pid];
+  commitMonth(mk, m);
+}
+
+// ---------- events ----------
+document.addEventListener('click', ev => {
+  const t = ev.target.closest('[data-act]'); if (!t || t.disabled) return;
+  const a = t.dataset.act, id = t.dataset.id, v = t.dataset.v;
+  switch (a) {
+    case 'tab': if (D && D.kind === 'event') D = null; S.tab = v; store.set('tab', v); render(); window.scrollTo(0, 0); break;
+    case 'team': S.team = v; store.set('team', v); render(); break;
+    case 'goCheck': S.tab = 'att'; S.attView = 'check'; S.date = todayISO(); store.set('tab', 'att'); render(); break;
+    case 'attView': S.attView = v; render(); break;
+    case 'toggleDay': { const mk = S.date.slice(0, 7); const m = monthDoc(mk); const i = m.days.indexOf(S.date); if (i >= 0) { m.days.splice(i, 1); delete m.marks[S.date]; } else { m.days.push(S.date); m.days.sort(); } commitMonth(mk, m); break; }
+    case 'tapName': { const cur = ((S.att[S.date.slice(0, 7)] || {}).marks || {})[S.date]?.[id]; setMark(id, cur ? '' : '출석'); break; }
+    case 'allPresent': { const mk = S.date.slice(0, 7); const m = monthDoc(mk); m.marks[S.date] = m.marks[S.date] || {}; athletes().forEach(([pid]) => { if (!m.marks[S.date][pid]) m.marks[S.date][pid] = '출석'; }); commitMonth(mk, m); break; }
+    case 'openPlayer': openDrawer('player', id, { p: clone(S.players[id]), pi: clone(S.pinfo[id]) }); break;
+    case 'newPlayer': openDrawer('player', uid('p'), { p: { name: '', role: '선수', team: S.team !== '전체' ? S.team : '우림맨테크', div: '쿼드', cls: '', num: null, status: '활동', captain: false, note: '' }, pi: {} }); break;
+    case 'savePlayer': savePlayer(); break;
+    case 'setStatus': { const p = clone(S.players[D.id]); p.status = v; S.players[D.id] = p; saveDoc('players/' + D.id, p); D.draft.p.status = v; toast(v === '퇴단' ? `${p.name} 선수를 팀에서 제외했어요. 지난 기록은 남아 있어요.` : v === '휴면' ? `${p.name} 선수를 휴면으로 바꿨어요` : `${p.name} 선수가 다시 활동 명단에 들어갔어요`); renderDrawer(); render(); break; }
+    case 'delPlayer': if (t.dataset.confirm) { delDoc('players/' + D.id); delDoc('private/pinfo/people/' + D.id); delete S.players[D.id]; closeDrawer(); render(); toast('삭제했어요'); } else { t.dataset.confirm = '1'; t.textContent = '한 번 더 누르면 삭제'; } break;
+    case 'openChair': openDrawer('chair', id, clone(S.chairs[id])); break;
+    case 'newChair': openDrawer('chair', uid('c'), { code: '', player: '', status: '보관', owner: '', year: '', kind: '', camber: '', size: '', note: '' }); break;
+    case 'saveChair': saveChair(); break;
+    case 'delChair': if (t.dataset.confirm) { delDoc('chairs/' + D.id); delete S.chairs[D.id]; closeDrawer(); render(); } else { t.dataset.confirm = '1'; t.textContent = '한 번 더 누르면 삭제'; } break;
+    case 'openEvent': { if (D && D.kind === 'event' && D.id === id) { closeDrawer(); break; } dropEvHost(); if (S.tab !== 'events') { S.tab = 'events'; store.set('tab', 'events'); S.evView = 'list'; S.evYear = (S.events[id].start || '').slice(0, 4); } D = { kind: 'event', id, draft: ensureEv(clone(S.events[id])) }; $('#drawerHost').innerHTML = ''; render(); const r = document.querySelector(`.ev[data-id="${id}"]`); if (r) r.scrollIntoView({ block: 'start', behavior: 'smooth' }); break; }
+    case 'evView': dropEvHost(); if (D && D.kind === 'event') D = null; S.evView = v; store.set('evView', v); render(); break;
+    case 'evBudgetOpen': S.evView = 'list'; store.set('evView', 'list'); D = { kind: 'event', id, draft: ensureEv(clone(S.events[id])) }; render(); { const r = document.querySelector(`.ev[data-id="${id}"]`); if (r) r.scrollIntoView({ block: 'start' }); } break;
+    case 'evYear': dropEvHost(); if (D && D.kind === 'event') D = null; S.evYear = v; render(); break;
+    case 'newEvent': dropEvHost(); D = null; S.evView = 'list'; S.evYear = todayISO().slice(0, 4); openDrawer('event', uid('e'), { name: '', start: todayISO(), end: todayISO(), place: '', status: '미정', roster: [], rooms: [], rates: { meal: 25000 }, subsidy: 0, note: '' }); break;
+    case 'evToggle': { readEventForm(); const e = D.draft; const i = e.roster.findIndex(x => x.pid === id); if (i >= 0) { e.roster.splice(i, 1); e.rooms.forEach(r => r.occ = (r.occ || []).filter(k => k !== id && k !== 'g:' + id)); } else { const p = P(id); e.roster.push({ pid: id, role: isAthlete(p) ? '선수' : '임원', guardian: '', nights: evDefNights(e), days: evDefDays(e), single: false }); } renderDrawer(); break; }
+    case 'evAll': { readEventForm(); const e = D.draft; const have = new Set(e.roster.map(x => x.pid)); Object.entries(S.players).filter(([pid, p]) => isAthlete(p) && p.team === v && (p.status || '활동') === '활동' && !have.has(pid)).sort(playerSort).forEach(([pid]) => e.roster.push({ pid, role: '선수', guardian: '', nights: evDefNights(e), days: evDefDays(e), single: false })); renderDrawer(); break; }
+    case 'evGuard': { readEventForm(); const e = D.draft; const x = e.roster[+t.dataset.i]; if (x.guardian) { x.guardian = ''; e.rooms.forEach(r => r.occ = (r.occ || []).filter(k => k !== 'g:' + x.pid)); } else x.guardian = (S.pinfo[x.pid] || {}).guardian || '보호자'; renderDrawer(); break; }
+    case 'grpNight': { readEventForm(); const e = D.draft; const d = t.dataset.d, g = t.dataset.g; const l = e.roster.filter(x => evGrp(x) === g); const on = l.every(x => (x.nights || []).includes(d)); l.forEach(x => { x.nights = on ? (x.nights || []).filter(z => z !== d) : [...new Set((x.nights || []).concat(d))].sort(); }); renderDrawer(); break; }
+    case 'pNight': if (ev.detail !== 0) break; // 마우스·터치는 아래 끌어서 칠하기에서 처리 (키보드만 여기)
+    case 'pDay': { readEventForm(); const x = D.draft.roster[+t.dataset.i]; const k = a === 'pNight' ? 'nights' : 'days'; const d = t.dataset.d; x[k] = (x[k] || []).includes(d) ? x[k].filter(z => z !== d) : (x[k] || []).concat(d).sort(); renderDrawer(); break; }
+    case 'allNight': case 'allDay': { readEventForm(); const e = D.draft; const k = a === 'allNight' ? 'nights' : 'days'; const d = t.dataset.d; const on = e.roster.every(x => (x[k] || []).includes(d)); e.roster.forEach(x => { x[k] = on ? (x[k] || []).filter(z => z !== d) : [...new Set((x[k] || []).concat(d))].sort(); }); renderDrawer(); break; }
+    case 'autoRooms': { readEventForm(); const n0 = D.draft.rooms.length; autoRooms(D.draft); D.sels = []; renderDrawer(); toast(`방 ${D.draft.rooms.length - n0}개를 배정했어요`); break; }
+    case 'clearRooms': if (t.dataset.confirm) { readEventForm(); D.draft.rooms = []; renderDrawer(); } else { t.dataset.confirm = '1'; t.textContent = '한 번 더 누르면 모두 지움'; } break;
+    case 'pickPerson': { readEventForm(); const k = t.dataset.k; D.sels = (D.sels || []).includes(k) ? D.sels.filter(z => z !== k) : (D.sels || []).concat(k); renderDrawer(); break; }
+    case 'newRoom': { readEventForm(); const e = D.draft; e.rooms.push({ id: 'r' + Date.now().toString(36), type: v, occ: (D.sels || []).slice(0, rCap(v)), personal: 0 }); D.sels = []; renderDrawer(); setTimeout(() => { const l = document.querySelectorAll('.rbox'); l[l.length - 1] && l[l.length - 1].scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 30); break; }
+    case 'putPerson': { if (!(D.sels || []).length) break; readEventForm(); const r = D.draft.rooms[+t.dataset.i]; const space = rCap(r.type) - (r.occ || []).length; r.occ = (r.occ || []).concat(D.sels.slice(0, space)); D.sels = D.sels.slice(space); renderDrawer(); break; }
+    case 'unplace': { readEventForm(); const r = D.draft.rooms[+t.dataset.i]; r.occ = (r.occ || []).filter(k => k !== t.dataset.k); renderDrawer(); break; }
+    case 'personalFull': case 'personalHalf': { readEventForm(); const e = D.draft; const c = evCost(e); const amt = c.rooms[+t.dataset.i].amount; e.rooms[+t.dataset.i].personal = a === 'personalFull' ? amt : Math.round(amt / 2); renderDrawer(); break; }
+    case 'rmRoom': readEventForm(); D.draft.rooms.splice(+t.dataset.i, 1); renderDrawer(); break;
+    case 'saveEvent': { readEventForm(); if (!D.draft.name) { toast('대회명을 입력해 주세요'); return; } S.events[D.id] = D.draft; S.evYear = (D.draft.start || '').slice(0, 4) || S.evYear; saveDoc('events/' + D.id, D.draft); toast('저장했어요'); closeDrawer(); render(); break; }
+    case 'delEvent': if (t.dataset.confirm) { delDoc('events/' + D.id); delete S.events[D.id]; closeDrawer(); render(); } else { t.dataset.confirm = '1'; t.textContent = '한 번 더 누르면 삭제'; } break;
+    case 'fitEntry': if (!S.fitMonth) return; openFit(S.fitMonth, id); break;
+    case 'saveFit': saveFit(false); break;
+    case 'saveFitNext': saveFit(true); break;
+    case 'delFit': { const m = D.month; const doc = clone(S.fit[m]); delete doc.records[D.pid]; S.fit[m] = doc; saveDoc('fitness/' + m, doc); closeDrawer(); render(); break; }
+    case 'newFitMonth': D = { kind: 'fitMonth' }; renderDrawer(); break;
+    case 'addFitMonth': { const mk = val('fm_month'); if (!/^\d{4}-\d{2}$/.test(mk)) { toast('달을 골라주세요'); return; } if (!S.fit[mk]) { S.fit[mk] = { records: {} }; saveDoc('fitness/' + mk, S.fit[mk]); } S.fitMonth = mk; closeDrawer(); render(); toast(`${+mk.slice(5)}월 측정을 추가했어요`); break; }
+    case 'delFitMonth': if (t.dataset.confirm) { const mk = S.fitMonth; delDoc('fitness/' + mk); delete S.fit[mk]; S.fitMonth = null; render(); toast(`${+mk.slice(5)}월 측정 기록을 삭제했어요`); } else { t.dataset.confirm = '1'; t.textContent = `${+S.fitMonth.slice(5)}월 기록 ${Object.keys(S.fit[S.fitMonth].records || {}).length}명 삭제? 한 번 더`; } break;
+    case 'fitView': S.fitView = v; render(); break;
+    case 'fitTab': S.fitTab = v; render(); break;
+    case 'fitScore': S.fitScore = v; render(); break;
+    case 'fitEntryP': openFit(S.fitPMonth, S.fitPlayer); break;
+    case 'saveStd': { const st = clone(S.config.standards || {}); document.querySelectorAll('[data-std]').forEach(el => { const [c, k] = el.dataset.std.split('|'); const n = el.value === '' ? null : +el.value; st[c] = st[c] || {}; if (n == null) delete st[c][k]; else st[c][k] = n; }); const oh = document.getElementById('openPctHi'), ol = document.getElementById('openPctLo'); if (oh && oh.value !== '') S.config.openFactorHi = Math.max(0, Math.min(50, +oh.value)) / 100; if (ol && ol.value !== '') S.config.openFactorLo = Math.max(0, Math.min(50, +ol.value)) / 100; S.config.standards = st; saveDoc('config/main', Object.assign(clone(S.config), { standards: st })); toast('기준표를 저장했어요'); render(); break; }
+    case 'fitImport': D = { kind: 'fitImport', preview: null }; renderDrawer(); break;
+    case 'doFitImport': { const pv = D.preview; let n = 0; for (const [mk, recs] of Object.entries(pv.months)) { const doc = clone(S.fit[mk] || { records: {} }); doc.records = Object.assign(doc.records || {}, recs); S.fit[mk] = doc; saveDoc('fitness/' + mk, doc); n += Object.keys(recs).length; } closeDrawer(); S.fitMonth = Object.keys(pv.months).sort().pop(); render(); toast(`기록 ${n}건을 가져왔어요`); break; }
+    case 'export': doExport(); break;
+    case 'exportPdf': reportPdf($('#exYear').value, $('#exTeam').value); break;
+    case 'reportPdf': reportPdf(S.year, S.team); break;
+    case 'reportXlsx': { const X = window.XLSX; if (!X) { toast('엑셀 도구를 불러오는 중이에요'); break; } const R = reportData(S.year, S.team); const wb = X.utils.book_new(); const ws = X.utils.aoa_to_sheet(reportSheet(X, R)); ws['!cols'] = [10, 10, 6, 11].map(w => ({ wch: w })); X.utils.book_append_sheet(wb, ws, '선수평가'); const out = X.write(wb, { bookType: 'xlsx', type: 'array' }); (async () => { const dl = window.__claudeSnap && window.__claudeSnap.use ? await window.__claudeSnap.use('downloads') : null; if (!dl) { toast('이 화면에서는 파일을 내려받을 수 없어요'); return; } try { await dl.save({ filename: `선수평가_${S.year}${S.team !== '전체' ? '_' + S.team : ''}.xlsx`, data: new Blob([out]) }); toast('엑셀 파일을 저장했어요'); } catch (e) { if (e && e.code !== 'declined') toast('파일을 저장하지 못했어요'); } })(); break; }
+    case 'close': closeDrawer(); break;
+    case 'cVal': S.cval = v; store.set('cval', v); render(); break;
+    case 'chairView': S.chairView = v; store.set('chairView', v); render(); break;
+    case 'csDir': { const i = +t.dataset.i; S.csort = S.csort.map((x, j) => j === i ? { k: x.k, d: -x.d } : x); store.set('csort', S.csort); render(); break; }
+    case 'csUp': { const i = +t.dataset.i; const a = S.csort.slice(); [a[i - 1], a[i]] = [a[i], a[i - 1]]; S.csort = a; store.set('csort', a); render(); break; }
+    case 'csRm': { const i = +t.dataset.i; S.csort = S.csort.filter((_, j) => j !== i); store.set('csort', S.csort); render(); break; }
+    case 'ysDir': { const i = +t.dataset.i; S.ysort = S.ysort.map((x, j) => j === i ? { k: x.k, d: -x.d } : x); store.set('ysort', S.ysort); render(); break; }
+    case 'ysUp': { const i = +t.dataset.i; const a = S.ysort.slice(); [a[i - 1], a[i]] = [a[i], a[i - 1]]; S.ysort = a; store.set('ysort', a); render(); break; }
+    case 'ysRm': { const i = +t.dataset.i; S.ysort = S.ysort.filter((_, j) => j !== i); store.set('ysort', S.ysort); render(); break; }
+    case 'viewPhoto': D = { kind: 'photo', date: t.dataset.date, i: +t.dataset.i }; renderDrawer(); break;
+    case 'photoNav': D.i += +v; renderDrawer(); break;
+    case 'delPhoto': if (t.dataset.confirm) { const mk = D.date.slice(0, 7); const m = monthDoc(mk); const l = (m.photos || {})[D.date] || []; const [id] = l.splice(D.i, 1); m.photos[D.date] = l; commitMonth(mk, m); if (id && S.assets) S.assets.delete(id).catch(() => {}); closeDrawer(); toast('사진을 삭제했어요'); } else { t.dataset.confirm = '1'; t.textContent = '한 번 더 누르면 삭제'; } break;
+  }
+});
+document.addEventListener('change', ev => {
+  const t = ev.target;
+  if (t.id === 'attDate' && t.value) { S.date = t.value; render(); }
+  else if (t.id === 'monthSel') { S.month = t.value; render(); }
+  else if (t.id === 'yearSel') { S.year = t.value; render(); }
+  else if (t.id === 'ysAdd' && t.value) { S.ysort = S.ysort.concat({ k: t.value, d: ['rate', 'cls', 'age'].includes(t.value) ? -1 : 1 }); store.set('ysort', S.ysort); render(); }
+  else if (t.id === 'cGroup') { S.cgroup = t.value; S.cval = ''; store.set('cgroup', t.value); store.set('cval', ''); render(); }
+  else if (t.id === 'csAdd' && t.value) { S.csort = S.csort.concat({ k: t.value, d: 1 }); store.set('csort', S.csort); render(); }
+  else if (D && D.kind === 'event' && t.closest && t.closest('.drawer,.evd') && (t.dataset.rr || t.dataset.rm || /^e_(r1|r2|r3|rm|mpd|rt|tc|sub|start|end|status)$/.test(t.id))) { readEventForm(); renderDrawer(); }
+  else if (t.id === 'photoMonthSel') { S.photoMonth = t.value; render(); }
+  else if (t.id === 'fitXlsx' && t.files && t.files[0] && D) { readFitXlsx(t.files[0]); }
+  else if (t.classList.contains('attPhotoIn') && t.files && t.files.length) { uploadEvidence(t.dataset.date, [...t.files]); t.value = ''; }
+  else if (t.id === 'fitMonthSel') { S.fitMonth = t.value; render(); }
+  else if (t.id === 'fitPlayerSel') { S.fitPlayer = t.value; S.fitPMonth = null; render(); }
+  else if (t.id === 'fitPMonthSel') { S.fitPMonth = t.value; render(); }
+  else if (t.id === 'ft_pid' && D && D.kind === 'fit') { openFit(D.month, t.value); }
+  else if (t.id === 'exYear') { S.year = t.value; }
+  else if (t.classList.contains('photoIn') && t.files && t.files[0] && D) { uploadEntityPhoto(t.dataset.kind, D.id, t.dataset.side, t.files[0]); t.value = ''; }
+});
+
+// ---------- photo uploads (file picker + paste) ----------
+const upErr = e => toast(e && e.code === 'too_large' ? '사진이 너무 커요 (20MB 이하)' : e && e.code === 'unsupported_type' ? 'JPG·PNG 사진만 올릴 수 있어요' : e && e.code === 'quota_or_state' ? '사진 저장 공간이 가득 찼어요' : '사진을 올리지 못했어요');
+async function uploadEvidence(d, files) {
+  toast(`사진 ${files.length}장 올리는 중…`); const ids = [];
+  for (const f of files) { try { ids.push((await uploadImage(f, 1600)).id); } catch (e) { upErr(e); } }
+  if (!ids.length) return;
+  const mk = d.slice(0, 7); const m = monthDoc(mk); m.photos[d] = (m.photos[d] || []).concat(ids); if (!m.days.includes(d)) { m.days.push(d); m.days.sort(); }
+  commitMonth(mk, m); toast(`증빙 사진 ${ids.length}장을 저장했어요`);
+}
+function uploadEntityPhoto(kind, id, side, file) {
+  toast('사진 올리는 중…');
+  uploadImage(file).then(r => {
+    const col = kind === 'player' ? 'players' : 'chairs'; const src = kind === 'player' ? S.players : S.chairs;
+    const doc = clone(src[id]); let old;
+    if (kind === 'chair') { side = side || SIDES.map(x => x[0]).find(k => !(doc.photos || {})[k]) || 'front'; doc.photos = doc.photos || {}; old = doc.photos[side] || (side === 'front' ? doc.photo : ''); doc.photos[side] = r.id; if (side === 'front' || !doc.photo) doc.photo = side === 'front' ? r.id : (doc.photo || r.id); }
+    else { old = doc.photo; doc.photo = r.id; }
+    src[id] = doc;
+    return saveDoc(col + '/' + id, doc).then(() => {
+      if (old && old !== r.id) S.assets.delete(old).catch(() => {});
+      if (D && D.id === id) { if (kind === 'player') D.draft.p.photo = r.id; else { D.draft.photo = doc.photo; D.draft.photos = doc.photos; } renderDrawer(); }
+      render(); toast(kind === 'chair' ? `${SIDES.find(x => x[0] === side)[1]} 사진을 저장했어요` : '사진을 저장했어요');
+    });
+  }).catch(upErr);
+}
+document.addEventListener('paste', e => {
+  const tgt = e.target; if (tgt && /^(INPUT|TEXTAREA)$/.test(tgt.tagName) && tgt.type !== 'file') return;
+  const files = [...(e.clipboardData && e.clipboardData.files || [])].filter(f => /^image\//.test(f.type));
+  if (!files.length) return;
+  if (!S.assets) { toast('편집 권한이 있어야 사진을 붙여넣을 수 있어요'); return; }
+  e.preventDefault();
+  if (D && D.kind === 'player' && S.players[D.id]) return uploadEntityPhoto('player', D.id, null, files[0]);
+  if (D && D.kind === 'chair' && S.chairs[D.id]) return uploadEntityPhoto('chair', D.id, null, files[0]);
+  if (!D && S.tab === 'att' && S.attView === 'check') return uploadEvidence(S.date, files);
+  toast('출석 체크 화면, 선수 화면, 휠체어 화면에서 붙여넣을 수 있어요');
+});
+// 숙박 칸: 누른 채로 끌어서 여러 칸 칠하기
+let PAINT = null;
+const paintCell = c => { const k = c.dataset.i + '|' + c.dataset.d; if (PAINT.cells.has(k)) return; PAINT.cells.add(k); c.classList.toggle('on', PAINT.on); };
+document.addEventListener('pointerdown', ev => {
+  const c = ev.target.closest && ev.target.closest('.pn'); if (!c || c.disabled || !D || D.kind !== 'event' || ev.button > 0) return;
+  ev.preventDefault(); PAINT = { on: !c.classList.contains('on'), cells: new Set() }; paintCell(c);
+});
+document.addEventListener('pointermove', ev => { if (!PAINT) return; const el = document.elementFromPoint(ev.clientX, ev.clientY); const c = el && el.closest && el.closest('.pn'); if (c && !c.disabled) paintCell(c); });
+const endPaint = () => {
+  if (!PAINT) return; const pt = PAINT; PAINT = null; if (!D || D.kind !== 'event') return; readEventForm();
+  pt.cells.forEach(k => { const [i, d] = k.split('|'); const x = D.draft.roster[+i]; if (!x) return; const s2 = new Set(x.nights || []); if (pt.on) s2.add(d); else s2.delete(d); x.nights = [...s2].sort(); });
+  renderDrawer();
+};
+document.addEventListener('pointerup', endPaint); document.addEventListener('pointercancel', endPaint);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && D && !(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))) closeDrawer(); });
+window.addEventListener('load', () => { if (S.tab === 'export') render(); });
+boot();
+})();
+</script>
+</body></html>
