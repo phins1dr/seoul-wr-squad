@@ -68,6 +68,7 @@ STUB = r'''<script>
     if (n === 'downloads') return { save: async ({ filename, data }) => { const b = data instanceof Blob ? data : new Blob([data]); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = filename; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); return { status: 'saved' }; } };
     return null; } };
   load().then(s => {
+    window.__snapAsOf = s.asOf;
     const put = () => { const m = document.getElementById('mode'); if (!m) return setTimeout(put, 100); m.className = 'pill ro'; m.textContent = '공유용 · ' + s.asOf.replace(/-/g, '.') + ' 기준'; };
     const keep = () => { put(); setTimeout(keep, 1500); }; keep();
   });
