@@ -18,6 +18,7 @@
     if (n === 'downloads') return { save: async ({ filename, data }) => { const b = data instanceof Blob ? data : new Blob([data]); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = filename; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); return { status: 'saved' }; } };
     return null; } };
   load().then(s => {
+    window.__snapAsOf = s.asOf;
     const put = () => { const m = document.getElementById('mode'); if (!m) return setTimeout(put, 100); m.className = 'pill ro'; m.textContent = '공유용 · ' + s.asOf.replace(/-/g, '.') + ' 기준'; };
     const keep = () => { put(); setTimeout(keep, 1500); }; keep();
   });
@@ -71,6 +72,19 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backgroun
 .pill.ro{background:var(--warn-soft);color:var(--warn)}
 .tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-block:0}
 .tabs::-webkit-scrollbar{display:none}
+html:not(.share) .tab[data-tab="ov"]{display:none}
+.ovteams{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:14px}
+.ovt{text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--tc);border-radius:var(--r);padding:14px 16px;cursor:pointer}
+.ovt:hover{border-color:var(--tc)}
+.ovt h3{margin:0;font-size:18px;display:flex;gap:8px;align-items:center}
+.ovt .big{font-size:34px;font-weight:700;color:var(--tc);line-height:1.1;margin-top:8px}
+.ovt .row{display:flex;gap:16px;margin-top:8px;font-size:13px;color:var(--ink2)}
+.ovg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:14px;margin-bottom:14px}
+@media (max-width:860px){.ovg{grid-template-columns:minmax(0,1fr)}}
+.ovsvg{width:100%;height:auto;display:block}
+.ovsvg.m{min-width:520px}
+.lgd{display:flex;gap:14px;font-size:12.5px;color:var(--ink2);flex-wrap:wrap}
+.lgd i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .tab{border:0;background:none;padding:10px 12px;font-weight:600;color:var(--ink3);border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap}
 .tab[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
 .tab:focus-visible,.btn:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -232,6 +246,10 @@ table.t .stick{position:sticky;left:0;background:var(--surface);z-index:1}
 table.sched th,table.sched td{padding:3px 3px}
 .pdfbox{position:fixed;left:-99999px;top:0;width:1400px;padding:24px;background:var(--surface)}
 .pdfbox .t{width:100%}
+.pdfbox.one{width:900px}
+.pdfbox.one .rcard{border:0;padding:0;margin:0}
+.pdfbox.one .rc-g{grid-template-columns:minmax(0,1fr)}
+.pdfbox .rchart{width:100%}
 .pdfbox .stick{position:static !important;left:auto !important}
 .report .rhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 table.rep th,table.rep td{padding:5px 5px;font-size:12.5px}
@@ -334,7 +352,7 @@ button.prow:disabled{cursor:default}
       <span id="mode" class="pill">불러오는 중</span>
     </div>
     <nav class="tabs" role="tablist" id="tabs">
-<button class="tab" role="tab" data-act="tab" data-v="home" data-tab="home">홈</button>
+<button class="tab" role="tab" data-act="tab" data-v="ov" data-tab="ov">한눈에</button><button class="tab" role="tab" data-act="tab" data-v="home" data-tab="home">홈</button>
       <button class="tab" role="tab" data-act="tab" data-v="players" data-tab="players">선수정보</button>
       <button class="tab" role="tab" data-act="tab" data-v="att" data-tab="att">출석부</button>
       <button class="tab" role="tab" data-act="tab" data-v="fit" data-tab="fit">체력테스트</button>
@@ -553,7 +571,8 @@ function render() {
   if (!S.ready || (S.db && !S.loaded.players)) { main.innerHTML = '<div class="empty">선수단 데이터를 불러오는 중이에요.</div>'; return; }
   if (S.offline) { main.innerHTML = '<div class="empty">선수단 기록은 claude.ai에 로그인해야 보여요.<br>위쪽 [로그인]을 누르거나, 카카오톡에서 열었다면 Safari·Chrome으로 열어 주세요.</div>'; return; }
   if (!Object.keys(S.players).length) { main.innerHTML = `<div class="empty">아직 등록된 선수가 없어요.<br>${S.canEdit ? '<button class="btn pri" data-act="newPlayer" style="margin-top:12px">첫 선수 등록</button>' : ''}</div>`; return; }
-  const fn = { home: vHome, att: vAtt, players: vPlayers, fit: vFit, chairs: vChairs, events: vEvents, export: vExport }[S.tab] || vHome;
+  if (SHARE && !S._ov) { S._ov = 1; S.tab = 'ov'; document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === S.tab))); }
+  const fn = { ov: vOverview, home: vHome, att: vAtt, players: vPlayers, fit: vFit, chairs: vChairs, events: vEvents, export: vExport }[S.tab] || vHome;
   const sx = window.scrollX, sy = window.scrollY;
   const evOpen = D && D.kind === 'event';
   if (evOpen && $('#evHost')) readEventForm();
@@ -774,9 +793,57 @@ function reportHTML(R, forPdf) {
     </tbody></table></div>
     <div class="legend" style="margin-top:10px"><span>● 대회 명단에 들어감</span><span>○ 팀은 나갔는데 명단에 없음</span><span>– 팀이 안 나간 대회 · 등록 전</span><span>월별 칸 숫자 = 그 달 출석률(%)</span></div>`;
 }
+// 공유용 첫 화면 '한눈에' (공유용 페이지에서만 보여요)
+const SHARE = !!window.__claudeSnap; if (SHARE) document.documentElement.classList.add('share');
+const TEAMS = [['우림맨테크', '쿼드', 'quad'], ['송파씨젠', '오픈', 'open']];
+function ovYears() { return [...new Set(monthsWithData().map(k => k.slice(0, 4)))].sort(); }
+function vOverview() {
+  const years = ovYears(); if (!years.includes(S.year)) S.year = years[years.length - 1] || S.year; const y = S.year;
+  const asOf = (window.__snapAsOf || todayISO()).replace(/-/g, '.');
+  const RT = {}; TEAMS.forEach(([t]) => RT[t] = reportData(y, t));
+  const mAvg = (R, m) => { const v = R.rows.map(x => x.r.months[m]).filter(v => v != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  const evTeam = (R, t) => R.evs.filter(([, e]) => (e.roster || []).some(x => x.role === '선수' && P(x.pid).team === t)).length;
+  // 1. 팀 카드
+  const cards = TEAMS.map(([t, dv, c]) => { const R = RT[t];
+    return `<button class="ovt" style="--tc:var(--${c})" data-act="ovTeam" data-v="${t}"><h3>${esc(t)} ${divTag(dv)}</h3>
+      <div class="small muted" style="margin-top:4px">${y} 평균 출석률</div><div class="big num">${pct(R.avgRate)}</div>
+      <div class="row"><span>활동 선수 <b class="num">${R.rows.length}</b>명</span><span>훈련 <b class="num">${R.nTrain}</b>회</span><span>참가 대회 <b class="num">${evTeam(R, t)}</b>개</span></div></button>`; }).join('');
+  // 2. 연간 출석률 팀별 비교 (해마다 막대 2개)
+  const yr = years.map(yy => ({ yy, v: TEAMS.map(([t]) => reportData(yy, t).avgRate), n: monthsWithData().filter(k => k.startsWith(yy)).length }));
+  const YW = Math.max(yr.length * 110, 240), YH = 190, top = 18, bot = 34, ch = YH - top - bot, yv = v => top + ch * (1 - v);
+  const ybars = yr.map((o, i) => { const x0 = i * 110 + 20; return o.v.map((v, k) => { const x = x0 + k * 36, col = cssv(TEAMS[k][2]);
+    return v == null ? '' : `<rect x="${x}" y="${yv(v)}" width="30" height="${Math.max(ch * v, 1)}" rx="4" fill="${col}"><title>${o.yy} ${TEAMS[k][0]} ${pct(v)}</title></rect><text x="${x + 15}" y="${yv(v) - 4}" text-anchor="middle" font-size="12" font-weight="700" fill="${col}">${Math.round(v * 100)}</text>`; }).join('')
+    + `<text x="${x0 + 33}" y="${YH - 16}" text-anchor="middle" font-size="12.5" font-weight="600" fill="${cssv('ink')}">${o.yy}</text><text x="${x0 + 33}" y="${YH - 3}" text-anchor="middle" font-size="10.5" fill="${cssv('ink3')}">${o.n}개월</text>`; }).join('');
+  const grid = (W, yvf) => [0, .5, 1].map(g => `<line x1="0" x2="${W}" y1="${yvf(g)}" y2="${yvf(g)}" stroke="${cssv('line')}"/><text x="${W}" y="${yvf(g) - 3}" text-anchor="end" font-size="10" fill="${cssv('ink3')}">${g * 100}%</text>`).join('');
+  const ychart = `<svg class="ovsvg" viewBox="0 0 ${YW} ${YH}" font-family="sans-serif" role="img" aria-label="연도별 팀 평균 출석률">${grid(YW, yv)}${ybars}</svg>`;
+  // 3. 월별 출석률 (팀별 선)
+  const months = RT[TEAMS[0][0]].months; const MW = Math.max(months.length * 56, 320), MH = 210, mt = 18, mb = 26, mh = MH - mt - mb, my = v => mt + mh * (1 - v), mx = i => 24 + i * ((MW - 48) / Math.max(months.length - 1, 1));
+  const other = (t, m) => mAvg(RT[TEAMS.find(([x]) => x !== t)[0]], m);
+  const lines = TEAMS.map(([t, , c]) => { const col = cssv(c); const pts = months.map((m, i) => [i, mAvg(RT[t], m)]).filter(([, v]) => v != null);
+    return `<polyline fill="none" stroke="${col}" stroke-width="2.5" points="${pts.map(([i, v]) => `${mx(i)},${my(v)}`).join(' ')}"/>` + pts.map(([i, v]) => `<circle cx="${mx(i)}" cy="${my(v)}" r="4" fill="${col}"><title>${+months[i].slice(5)}월 ${t} ${pct(v)}</title></circle><text x="${mx(i)}" y="${my(v) + (v >= (other(t, months[i]) ?? -1) ? -9 : 17)}" text-anchor="middle" font-size="10.5" font-weight="600" fill="${col}">${Math.round(v * 100)}</text>`).join(''); }).join('');
+  const mchart = months.length ? `<svg class="ovsvg m" viewBox="0 0 ${MW} ${MH}" font-family="sans-serif" role="img" aria-label="${y} 월별 팀 평균 출석률">${grid(MW, my)}${lines}${months.map((m, i) => `<text x="${mx(i)}" y="${MH - 6}" text-anchor="middle" font-size="11" fill="${cssv('ink3')}">${+m.slice(5)}월</text>`).join('')}</svg>` : '<div class="muted small">이 해 훈련 기록이 없어요.</div>';
+  const legend = `<div class="lgd">${TEAMS.map(([t, , c]) => `<span><i style="background:var(--${c})"></i>${t}</span>`).join('')}</div>`;
+  // 4. 개인 비교 (선수 × 월 색칸, 팀별 · 출석률 높은 순)
+  const heat = TEAMS.map(([t]) => { const R = RT[t]; const rows = R.rows.slice().sort((a, b) => (b.rate ?? -1) - (a.rate ?? -1));
+    return `<tr class="grp"><td class="stick" colspan="${months.length + 2}">${esc(t)}</td></tr>` + rows.map(x => `<tr class="click" data-act="ovPlayer" data-id="${x.id}"><td class="stick" style="white-space:nowrap"><b>${esc(x.p.name)}</b> <span class="muted small num">${esc(fmtCls(x.p.cls))}</span></td>
+      ${months.map(m => `<td class="c"><span class="heat num small" style="${heatStyle(x.r.months[m])}">${x.r.months[m] == null ? '' : Math.round(x.r.months[m] * 100)}</span></td>`).join('')}
+      <td class="r"><span class="heat num" style="${heatStyle(x.rate)}">${pct(x.rate)}</span></td></tr>`).join(''); }).join('');
+  return `<div class="bar" style="margin-bottom:12px;flex-wrap:wrap"><div><h2 style="margin:0">서울휠체어럭비 선수단</h2><div class="muted small">${asOf} 기준 · 출석률은 선수별 등록일 이후 훈련만 세요</div></div><span class="sp"></span>
+    <select class="in" id="yearSel" style="width:auto" aria-label="연도">${years.map(v => `<option ${v === y ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+  <div class="ovteams">${cards}</div>
+  <div class="ovg">
+    <section class="panel"><h2 style="margin-top:0">연간 출석률 <span class="muted small">팀 평균</span></h2>${legend}<div style="margin-top:8px">${ychart}</div><div class="muted small">${yr.filter(o => o.n < 12).map(o => `${o.yy}년은 ${o.n}개월 기록`).join(' · ')}</div></section>
+    <section class="panel"><h2 style="margin-top:0">${y} 월별 출석률 <span class="muted small">팀 평균</span></h2>${legend}<div class="scroll" style="margin-top:8px">${mchart}</div></section>
+  </div>
+  <section class="panel"><h2 style="margin-top:0">${y} 선수별 월 출석률 <span class="muted small">팀별 · 출석률 높은 순 · 이름을 누르면 개인 카드</span></h2>
+    <div class="scroll"><table class="t rep"><thead><tr><th class="stick">이름</th>${months.map(m => `<th class="c">${+m.slice(5)}월</th>`).join('')}<th class="r">${y}</th></tr></thead><tbody>${heat}</tbody></table></div>
+    <div class="legend" style="margin-top:8px"><span>칸 숫자 = 그 달 출석률(%)</span><span>빈칸 = 등록 전</span></div></section>`;
+}
 // 선수 한 명 출석 카드: 이름 검색/클릭으로 열어요
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue('--' + n).trim() || '#888';
+const bandHex = r => cssv(r == null ? 'line' : r >= .85 ? 'good' : r >= .6 ? 'accent' : r >= .35 ? 'warn' : 'bad');
 const bandVar = r => r == null ? 'var(--line)' : r >= .85 ? 'var(--good)' : r >= .6 ? 'var(--accent)' : r >= .35 ? 'var(--warn)' : 'var(--bad)';
-function repCard(R, id) {
+function repCard(R, id, forPdf) {
   const x = R.rows.find(r => r.id === id); if (!x) return '';
   const { p, r } = x; const j = joinedOf(id); const months = R.months;
   const avgM = m => { const v = R.rows.map(z => z.r.months[m]).filter(v => v != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
@@ -784,20 +851,21 @@ function repCard(R, id) {
   const W = Math.max(months.length * 46, 46 * 8), H = 150, top = 14, bot = 22, ch = H - top - bot, bw = 22;
   const yv = v => top + ch * (1 - v);
   const bars = months.map((m, i) => { const cx = i * 46 + 23; const v = r.months[m]; const a = avgM(m);
-    return `${v != null ? `<rect x="${cx - bw / 2}" y="${yv(v)}" width="${bw}" height="${Math.max(ch * v, 1)}" rx="3" fill="${bandVar(v)}"><title>${+m.slice(5)}월 ${pct(v)}</title></rect><text x="${cx}" y="${yv(v) - 3}" text-anchor="middle" class="bl">${Math.round(v * 100)}</text>` : `<text x="${cx}" y="${yv(0) - 3}" text-anchor="middle" class="bl muted">–</text>`}
-      ${a != null ? `<line x1="${cx - bw / 2 - 4}" x2="${cx + bw / 2 + 4}" y1="${yv(a)}" y2="${yv(a)}" class="avgl"><title>평균 ${pct(a)}</title></line>` : ''}
-      <text x="${cx}" y="${H - 6}" text-anchor="middle" class="ml">${+m.slice(5)}월</text>`; }).join('');
-  const chart = `<svg class="rchart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMinYMid meet" role="img" aria-label="${esc(p.name)} 월별 출석률">
-    ${[0, .5, 1].map(g => `<line x1="0" x2="${W}" y1="${yv(g)}" y2="${yv(g)}" class="grid"/>`).join('')}${bars}</svg>`;
+    return `${v != null ? `<rect x="${cx - bw / 2}" y="${yv(v)}" width="${bw}" height="${Math.max(ch * v, 1)}" rx="3" fill="${bandHex(v)}"><title>${+m.slice(5)}월 ${pct(v)}</title></rect><text x="${cx}" y="${yv(v) - 3}" text-anchor="middle" class="bl" font-size="10.5" font-weight="600" fill="${cssv('ink2')}">${Math.round(v * 100)}</text>` : `<text x="${cx}" y="${yv(0) - 3}" text-anchor="middle" class="bl" font-size="10.5" fill="${cssv('ink3')}">–</text>`}
+      ${a != null ? `<line x1="${cx - bw / 2 - 4}" x2="${cx + bw / 2 + 4}" y1="${yv(a)}" y2="${yv(a)}" class="avgl" stroke="${cssv('ink')}" stroke-width="2" stroke-dasharray="3 2"><title>평균 ${pct(a)}</title></line>` : ''}
+      <text x="${cx}" y="${H - 6}" text-anchor="middle" class="ml" font-size="11" fill="${cssv('ink3')}">${+m.slice(5)}월</text>`; }).join('');
+  const chart = `<svg class="rchart" width="${W * 1.25}" height="${H * 1.25}" font-family="sans-serif" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMinYMid meet" role="img" aria-label="${esc(p.name)} 월별 출석률">
+    ${[0, .5, 1].map(g => `<line x1="0" x2="${W}" y1="${yv(g)}" y2="${yv(g)}" class="grid" stroke="${cssv('line')}" stroke-width="1"/>`).join('')}${bars}</svg>`;
   // 훈련일 칸: 출석 / 결석 / 등록 전
   const grid = months.map(m => { const st = monthStats(m); const mm = (S.att[m] || {}).marks || {};
     return `<div class="gr"><span class="gm">${+m.slice(5)}월</span><span class="gd">${st.days.map(d => { const on = (mm[d] || {})[id] === '출석'; const pre = j && d < j && !on;
       return `<i class="${pre ? 'pre' : on ? 'on' : 'off'}" title="${+d.slice(5, 7)}/${+d.slice(8)}(${dow(d)}) ${pre ? '등록 전' : on ? '출석' : '결석'}">${+d.slice(8)}</i>`; }).join('')}</span><span class="gn num">${st.aOf(id)}/${st.nOf(id)}</span></div>`; }).join('');
   const evs = R.evs.map(([, e], i) => { const c = x.cells[i]; return `<span class="evc ${c}" title="${esc(e.name)}">${c === 'in' ? '●' : c === 'out' ? '○' : '–'} ${esc(repShort(e.name))} <small>${+e.start.slice(5, 7)}월</small></span>`; }).join('');
-  return `<section class="panel rcard" id="repCard">
+  return `<section class="panel rcard" ${forPdf ? '' : 'id="repCard"'}>
+    ${forPdf ? `<div class="rhead" style="margin-bottom:12px"><div><h2 style="margin:0">${R.y} 선수 개인 평가</h2><div class="muted small">${todayISO().replace(/-/g, '.')} 기준 · 평균은 ${esc(R.team === '전체' ? '우림맨테크 · 송파씨젠' : R.team)} 활동 선수 ${R.rows.length}명 기준</div></div><div class="muted small">서울휠체어럭비 선수단</div></div>` : ''}
     <div class="rc-h">${avatar(p)}<div style="min-width:0"><div class="rc-n">${esc(p.name)} <span class="muted small num">${p.num ?? ''}번</span></div>
       <div class="small muted">${esc(p.team)} ${divTag(p.div)} 등급 <b class="num">${esc(fmtCls(p.cls))}</b>${j ? ` · 등록 ${j.replace(/-/g, '.')}` : ''}</div></div>
-      <span class="sp" style="flex:1"></span>${S.canEdit ? `<button class="btn ghost sm" data-act="openPlayer" data-id="${id}">선수 정보</button>` : ''}<button class="btn ghost sm" data-act="repPick" data-id="" aria-label="닫기">닫기</button></div>
+      <span class="sp" style="flex:1"></span>${forPdf ? '' : `<button class="btn sm" data-act="reportPdfP" data-id="${id}">이 선수 PDF</button>${S.canEdit ? `<button class="btn ghost sm" data-act="openPlayer" data-id="${id}">선수 정보</button>` : ''}<button class="btn ghost sm" data-act="repPick" data-id="" aria-label="닫기">닫기</button>`}</div>
     <div class="kpis" style="margin:12px 0">
       <div class="kpi"><div class="l">${R.y} 출석률</div><div class="v num" style="color:${bandVar(x.rate)}">${pct(x.rate)}</div><div class="s">평균 ${pct(R.avgRate)}</div></div>
       <div class="kpi"><div class="l">훈련 출석</div><div class="v num">${r.att}<span class="small muted">/${r.n}회</span></div><div class="s">결석 ${r.n - r.att}회</div></div>
@@ -815,29 +883,31 @@ function vReport() {
   const R = reportData(S.year, S.team);
   if (S.repPid && !R.rows.some(r => r.id === S.repPid)) S.repPid = '';
   return `<div class="bar" style="margin-bottom:10px;flex-wrap:wrap"><select class="in" id="yearSel" style="width:auto">${years.map(v => `<option ${v === S.year ? 'selected' : ''}>${v}</option>`).join('')}</select>
-  <input class="in" type="search" id="repSearch" list="repNames" placeholder="선수 이름 검색" style="width:160px" autocomplete="off"><datalist id="repNames">${R.rows.map(x => `<option value="${esc(x.p.name)}">`).join('')}</datalist><span class="sp"></span><button class="btn" data-act="reportPdf">PDF로 저장</button><button class="btn" data-act="reportXlsx">엑셀로 저장</button></div>
+  <input class="in" type="search" id="repSearch" list="repNames" placeholder="선수 이름 검색" style="width:160px" autocomplete="off"><datalist id="repNames">${R.rows.map(x => `<option value="${esc(x.p.name)}">`).join('')}</datalist><span class="sp"></span><button class="btn" data-act="reportPdf">팀 PDF</button><button class="btn" data-act="reportPdfP" data-id="">선수 개인 PDF</button><button class="btn" data-act="reportXlsx">엑셀로 저장</button></div>
+  ${S.pdfAsk ? `<div class="panel bar" style="margin-bottom:10px;flex-wrap:wrap;border-color:var(--accent)"><b>누구 PDF를 만들까요?</b><select class="in" id="pdfPid" style="width:auto">${R.rows.map(x => `<option value="${x.id}">${esc(x.p.name)} (${esc(x.p.team)})</option>`).join('')}</select><button class="btn pri" data-act="pdfAskGo">PDF 만들기</button><button class="btn ghost" data-act="pdfAskNo">취소</button></div>` : ''}
   ${S.repPid ? repCard(R, S.repPid) : `<div class="muted small" style="margin:-2px 0 10px">이름을 검색하거나 표에서 선수를 누르면 출석 카드가 열려요.</div>`}
   <section class="panel report">${reportHTML(R)}</section>`;
 }
 // 보고서 PDF: 화면을 그대로 그림으로 떠서 A4 가로 한 장에 맞춰요 (도구는 필요할 때만 불러와요)
 const loadJs = src => new Promise((ok, no) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const t = document.createElement('script'); t.src = src; t.onload = ok; t.onerror = no; document.head.appendChild(t); });
-async function reportPdf(y, team) {
+async function reportPdf(y, team, pid) {
   toast('PDF 만드는 중…');
   try {
     await loadJs('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
     await loadJs('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
   } catch { toast('PDF 도구를 불러오지 못했어요'); return; }
-  const box = document.createElement('div'); box.className = 'panel report pdfbox'; box.innerHTML = reportHTML(reportData(y, team), true);
+  const R = reportData(y, team); const pp = pid && R.rows.find(x => x.id === pid);
+  const box = document.createElement('div'); box.className = 'panel report pdfbox' + (pp ? ' one' : ''); box.innerHTML = pp ? repCard(R, pid, true) : reportHTML(R, true);
   document.body.appendChild(box);
   try {
     const cv = await window.html2canvas(box, { scale: 2, backgroundColor: getComputedStyle(document.body).backgroundColor || '#fff' });
-    const { jsPDF } = window.jspdf; const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    const W = 297, H = 210, M = 8; const r = Math.min((W - 2 * M) / cv.width, (H - 2 * M) / cv.height);
+    const { jsPDF } = window.jspdf; const pdf = new jsPDF({ orientation: pp ? 'portrait' : 'landscape', unit: 'mm', format: 'a4' });
+    const W = pp ? 210 : 297, H = pp ? 297 : 210, M = 8; const r = Math.min((W - 2 * M) / cv.width, (H - 2 * M) / cv.height);
     const w = cv.width * r, h = cv.height * r;
     pdf.addImage(cv.toDataURL('image/jpeg', 0.92), 'JPEG', (W - w) / 2, M, w, h);
     const dl = window.__claudeSnap && window.__claudeSnap.use ? await window.__claudeSnap.use('downloads') : null;
     if (!dl) { toast('이 화면에서는 파일을 내려받을 수 없어요'); return; }
-    await dl.save({ filename: `선수평가_${y}${team !== '전체' ? '_' + team : ''}.pdf`, data: pdf.output('blob') }); toast('PDF를 저장했어요');
+    await dl.save({ filename: pp ? `선수평가_${y}_${pp.p.name}.pdf` : `선수평가_${y}${team !== '전체' ? '_' + team : ''}.pdf`, data: pdf.output('blob') }); toast('PDF를 저장했어요');
   } catch (e) { if (!e || e.code !== 'declined') { console.warn(e); toast('PDF를 만들지 못했어요'); } }
   finally { box.remove(); }
 }
@@ -1639,6 +1709,11 @@ document.addEventListener('click', ev => {
     case 'export': doExport(); break;
     case 'exportPdf': reportPdf($('#exYear').value, $('#exTeam').value); break;
     case 'reportPdf': reportPdf(S.year, S.team); break;
+    case 'ovTeam': S.team = v; S.tab = 'att'; S.attView = 'month'; render(); window.scrollTo(0, 0); break;
+    case 'ovPlayer': S.team = '전체'; S.tab = 'att'; S.attView = 'report'; S.repPid = id; render(); setTimeout(() => { const c = $('#repCard'); c && c.scrollIntoView({ block: 'start' }); }, 30); break;
+    case 'reportPdfP': { const pid = id || S.repPid; if (pid) { S.pdfAsk = false; reportPdf(S.year, S.team, pid); } else { S.pdfAsk = true; render(); } break; }
+    case 'pdfAskGo': { const pid = ($('#pdfPid') || {}).value; S.pdfAsk = false; render(); if (pid) reportPdf(S.year, S.team, pid); break; }
+    case 'pdfAskNo': S.pdfAsk = false; render(); break;
     case 'reportXlsx': { const X = window.XLSX; if (!X) { toast('엑셀 도구를 불러오는 중이에요'); break; } const R = reportData(S.year, S.team); const wb = X.utils.book_new(); const ws = X.utils.aoa_to_sheet(reportSheet(X, R)); ws['!cols'] = [10, 10, 6, 11].map(w => ({ wch: w })); X.utils.book_append_sheet(wb, ws, '선수평가'); const out = X.write(wb, { bookType: 'xlsx', type: 'array' }); (async () => { const dl = window.__claudeSnap && window.__claudeSnap.use ? await window.__claudeSnap.use('downloads') : null; if (!dl) { toast('이 화면에서는 파일을 내려받을 수 없어요'); return; } try { await dl.save({ filename: `선수평가_${S.year}${S.team !== '전체' ? '_' + S.team : ''}.xlsx`, data: new Blob([out]) }); toast('엑셀 파일을 저장했어요'); } catch (e) { if (e && e.code !== 'declined') toast('파일을 저장하지 못했어요'); } })(); break; }
     case 'close': closeDrawer(); break;
     case 'cVal': S.cval = v; store.set('cval', v); render(); break;
