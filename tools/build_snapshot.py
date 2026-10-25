@@ -93,6 +93,16 @@ html = html[:i] + STUB + HIDE + html[i:]
 html = html.replace('<title>서울휠체어럭비 선수단</title>', '<title>선수단 공유용</title>', 1)
 if PAGES:
     html = html.replace('/_blob/', 'img/')
-    html = '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"></head><body>' + html + '</body></html>'
+    # 카톡·문자 링크 미리보기 (og.png 는 저장소 맨 위에 있어요)
+    SITE = 'https://phins1dr.github.io/seoul-wr-squad/'
+    desc = '우림맨테크(쿼드) · 송파씨젠(오픈) 출석·체력테스트·휠체어 기록 | ' + asof.replace('-', '.') + ' 기준'
+    OG = ('<title>서울휠체어럭비 선수단</title><meta name="description" content="%s">'
+          '<meta property="og:type" content="website"><meta property="og:site_name" content="서울휠체어럭비">'
+          '<meta property="og:title" content="서울휠체어럭비 선수단"><meta property="og:description" content="%s">'
+          '<meta property="og:url" content="%s"><meta property="og:image" content="%sog.png?v=%s">'
+          '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
+          '<meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#0d1724">') % (desc, desc, SITE, SITE, asof.replace('-', ''))
+    html = html.replace('<title>선수단 공유용</title>', '', 1)
+    html = '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">' + OG + '</head><body>' + html + '</body></html>'
 open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(html)
 print('players', len(data['players']), 'attendance', len(data['attendance']), 'events', len(data['events']), 'need assets', len(need))
