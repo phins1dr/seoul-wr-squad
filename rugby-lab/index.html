@@ -217,7 +217,10 @@ body.site>*:not(#site){display:none!important}
 
 .mpJoin{display:flex;gap:8px}.mpJoin input{flex:1;font-size:20px;letter-spacing:.2em;font-family:"IBM Plex Mono",monospace;padding:8px 12px;border:1.5px solid #c9ced6;border-radius:8px;text-transform:lowercase}
 .mpLink{background:#fde8dc;border-radius:12px;padding:10px 12px;display:grid;gap:6px}.mpLink span{font-weight:800;font-size:14px;color:#b6440f}.mpLink div{display:flex;gap:8px}.mpLink input{flex:1;min-width:0;font-size:13px;padding:8px;border:1px solid #e8b89a;border-radius:8px;background:#fff}
-@media (max-width:600px){.mpMk,.mpRooms,.mpTeams{grid-template-columns:1fr}.mpBar{font-size:12px}}
+.mpCard,.mpCard *{box-sizing:border-box}.mpCard *{min-width:0}.mpCard{max-width:100%}
+.mpNick{white-space:nowrap}.mpNick input,.mpJoin input{width:100%;min-width:0}.mpJoin .btn{flex:0 0 auto;white-space:nowrap}
+.mpJoin input::placeholder{letter-spacing:0;font-family:inherit;font-size:16px}
+@media (max-width:600px){.mpCard{padding:16px 14px}.mpBox{padding:8px;align-items:start}.mpMk,.mpRooms,.mpTeams{grid-template-columns:1fr}.mpBar{font-size:12px}}
 </style>
 
 <div class="app">
@@ -1297,7 +1300,7 @@ function mpDraw(){if(!MP.on||!G||!G.ps)return;screen();ctx.textAlign='center';ct
     if(mine){ctx.strokeStyle='#e8692c';ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(q.sx,q.sy,Math.max(16,1.0*S),0,Math.PI*2);ctx.stroke();}
     const t=mine?'나':nm;ctx.font=`800 ${Math.max(12,Math.min(0.4*S,18))}px "Gothic A1",sans-serif`;const tw=ctx.measureText(t).width+12,th=Math.max(12,Math.min(0.4*S,18))+8;const y=q.sy-Math.max(20,1.25*S);
     ctx.fillStyle=mine?'#e8692c':(s[0]==='B'?'#2f74c0':'#d62828');ctx.fillRect(q.sx-tw/2,y-th/2,tw,th);ctx.fillStyle='#fff';ctx.fillText(t,q.sx,y+1);}}
-$('btnMp').onclick=async()=>{$('mpBox').hidden=false;mpRender();await mpLobby();mpRender();if(G&&G.phase==='live'&&!MP.on)G.phase='paused';};
+$('btnMp').onclick=async()=>{$('mpBox').hidden=false;$('setup').hidden=true;mpRender();await mpLobby();mpRender();if(G&&G.phase==='live'&&!MP.on)G.phase='paused';};
 $('mpClose').onclick=()=>{$('mpBox').hidden=true;};
 $('mpBarOpen').onclick=()=>{$('mpBox').hidden=false;mpRender();};
 
