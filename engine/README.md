@@ -4,6 +4,9 @@
 
 - `rugby-brain.js` — 선수 움직임 AI(공격·라인수비·지역수비·프레스·키 수비·픽앤롤), 휠체어 물리, 규정(8초·12초·40초·키 8초·1m·백코트 등), 4피리어드 경기 진행
 - `rugby-chairs.js` — 위에서 본 휠체어 그림 (공격형 A, 수비형 D)
+- `pixi.min.js` — 화면 그리기 라이브러리 PixiJS 7.4.2 (MIT). 외부 CDN 없이 돌게 같이 둠
+
+엔진이 보내는 신호(`event`): `hit`(휠체어 충돌, power=부딪힌 속도), `pass`, `catch`, `bounce`, `whistle`, `possEnd`(공격 끝, good=득점), `final` 등. 화면 효과·소리는 이 신호로 붙여요.
 
 ## 쓰는 법
 

@@ -373,6 +373,7 @@ function hookStep(dt){if(G.phase==='trans')return;G.contact=G.contact||{};const 
   G.contact=now;}
 function collide(){const ps=G.ps;
   for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const a=ps[i],b=ps[j];const dx=b.x-a.x,dy=b.y-a.y,d=hyp(dx,dy);if(d<2*R&&d>1e-4){const o=(2*R-d),ux=dx/d,uy=dy/d;
+    {const cl=(Math.cos(a.a)*a.v-Math.cos(b.a)*b.v)*ux+(Math.sin(a.a)*a.v-Math.sin(b.a)*b.v)*uy;const hk=a.id+b.id,now=G.rt||0;if(cl>0.9&&!(G.hitT&&now-(G.hitT[hk]||-9)<0.6)){(G.hitT||(G.hitT={}))[hk]=now;hooks.event('hit',{a:a.id,b:b.id,x:a.x+ux*R,y:a.y+uy*R,power:+cl.toFixed(2),cross:a.team!==b.team});}} // 충돌 신호 (화면 효과·소리용)
     // 버티기: 멈춰서 자리 잡은 휠체어는 잘 안 밀림 (블로킹·범퍼싸움 기초)
     // 버티는 휠체어: 바퀴(옆)로 받으면 안 밀림(판으로 수비), 범퍼(앞·뒤)로 받으면 미는 쪽 힘(등급)에 따라 조금 밀림
     const resist=(q,o2,nx,ny)=>{if(Math.abs(q.v)>=0.6)return 1;const side=Math.abs(Math.cos(q.a)*ny-Math.sin(q.a)*nx);if(side>0.7)return 40;return clamp(2.5*(1+(parseFloat(q.cls)-parseFloat(o2.cls))*0.35),0.8,5);};
