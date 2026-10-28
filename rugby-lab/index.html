@@ -220,6 +220,15 @@ body.site>*:not(#site){display:none!important}
 .mpCard,.mpCard *{box-sizing:border-box}.mpCard *{min-width:0}.mpCard{max-width:100%}
 .mpNick{white-space:nowrap}.mpNick input,.mpJoin input{width:100%;min-width:0}.mpJoin .btn{flex:0 0 auto;white-space:nowrap}
 .mpJoin input::placeholder{letter-spacing:0;font-family:inherit;font-size:16px}
+body.mpFull{overflow:hidden;padding:0!important}
+body.mpFull .top,body.mpFull .hud,body.mpFull .panel,body.mpFull .clipbar{display:none!important}
+body.mpFull .cvwrap{position:fixed;inset:0;border-radius:0;border:0;z-index:20;background:#fff}
+body.mpFull .cvwrap{top:44px}body.mpFull .mpBar{position:fixed;top:5px}body.mpFull .msg{top:8px}
+body.mpFull #tPick,body.mpFull #tRev{display:none}
+@media (max-height:500px){body.mpFull .joy{width:110px;height:110px}body.mpFull .tbtns button{width:72px;height:72px;font-size:15px}body.mpFull .tbtns button.b2{width:58px;height:58px;font-size:13px}body.mpFull .touch{padding:8px}.mpBar{font-size:12px!important;padding:4px 6px 4px 12px!important}}
+.rotHint{display:none}
+@media (orientation:portrait) and (pointer:coarse){body.mpFull .rotHint{display:block;position:absolute;left:50%;top:8px;transform:translateX(-50%);z-index:4;background:#e8692c;color:#fff;font-weight:800;padding:6px 14px;border-radius:999px;font-size:13px;white-space:nowrap}body.mpFull .msg{top:48px}}
+.mpLen{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.mpLen span{font-weight:700;font-size:14px;margin-right:4px}
 @media (max-width:600px){.mpCard{padding:16px 14px}.mpBox{padding:8px;align-items:start}.mpMk,.mpRooms,.mpTeams{grid-template-columns:1fr}.mpBar{font-size:12px}}
 </style>
 
@@ -274,7 +283,7 @@ body.site>*:not(#site){display:none!important}
             <div class="row"><button class="btn primary" id="oddSave">저장하고 계속</button><button class="btn" id="oddCancel">취소</button></div>
           </div>
         </div>
-        <div class="mpBar" id="mpBar" hidden><span></span><button id="mpBarOpen">자리·점수</button></div>
+        <div class="rotHint">📱 휴대폰을 가로로 돌리면 더 크게 보여요</div><div class="mpBar" id="mpBar" hidden><span></span><button id="mpBarOpen">자리·점수</button></div>
         <div class="setup mpBox" id="mpBox" hidden><div class="mpCard"><div class="mpTop"><h2>👥 같이 하기</h2><button class="btn" id="mpClose">닫기</button></div><div id="mpBody"></div></div></div>
         <div class="setup" id="setup">
           <div class="card">
@@ -418,21 +427,21 @@ function renderSetup(){
 /* ---------- 화면 (세로: 공격이 위로) ---------- */
 const VIEW={x0:-2,x1:30,y0:-1.4,y1:16.4};
 let S=1,DPR=1,CW=0,CH=0,CX=14,CY=7.5,follow=false;let ORI='v';
-function layout(){if(window.SITE){const wr=$('cvwrap');const w=wr.clientWidth||300,h=wr.clientHeight||300;CW=w;CH=h;DPR=Math.min(window.devicePixelRatio||1,2.5);cv.style.width=w+'px';cv.style.height=h+'px';cv.width=Math.round(w*DPR);cv.height=Math.round(h*DPR);return;}const w=$('cvwrap').clientWidth;const sw=VIEW.y1-VIEW.y0,sh=VIEW.x1-VIEW.x0;
+function layout(){if(window.SITE||window.MPFULL){const wr=$('cvwrap');const w=wr.clientWidth||300,h=wr.clientHeight||300;CW=w;CH=h;DPR=Math.min(window.devicePixelRatio||1,2.5);cv.style.width=w+'px';cv.style.height=h+'px';cv.width=Math.round(w*DPR);cv.height=Math.round(h*DPR);return;}const w=$('cvwrap').clientWidth;const sw=VIEW.y1-VIEW.y0,sh=VIEW.x1-VIEW.x0;
   const cb=$('clipbar');const extra=cb&&!cb.hidden?cb.offsetHeight+24:0;const maxH=Math.max(window.__kindMode?460:320,window.innerHeight-90-extra);const h=viewMode==='full'?Math.min(w*sh/sw,maxH):maxH;
   CW=w;CH=h;DPR=Math.min(window.devicePixelRatio||1,2.5);cv.style.width=w+'px';cv.style.height=h+'px';cv.width=Math.round(w*DPR);cv.height=Math.round(h*DPR);}
 new ResizeObserver(layout).observe($('cvwrap'));window.addEventListener('resize',layout);
 let viewMode='me';
-function camera(){const sw=VIEW.y1-VIEW.y0;CY=(VIEW.y0+VIEW.y1)/2;if(ORI==='h'){const hf=(x0,x1)=>{S=Math.min(CW/(x1-x0),CH/sw);CX=(x0+x1)/2;};if(viewMode==='board')hf(-1.6,19.8);else hf(-1.3,29.3);return;}
+function camera(){const sw=VIEW.y1-VIEW.y0;CY=(VIEW.y0+VIEW.y1)/2;if(ORI==='h'){const hf=(x0,x1)=>{S=Math.min(CW/(x1-x0),CH/sw);CX=(x0+x1)/2;};if(viewMode==='board')hf(-1.6,19.8);else if(window.MPFULL)hf(-2.3,30.3);else hf(-1.3,29.3);return;}
   const fit=(x0,x1)=>{S=Math.min(CW/sw,CH/(x1-x0));CX=(x0+x1)/2;};
   if(viewMode==='full')fit(VIEW.x0,VIEW.x1);
   else if(viewMode==='board')fit(-1.6,19.8);
   else if(viewMode==='back')fit(VIEW.x0,15.6);
   else if(viewMode==='front')fit(12.4,VIEW.x1);
   else{const span=15.6-VIEW.x0;S=Math.min(CW/sw,CH/span);const q=G&&me();const b=G&&G.ball;const hp=b&&b.holder&&P(b.holder);const bx=hp?hp.x:(b?b.x:7);const tx=Math.max((VIEW.x0+15.6)/2,bx+2);const hx=CH/2/S;const want=clamp(tx,VIEW.x0+hx,VIEW.x1-hx);CX=camera.cx==null?want:camera.cx+(want-camera.cx)*0.12;camera.cx=CX;}}
-const w2s=(x,y)=>ORI==='h'?({sx:CW/2+(x-CX)*S,sy:CH/2+(y-CY)*S}):({sx:CW/2+(y-CY)*S,sy:CH/2-(x-CX)*S});
-const s2w=(sx,sy)=>ORI==='h'?({x:CX+(sx-CW/2)/S,y:CY+(sy-CH/2)/S}):({x:CX-(sy-CH/2)/S,y:CY+(sx-CW/2)/S});
-function meters(){const d=DPR;if(ORI==='h')ctx.setTransform(d*S,0,0,d*S,d*(CW/2-CX*S),d*(CH/2-CY*S));else ctx.setTransform(0,-d*S,d*S,0,d*(CW/2-CY*S),d*(CH/2+CX*S));}
+const w2s=(x,y)=>ORI==='h'?({sx:CW/2+(FLIP?-1:1)*(x-CX)*S,sy:CH/2+(FLIP?-1:1)*(y-CY)*S}):({sx:CW/2+(y-CY)*S,sy:CH/2-(x-CX)*S});
+const s2w=(sx,sy)=>ORI==='h'?({x:CX+(FLIP?-1:1)*(sx-CW/2)/S,y:CY+(FLIP?-1:1)*(sy-CH/2)/S}):({x:CX-(sy-CH/2)/S,y:CY+(sx-CW/2)/S});
+function meters(){const d=DPR;if(ORI==='h'){const F=FLIP?-1:1;ctx.setTransform(F*d*S,0,0,F*d*S,d*(CW/2-F*CX*S),d*(CH/2-F*CY*S));}else ctx.setTransform(0,-d*S,d*S,0,d*(CW/2-CY*S),d*(CH/2+CX*S));}
 function screen(){ctx.setTransform(DPR,0,0,DPR,0,0);}
 
 /* ---------- 경기 상태 ---------- */
@@ -502,14 +511,14 @@ cv.addEventListener('pointerleave',()=>{if(cfg.ctl==='mousejoy')mouse=null;});
 // 터치 조이스틱
 (()=>{const j=$('joy'),k=$('joyKnob');let id=null;
   const set=(e)=>{const r=j.getBoundingClientRect();let dx=(e.clientX-r.left-r.width/2)/(r.width/2),dy=(e.clientY-r.top-r.height/2)/(r.height/2);const m=Math.hypot(dx,dy);if(m>1){dx/=m;dy/=m;}
-    joyVec={x:-dy,y:dx};k.style.transform=`translate(${dx*38}px,${dy*38}px)`;};
+    joyVec=ORI==='h'?{x:dx,y:dy}:{x:-dy,y:dx};k.style.transform=`translate(${dx*38}px,${dy*38}px)`;};
   j.addEventListener('pointerdown',e=>{id=e.pointerId;j.setPointerCapture(id);set(e);if(G&&G.phase==='ready')whistle();});
   j.addEventListener('pointermove',e=>{if(e.pointerId===id)set(e);});
   const end=()=>{id=null;joyVec={x:0,y:0};k.style.transform='';};j.addEventListener('pointerup',end);j.addEventListener('pointercancel',end);
   $('tPass').onclick=()=>{passReq=true;if(G&&G.phase==='ready')whistle();};$('tBounce').onclick=()=>{bounceReq=true;};$('tPick').onclick=()=>{pickReq=true;};$('tRev').onclick=()=>{revReq=true;};})();
 function inputVec(){
   let v={x:0,y:0};
-  if(cfg.ctl==='keyhold'){v.x=(keys.arrowup||keys.w?1:0)-(keys.arrowdown||keys.s?1:0);v.y=(keys.arrowright||keys.d?1:0)-(keys.arrowleft||keys.a?1:0);}
+  if(cfg.ctl==='keyhold'){const U=(keys.arrowup||keys.w?1:0)-(keys.arrowdown||keys.s?1:0),Rr=(keys.arrowright||keys.d?1:0)-(keys.arrowleft||keys.a?1:0);if(ORI==='h'){v.x=Rr;v.y=-U;}else{v.x=U;v.y=Rr;}}
   else if(cfg.ctl==='keytoggle')v={...toggleDir};
   else if(cfg.ctl==='mousefollow'&&mouse){const q=me();const w=s2w(mouse.sx,mouse.sy);const dx=w.x-q.x,dy=w.y-q.y,d=hyp(dx,dy);if(d>0.4){const m=Math.min(1,d/3);v={x:dx/d*m,y:dy/d*m};}}
   else if(cfg.ctl==='mousejoy'&&mouse){const dx=-(mouse.sy-CH/2),dy=mouse.sx-CW/2,d=hyp(dx,dy),R0=Math.min(CW,CH)*0.3;if(d>12){const m=Math.min(1,d/R0);v={x:dx/d*m,y:dy/d*m};}}
@@ -915,10 +924,10 @@ function drawCourt(){screen();ctx.fillStyle='#fff';ctx.fillRect(0,0,CW,CH);meter
   ctx.strokeRect(0,7.5-KEYDRAW.w/2,KEYDRAW.d,KEYDRAW.w);ctx.strokeRect(28-KEYDRAW.d,7.5-KEYDRAW.w/2,KEYDRAW.d,KEYDRAW.w);
   ctx.fillStyle='#e8692c';for(const gx of [0,28])for(const gy of [7.5-KEYDRAW.w/2,7.5+KEYDRAW.w/2]){ctx.beginPath();ctx.arc(gx,gy,0.2,0,Math.PI*2);ctx.fill();}}
 function drawChair(p){meters();ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);const img=CHAIR_IMG[p.chair];
-  if(img){ctx.scale(CK,CK);ctx.drawImage(img,-85,-80,210,170);ctx.fillStyle=COL[p.team];ctx.beginPath();ctx.roundRect?ctx.roundRect(-29,-38,58,76,18):ctx.rect(-29,-38,58,76);ctx.fill();}
-  else{ctx.fillStyle=COL[p.team];ctx.beginPath();ctx.arc(0,0,0.5,0,Math.PI*2);ctx.fill();}
+  if(img){ctx.scale(CK,CK);ctx.drawImage(img,-85,-80,210,170);ctx.fillStyle=COL[mpCol(p)];ctx.beginPath();ctx.roundRect?ctx.roundRect(-29,-38,58,76,18):ctx.rect(-29,-38,58,76);ctx.fill();}
+  else{ctx.fillStyle=COL[mpCol(p)];ctx.beginPath();ctx.arc(0,0,0.5,0,Math.PI*2);ctx.fill();}
   ctx.restore();const s=w2s(p.x,p.y);screen();ctx.fillStyle='#fff';ctx.font=`700 ${Math.max(11,0.5*S)}px "Gothic A1",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(p.num),s.sx,s.sy+1);
-  {const fs=Math.max(9,0.3*S);ctx.font=`600 ${fs}px "IBM Plex Mono",monospace`;const tx=s.sx+0.85*S,ty=s.sy+0.7*S;const w=ctx.measureText(p.cls).width+6;ctx.fillStyle='rgba(255,255,255,.9)';ctx.fillRect(tx-w/2,ty-fs*0.65,w,fs*1.3);ctx.fillStyle=p.team==='A'?'#1f4f86':'#8f0f0f';ctx.fillText(p.cls,tx,ty+1);ctx.font=`700 ${Math.max(11,0.5*S)}px "Gothic A1",sans-serif`;}
+  {const fs=Math.max(9,0.3*S);ctx.font=`600 ${fs}px "IBM Plex Mono",monospace`;const tx=s.sx+0.85*S,ty=s.sy+0.7*S;const w=ctx.measureText(p.cls).width+6;ctx.fillStyle='rgba(255,255,255,.9)';ctx.fillRect(tx-w/2,ty-fs*0.65,w,fs*1.3);ctx.fillStyle=mpCol(p)==='A'?'#1f4f86':'#8f0f0f';ctx.fillText(p.cls,tx,ty+1);ctx.font=`700 ${Math.max(11,0.5*S)}px "Gothic A1",sans-serif`;}
   if(p.id==='A'+cfg.me){ctx.strokeStyle='#e8692c';ctx.lineWidth=3;ctx.beginPath();ctx.arc(s.sx,s.sy,0.95*S,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#e8692c';ctx.font=`700 ${Math.max(11,0.42*S)}px "Gothic A1",sans-serif`;ctx.fillText('나',s.sx,s.sy-1.35*S);}}
 function drawBall(){const b=G.ball;meters();ctx.beginPath();ctx.arc(b.x,b.y,0.28,0,Math.PI*2);ctx.fillStyle=flash>0?'#ffd84d':'#fff';ctx.fill();ctx.strokeStyle='#222';ctx.lineWidth=0.05;ctx.stroke();
   if(b.holder&&G.phase==='live'){const s=w2s(b.x,b.y);screen();const left=Math.max(0,8-G.holdT);ctx.strokeStyle=left<3?'#d62828':'#1f8a4c';ctx.lineWidth=3;ctx.beginPath();ctx.arc(s.sx,s.sy,0.45*S,-Math.PI/2,-Math.PI/2+Math.PI*2*left/8);ctx.stroke();}}
@@ -1185,9 +1194,15 @@ if(window.SITE){(()=>{
 })();}
 
 /* ---------- 같이 하기 (멀티플레이) ---------- */
-const MP={on:false,host:false,lobby:undefined,lst:'',room:null,code:'',mode:8,seats:{},names:{},myPeer:null,nick:'',cnt:{p:0,b:0},last:{},score:{B:0,R:0},poss:0,att:'B',sendT:0,inT:0,overT:0,scored:false,st:null,lm:null,mid:0,lmSeen:0,saved:null,rooms:[],err:''};
+const MP={on:false,host:false,lobby:undefined,lst:'',room:null,code:'',mode:8,seats:{},names:{},myPeer:null,nick:'',cnt:{p:0,b:0},last:{},score:{B:0,R:0},poss:0,att:'B',sendT:0,inT:0,overT:0,scored:false,st:null,lm:null,mid:0,lmSeen:0,saved:null,rooms:[],err:'',per:1,gc:480,plen:480,fin:false};
+let FLIP=false;
 const SEATS=['B1','B2','B3','B4','R1','R2','R3','R4'];
-const TEAMN={B:'파랑',R:'빨강'};
+const TEAMN={B:'A팀',R:'B팀'};
+const fv=v=>FLIP?{x:-v.x,y:-v.y}:v;
+function mpCol(p){if(!MP.on)return p.team;return seatOf(p.id)[0]==='B'?'A':'D';}
+function mpFlipCalc(){const blueRight=MP.per<=2;FLIP=!((MP.att==='B')===blueRight);}
+const mmss=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
+function mpFull(on){window.MPFULL=on;ORI=on?'h':'v';if(!on)FLIP=false;document.body.classList.toggle('mpFull',on);try{camera.z=null;}catch(e){}layout();}
 const seatList=()=>MP.mode===4?SEATS.slice(0,4):SEATS;
 const eidOf=seat=>(seat[0]===MP.att?'A':'D')+seat[1];
 const seatOf=id=>(id[0]==='A'?MP.att:(MP.att==='B'?'R':'B'))+id[1];
@@ -1198,7 +1213,7 @@ function mpMyPeer(){const me=mpPeers().find(p=>p.sameTab);return me?me.peer:null
 /* 사람 조종 입력 (방장 화면에서 엔진이 물어봄) */
 function mpPresOf(peer){const p=mpPeers().find(x=>x.peer===peer);return p?p.presence:null;}
 MP.hv=function(id){if(!MP.on||!MP.host||!G)return null;const owner=MP.seats[seatOf(id)];if(!owner)return null;
-  if(owner===MP.myPeer)return inputVec();const pr=mpPresOf(owner);const i=pr&&pr.inp;if(!i)return {x:0,y:0};
+  if(owner===MP.myPeer)return fv(inputVec());const pr=mpPresOf(owner);const i=pr&&pr.inp;if(!i)return {x:0,y:0};
   let x=+i.x||0,y=+i.y||0;const m=Math.hypot(x,y);if(m>1){x/=m;y/=m;}return {x,y};};
 function mpTarget(q,inp){const ms=G.ps.filter(t=>t.team==='A'&&t!==q&&!(t.id==='A3'&&!G.inbounded));if(!ms.length)return null;const m=Math.hypot(inp.x||0,inp.y||0);let best=null,bs=-1e9;
   for(const t of ms){const dx=t.x-q.x,dy=t.y-q.y,d=Math.hypot(dx,dy)||1;let s=-d*0.25;if(m>0.3)s+=((dx*inp.x+dy*inp.y)/(d*m))*5;else s+=dx>0?1:0;if(d>q.pass+2)s-=3;if(s>bs){bs=s;best=t;}}return best;}
@@ -1218,46 +1233,48 @@ function mpMySeat(){for(const s in MP.seats)if(MP.seats[s]===MP.myPeer)return s;
 MP.frame=function(dt){if(!MP.room)return;if(!MP.myPeer)MP.myPeer=mpMyPeer();
   if(MP.host){mpSeatsTick();
     if(MP.on&&G){$('result').hidden=true;
-      for(const s in MP.seats){const o=MP.seats[s];if(o===MP.myPeer){if(passReq)mpAct(s,'p',inputVec());if(bounceReq)mpAct(s,'b');continue;}
+      for(const s in MP.seats){const o=MP.seats[s];if(o===MP.myPeer){if(passReq)mpAct(s,'p',fv(inputVec()));if(bounceReq)mpAct(s,'b');continue;}
         const pr=mpPresOf(o);const i=pr&&pr.inp;if(!i)continue;const L=MP.last[o]||(MP.last[o]={p:i.p,b:i.b});
         if(i.p!==L.p){L.p=i.p;mpAct(s,'p',i);}if(i.b!==L.b){L.b=i.b;mpAct(s,'b');}}
       if(MP.mySeat!==mpMySeat()){MP.mySeat=mpMySeat();}
+      mpFlipCalc();
+      if(G.phase==='live'&&!MP.fin){MP.gc-=dt;if(MP.gc<=0){MP.gc=0;G.phase='over';G.result='period';MP.scored=true;MP.overT=0;msg(MP.per<4?`${MP.per}피리어드 끝 · A팀 ${MP.score.B} : ${MP.score.R} B팀`:`경기 끝! A팀 ${MP.score.B} : ${MP.score.R} B팀`,3400);}}
       if(G.phase==='over'){if(!MP.scored){MP.scored=true;const good=G.result==='try'||G.result==='foul';if(good)MP.score[MP.att]++;
-          const rt=$('resText').textContent||'';msg(`${good?TEAMN[MP.att]+' 득점!':TEAMN[MP.att]+' 공격 끝'} ${rt} · 파랑 ${MP.score.B} : ${MP.score.R} 빨강`,3200);}
-        MP.overT+=dt;if(MP.overT>3.6)mpNext();}}
+          const rt=$('resText').textContent||'';msg(`${good?TEAMN[MP.att]+' 득점!':TEAMN[MP.att]+' 공격 끝'} ${rt} · A팀 ${MP.score.B} : ${MP.score.R} B팀`,3200);}
+        MP.overT+=dt;if(MP.overT>3.6&&!MP.fin){if(MP.gc<=0){if(MP.per>=4){MP.fin=true;msg(`경기 끝! A팀 ${MP.score.B} : ${MP.score.R} B팀`,0);$('mpBox').hidden=false;mpRender();}else{MP.per++;MP.gc=MP.plen;if(MP.per===3)msg('후반전! 코트를 바꿔요',2600);}}if(!MP.fin)mpNext();}}}
     MP.sendT+=dt;if(MP.sendT>=0.066){MP.sendT=0;mpSendHost();}
-    if(!$('mpBox').hidden){const sig=JSON.stringify([MP.seats,MP.names,MP.on,MP.score,mpPeers().length]);if(sig!==MP.sig){MP.sig=sig;mpRender();}}
+    if(!$('mpBox').hidden){const sig=JSON.stringify([MP.seats,MP.names,MP.on,MP.score,mpPeers().length,MP.plen,MP.fin,MP.per]);if(sig!==MP.sig){MP.sig=sig;mpRender();}}
     mpBar();return;}
   /* 참가자 */
   const host=mpPeers().find(p=>p.presence&&p.presence.role==='host');
   if(!host){MP.hostGone=(MP.hostGone||0)+dt;if(MP.hostGone>4&&MP.on){mpLeave('방장이 나가서 방이 끝났어요');}return;}MP.hostGone=0;
-  const hp=host.presence;MP.seats=hp.seats||{};MP.names=hp.names||{};MP.mode=hp.mode||8;MP.mySeat=mpMySeat();
+  const hp=host.presence;MP.seats=hp.seats||{};MP.names=hp.names||{};MP.mode=hp.mode||8;MP.plen=hp.plen||480;MP.mySeat=mpMySeat();
   if(hp.run&&hp.st){if(!MP.on)mpClientStart();mpApply(hp.st,dt);}else if(MP.on&&!hp.run){mpClientStop();}
   if(passReq)MP.cnt.p++;if(bounceReq)MP.cnt.b++;
-  MP.inT+=dt;if(MP.inT>=0.05){MP.inT=0;const v=MP.on&&MP.mySeat?inputVec():{x:0,y:0};MP.room.presence({nick:MP.nick,inp:{x:r2(v.x),y:r2(v.y),p:MP.cnt.p,b:MP.cnt.b}}).catch(()=>{});}
-  if(!$('mpBox').hidden){const sig=JSON.stringify([MP.seats,MP.names,MP.on,MP.score,MP.mode,MP.myPeer,mpPeers().length]);if(sig!==MP.sig){MP.sig=sig;mpRender();}}mpBar();};
+  MP.inT+=dt;if(MP.inT>=0.05){MP.inT=0;const v=MP.on&&MP.mySeat?fv(inputVec()):{x:0,y:0};MP.room.presence({nick:MP.nick,inp:{x:r2(v.x),y:r2(v.y),p:MP.cnt.p,b:MP.cnt.b}}).catch(()=>{});}
+  if(!$('mpBox').hidden){const sig=JSON.stringify([MP.seats,MP.names,MP.on,MP.score,MP.mode,MP.myPeer,mpPeers().length,MP.plen,MP.fin,MP.per]);if(sig!==MP.sig){MP.sig=sig;mpRender();}}mpBar();};
 function mpSendHost(){if(!MP.room)return;let st=null;
   if(MP.on&&G&&G.ps){const b=G.ball;st={ph:G.phase,ps:G.ps.map(p=>[r2(p.x),r2(p.y),r2(p.a)]),ids:G.ps.map(p=>p.id+':'+p.cls).join(','),b:[r2(b.x),r2(b.y),b.holder||''],ib:G.inbounded?1:0,cr:G.crossed?1:0,
-    tm:[r2(G.shotT||0),r2(G.backT||0),r2(G.inboundT||0),r2(G.holdT||0)],att:MP.att,sc:[MP.score.B,MP.score.R],m:MP.lm};}
-  MP.room.presence({role:'host',nick:MP.nick,mode:MP.mode,seats:MP.seats,names:MP.names,run:MP.on?1:0,st}).catch(()=>{});
+    tm:[r2(G.shotT||0),r2(G.backT||0),r2(G.inboundT||0),r2(G.holdT||0)],att:MP.att,sc:[MP.score.B,MP.score.R],m:MP.lm,per:MP.per,gc:r2(MP.gc),fl:FLIP?1:0,fin:MP.fin?1:0};}
+  MP.room.presence({role:'host',plen:MP.plen,nick:MP.nick,mode:MP.mode,seats:MP.seats,names:MP.names,run:MP.on?1:0,st}).catch(()=>{});
   if(MP.lobby)MP.lobby.presence({open:{code:MP.code,mode:MP.mode,nick:MP.nick,n:Object.keys(MP.seats).length,run:MP.on?1:0}}).catch(()=>{});}
-function mpApply(st,dt){if(!G||G.phase!=='mp')return;MP.att=st.att;MP.score={B:st.sc[0],R:st.sc[1]};
+function mpApply(st,dt){if(!G||G.phase!=='mp')return;MP.att=st.att;MP.score={B:st.sc[0],R:st.sc[1]};MP.per=st.per||1;MP.gc=st.gc||0;FLIP=!!st.fl;MP.fin=!!st.fin;
   const ids=st.ids.split(',');ids.forEach((s,k)=>{const [id,cls]=s.split(':');const p=G.ps[k];if(!p)return;if(p.id!==id){p.id=id;p.team=id[0];p.num=+id[1];}if(p.cls!==cls){p.cls=cls;p.chair=parseFloat(cls)<=1.5?'D':'A';}});
   const k=1-Math.exp(-dt*14);st.ps.forEach((v,i)=>{const p=G.ps[i];if(!p)return;if(Math.hypot(v[0]-p.x,v[1]-p.y)>4){p.x=v[0];p.y=v[1];p.a=v[2];return;}p.x+=(v[0]-p.x)*k;p.y+=(v[1]-p.y)*k;let da=v[2]-p.a;da=((da+Math.PI*3)%(Math.PI*2))-Math.PI;p.a+=da*k;});
   const b=G.ball;if(Math.hypot(st.b[0]-b.x,st.b[1]-b.y)>4){b.x=st.b[0];b.y=st.b[1];}else{b.x+=(st.b[0]-b.x)*k;b.y+=(st.b[1]-b.y)*k;}b.holder=st.b[2]||null;
   G.inbounded=!!st.ib;G.crossed=!!st.cr;[G.shotT,G.backT,G.inboundT,G.holdT]=st.tm;G.mpPh=st.ph;
   if(st.m&&st.m.id!==MP.lmSeen){MP.lmSeen=st.m.id;msg(st.m.t,st.m.ms);}
   try{hud();}catch(e){}}
-function mpClientStart(){MP.on=true;window.MPON=true;mpSaveCfg();newGame();G.phase='mp';$('setup').hidden=true;$('result').hidden=true;$('mpBox').hidden=true;mpTouch(true);}
-function mpClientStop(){MP.on=false;if(G)G.phase='setup';$('mpBox').hidden=false;mpRender();}
+function mpClientStart(){MP.on=true;window.MPON=true;mpSaveCfg();newGame();G.phase='mp';$('setup').hidden=true;$('result').hidden=true;$('mpBox').hidden=true;mpTouch(true);mpFull(true);}
+function mpClientStop(){MP.on=false;mpFull(false);if(G)G.phase='setup';$('mpBox').hidden=false;mpRender();}
 function mpSaveCfg(){if(!MP.saved)MP.saved={mode:cfg.mode,me:cfg.me,autoBounce:cfg.autoBounce,ctl:cfg.ctl,autoNext:$('autoNext').checked};cfg.mode='watch';cfg.me=0;cfg.autoBounce=true;$('autoNext').checked=false;
   if(matchMedia('(pointer:coarse)').matches)cfg.ctl='touch';else if(cfg.ctl!=='pad')cfg.ctl='keyhold';}
 function mpRestoreCfg(){if(MP.saved){cfg.mode=MP.saved.mode;cfg.me=MP.saved.me;cfg.autoBounce=MP.saved.autoBounce;cfg.ctl=MP.saved.ctl;$('autoNext').checked=MP.saved.autoNext;MP.saved=null;}mpTouch(false);}
 function mpTouch(on){$('touch').hidden=!(on?cfg.ctl==='touch':cfg.ctl==='touch'&&$('setup').hidden);}
 /* 방장: 시작·다음 공격 */
-function mpStart(){if(!MP.host)return;MP.on=true;window.MPON=true;mpSaveCfg();MP.score={B:0,R:0};MP.poss=0;MP.att='B';MP.overT=0;MP.scored=false;$('setup').hidden=true;$('mpBox').hidden=true;mpTouch(true);newGame();msg('파랑 공격부터 시작! 공격과 수비가 번갈아 와요',2600);}
+function mpStart(){if(!MP.host)return;MP.on=true;window.MPON=true;mpSaveCfg();MP.score={B:0,R:0};MP.poss=0;MP.att='B';MP.overT=0;MP.scored=false;MP.per=1;MP.gc=MP.plen;MP.fin=false;$('setup').hidden=true;$('mpBox').hidden=true;mpTouch(true);mpFlipCalc();mpFull(true);newGame();msg('1피리어드 시작! A팀 공격부터',2600);}
 function mpNext(){MP.poss++;MP.att=MP.att==='B'?'R':'B';MP.overT=0;MP.scored=false;newGame();msg(`${TEAMN[MP.att]} 공격`,1500);}
-function mpStop(){MP.on=false;window.MPON=false;mpRestoreCfg();newGame();G.phase='setup';$('mpBox').hidden=false;mpRender();}
+function mpStop(){MP.on=false;window.MPON=false;MP.fin=false;mpFull(false);mpRestoreCfg();newGame();G.phase='setup';$('mpBox').hidden=false;mpRender();}
 /* 방 만들기·들어가기·나가기 */
 async function mpLobby(){if(MP.lst==='ok'||MP.lst==='no')return MP.lobby;if(MP.lst==='loading'){while(MP.lst==='loading')await new Promise(r=>setTimeout(r,100));return MP.lobby;}MP.lst='loading';try{MP.lobby=window.claude&&window.claude.use?await window.claude.use('room'):null;}catch(e){MP.lobby=null;}MP.lst=MP.lobby?'ok':'no';
   if(MP.lobby){MP.lobby.onPeers(ch=>{MP.rooms=ch.peers.filter(p=>!p.sameTab&&p.presence&&p.presence.open&&p.presence.open.code).map(p=>({...p.presence.open,peer:p.peer}));if(!$('mpBox').hidden)mpRender();},()=>{});
@@ -1269,7 +1286,7 @@ async function mpCreate(mode){const L=await mpLobby();if(!L)return;MP.err='';if(
 async function mpJoin(code){code=String(code||'').trim().toLowerCase();if(!/^[a-z0-9]{4}$/.test(code)){MP.err='방 코드는 4글자예요';mpRender();return;}const L=await mpLobby();if(!L)return;MP.err='';if(L.setWant)L.setWant('join');MP.busy='들어가는 중…';mpRender();try{MP.room=await L.join('rg-'+code);}catch(e){MP.busy='';MP.err=(e&&e.code==='not_found')?'그 방을 찾지 못했어요. 코드를 확인하거나, 방장이 방을 열어 뒀는지 확인해 주세요.':'들어가지 못했어요 ('+(e&&e.code||'오류')+')';mpRender();return;}MP.busy='';
   MP.code=code;MP.host=false;MP.seats={};MP.myPeer=null;MP.room.presence({nick:MP.nick,want:'',inp:{x:0,y:0,p:0,b:0}}).catch(()=>{});mpRender();}
 async function mpLeave(note){const wasOn=MP.on;MP.on=false;window.MPON=false;try{if(MP.lobby&&MP.host)await MP.lobby.presence({open:null});}catch(e){}try{if(MP.room)await MP.room.leave();}catch(e){}
-  MP.room=null;MP.host=false;MP.code='';MP.seats={};MP.names={};MP.mySeat=null;if(wasOn||MP.saved){mpRestoreCfg();newGame();G.phase='setup';}MP.err=note||'';$('mpBox').hidden=false;mpRender();}
+  mpFull(false);MP.room=null;MP.host=false;MP.code='';MP.seats={};MP.names={};MP.mySeat=null;if(wasOn||MP.saved){mpRestoreCfg();newGame();G.phase='setup';}MP.err=note||'';$('mpBox').hidden=false;mpRender();}
 function mpSit(seat){if(!MP.room)return;if(MP.host){if(!MP.myPeer)MP.myPeer=mpMyPeer();if(MP.seats[seat]&&MP.seats[seat]!==MP.myPeer)return;for(const s in MP.seats)if(MP.seats[s]===MP.myPeer)delete MP.seats[s];if(seat)MP.seats[seat]=MP.myPeer;mpSendHost();mpRender();return;}
   MP.room.presence({nick:MP.nick,want:seat||''}).catch(()=>{});}
 /* 화면 */
@@ -1285,16 +1302,16 @@ function mpRender(){const B=$('mpBody');if(!B)return;
   const my=mpMySeat();const L=cfg.lineA;const cls=s=>L[+s[1]-1]||'';
   const seat=s=>{const o=MP.seats[s];const nm=MP.names[s];const mine=o&&o===MP.myPeer;return `<button class="mpSeat ${s[0]}${mine?' me':''}${o&&!mine?' taken':''}" data-seat="${s}" ${o&&!mine?'disabled':''}><span class="sn">${s[1]}번 <i>${cls(s)}</i></span><span class="who">${o?mpEsc(nm||'선수')+(mine?' (나)':''):'컴퓨터'}</span></button>`;};
   const link=window.STANDALONE?location.origin+location.pathname+'?room='+MP.code:'';
-  B.innerHTML=`${link&&MP.host?`<div class="mpLink"><span>참가 링크 (카톡으로 보내세요)</span><div><input readonly value="${mpEsc(link)}"><button class="btn primary" id="mpCopy">복사</button></div></div>`:''}<div class="mpHead"><span>방 코드 <b>${mpEsc(MP.code)}</b> · ${MP.mode===4?'4인 (파랑 4명 vs 컴퓨터)':'8인 (4 대 4)'}</span>${MP.on?`<span>파랑 ${MP.score.B} : ${MP.score.R} 빨강</span>`:''}</div>
-    <p class="mpNote">자리를 눌러 앉으세요. 빈자리는 컴퓨터가 뛰어요. <b>자리에 안 앉으면 관전</b>이에요. 공격과 수비는 한 번씩 번갈아 와요.</p><p class="mpNote">👀 관전 ${Math.max(0,mpPeers().length-Object.keys(MP.seats).length)}명 · 🎮 선수 ${Object.keys(MP.seats).length}명</p>
-    <div class="mpTeams"><div><h3 class="tB">파랑</h3>${SEATS.slice(0,4).map(seat).join('')}</div>${MP.mode===8?`<div><h3 class="tR">빨강</h3>${SEATS.slice(4).map(seat).join('')}</div>`:''}</div>
-    <div class="mpCtl">${my?`<button class="btn" data-sit="">자리에서 일어나기 (관전)</button>`:''}${MP.host?(MP.on?'<button class="btn" id="mpEnd">경기 끝내기</button>':'<button class="btn primary" id="mpGo">경기 시작</button>'):`<span class="mpNote">${MP.on?'경기 중이에요':'방장이 시작하면 바로 시작돼요'}</span>`}<button class="btn" id="mpOut">방 나가기</button></div>
+  B.innerHTML=`${link&&MP.host?`<div class="mpLink"><span>참가 링크 (카톡으로 보내세요)</span><div><input readonly value="${mpEsc(link)}"><button class="btn primary" id="mpCopy">복사</button></div></div>`:''}<div class="mpHead"><span>방 코드 <b>${mpEsc(MP.code)}</b> · ${MP.mode===4?'4인 (A팀 4명 vs 컴퓨터)':'8인 (4 대 4)'}</span>${MP.on?`<span>${MP.per}P ${mmss(MP.gc)} · A팀 ${MP.score.B} : ${MP.score.R} B팀${MP.fin?' · 경기 끝':''}</span>`:''}</div>
+    <p class="mpNote">자리를 눌러 앉으세요. 빈자리는 컴퓨터가 뛰어요. <b>자리에 안 앉으면 관전</b>이에요. 공격과 수비는 한 번씩 번갈아 와요. A팀은 왼쪽→오른쪽, B팀은 오른쪽→왼쪽으로 공격하고 후반(3피리어드)에 코트를 바꿔요.</p>${MP.host&&!MP.on?`<div class="mpLen"><span>피리어드 시간 (4피리어드)</span>${[8,5,3].map(m=>`<button class="opt${MP.plen===m*60?' on':''}" data-len="${m}">${m}분</button>`).join('')}</div>`:`<p class="mpNote">피리어드 ${MP.plen/60|0}분 × 4</p>`}<p class="mpNote">👀 관전 ${Math.max(0,mpPeers().length-Object.keys(MP.seats).length)}명 · 🎮 선수 ${Object.keys(MP.seats).length}명</p>
+    <div class="mpTeams"><div><h3 class="tB">A팀 (파랑)</h3>${SEATS.slice(0,4).map(seat).join('')}</div>${MP.mode===8?`<div><h3 class="tR">B팀 (빨강)</h3>${SEATS.slice(4).map(seat).join('')}</div>`:''}</div>
+    <div class="mpCtl">${my?`<button class="btn" data-sit="">자리에서 일어나기 (관전)</button>`:''}${MP.host?(MP.on?(MP.fin?'<button class="btn primary" id="mpGo">새 경기</button>':'')+'<button class="btn" id="mpEnd">경기 끝내기</button>':'<button class="btn primary" id="mpGo">경기 시작</button>'):`<span class="mpNote">${MP.on?'경기 중이에요':'방장이 시작하면 바로 시작돼요'}</span>`}<button class="btn" id="mpOut">방 나가기</button></div>
     <p class="mpKeys">조작: 방향키/WASD 이동 · 스페이스 패스(가고 싶은 쪽으로 방향키를 누르면 그쪽 동료에게) · B 드리블. 폰은 화면 아래 조이스틱과 패스 버튼. 드리블은 자동이에요.</p>
     ${MP.err?`<p class="mpErr">${mpEsc(MP.err)}</p>`:''}`;
-  B.querySelectorAll('[data-seat]').forEach(b=>b.onclick=()=>mpSit(b.dataset.seat));B.querySelectorAll('[data-sit]').forEach(b=>b.onclick=()=>mpSit(''));
+  B.querySelectorAll('[data-seat]').forEach(b=>b.onclick=()=>mpSit(b.dataset.seat));B.querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{MP.plen=+b.dataset.len*60;mpRender();});B.querySelectorAll('[data-sit]').forEach(b=>b.onclick=()=>mpSit(''));
   const go=B.querySelector('#mpGo');if(go)go.onclick=mpStart;const en=B.querySelector('#mpEnd');if(en)en.onclick=mpStop;B.querySelector('#mpOut').onclick=()=>mpLeave('');const cp=B.querySelector('#mpCopy');if(cp)cp.onclick=async()=>{try{await navigator.clipboard.writeText(link);cp.textContent='복사됨!';}catch(e){B.querySelector('.mpLink input').select();cp.textContent='길게 눌러 복사';}};}
 function mpBar(){const bar=$('mpBar');if(!bar)return;bar.hidden=!(MP.room&&MP.on);if(bar.hidden)return;const my=MP.mySeat;const side=my?(my[0]===MP.att?'공격':'수비'):'관전';
-  const txt=`파랑 ${MP.score.B} : ${MP.score.R} 빨강 · ${TEAMN[MP.att]} 공격 · 나: ${my?TEAMN[my[0]]+' '+my[1]+'번 ('+side+')':'관전 중 👀'}`;if(bar.firstChild.textContent!==txt)bar.firstChild.textContent=txt;}
+  const sh=G?Math.max(0,40-(G.shotT||0)):40;const txt=`${MP.fin?'경기 끝':MP.per+'P '+mmss(MP.gc)} · A팀 ${MP.score.B} : ${MP.score.R} B팀 · ${TEAMN[MP.att]} 공격 ${Math.ceil(sh)}초 · 나: ${my?TEAMN[my[0]]+' '+my[1]+'번 ('+side+')':'관전 👀'}`;if(bar.firstChild.textContent!==txt)bar.firstChild.textContent=txt;}
 function mpDraw(){if(!MP.on||!G||!G.ps)return;screen();ctx.textAlign='center';ctx.textBaseline='middle';
   for(const p of G.ps){const s=seatOf(p.id);const nm=MP.names[s];const mine=MP.seats[s]&&MP.seats[s]===MP.myPeer;if(!nm&&!mine)continue;const q=w2s(p.x,p.y);
     if(mine){ctx.strokeStyle='#e8692c';ctx.lineWidth=3.5;ctx.beginPath();ctx.arc(q.sx,q.sy,Math.max(16,1.0*S),0,Math.PI*2);ctx.stroke();}
