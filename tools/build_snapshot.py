@@ -41,6 +41,8 @@ for c in data['chairs'].values():
         c['photos'] = {k: mp(v) for k, v in c['photos'].items() if v}
 for m in data['attendance'].values():
     m.pop('reasons', None)
+    # 불참 사유 글은 공유용에 안 내보내요 (불참 표시만)
+    m['absent'] = {d: {pid: '불참' for pid in o} for d, o in (m.get('absent') or {}).items()}
     m['photos'] = {}  # 공유용에는 증빙 사진 화면이 없어서 출석 사진은 넣지 않아요
 
 snap = {'asOf': asof, 'data': data}
