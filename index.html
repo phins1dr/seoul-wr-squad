@@ -136,6 +136,12 @@ table.t .stick{position:sticky;left:0;background:var(--surface);z-index:1}
 .mk.l{background:var(--warn-soft);color:var(--warn)}
 .mk.e{background:var(--accent-soft);color:var(--accent)}
 .mk.x{color:var(--line)}
+.abl{display:flex;flex-direction:column;gap:4px}
+.abp{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.abr{display:grid;grid-template-columns:auto minmax(90px,1fr) minmax(100px,1.4fr);gap:6px;align-items:center;padding-top:8px;border-top:1px solid var(--line)}
+.abr.off{opacity:.5}
+.abr .in{padding:5px 7px;font-size:13px}
+.mk.r{background:var(--warn-soft);color:var(--warn)}
 .heat{display:inline-block;min-width:42px;padding:2px 6px;border-radius:5px;text-align:right}
 .meter{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
 .meter>i{display:block;height:100%;background:var(--accent);border-radius:3px}
@@ -147,7 +153,31 @@ table.t .stick{position:sticky;left:0;background:var(--surface);z-index:1}
 .prow .who{display:flex;align-items:center;gap:8px;min-width:0;cursor:pointer;border:0;background:none;text-align:left;padding:4px 0}
 .prow .nm{font-weight:600;font-size:15px}
 .chk{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:18px;align-items:start}
-@media (max-width:760px){.chk{grid-template-columns:minmax(0,1fr)}}
+.chk.hasStage{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.chkL{position:sticky;top:calc(var(--hdr,0px) + 10px);display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - var(--hdr,0px) - 20px);overflow:auto}
+.stage{display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+@media (min-width:761px){.chkL .stage{order:-1}}
+.stg-h{display:flex;align-items:center;gap:6px}
+.stg-main{position:relative;background:#000;border-radius:10px;overflow:hidden;cursor:zoom-in;width:100%;height:min(58vh,520px);touch-action:none;user-select:none;-webkit-user-select:none}
+.stg-main.zoomed{cursor:grab}
+.stg-main img{width:100%;height:100%;object-fit:contain;display:block;transform-origin:0 0;pointer-events:none}
+.stg-z{position:absolute;right:8px;bottom:8px;display:flex;gap:4px}
+.dn-h{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:10px;width:100%;cursor:pointer;flex-wrap:wrap}
+.dn{margin-top:12px;display:flex;flex-direction:column}
+.dn-row{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.dn-n{display:flex;flex-direction:column;gap:4px;line-height:1.6}
+.dn-g b{font-weight:600;margin-right:6px;white-space:nowrap}
+.stg-main.dz{height:min(70vh,640px)}
+.stg-h .chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.stg-z .btn{background:rgba(255,255,255,.92);color:#16202b;border-color:transparent;min-width:34px}
+.stg-th{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}
+.stg-th button{flex:0 0 52px;height:40px;border:2px solid transparent;border-radius:6px;padding:0;overflow:hidden;cursor:pointer;background:var(--sunk)}
+.stg-th button.on{border-color:var(--accent)}
+.stg-th img{width:100%;height:100%;object-fit:cover;display:block}
+.chk.hasStage .cal{padding:8px}
+.chk.hasStage .cd{min-height:34px}
+@media (max-width:760px){.chk,.chk.hasStage{grid-template-columns:minmax(0,1fr)}.chkL{display:contents}
+  .stage{position:sticky;top:var(--hdr,0px);z-index:6;padding:6px 0 8px;border-bottom:1px solid var(--line)}.stg-main{height:36vh}}
 .cal{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--surface)}
 .calh{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .calh b{font-size:15px}
@@ -157,6 +187,10 @@ table.t .stick{position:sticky;left:0;background:var(--surface);z-index:1}
 .cd{border:1px solid transparent;background:none;font:inherit;border-radius:8px;padding:4px 0 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;min-height:42px;color:var(--ink)}
 .cd b{font-size:14px;font-weight:600}
 .cd i{font-style:normal;font-size:10px;color:var(--ink3);min-height:12px}
+.cd{position:relative}
+.cd .phd{position:absolute;top:-5px;right:-3px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:var(--accent);color:var(--accent-ink);font-size:9.5px;font-weight:700;line-height:14px;text-decoration:none;text-align:center}
+.cd.sel .phd{background:var(--accent-ink);color:var(--accent)}
+.cd.hol i{color:var(--bad);font-size:9px;white-space:nowrap;overflow:hidden;max-width:100%;text-overflow:ellipsis}
 .cd.tr{background:var(--good-soft)}
 .cd.tr i{color:var(--good)}
 .cd.td{border-color:var(--ink3)}
@@ -171,6 +205,7 @@ table.t .stick{position:sticky;left:0;background:var(--surface);z-index:1}
 .dc{border:1px solid var(--line);background:var(--surface);border-radius:7px;font:inherit;font-size:12px;font-weight:700;padding:3px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.1;min-width:32px;color:var(--ink2)}
 .dc small{font-size:9.5px;font-weight:500}
 .dc.on{background:var(--good);border-color:var(--good);color:#fff}
+.dc.ab{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
 .prow .no{font-family:var(--f-mono);font-size:12px;color:var(--ink3);min-width:22px}
 .chips{display:flex;gap:4px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:5px 9px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink2)}
@@ -253,6 +288,10 @@ table.sched th,table.sched td{padding:3px 3px}
 .pdfbox .stick{position:static !important;left:auto !important}
 .report .rhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 table.rep th,table.rep td{padding:5px 5px;font-size:12.5px}
+.psg{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.psi{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.psi img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--sunk)}
+.psi .in{width:100%;padding:4px 6px;font-size:12.5px}
 tr.sel td{background:var(--accent-soft)!important}
 .rcard{border-color:var(--accent);scroll-margin-top:120px}
 .rc-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -321,6 +360,12 @@ table.rooms td{vertical-align:middle}
 .evg{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}
 .evt{border:0;padding:0;background:var(--sunk);border-radius:8px;overflow:hidden;cursor:pointer;aspect-ratio:1/1}
 .evt img{width:100%;height:100%;object-fit:cover;display:block}
+.evt{position:relative}
+.evt.pk{outline:3px solid var(--bad);outline-offset:-3px}
+.evt.pk img{opacity:.6}
+.pkm{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.35);color:#fff;font-weight:700;font-size:13px;line-height:18px;text-align:center}
+.evt.pk .pkm{background:var(--bad)}
+.selbar{position:sticky;bottom:12px;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--bad);border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.15)}
 .evday{padding:10px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
 .ysort{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .ychip{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:13px;font-weight:600}
@@ -510,6 +555,7 @@ function accOf(throws) {
   const sd = Math.sqrt(t.reduce((a, b) => a + (b - mean) ** 2, 0) / (t.length - 1));
   return 10 / (1 + sd / mean);
 }
+const cnt = v => v == null || v === '' || isNaN(+v) ? null : +v;
 function fitFinal(r) {
   if (!r) return {};
   const throws = (r.throws || []).filter(x => x != null && x !== '').map(Number);
@@ -518,7 +564,8 @@ function fitFinal(r) {
   const m20 = (r.m20 || []).filter(x => x > 0);
   const m28 = (Array.isArray(r.m28) ? r.m28 : [r.m28]).filter(x => x > 0);
   return { throw: throws.length ? Math.max(...throws) : null, acc: r.acc ?? accOf(r.throws), slalom: slv.length ? Math.min(...slv) : null,
-    crossL: r.crossL > 0 ? +r.crossL : null, crossR: r.crossR > 0 ? +r.crossR : null, m20: m20.length ? Math.min(...m20) : null, m28: m28.length ? Math.min(...m28) : null };
+    crossL: r.crossL > 0 ? +r.crossL : null, crossR: r.crossR > 0 ? +r.crossR : null, m20: m20.length ? Math.min(...m20) : null, m28: m28.length ? Math.min(...m28) : null,
+    shuttleL: cnt(r.shuttleL), shuttleR: cnt(r.shuttleR) };
 }
 // 점수 환산 (엑셀 '개인증감' 시트 수식 그대로)
 const SCORE = {
@@ -531,7 +578,7 @@ const SCORE = {
 };
 const scoreOf = f => { const o = {}; for (const k in SCORE) o[k] = f[k] == null ? null : SCORE[k](f[k]); return o; };
 const FIT_COLS = [
-  ['throw', '던지기(거리)', 'hi'], ['acc', '던지기(정확도)', 'hi'], ['slalom', '슬라럼', 'lo'], ['crossL', '십자런 좌', 'lo'], ['crossR', '십자런 우', 'lo'], ['m20', '20m', 'lo'], ['m28', '28m', 'lo']];
+  ['throw', '던지기(거리)', 'hi'], ['acc', '던지기(정확도)', 'hi'], ['slalom', '슬라럼', 'lo'], ['crossL', '십자런 좌', 'lo'], ['crossR', '십자런 우', 'lo'], ['m20', '20m', 'lo'], ['m28', '28m', 'lo'], ['shuttleL', '셔틀런 좌', 'hi'], ['shuttleR', '셔틀런 우', 'hi']];
 const CLS_KEYS = ['3.5', '3.0', '2.5', '2.0', '1.5', '1.0', '0.5'];
 // 던지기 국대 기준은 엑셀에 없어 추정값(국대 출신 송문령 1.0·최찬광 1.5 기록 기준, 0.5~1.5는 당겨서 같은 방식 측정) — 기준표에서 수정 가능
 const EST_STD = { throw: { '3.5': 9, '3.0': 9, '2.5': 8, '2.0': 8, '1.5': 7, '1.0': 7, '0.5': 7 }, acc: 10 };
@@ -544,12 +591,15 @@ const openF = cls => { const n = clsNum(cls); return n != null && n < 2 ? openFL
 function stdFor(cls, div) {
   const k = clsKey(cls); if (!k) return null; const b = (S.config.standards || {})[k] || {};
   const q = Object.assign({ throw: EST_STD.throw[k], acc: EST_STD.acc }, b);
-  if (div !== '오픈') return q;
+  // 셔틀런은 국대 기준이 아니라 우리 팀 기준 (쿼드·오픈 따로, 오픈 비율 적용 안 함)
+  const sh = ((S.config.shuttleStd || {})[div === '오픈' ? 'open' : 'quad'] || {})[k];
+  if (div !== '오픈') return Object.assign(q, { shuttleL: sh ?? null, shuttleR: sh ?? null });
   const f = openF(k), o = {};
   for (const key in q) { const v = q[key]; o[key] = v == null ? v : key === 'acc' ? v : key === 'throw' ? +(v * (1 + f)).toFixed(2) : +(v * (1 - f)).toFixed(2); }
-  return o;
+  return Object.assign(o, { shuttleL: sh ?? null, shuttleR: sh ?? null });
 }
-const HI = { throw: 1, acc: 1 };
+const HI = { throw: 1, acc: 1, shuttleL: 1, shuttleR: 1 };
+const isCnt = k => k === 'shuttleL' || k === 'shuttleR';
 // 종합 점수(100점) = 7개 항목 환산 점수 평균 × 10 (없는 항목은 빼고 평균)
 const total100 = sc => { const v = Object.values(sc).filter(x => x != null); return v.length ? { t: v.reduce((a, b) => a + b, 0) / v.length * 10, n: v.length } : null; };
 // 등급 환산 점수: 자기 등급 국대 기준 = 10점 (넘으면 10점)
@@ -559,13 +609,14 @@ function fitCell(key, v, std) {
   const s = std && std[key];
   let cls = '';
   if (s) { const gap = HI[key] ? s / v : v / s; cls = gap <= 1 ? 'good' : gap <= 1.15 ? 'warn' : ''; }
-  const txt = key === 'throw' ? v : key === 'acc' ? v.toFixed(1) : v.toFixed(2);
+  const txt = key === 'throw' || isCnt(key) ? v : key === 'acc' ? v.toFixed(1) : v.toFixed(2);
   return `<td class="r num">${cls ? `<span class="tag ${cls}">${txt}</span>` : txt}</td>`;
 }
 const fitMonths = () => Object.keys(S.fit).sort();
 
 // ---------- render ----------
 function render() {
+  { const h = document.querySelector('header.top'); if (h) document.documentElement.style.setProperty('--hdr', h.offsetHeight + 'px'); }
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === S.tab)));
   const main = $('#main');
   if (!S.ready || (S.db && !S.loaded.players)) { main.innerHTML = '<div class="empty">선수단 데이터를 불러오는 중이에요.</div>'; return; }
@@ -656,14 +707,51 @@ function vAtt() {
   if (!S.month) S.month = months[months.length - 1] || todayISO().slice(0, 7);
   const views = [['month', '월별 출석부'], ['year', '연간 통계'], ['report', '선수 평가']];
   const head = `<div class="bar"><div class="seg" role="group">${views.map(([k, l]) => `<button data-act="attView" data-v="${k}" aria-pressed="${S.attView === k}">${l}</button>`).join('')}</div><span class="sp"></span>${teamSeg()}</div>`;
-  if (S.attView === 'check') return head + vCheck();
+  const sb = S.phSel ? `<div class="selbar"><b>${S.phSel.length}장 선택</b><span class="muted small">사진을 눌러 고르세요</span><span style="flex:1"></span><button class="btn danger" data-act="phDelSel" ${S.phSel.length ? '' : 'disabled'}>선택한 사진 삭제</button><button class="btn" data-act="phSelMode">취소</button></div>` : '';
+  if (S.attView === 'check') return head + vCheck() + sb;
+  if (S.attView === 'photos') return head + vPhotos() + sb;
   if (S.attView === 'month') return head + vMonth(months);
   if (S.attView === 'photos') return head + vPhotos();
   if (S.attView === 'report') return head + vReport();
   return head + vYear();
 }
+// 사진 확대: 휠·두 손가락·두 번 누르기·끌기 (확대 상태는 이름을 눌러 화면이 다시 그려져도 유지)
+function zGet(b) { return b._z || (b.id === 'stgBox' ? S.stgZ : null) || { s: 1, x: 0, y: 0 }; }
+function zSet(b, z) {
+  const im = b && b.querySelector('img'); if (!b || !im) return;
+  if (z) { const W = b.clientWidth, H = b.clientHeight; z.s = Math.min(8, Math.max(1, z.s)); if (z.s <= 1.001) z = null; else { z.x = Math.min(0, Math.max(W * (1 - z.s), z.x)); z.y = Math.min(0, Math.max(H * (1 - z.s), z.y)); } }
+  b._z = z; if (b.id === 'stgBox') S.stgZ = z;
+  im.style.transform = z ? `translate(${z.x}px,${z.y}px) scale(${z.s})` : ''; b.classList.toggle('zoomed', !!z);
+}
+function zAt(b, ns, px, py) { const z = zGet(b); ns = Math.min(8, Math.max(1, ns)); zSet(b, { s: ns, x: px - (px - z.x) * ns / z.s, y: py - (py - z.y) * ns / z.s }); }
+(() => {
+  const pts = new Map(); let base = null, lastTap = 0, box = null;
+  const rel = (b, e) => { const r = b.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  document.addEventListener('wheel', e => { const b = e.target.closest && e.target.closest('.zbox'); if (!b || e.target.closest('.stg-z')) return; e.preventDefault(); const [x, y] = rel(b, e); zAt(b, zGet(b).s * Math.exp(-e.deltaY * 0.0025), x, y); }, { passive: false });
+  document.addEventListener('pointerdown', e => {
+    const b = e.target.closest && e.target.closest('.zbox'); if (!b || e.target.closest('.stg-z')) return;
+    e.preventDefault(); if (box !== b) { pts.clear(); box = b; } b.setPointerCapture && b.setPointerCapture(e.pointerId); pts.set(e.pointerId, rel(b, e));
+    const z = zGet(b);
+    if (pts.size === 1) {
+      const now = Date.now(); const [x, y] = pts.get(e.pointerId);
+      if (now - lastTap < 300) { lastTap = 0; if (z.s > 1.05) zSet(b, null); else zAt(b, 2.5, x, y); base = null; return; }
+      lastTap = now; base = { mode: 'pan', x, y, z: { ...z } };
+    } else if (pts.size === 2) { const [a, c] = [...pts.values()]; base = { mode: 'pinch', d: Math.hypot(a[0] - c[0], a[1] - c[1]), cx: (a[0] + c[0]) / 2, cy: (a[1] + c[1]) / 2, z: { ...z } }; }
+  });
+  document.addEventListener('pointermove', e => {
+    if (!pts.has(e.pointerId) || !base || !box || !box.isConnected) return; const b = box; pts.set(e.pointerId, rel(b, e));
+    if (base.mode === 'pan' && pts.size === 1) { if (base.z.s <= 1) return; const [x, y] = pts.get(e.pointerId); zSet(b, { s: base.z.s, x: base.z.x + x - base.x, y: base.z.y + y - base.y }); }
+    else if (base.mode === 'pinch' && pts.size === 2) { const [a, c] = [...pts.values()]; const d = Math.hypot(a[0] - c[0], a[1] - c[1]); const cx = (a[0] + c[0]) / 2, cy = (a[1] + c[1]) / 2; const ns = Math.min(8, Math.max(1, base.z.s * d / base.d)); const k = ns / base.z.s; zSet(b, { s: ns, x: cx - (base.cx - base.z.x) * k, y: cy - (base.cy - base.z.y) * k }); }
+  });
+  const up = e => { if (!pts.has(e.pointerId)) return; pts.delete(e.pointerId); if (pts.size === 1 && box) { const p = [...pts.values()][0]; base = { mode: 'pan', x: p[0], y: p[1], z: { ...zGet(box) } }; } else if (!pts.size) base = null; };
+  document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+})();
 // 출석 체크: 달력에서 날짜를 여러 개 골라 한 번에 체크
 const selDates = () => { if (!S.dates || !S.dates.length) S.dates = [S.date || todayISO()]; S.date = S.dates[0]; return S.dates; };
+// 공휴일·대체공휴일 (2027년은 정부 발표 전 예상 — 바뀌면 여기만 고치면 돼요)
+const HOLI = {"2024-12-25": "성탄절", "2025-01-01": "신정", "2025-01-27": "임시공휴일", "2025-01-28": "설날 연휴", "2025-01-29": "설날", "2025-01-30": "설날 연휴", "2025-03-01": "삼일절", "2025-03-03": "대체공휴일", "2025-05-05": "어린이날·부처님오신날", "2025-05-06": "대체공휴일", "2025-06-03": "대통령선거", "2025-06-06": "현충일", "2025-08-15": "광복절", "2025-10-03": "개천절", "2025-10-05": "추석 연휴", "2025-10-06": "추석", "2025-10-07": "추석 연휴", "2025-10-08": "대체공휴일", "2025-10-09": "한글날", "2025-12-25": "성탄절", "2026-01-01": "신정", "2026-02-16": "설날 연휴", "2026-02-17": "설날", "2026-02-18": "설날 연휴", "2026-03-01": "삼일절", "2026-03-02": "대체공휴일", "2026-05-01": "노동절", "2026-05-05": "어린이날", "2026-05-24": "부처님오신날", "2026-05-25": "대체공휴일", "2026-06-03": "지방선거", "2026-06-06": "현충일", "2026-07-17": "제헌절", "2026-08-15": "광복절", "2026-08-17": "대체공휴일", "2026-09-24": "추석 연휴", "2026-09-25": "추석", "2026-09-26": "추석 연휴", "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "2026-10-09": "한글날", "2026-12-25": "성탄절", "2027-01-01": "신정", "2027-02-06": "설날 연휴", "2027-02-07": "설날", "2027-02-08": "설날 연휴", "2027-02-09": "대체공휴일", "2027-03-01": "삼일절", "2027-05-01": "노동절", "2027-05-05": "어린이날", "2027-05-13": "부처님오신날", "2027-06-06": "현충일", "2027-07-17": "제헌절", "2027-08-15": "광복절", "2027-08-16": "대체공휴일", "2027-09-14": "추석 연휴", "2027-09-15": "추석", "2027-09-16": "추석 연휴", "2027-10-03": "개천절", "2027-10-04": "대체공휴일", "2027-10-09": "한글날", "2027-10-11": "대체공휴일", "2027-12-25": "성탄절", "2027-12-27": "대체공휴일"};
+const holi = d => HOLI[d] || '';
+const absOfD = (d, id) => ((((S.att[d.slice(0, 7)] || {}).absent || {})[d]) || {})[id];
 const markOf = (d, id) => (((S.att[d.slice(0, 7)] || {}).marks || {})[d] || {})[id] === '출석';
 const isTrain = d => ((S.att[d.slice(0, 7)] || {}).days || []).includes(d);
 // 여러 날짜에 한꺼번에 쓰기 (달이 다르면 달마다 저장)
@@ -680,13 +768,15 @@ function calendarHTML(dates) {
   let cells = ''; for (let k = 0; k < first; k++) cells += '<span></span>';
   for (let dd = 1; dd <= nd; dd++) {
     const d = iso(dd); const sel = dates.includes(d); const tr = isTrain(d); const w = (first + dd - 1) % 7;
-    const n = tr ? list.filter(([id]) => markOf(d, id)).length : 0;
-    cells += `<button class="cd ${sel ? 'sel' : ''} ${tr ? 'tr' : ''} ${d === today ? 'td' : ''} ${w === 0 ? 'sun' : w === 6 ? 'sat' : ''}" data-act="calPick" data-d="${d}" aria-pressed="${sel}"><b>${dd}</b><i>${tr ? n + '명' : ''}</i></button>`;
+    const n = tr ? list.filter(([id]) => markOf(d, id)).length : 0; const np = (((S.att[cm] || {}).photos || {})[d] || []).length;
+    const hn = holi(d);
+    cells += `<button class="cd ${sel ? 'sel' : ''} ${tr ? 'tr' : ''} ${d === today ? 'td' : ''} ${w === 0 || hn ? 'sun' : w === 6 ? 'sat' : ''} ${hn ? 'hol' : ''}" data-act="calPick" data-d="${d}" aria-pressed="${sel}" title="${[hn, np ? `증빙 사진 ${np}장` : ''].filter(Boolean).join(' · ')}"><b>${dd}</b><i>${tr ? n + '명' : hn ? esc(hn.replace(' 연휴', '')) : ''}</i>${np ? `<u class="phd">${np}</u>` : ''}</button>`;
   }
   return `<div class="cal">
     <div class="calh"><button class="btn ghost sm" data-act="calNav" data-v="-1" aria-label="이전 달">‹</button><b>${y}년 ${mo}월</b><button class="btn ghost sm" data-act="calNav" data-v="1" aria-label="다음 달">›</button><span class="sp" style="flex:1"></span><button class="btn ghost sm" data-act="calToday">오늘</button></div>
     <div class="calg">${DOW.map((w, k) => `<button class="cw ${k === 0 ? 'sun' : k === 6 ? 'sat' : ''}" data-act="calDow" data-v="${k}" title="이 달 ${w}요일 모두 고르기">${w}</button>`).join('')}${cells}</div>
-    <div class="small muted" style="margin-top:6px">날짜를 눌러 여러 날을 고를 수 있어요. 요일을 누르면 그 달의 같은 요일이 한꺼번에 골라져요. 숫자 아래는 출석 인원이에요.</div>
+    ${S.canEdit && S.assets ? `<label class="btn sm upl" style="margin-top:8px;width:100%;justify-content:center">증빙 사진 한꺼번에 올리기<input type="file" accept="image/*" multiple id="photoAutoIn"></label>` : ''}
+    <div class="small muted" style="margin-top:6px">파란 숫자 동그라미 = 그날 증빙 사진 수. 날짜를 눌러 여러 날을 고를 수 있어요. 요일을 누르면 그 달의 같은 요일이 한꺼번에 골라져요. 숫자 아래는 출석 인원이에요.</div>
   </div>`;
 }
 function vCheck() {
@@ -696,9 +786,23 @@ function vCheck() {
   const total = dates.reduce((a, x) => a + list.filter(([id]) => markOf(x, id)).length, 0);
   const lbl = x => `${+x.slice(5, 7)}/${+x.slice(8)}(${dow(x)})`;
   const m = S.att[d.slice(0, 7)] || { days: [], marks: {} };
+  // 사진 보면서 체크: 날짜 하나 골랐을 때 사진을 크게 고정해서 보여줘요
+  const phOf = x => (((S.att[x.slice(0, 7)] || {}).photos || {})[x] || []);
+  const phDates = dates.filter(x => phOf(x).length);
+  const sd = phDates.includes(S.stgPick) ? S.stgPick : phDates[0] || d;
+  const ph = phOf(sd);
+  if (S.stgDate !== sd) { S.stgDate = sd; S.stgI = 0; S.stgZ = null; }
+  const si = Math.min(S.stgI || 0, Math.max(ph.length - 1, 0));
+  const stage = ph.length ? `<div class="stage"><div class="stg-h">${phDates.length > 1 ? phDates.map(x => `<button class="chip ${x === sd ? 'on' : ''}" data-act="stgDay" data-d="${x}">${lbl(x)}</button>`).join('') : `<b>${lbl(sd)} 증빙</b>`}<span class="muted small num">${si + 1}/${ph.length}</span><span style="flex:1"></span>
+      <button class="btn sm" data-act="stgNav" data-v="-1" ${si <= 0 ? 'disabled' : ''} aria-label="이전 사진">‹</button><button class="btn sm" data-act="stgNav" data-v="1" ${si >= ph.length - 1 ? 'disabled' : ''} aria-label="다음 사진">›</button>
+      ${S.canEdit && S.assets ? `<label class="btn sm upl">추가<input type="file" accept="image/*" multiple class="attPhotoIn" data-date="${sd}"></label>` : ''}</div>
+    <div class="stg-main zbox ${S.stgZ ? 'zoomed' : ''}" id="stgBox"><img id="stgImg" src="img/${esc(ph[si])}" alt="${sd} 증빙 ${si + 1}" draggable="false" style="${S.stgZ ? `transform:translate(${S.stgZ.x}px,${S.stgZ.y}px) scale(${S.stgZ.s})` : ''}">
+      <div class="stg-z"><button class="btn sm" data-act="stgZoom" data-v="out" aria-label="축소">−</button><button class="btn sm" data-act="stgZoom" data-v="in" aria-label="확대">+</button><button class="btn sm" data-act="stgZoom" data-v="fit">맞춤</button><button class="btn sm" data-act="viewPhoto" data-date="${sd}" data-i="${si}" data-id="${esc(ph[si])}">전체화면</button></div></div>
+    <div class="muted small">사진 위에서 두 손가락으로 벌리거나(휴대폰) 마우스 휠을 굴리면 확대돼요. 두 번 누르면 그 자리를 크게, 끌어서 옮길 수 있어요.</div>
+    ${ph.length > 1 ? `<div class="stg-th">${ph.map((id, i) => `<button class="${i === si ? 'on' : ''}" data-act="stgGo" data-i="${i}" aria-label="${i + 1}번 사진"><img src="img/${esc(id)}" alt="" loading="lazy"></button>`).join('')}</div>` : ''}</div>` : '';
   return `
-  <section class="panel chk">
-    ${calendarHTML(dates)}
+  <section class="panel chk ${stage ? 'hasStage' : ''}">
+    <div class="chkL">${calendarHTML(dates)}${stage}</div>
     <div style="min-width:0">
     <div class="bar" style="margin-bottom:10px;flex-wrap:wrap">
       <b>${multi ? `${dates.length}일 선택` : `${lbl(d)}`}</b>
@@ -708,16 +812,17 @@ function vCheck() {
       ${!ro && !allTrain ? `<button class="btn sm pri" data-act="toggleDay">훈련일로 추가</button>` : ''}
       ${!ro && someTrain ? `<button class="btn sm danger" data-act="unDays">${multi ? '고른 날 훈련일 해제' : '훈련일 해제'}</button>` : ''}
       ${multi ? `<button class="btn ghost sm" data-act="calClear">선택 해제</button>` : ''}
+      ${!ro ? `<button class="btn sm" data-act="absOpen">불참 사유 입력</button>` : ''}
     </div>
     <div class="legend" style="margin-bottom:10px">${multi ? `<span>출석 체크 합계 <b class="num">${total}</b></span>` : `<span>출석 <b class="num">${total}</b></span><span>결석 <b class="num">${list.length - total}</b></span>`}${!ro && someTrain ? `<span class="sp" style="flex:1"></span><button class="btn sm" data-act="allPresent">${multi ? '고른 날 전원 출석' : '전원 출석'}</button>` : ''}</div>
     ${!ro ? `<div class="lock" style="margin-bottom:10px">${multi ? '이름을 누르면 고른 날 전체가 한꺼번에 출석/취소돼요. 날짜 칸을 누르면 그날만 바뀌어요.' : !allTrain ? '선수를 누르면 이 날짜가 훈련일로 자동 추가되고 출석으로 체크돼요. 한 번 더 누르면 취소돼요.' : '이름을 누르면 출석, 한 번 더 누르면 취소돼요.'}</div>` : ''}
-    ${multi ? '' : photoStrip(d, m)}
+    ${stage || multi ? '' : photoStrip(d, m)}
     <div class="rows">${list.map(([id, p]) => {
       const st = dates.map(x => markOf(x, id)); const all = st.every(Boolean), any = st.some(Boolean);
       const who = `<span class="who">${avatar(p, 'sm')}<span class="no">${p.num ?? ''}</span><span class="nm">${esc(p.name)}</span>${divTag(p.div)}<span class="muted small num">${esc(fmtCls(p.cls))}</span></span>`;
-      if (!multi) return `<button class="prow ${all ? 'on' : ''}" data-act="tapName" data-id="${id}" aria-pressed="${all}" ${ro ? 'disabled' : ''}>${who}<span class="${all ? 'tag good' : 'muted small'}">${all ? '출석' : '–'}</span></button>`;
+      if (!multi) return `<button class="prow ${all ? 'on' : ''}" data-act="tapName" data-id="${id}" aria-pressed="${all}" ${ro ? 'disabled' : ''}>${who}<span class="${all ? 'tag good' : absOfD(d, id) ? 'tag warn' : 'muted small'}">${all ? '출석' : absOfD(d, id) ? '불참 · ' + esc(absOfD(d, id)) : '–'}</span></button>`;
       return `<div class="prow multi ${all ? 'on' : any ? 'part' : ''}"><button class="pname" data-act="tapName" data-id="${id}" aria-pressed="${all}" ${ro ? 'disabled' : ''}>${who}</button>
-        <span class="dchips">${dates.map((x, k) => `<button class="dc ${st[k] ? 'on' : ''}" data-act="tapOne" data-id="${id}" data-d="${x}" aria-pressed="${st[k]}" ${ro ? 'disabled' : ''}>${+x.slice(8)}<small>${dow(x)}</small></button>`).join('')}</span></div>`; }).join('')}</div>
+        <span class="dchips">${dates.map((x, k) => `<button class="dc ${st[k] ? 'on' : absOfD(x, id) ? 'ab' : ''}" title="${!st[k] && absOfD(x, id) ? '불참 · ' + esc(absOfD(x, id)) : ''}" data-act="tapOne" data-id="${id}" data-d="${x}" aria-pressed="${st[k]}" ${ro ? 'disabled' : ''}>${+x.slice(8)}<small>${dow(x)}</small></button>`).join('')}</span></div>`; }).join('')}</div>
     </div>
   </section>`;
 }
@@ -729,15 +834,28 @@ function vMonth(months) {
   for (const [id, p] of list) {
     if (p.div !== lastDiv) { lastDiv = p.div; rows += `<tr class="grp"><td class="stick">${esc(p.div || '기타')}</td><td colspan="${st.days.length + 1}"></td></tr>`; }
     const s = st.per[id]; const nn = st.nOf(id); const r = nn ? st.aOf(id) / nn : null; const jd = joinedOf(id);
-    rows += `<tr class="click" data-act="openPlayer" data-id="${id}"><td class="stick"><b>${esc(p.name)}</b> <span class="muted small num">${esc(fmtCls(p.cls))}</span></td>${st.days.map(d => { const v = ((m.marks || {})[d] || {})[id] === '출석'; if (jd && d < jd && !v) return '<td class="c"></td>'; return `<td class="c"><span class="mk ${v ? 'a' : 'x'}">${v ? 'v' : '·'}</span></td>`; }).join('')}
+    rows += `<tr class="click" data-act="openPlayer" data-id="${id}"><td class="stick"><b>${esc(p.name)}</b> <span class="muted small num">${esc(fmtCls(p.cls))}</span></td>${st.days.map(d => { const v = ((m.marks || {})[d] || {})[id] === '출석'; if (jd && d < jd && !v) return '<td class="c"></td>'; const ab = !v && (((m.absent || {})[d] || {})[id]); return ab ? `<td class="c"><span class="mk r" title="불참 · ${esc(ab)}">사</span></td>` : `<td class="c"><span class="mk ${v ? 'a' : 'x'}">${v ? 'v' : '·'}</span></td>`; }).join('')}
       <td class="r"><span class="heat num" style="${heatStyle(r)}">${pct(r)}</span></td></tr>`;
   }
   const totals = st.days.map(d => athletes({ all: true }).filter(([id]) => ((m.marks || {})[d] || {})[id] === '출석').length);
   return `<section class="panel"><h2>${monthSel('monthSel', mk, all)}<span class="muted small">훈련 ${st.n}회</span></h2>
-    ${st.n ? `<div class="scroll"><table class="t"><thead><tr><th class="stick">이름</th>${st.days.map(d => `<th class="c">${+d.slice(8)}<br><span style="font-weight:400">${dow(d)}</span></th>`).join('')}<th class="r">출석률</th></tr></thead>
+    ${st.n ? `<div class="scroll"><table class="t"><thead><tr><th class="stick">이름</th>${st.days.map(d => `<th class="c" ${holi(d) ? `style="color:var(--bad)" title="${esc(holi(d))}"` : ''}>${+d.slice(8)}<br><span style="font-weight:400">${dow(d)}</span></th>`).join('')}<th class="r">출석률</th></tr></thead>
     <tbody>${rows}<tr class="grp"><td class="stick">참가인원</td>${totals.map(t => `<td class="c num">${t}</td>`).join('')}<td></td></tr></tbody></table></div>
     <p class="muted small" style="margin:10px 0 0">출석률 = 출석 ÷ 그 달 훈련일수</p>` : '<div class="empty">이 달에는 훈련일이 없어요. 출석 체크 화면에서 훈련일을 추가해 주세요.</div>'}
-  </section>`;
+  </section>
+  ${st.n ? dayNames(mk, st, m) : ''}`;
+}
+// 날짜별 참가 선수 이름 (평소엔 접어둠)
+function dayNames(mk, st, m) {
+  const open = !!S.dayNamesOpen; const all = athletes({ all: true });
+  const body = open ? st.days.slice().reverse().map(d => {
+    const mm = (m.marks || {})[d] || {}; const on = all.filter(([id]) => mm[id] === '출석'); const ab = (m.absent || {})[d] || {}; const off0 = athletes().filter(([id]) => mm[id] !== '출석' && !(joinedOf(id) && d < joinedOf(id))); const absL = off0.filter(([id]) => ab[id]); const off = off0.filter(([id]) => !ab[id]);
+    const grp = ['쿼드', '오픈'].map(dv => { const l = on.filter(([, p]) => (p.div || '') === dv); return l.length ? `<span class="dn-g">${divTag(dv)} ${l.map(([, p]) => `<b>${esc(p.name)}</b>`).join(' ')}</span>` : ''; }).join('')
+      + (() => { const l = on.filter(([, p]) => !['쿼드', '오픈'].includes(p.div || '')); return l.length ? `<span class="dn-g">${l.map(([, p]) => `<b>${esc(p.name)}</b>`).join(' ')}</span>` : ''; })();
+    return `<div class="dn-row"><div class="dn-d"><b class="num">${+d.slice(5, 7)}/${+d.slice(8)}</b> <span class="muted small">(${dow(d)})</span><div class="small"><b class="num">${on.length}</b>명</div></div>
+      <div class="dn-n">${grp || '<span class="muted small">출석 체크 안 됨</span>'}${absL.length ? `<div class="small" style="margin-top:3px;color:var(--warn)">불참 ${absL.length}명 · ${absL.map(([id, p]) => `${esc(p.name)}(${esc(ab[id])})`).join(' ')}</div>` : ''}${off.length ? `<div class="muted small" style="margin-top:3px">결석 ${off.length}명 · ${off.map(([, p]) => esc(p.name)).join(' ')}</div>` : ''}</div>
+      ${S.canEdit ? `<button class="btn ghost sm" data-act="dnGo" data-d="${d}" title="이 날짜 출석 체크로">체크</button>` : '<span></span>'}</div>`; }).join('') : '';
+  return `<section class="panel" style="margin-top:14px"><button class="dn-h" data-act="dnToggle" aria-expanded="${open}"><h2 style="margin:0">날짜별 참가 선수</h2><span class="muted small">${st.n}일 · 최근 날짜부터</span><span style="flex:1"></span><span class="muted">${open ? '접기 ▲' : '펼치기 ▼'}</span></button>${open ? `<div class="dn">${body}</div>` : ''}</section>`;
 }
 function vYear() {
   const years = [...new Set(monthsWithData().map(k => k.slice(0, 4)))]; if (!years.includes(S.year)) S.year = years[years.length - 1] || S.year;
@@ -918,26 +1036,31 @@ function reportSheet(X, R) {
     ...R.rows.map(x => [x.p.team, x.p.name, fmtCls(x.p.cls), x.p.joined || '', ...R.months.map(m => p100(x.r.months[m])), x.r.att, x.r.n, p100(x.rate), ...x.cells.map(c => c === 'in' ? '●' : c === 'out' ? '○' : '–'), x.k, x.K, p100(x.erate)]),
     [], ['● 명단에 들어감 · ○ 팀은 나갔는데 명단에 없음 · – 팀이 안 나간 대회 또는 등록 전']];
 }
+// 증빙 사진 썸네일 (선택 삭제 모드면 눌러서 고르기)
+const thumb = (d, id, i) => { const on = S.phSel && S.phSel.includes(d + '|' + id); return `<button class="evt ${on ? 'pk' : ''}" data-act="viewPhoto" data-date="${d}" data-i="${i}" data-id="${esc(id)}" aria-pressed="${!!on}"><img src="img/${esc(id)}" alt="${d} 증빙 ${i + 1}" loading="lazy">${S.phSel ? `<span class="pkm">${on ? '✓' : ''}</span>` : ''}</button>`; };
+const selBtn = () => S.canEdit ? `<button class="btn sm ${S.phSel ? 'pri' : ''}" data-act="phSelMode">${S.phSel ? '선택 끝내기' : '선택해서 삭제'}</button>` : '';
 function photoStrip(d, m) {
   const ph = ((m.photos || {})[d]) || [];
   if (!ph.length && !S.assets) return '';
-  return `<div class="evid"><div class="evh"><b>증빙 사진</b><span class="muted small">${ph.length}장</span><span style="flex:1"></span>${S.assets ? `<label class="btn sm upl">사진 추가<input type="file" accept="image/*" multiple class="attPhotoIn" data-date="${d}"></label>` : ''}</div>
+  return `<div class="evid"><div class="evh"><b>증빙 사진</b><span class="muted small">${ph.length}장</span><span style="flex:1"></span>${ph.length ? selBtn() : ''}${S.assets ? `<label class="btn sm upl">사진 추가<input type="file" accept="image/*" multiple class="attPhotoIn" data-date="${d}"></label>` : ''}</div>
     ${S.assets ? '<div class="muted small">PC에서는 사진을 복사한 뒤 이 화면에서 Ctrl+V로 바로 붙여넣을 수 있어요.</div>' : ''}
-    ${ph.length ? `<div class="evg">${ph.map((id, i) => `<button class="evt" data-act="viewPhoto" data-date="${d}" data-i="${i}"><img src="img/${esc(id)}" alt="${d} 증빙 ${i + 1}" loading="lazy"></button>`).join('')}</div>` : '<div class="muted small">아직 올린 사진이 없어요.</div>'}</div>`;
+    ${ph.length ? `<div class="evg">${ph.map((id, i) => thumb(d, id, i)).join('')}</div>` : '<div class="muted small">아직 올린 사진이 없어요.</div>'}</div>`;
 }
 function vPhotos() {
   const all = Object.entries(S.att).flatMap(([mk, m]) => Object.entries(m.photos || {}).filter(([, l]) => l && l.length).map(([d, l]) => [d, l])).sort((a, b) => b[0].localeCompare(a[0]));
   const months = [...new Set(all.map(([d]) => d.slice(0, 7)))];
   if (!S.photoMonth || !months.includes(S.photoMonth)) S.photoMonth = months[0] || null;
   const list = all.filter(([d]) => d.startsWith(S.photoMonth || ''));
-  return `<section class="panel"><h2>${months.length ? monthSel('photoMonthSel', S.photoMonth, months) : '증빙 사진'}<span class="muted small">${list.length}일 · ${list.reduce((a, [, l]) => a + l.length, 0)}장</span></h2>
-  ${list.length ? list.map(([d, l]) => `<div class="evday"><div class="evh"><b class="num">${+d.slice(5, 7)}월 ${+d.slice(8)}일 (${dow(d)})</b><span class="muted small">${l.length}장</span></div><div class="evg">${l.map((id, i) => `<button class="evt" data-act="viewPhoto" data-date="${d}" data-i="${i}"><img src="img/${esc(id)}" alt="${d} 증빙 ${i + 1}" loading="lazy"></button>`).join('')}</div></div>`).join('') : '<div class="empty">아직 올린 증빙 사진이 없어요. 출석 체크 화면에서 그날 사진을 올리면 여기에 날짜별로 모여요.</div>'}
+  const up = S.canEdit && S.assets ? `<div class="evid" style="margin-bottom:14px"><div class="evh"><b>사진 한꺼번에 올리기</b><span style="flex:1"></span><label class="btn pri sm upl">사진 고르기<input type="file" accept="image/*" multiple id="photoAutoIn"></label></div><div class="muted small">여러 장을 고르면 사진에 담긴 찍은 날짜를 읽어서 날짜별로 나눠 넣어요. 올리기 전에 미리 보여줘요. PC에서는 이 화면에서 Ctrl+V로 붙여넣어도 돼요.</div></div>` : '';
+  return `${up}<section class="panel"><h2>${months.length ? monthSel('photoMonthSel', S.photoMonth, months) : '증빙 사진'}<span class="muted small">${list.length}일 · ${list.reduce((a, [, l]) => a + l.length, 0)}장</span><span class="sp" style="flex:1"></span>${list.length ? selBtn() : ''}</h2>
+  ${list.length ? list.map(([d, l]) => `<div class="evday"><div class="evh"><b class="num">${+d.slice(5, 7)}월 ${+d.slice(8)}일 (${dow(d)})</b><span class="muted small">${l.length}장</span></div><div class="evg">${l.map((id, i) => thumb(d, id, i)).join('')}</div></div>`).join('') : '<div class="empty">아직 올린 증빙 사진이 없어요. 출석 체크 화면에서 그날 사진을 올리면 여기에 날짜별로 모여요.</div>'}
   </section>`;
 }
 function dPhoto() {
   const { date, i } = D; const l = ((S.att[date.slice(0, 7)] || {}).photos || {})[date] || []; const id = l[i];
   return `<div class="dh"><h2>${+date.slice(5, 7)}월 ${+date.slice(8)}일 (${dow(date)}) 증빙 ${i + 1}/${l.length}</h2>${S.canEdit && id ? '<button class="btn sm danger" data-act="delPhoto">삭제</button>' : ''}<button class="btn sm" data-act="close">닫기</button></div>
-  <div class="db">${id ? `<img src="img/${esc(id)}" alt="" style="width:100%;border-radius:10px;background:var(--sunk)">` : '<div class="empty">사진이 없어요.</div>'}
+  <div class="db">${id ? `<div class="stg-main zbox dz"><img src="img/${esc(id)}" alt="" draggable="false"><div class="stg-z"><button class="btn sm" data-act="stgZoom" data-v="out" aria-label="축소">−</button><button class="btn sm" data-act="stgZoom" data-v="in" aria-label="확대">+</button><button class="btn sm" data-act="stgZoom" data-v="fit">맞춤</button></div></div><div class="muted small">두 손가락·마우스 휠·두 번 누르기로 확대, 끌어서 옮기기</div>` : '<div class="empty">사진이 없어요.</div>'}
+  ${S.canEdit && id ? `<div class="bar" style="flex-wrap:wrap"><span class="small muted">날짜가 틀렸으면 옮기기</span><input class="in" type="date" id="phMove" value="${date}" style="width:auto"><button class="btn sm" data-act="movePhoto">이 날짜로 옮기기</button></div>` : ''}
   <div style="display:flex;gap:8px;justify-content:space-between"><button class="btn" data-act="photoNav" data-v="-1" ${i <= 0 ? 'disabled' : ''}>이전</button><button class="btn" data-act="photoNav" data-v="1" ${i >= l.length - 1 ? 'disabled' : ''}>다음</button></div></div>`;
 }
 const YKEYS = {
@@ -1004,8 +1127,8 @@ function vFitTeam() {
   const sv = S.fitView === 'score';
   return `<div class="bar">${months.length ? monthSel('fitMonthSel', S.fitMonth, months) : ''}${teamSeg()}<span class="sp"></span>${S.canEdit ? `<button class="btn" data-act="newFitMonth">측정 월 추가</button>${S.fitMonth ? '<button class="btn danger" data-act="delFitMonth">이 달 삭제</button>' : ''}<button class="btn" data-act="fitImport">엑셀 가져오기</button>${S.fitMonth ? '<button class="btn pri" data-act="fitEntry">기록 입력</button>' : ''}` : ''}</div>
   <section class="panel" style="margin-bottom:14px"><h2>${S.fitMonth ? `${S.fitMonth.slice(0, 4)}년 ${+S.fitMonth.slice(5)}월 측정 결과` : '측정 결과'}<span class="sp"></span><div class="seg" role="group"><button data-act="fitView" data-v="raw" aria-pressed="${!sv}">기록</button><button data-act="fitView" data-v="score" aria-pressed="${sv}">점수</button></div></h2>
-  ${rows.length ? `<div class="scroll"><table class="t"><thead><tr><th class="stick">이름</th><th>등급</th>${FIT_COLS.map(c => `<th class="r">${c[1]}<br><span style="font-weight:400">${sv ? '점수' : c[0] === 'throw' ? 'm · 최대' : c[0] === 'acc' ? '일관성' : '초 · 낮을수록'}</span></th>`).join('')}<th class="r">체력 점수<br><span style="font-weight:400">100점</span></th></tr></thead><tbody>
-  ${rows.map(([id, p, r, f]) => { const std = stdFor(p.cls, p.div); const sc = clsScore(f, std); return `<tr class="click" data-act="fitEntry" data-id="${id}"><td class="stick"><b>${esc(p.name)}</b> ${divTag(p.div)}</td><td class="num">${esc(fmtCls(p.cls))}</td>${FIT_COLS.map(c => sv ? `<td class="r num">${sc[c[0]] == null ? '<span class="muted">–</span>' : sc[c[0]].toFixed(1)}</td>` : fitCell(c[0], f[c[0]], std)).join('')}<td class="r num muted small">${(() => { const T = total100(sc); return T ? `${Math.round(T.t)}${T.n < 7 ? ` (${T.n}항목)` : ''}` : '–'; })()}</td></tr>`; }).join('')}
+  ${rows.length ? `<div class="scroll"><table class="t"><thead><tr><th class="stick">이름</th><th>등급</th>${FIT_COLS.map(c => `<th class="r">${c[1]}<br><span style="font-weight:400">${sv ? '점수' : c[0] === 'throw' ? 'm · 최대' : c[0] === 'acc' ? '일관성' : isCnt(c[0]) ? '회 · 많을수록' : '초 · 낮을수록'}</span></th>`).join('')}<th class="r">체력 점수<br><span style="font-weight:400">100점</span></th></tr></thead><tbody>
+  ${rows.map(([id, p, r, f]) => { const std = stdFor(p.cls, p.div); const sc = clsScore(f, std); return `<tr class="click" data-act="fitEntry" data-id="${id}"><td class="stick"><b>${esc(p.name)}</b> ${divTag(p.div)}</td><td class="num">${esc(fmtCls(p.cls))}</td>${FIT_COLS.map(c => sv ? `<td class="r num">${sc[c[0]] == null ? '<span class="muted">–</span>' : sc[c[0]].toFixed(1)}</td>` : fitCell(c[0], f[c[0]], std)).join('')}<td class="r num muted small">${(() => { const T = total100(sc); return T ? `${Math.round(T.t)}${T.n < FIT_COLS.length ? ` (${T.n}항목)` : ''}` : '–'; })()}</td></tr>`; }).join('')}
   </tbody></table></div><p class="muted small" style="margin:10px 0 0">${sv ? '점수 = 자기 등급 국대 기준을 10점으로 환산 (기준을 넘으면 10점)' : '<span class="tag good">값</span> 국가대표 기준 달성 · <span class="tag warn">값</span> 기준 15% 이내 · 이름을 누르면 기록을 볼 수 있어요'}</p>` : '<div class="empty">이 달에 측정한 기록이 없어요.</div>'}
   </section>`;
 }
@@ -1028,8 +1151,8 @@ function vFitPlayer() {
   ${series.length ? `<div class="grid g2" style="margin-bottom:14px">
     <section class="panel radarBox">${radar(curS, bestS, S.fitPMonth)}<p class="muted small" style="margin:6px 0 0">${esc(fmtCls(p.cls))}등급 ${p.div === '오픈' ? `오픈 기준(쿼드 국대 +${Math.round(openF(p.cls) * 100)}%)` : '국대 기준'}을 10점으로 환산 · 기준을 넘으면 10점 · 역대 최고는 해가 바뀌어도 이어져요</p></section>
     <section class="panel"><h2>${S.fitPMonth.slice(2, 4)}년 ${+S.fitPMonth.slice(5)}월 기록</h2><div class="scroll"><table class="t"><thead><tr><th>항목</th><th class="r">기록</th><th class="r">역대 최고</th><th class="r">${p.div === '오픈' ? '오픈 기준' : '국대 기준'}</th><th class="r">점수</th></tr></thead><tbody>
-      ${FIT_COLS.map(([k, l]) => { const v = cur[1][k]; const fm = x => x == null ? '–' : k === 'throw' ? x : k === 'acc' ? x.toFixed(2) : x.toFixed(2); return `<tr><td>${l}</td><td class="r num">${fm(v)}</td><td class="r num muted">${fm(best[k])}</td><td class="r num muted">${std && std[k] != null ? std[k] + (k === 'throw' ? '<span title="추정값">*</span>' : '') : '–'}</td><td class="r"><b class="num">${curS[k] == null ? '–' : curS[k].toFixed(1)}</b></td></tr>`; }).join('')}
-      <tr><td class="muted small">체력 점수 (100점)</td><td colspan="3" class="muted small">7개 항목 점수 평균 × 10 · 경기력 점수 아님</td><td class="r num muted">${total100(curS) ? Math.round(total100(curS).t) : '–'}</td></tr>
+      ${FIT_COLS.map(([k, l]) => { const v = cur[1][k]; const fm = x => x == null ? '–' : k === 'throw' || isCnt(k) ? x : k === 'acc' ? x.toFixed(2) : x.toFixed(2); return `<tr><td>${l}</td><td class="r num">${fm(v)}</td><td class="r num muted">${fm(best[k])}</td><td class="r num muted">${std && std[k] != null ? std[k] + (k === 'throw' ? '<span title="추정값">*</span>' : '') : '–'}</td><td class="r"><b class="num">${curS[k] == null ? '–' : curS[k].toFixed(1)}</b></td></tr>`; }).join('')}
+      <tr><td class="muted small">체력 점수 (100점)</td><td colspan="3" class="muted small">측정한 항목 점수 평균 × 10 · 경기력 점수 아님</td><td class="r num muted">${total100(curS) ? Math.round(total100(curS).t) : '–'}</td></tr>
     </tbody></table></div><p class="muted small" style="margin:8px 0 0">* 던지기 거리 기준은 추정값 · 국대 기준표에서 고칠 수 있어요</p>${S.canEdit ? `<button class="btn sm" style="margin-top:8px" data-act="fitEntryP">이 달 기록 수정</button>` : ''}</section>
   </div>
   <section class="panel"><h2>월별 변화</h2><p class="muted small" style="margin:-4px 0 10px"><span style="display:inline-block;width:18px;border-top:1.5px dashed var(--good);vertical-align:middle"></span> 초록 점선 = ${p.div === '오픈' ? '오픈 기준' : '국대 기준'} (닿거나 넘으면 10점) · 시간 항목도 위로 갈수록 좋은 기록 · 오른쪽 위 숫자 = 가장 최근 기록과 환산 점수</p><div class="cards">${FIT_COLS.map(([k, label, dir]) => spark(series.map(s => [s[0], s[1][k]]), label, dir, std && std[k], best[k], k)).join('')}</div></section>` : '<div class="empty">이 선수는 측정 기록이 없어요.</div>'}`;
@@ -1045,27 +1168,33 @@ function vFitStd() {
   ${ed ? `<div class="bar"><label class="small muted" style="display:flex;gap:6px;align-items:center">2.0 이상 <input class="in num" style="width:64px;text-align:right" type="number" step="1" min="0" max="50" id="openPctHi" value="${Math.round(openFHi() * 100)}"> %</label><label class="small muted" style="display:flex;gap:6px;align-items:center">1.5 이하 <input class="in num" style="width:64px;text-align:right" type="number" step="1" min="0" max="50" id="openPctLo" value="${Math.round(openFLo() * 100)}"> %</label></div>` : ''}
   <div class="scroll"><table class="t"><thead><tr><th>등급</th>${keys.map(([, l]) => `<th class="r">${l}</th>`).join('')}</tr></thead><tbody>
   ${CLS_KEYS.map(c => { const s = stdFor(c, '오픈'); return `<tr><td class="num"><b>${c}</b></td>${keys.map(([k]) => `<td class="r num muted">${s[k] ?? '–'}</td>`).join('')}</tr>`; }).join('')}
+  </tbody></table></div>
+  <h3 class="sec" style="margin:18px 0 8px">셔틀런 기준 (회) <span class="muted small" style="font-weight:500">국대 기준 아님 · 우리 팀 기준 · 이 횟수면 10점, 못 미치면 비율만큼</span></h3>
+  <div class="scroll"><table class="t"><thead><tr><th>구분</th>${CLS_KEYS.map(c => `<th class="r">${c}</th>`).join('')}</tr></thead><tbody>
+  ${[['quad', '쿼드'], ['open', '오픈']].map(([g, l]) => `<tr><td><b>${l}</b></td>${CLS_KEYS.map(c => { const v = ((S.config.shuttleStd || {})[g] || {})[c]; return `<td class="r">${ed ? `<input class="in num" style="width:64px;text-align:right" type="number" step="1" data-shstd="${g}|${c}" value="${v ?? ''}">` : `<span class="num">${v ?? '–'}</span>`}</td>`; }).join('')}</tr>`).join('')}
   </tbody></table></div><p class="muted small" style="margin:10px 0 0">* 던지기 거리 기준은 엑셀에 없어 추정한 값이에요. 국대 출신 송문령(1.0)·최찬광(1.5) 최고 기록 7m를 0.5~1.5 기준으로 잡고(당겨서 같은 방식 측정), 2.0~2.5는 8m, 3.0~3.5는 9m로 올렸어요. 정확도는 10(완벽한 일관성)이 기준이에요.</p></section>`;
 }
 function radar(cur, best, mk) {
-  const T = total100(cur), TB = total100(best);
-  const W = 340, H = 300, cx = W / 2, cy = 150, R = 105, N = FIT_COLS.length;
+  const RC = FIT_COLS.filter(c => !isCnt(c[0])); // 셔틀런은 기록이 아직 적어서 능력치 그래프에서 빼요
+  const pick = o => Object.fromEntries(RC.map(c => [c[0], o[c[0]] ?? null]));
+  const T = total100(pick(cur)), TB = total100(pick(best));
+  const W = 340, H = 300, cx = W / 2, cy = 150, R = 105, N = RC.length;
   const mx = 10;
   const ang = i => (-90 + i * 360 / N) * Math.PI / 180;
   const pt = (i, v) => [cx + Math.cos(ang(i)) * R * Math.max(0, Math.min(v || 0, mx)) / mx, cy + Math.sin(ang(i)) * R * Math.max(0, Math.min(v || 0, mx)) / mx];
-  const poly = o => FIT_COLS.map((c, i) => pt(i, o[c[0]]).map(n => n.toFixed(1)).join(',')).join(' ');
+  const poly = o => RC.map((c, i) => pt(i, o[c[0]]).map(n => n.toFixed(1)).join(',')).join(' ');
   const rings = [2, 4, 6, 8, 10].filter(v => v <= mx);
-  const short = { throw: '던지기 거리', acc: '던지기 정확도', slalom: '슬라럼', crossL: '십자런 좌', crossR: '십자런 우', m20: '20m', m28: '28m' };
+  const short = { throw: '던지기 거리', acc: '던지기 정확도', slalom: '슬라럼', crossL: '십자런 좌', crossR: '십자런 우', m20: '20m', m28: '28m', shuttleL: '셔틀런 좌', shuttleR: '셔틀런 우' };
   return `<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><b>능력치</b>${T ? `<span class="muted small">체력 점수 ${Math.round(T.t)}${TB ? ` · 역대 최고 ${Math.round(TB.t)}` : ''}</span>` : ''}<span class="muted small">${mk ? `${+mk.slice(5)}월 측정` : ''}</span><span style="flex:1"></span><span class="legend"><span><i class="lg cur"></i>${mk ? +mk.slice(5) + '월' : '선택 월'}</span><span><i class="lg best"></i>역대 최고</span></span></div>
   <svg viewBox="0 0 ${W} ${H}" class="spark" role="img" aria-label="능력치 방사형 그래프">
-    ${rings.map(v => `<polygon points="${FIT_COLS.map((c, i) => pt(i, v).map(n => n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--line)" stroke-width="1"/>`).join('')}
-    ${FIT_COLS.map((c, i) => { const [x, y] = pt(i, mx); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`; }).join('')}
+    ${rings.map(v => `<polygon points="${RC.map((c, i) => pt(i, v).map(n => n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--line)" stroke-width="1"/>`).join('')}
+    ${RC.map((c, i) => { const [x, y] = pt(i, mx); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`; }).join('')}
     ${rings.map(v => { const a = (-90 + 180 / N) * Math.PI / 180; return `<text x="${(cx + Math.cos(a) * R * v / mx).toFixed(1)}" y="${(cy + Math.sin(a) * R * v / mx + 3).toFixed(1)}" font-size="8.5" text-anchor="middle" fill="var(--ink3)" font-family="IBM Plex Mono, monospace">${v}</text>`; }).join('')}
     <polygon points="${poly(cur)}" fill="var(--good)" fill-opacity=".35" stroke="var(--good)" stroke-width="2" stroke-linejoin="round"/>
     <polygon points="${poly(best)}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
-    ${FIT_COLS.map((c, i) => { const [x, y] = pt(i, best[c[0]]); return best[c[0]] == null ? '' : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="var(--accent)"/>`; }).join('')}
+    ${RC.map((c, i) => { const [x, y] = pt(i, best[c[0]]); return best[c[0]] == null ? '' : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="var(--accent)"/>`; }).join('')}
     ${T ? `<text x="${cx}" y="${cy + 4}" font-size="13" font-weight="600" text-anchor="middle" fill="var(--ink2)" font-family="IBM Plex Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3">${Math.round(T.t)}</text>` : ''}
-    ${FIT_COLS.map((c, i) => { const [x, y] = pt(i, mx * 1.2); const a = Math.cos(ang(i)); const anc = a > .3 ? 'start' : a < -.3 ? 'end' : 'middle'; const v = cur[c[0]]; return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="11" text-anchor="${anc}" fill="var(--ink2)">${short[c[0]]}</text><text x="${x.toFixed(1)}" y="${(y + 13).toFixed(1)}" font-size="11" font-weight="700" text-anchor="${anc}" fill="var(--ink)" font-family="IBM Plex Mono, monospace">${v == null ? '–' : v.toFixed(1)}</text>`; }).join('')}
+    ${RC.map((c, i) => { const [x, y] = pt(i, mx * 1.2); const a = Math.cos(ang(i)); const anc = a > .3 ? 'start' : a < -.3 ? 'end' : 'middle'; const v = cur[c[0]]; return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="11" text-anchor="${anc}" fill="var(--ink2)">${short[c[0]]}</text><text x="${x.toFixed(1)}" y="${(y + 13).toFixed(1)}" font-size="11" font-weight="700" text-anchor="${anc}" fill="var(--ink)" font-family="IBM Plex Mono, monospace">${v == null ? '–' : v.toFixed(1)}</text>`; }).join('')}
   </svg>`;
 }
 function spark(pts, label, dir, std, best, key) {
@@ -1078,8 +1207,8 @@ function spark(pts, label, dir, std, best, key) {
   const P2 = pts.map((p, i) => p[1] == null ? null : [x(i), y(p[1])]).filter(Boolean);
   const path = P2.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
   const last = vals[vals.length - 1], first = vals[0]; const better = dir === 'hi' ? last > first : last < first;
-  const fmt = v => key === 'throw' ? v : key === 'acc' ? v.toFixed(1) : v.toFixed(2);
-  const unit = key === 'throw' ? 'm' : key === 'acc' ? '' : '초';
+  const fmt = v => key === 'throw' || isCnt(key) ? v : key === 'acc' ? v.toFixed(1) : v.toFixed(2);
+  const unit = key === 'throw' ? 'm' : key === 'acc' ? '' : isCnt(key) ? '회' : '초';
   const sc = std ? Math.min(10, HI[key] ? last / std * 10 : std / last * 10) : null;
   return `<div class="panel" style="padding:10px 12px"><div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap"><span class="small muted">${label}</span><span class="sp" style="flex:1"></span><b class="num">${fmt(last)}<span class="small muted" style="font-weight:500">${unit}</span></b>${sc != null ? `<span class="tag n num" title="환산 점수">${sc.toFixed(1)}점</span>` : ''}${vals.length > 1 ? `<span class="tag ${better ? 'good' : last === first ? 'n' : 'bad'} num">${better ? '▲' : last === first ? '–' : '▼'}</span>` : ''}</div>
   <svg class="spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="${label} 변화">
@@ -1295,18 +1424,18 @@ async function doExport() {
     for (const mk of months) {
       const st = monthStats(mk), m = S.att[mk];
       add(`${mk.slice(2, 4)}년 ${+mk.slice(5)}월`, [[`${mk.slice(0, 4)}년 ${+mk.slice(5)}월 출석부`], ['팀', '이름', '구분', '등급', ...st.days.map(d => `${+d.slice(8)}(${dow(d)})`), '출석', '출석률'],
-        ...active.map(([id, p]) => { const nn = st.nOf(id); const r = nn ? st.aOf(id) / nn : null; return [p.team, p.name, p.div, fmtCls(p.cls), ...st.days.map(d => (((m.marks || {})[d] || {})[id] === '출석' ? 'O' : '')), (st.per[id] || { a: 0 }).a, r == null ? '등록 전' : Math.round(r * 1000) / 10 + '%']; }),
+        ...active.map(([id, p]) => { const nn = st.nOf(id); const r = nn ? st.aOf(id) / nn : null; return [p.team, p.name, p.div, fmtCls(p.cls), ...st.days.map(d => (((m.marks || {})[d] || {})[id] === '출석' ? 'O' : (((m.absent || {})[d] || {})[id] ? '불참' : ''))), (st.per[id] || { a: 0 }).a, r == null ? '등록 전' : Math.round(r * 1000) / 10 + '%']; }),
         ['', '참가인원', '', '', ...st.days.map(d => active.filter(([id]) => ((m.marks || {})[d] || {})[id] === '출석').length)]], [10, 10, 6, 6]);
     }
   }
   if ($('#exFit').checked) {
-    const rows = [['측정월', '팀', '이름', '구분', '등급(현재)', '던지기1', '던지기2', '던지기3', '던지기4', '던지기5', '던지기(최대)', '정확도', '슬라럼1', '콘1', '슬라럼2', '콘2', '슬라럼(최종)', '십자런 좌', '십자런 우', '20m 1', '20m 2', '20m(최종)', '28m 1', '28m 2', '28m(최종)', '체력 점수(100)']];
+    const rows = [['측정월', '팀', '이름', '구분', '등급(현재)', '던지기1', '던지기2', '던지기3', '던지기4', '던지기5', '던지기(최대)', '정확도', '슬라럼1', '콘1', '슬라럼2', '콘2', '슬라럼(최종)', '십자런 좌', '십자런 우', '20m 1', '20m 2', '20m(최종)', '28m 1', '28m 2', '28m(최종)', '셔틀런 좌(회)', '셔틀런 우(회)', '체력 점수(100)']];
     const ord = Object.fromEntries(ath.map(([id], k) => [id, k]));
     for (const m of fitMonths().filter(m => m.startsWith(year))) for (const [id, r] of Object.entries(S.fit[m].records || {}).sort((a, b) => (ord[a[0]] ?? 999) - (ord[b[0]] ?? 999))) {
       const p = P(id); if (!TEAMS.includes(p.team) || !okT(p)) continue;
       const f = fitFinal(r); const t = r.throws || [], sl = r.sl || [], w = r.m20 || [], m28 = Array.isArray(r.m28) ? r.m28 : [r.m28];
       const tt = total100(clsScore(f, stdFor(p.cls, p.div)));
-      rows.push([m, p.team, p.name, p.div, fmtCls(p.cls), t[0], t[1], t[2], t[3], t[4], f.throw, f.acc != null ? +f.acc.toFixed(2) : '', sl[0], sl[1], sl[2], sl[3], f.slalom != null ? +f.slalom.toFixed(2) : '', r.crossL, r.crossR, w[0], w[1], f.m20, m28[0], m28[1], f.m28, tt ? Math.round(tt.t) : ''].map(v => v ?? ''));
+      rows.push([m, p.team, p.name, p.div, fmtCls(p.cls), t[0], t[1], t[2], t[3], t[4], f.throw, f.acc != null ? +f.acc.toFixed(2) : '', sl[0], sl[1], sl[2], sl[3], f.slalom != null ? +f.slalom.toFixed(2) : '', r.crossL, r.crossR, w[0], w[1], f.m20, m28[0], m28[1], f.m28, f.shuttleL, f.shuttleR, tt ? Math.round(tt.t) : ''].map(v => v ?? ''));
     }
     add('체력테스트', rows, [8, 10, 10]);
   }
@@ -1356,7 +1485,7 @@ function closeDrawer() { const ev = D && D.kind === 'event'; D = null; renderDra
 function renderDrawer() {
   if (!D) return;
   if (D.kind === 'event') { $('#drawerHost').innerHTML = ''; const h = $('#evHost'); if (h) h.innerHTML = dEvent(); else render(); return; }
-  const body = { player: dPlayer, chair: dChair, event: dEvent, fit: dFit, photo: dPhoto, fitMonth: dFitMonth, fitImport: dFitImport }[D.kind]();
+  const body = { player: dPlayer, chair: dChair, event: dEvent, fit: dFit, photo: dPhoto, fitMonth: dFitMonth, fitImport: dFitImport, photoSort: dPhotoSort, abs: dAbs }[D.kind]();
   const old = document.querySelector('.drawer .db'); const st = old && D.kind === (renderDrawer.kind) ? old.scrollTop : 0; renderDrawer.kind = D.kind;
   $('#drawerHost').innerHTML = `<div class="scrim" data-act="close"></div><aside class="drawer ${D.kind === 'event' ? 'wide' : ''}" role="dialog" aria-modal="true">${body}</aside>`;
   const nw = document.querySelector('.drawer .db'); if (nw && st) nw.scrollTop = st;
@@ -1572,6 +1701,8 @@ function dFit() {
     <div class="sec">십자런 · 스프린트 (초)</div>
     <div class="trial"><label class="small muted">십자런 좌${n('ft_cl', r.crossL)}</label><label class="small muted">십자런 우${n('ft_cr', r.crossR)}</label><label class="small muted">20m 1회${n('ft_m0', m20[0])}</label><label class="small muted">20m 2회${n('ft_m1', m20[1])}</label></div>
     <div class="trial" style="grid-template-columns:repeat(4,minmax(0,1fr))"><label class="small muted">28m 1회${n('ft_28a', Array.isArray(r.m28) ? r.m28[0] : r.m28)}</label><label class="small muted">28m 2회${n('ft_28b', Array.isArray(r.m28) ? r.m28[1] : null)}</label></div>
+    <div class="sec">셔틀런 (13m 왕복 · 한 번 가는 게 1회)</div>
+    <div class="trial" style="grid-template-columns:repeat(4,minmax(0,1fr))"><label class="small muted">왼쪽 턴 (회)${n('ft_shL', r.shuttleL)}</label><label class="small muted">오른쪽 턴 (회)${n('ft_shR', r.shuttleR)}</label></div>
     <div class="panel"><div class="small muted" style="margin-bottom:6px">최종 기록${std ? ' · 국가대표 기준' : ''}</div><div class="scroll"><table class="t"><tr>${FIT_COLS.map(c => `<th class="r">${c[1]}</th>`).join('')}</tr><tr>${FIT_COLS.map(c => fitCell(c[0], f[c[0]], std)).join('')}</tr>${std ? `<tr>${FIT_COLS.map(c => `<td class="r num muted">${std[c[0]] ?? '–'}</td>`).join('')}</tr>` : ''}</table></div></div>
     ${S.canEdit ? '<div style="display:flex;gap:8px"><button class="btn pri" data-act="saveFit">저장</button><button class="btn" data-act="saveFitNext">저장하고 다음 선수</button></div>' : ''}
   </div>`;
@@ -1615,7 +1746,7 @@ async function readFitXlsx(file) {
 function readFit() {
   const num = id => { const v = val(id); return v === '' ? null : +v; };
   const throws = [0, 1, 2, 3, 4].map(i => num('ft_t' + i));
-  return { cls: val('ft_cls'), throws, acc: accOf(throws), sl: [num('ft_s0'), num('ft_s1') || 0, num('ft_s2'), num('ft_s3') || 0], crossL: num('ft_cl'), crossR: num('ft_cr'), m20: [num('ft_m0'), num('ft_m1')], m28: [num('ft_28a'), num('ft_28b')] };
+  return { cls: val('ft_cls'), throws, acc: accOf(throws), sl: [num('ft_s0'), num('ft_s1') || 0, num('ft_s2'), num('ft_s3') || 0], crossL: num('ft_cl'), crossR: num('ft_cr'), m20: [num('ft_m0'), num('ft_m1')], m28: [num('ft_28a'), num('ft_28b')], shuttleL: num('ft_shL'), shuttleR: num('ft_shR') };
 }
 function saveFit(next) {
   const pid = val('ft_pid'); const rec = readFit(); const m = D.month;
@@ -1644,7 +1775,7 @@ document.addEventListener('click', ev => {
   const t = ev.target.closest('[data-act]'); if (!t || t.disabled) return;
   const a = t.dataset.act, id = t.dataset.id, v = t.dataset.v;
   switch (a) {
-    case 'tab': if (D && D.kind === 'event') D = null; S.tab = v; store.set('tab', v); render(); window.scrollTo(0, 0); break;
+    case 'tab': S.phSel = null; if (D && D.kind === 'event') D = null; S.tab = v; store.set('tab', v); render(); window.scrollTo(0, 0); break;
     case 'team': S.team = v; store.set('team', v); render(); break;
     case 'goCheck': S.tab = 'att'; S.attView = 'check'; S.date = todayISO(); S.dates = [S.date]; S.calMonth = S.date.slice(0, 7); store.set('tab', 'att'); render(); break;
     case 'calNav': { const [y, mo] = (S.calMonth || todayISO().slice(0, 7)).split('-').map(Number); const dt = new Date(y, mo - 1 + +v, 1); S.calMonth = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`; render(); break; }
@@ -1703,11 +1834,17 @@ document.addEventListener('click', ev => {
     case 'fitTab': S.fitTab = v; render(); break;
     case 'fitScore': S.fitScore = v; render(); break;
     case 'fitEntryP': openFit(S.fitPMonth, S.fitPlayer); break;
-    case 'saveStd': { const st = clone(S.config.standards || {}); document.querySelectorAll('[data-std]').forEach(el => { const [c, k] = el.dataset.std.split('|'); const n = el.value === '' ? null : +el.value; st[c] = st[c] || {}; if (n == null) delete st[c][k]; else st[c][k] = n; }); const oh = document.getElementById('openPctHi'), ol = document.getElementById('openPctLo'); if (oh && oh.value !== '') S.config.openFactorHi = Math.max(0, Math.min(50, +oh.value)) / 100; if (ol && ol.value !== '') S.config.openFactorLo = Math.max(0, Math.min(50, +ol.value)) / 100; S.config.standards = st; saveDoc('config/main', Object.assign(clone(S.config), { standards: st })); toast('기준표를 저장했어요'); render(); break; }
+    case 'saveStd': { const sh = clone(S.config.shuttleStd || {}); document.querySelectorAll('[data-shstd]').forEach(el => { const [g, c] = el.dataset.shstd.split('|'); sh[g] = sh[g] || {}; if (el.value === '') delete sh[g][c]; else sh[g][c] = +el.value; }); S.config.shuttleStd = sh; const st = clone(S.config.standards || {}); document.querySelectorAll('[data-std]').forEach(el => { const [c, k] = el.dataset.std.split('|'); const n = el.value === '' ? null : +el.value; st[c] = st[c] || {}; if (n == null) delete st[c][k]; else st[c][k] = n; }); const oh = document.getElementById('openPctHi'), ol = document.getElementById('openPctLo'); if (oh && oh.value !== '') S.config.openFactorHi = Math.max(0, Math.min(50, +oh.value)) / 100; if (ol && ol.value !== '') S.config.openFactorLo = Math.max(0, Math.min(50, +ol.value)) / 100; S.config.standards = st; saveDoc('config/main', Object.assign(clone(S.config), { standards: st })); toast('기준표를 저장했어요'); render(); break; }
     case 'fitImport': D = { kind: 'fitImport', preview: null }; renderDrawer(); break;
-    case 'doFitImport': { const pv = D.preview; let n = 0; for (const [mk, recs] of Object.entries(pv.months)) { const doc = clone(S.fit[mk] || { records: {} }); doc.records = Object.assign(doc.records || {}, recs); S.fit[mk] = doc; saveDoc('fitness/' + mk, doc); n += Object.keys(recs).length; } closeDrawer(); S.fitMonth = Object.keys(pv.months).sort().pop(); render(); toast(`기록 ${n}건을 가져왔어요`); break; }
+    case 'doFitImport': { const pv = D.preview; let n = 0; for (const [mk, recs] of Object.entries(pv.months)) { const doc = clone(S.fit[mk] || { records: {} }); doc.records = doc.records || {}; for (const [pid, r] of Object.entries(recs)) doc.records[pid] = Object.assign({}, doc.records[pid], r); S.fit[mk] = doc; saveDoc('fitness/' + mk, doc); n += Object.keys(recs).length; } closeDrawer(); S.fitMonth = Object.keys(pv.months).sort().pop(); render(); toast(`기록 ${n}건을 가져왔어요`); break; }
     case 'export': doExport(); break;
     case 'exportPdf': reportPdf($('#exYear').value, $('#exTeam').value); break;
+    case 'psGo': photoSortGo(); break;
+    case 'movePhoto': { const to = ($('#phMove') || {}).value; const from = D.date; if (!to || to === from) break;
+      const fm = monthDoc(from.slice(0, 7)); const l = (fm.photos || {})[from] || []; const [pid] = l.splice(D.i, 1); if (!pid) break; fm.photos[from] = l; if (!l.length) delete fm.photos[from];
+      if (from.slice(0, 7) === to.slice(0, 7)) { fm.photos[to] = (fm.photos[to] || []).concat(pid); commitMonth(from.slice(0, 7), fm); }
+      else { commitMonth(from.slice(0, 7), fm); const tm = monthDoc(to.slice(0, 7)); tm.photos[to] = (tm.photos[to] || []).concat(pid); commitMonth(to.slice(0, 7), tm); }
+      toast(`${+to.slice(5, 7)}/${+to.slice(8)}로 옮겼어요`); if (l.length) { D.i = Math.min(D.i, l.length - 1); renderDrawer(); } else closeDrawer(); render(); break; }
     case 'reportPdf': reportPdf(S.year, S.team); break;
     case 'ovTeam': S.team = v; S.tab = 'att'; S.attView = 'month'; render(); window.scrollTo(0, 0); break;
     case 'ovPlayer': S.team = '전체'; S.tab = 'att'; S.attView = 'report'; S.repPid = id; render(); setTimeout(() => { const c = $('#repCard'); c && c.scrollIntoView({ block: 'start' }); }, 30); break;
@@ -1724,7 +1861,31 @@ document.addEventListener('click', ev => {
     case 'ysDir': { const i = +t.dataset.i; S.ysort = S.ysort.map((x, j) => j === i ? { k: x.k, d: -x.d } : x); store.set('ysort', S.ysort); render(); break; }
     case 'ysUp': { const i = +t.dataset.i; const a = S.ysort.slice(); [a[i - 1], a[i]] = [a[i], a[i - 1]]; S.ysort = a; store.set('ysort', a); render(); break; }
     case 'ysRm': { const i = +t.dataset.i; S.ysort = S.ysort.filter((_, j) => j !== i); store.set('ysort', S.ysort); render(); break; }
-    case 'viewPhoto': D = { kind: 'photo', date: t.dataset.date, i: +t.dataset.i }; renderDrawer(); break;
+    case 'stgNav': S.stgI = Math.max(0, (S.stgI || 0) + +v); S.stgZ = null; render(); break;
+    case 'stgGo': S.stgI = +t.dataset.i; S.stgZ = null; render(); break;
+    case 'stgZoom': { const b = t.closest('.zbox'); if (!b) break; if (v === 'fit') { zSet(b, null); break; } zAt(b, zGet(b).s * (v === 'in' ? 1.6 : 1 / 1.6), b.clientWidth / 2, b.clientHeight / 2); break; }
+    case 'absOpen': D = { kind: 'abs', pid: '', dates: [], month: S.calMonth || todayISO().slice(0, 7), txt: '' }; renderDrawer(); break;
+    case 'absDay': { D.txt = val('ab_txt'); const d = t.dataset.d; D.dates = D.dates.includes(d) ? D.dates.filter(x => x !== d) : D.dates.concat(d).sort(); renderDrawer(); break; }
+    case 'absNav': { D.txt = val('ab_txt'); const [y, mo] = D.month.split('-').map(Number); const dt = new Date(y, mo - 1 + +v, 1); D.month = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`; renderDrawer(); break; }
+    case 'absQuick': { const el = $('#ab_txt'); if (el) { el.value = v; D.txt = v; } break; }
+    case 'absSave': absWrite(false); break;
+    case 'absParse': { D.paste = ($('#ab_paste') || {}).value || ''; D.txt = val('ab_txt'); D.parsed = parseAbsText(D.paste, D.month); renderDrawer(); break; }
+    case 'absParseClear': D.parsed = null; D.paste = ''; renderDrawer(); break;
+    case 'absParseSave': { const rows = D.parsed.filter(r => r.on && r.dates.length && r.pid); const by = {}; let n = 0, skip = 0;
+      rows.forEach(r => r.dates.forEach(d => { if (markOf(d, r.pid)) { skip++; return; } (by[d.slice(0, 7)] = by[d.slice(0, 7)] || []).push([d, r.pid, r.reason || '개인 사정']); n++; }));
+      for (const [mk, arr] of Object.entries(by)) { const m = monthDoc(mk); m.absent = m.absent || {}; arr.forEach(([d, pid, why]) => { m.absent[d] = m.absent[d] || {}; m.absent[d][pid] = why; }); S.att[mk] = m; saveDoc('attendance/' + mk, m); }
+      toast(`불참 사유 ${n}건 저장${skip ? ` · 출석 체크된 ${skip}건은 건너뜀` : ''}`); D.parsed = null; D.paste = ''; renderDrawer(); render(); break; }
+    case 'absClear': absWrite(true); break;
+    case 'dnToggle': S.dayNamesOpen = !S.dayNamesOpen; render(); break;
+    case 'dnGo': { const d = t.dataset.d; S.attView = 'check'; S.date = d; S.dates = [d]; S.calMonth = d.slice(0, 7); render(); window.scrollTo(0, 0); break; }
+    case 'stgDay': S.stgPick = t.dataset.d; render(); break;
+    case 'phSelMode': S.phSel = S.phSel ? null : []; render(); break;
+    case 'phDelSel': { if (!S.phSel || !S.phSel.length) break; if (!t.dataset.confirm) { t.dataset.confirm = '1'; t.textContent = `한 번 더 누르면 ${S.phSel.length}장 삭제`; break; }
+      const by = {}; S.phSel.forEach(k => { const [d, pid] = k.split('|'); (by[d.slice(0, 7)] = by[d.slice(0, 7)] || []).push([d, pid]); });
+      let n = 0; for (const [mk, arr] of Object.entries(by)) { const m = monthDoc(mk); arr.forEach(([d, pid]) => { const l = m.photos[d] || []; const j = l.indexOf(pid); if (j >= 0) { l.splice(j, 1); n++; if (S.assets) S.assets.delete(pid).catch(() => {}); } if (l.length) m.photos[d] = l; else delete m.photos[d]; }); S.att[mk] = m; saveDoc('attendance/' + mk, m); }
+      S.phSel = null; render(); toast(`사진 ${n}장을 삭제했어요`); break; }
+    case 'viewPhoto': if (S.phSel) { const k = t.dataset.date + '|' + t.dataset.id; S.phSel = S.phSel.includes(k) ? S.phSel.filter(x => x !== k) : S.phSel.concat(k); render(); break; }
+      D = { kind: 'photo', date: t.dataset.date, i: +t.dataset.i }; renderDrawer(); break;
     case 'photoNav': D.i += +v; renderDrawer(); break;
     case 'delPhoto': if (t.dataset.confirm) { const mk = D.date.slice(0, 7); const m = monthDoc(mk); const l = (m.photos || {})[D.date] || []; const [id] = l.splice(D.i, 1); m.photos[D.date] = l; commitMonth(mk, m); if (id && S.assets) S.assets.delete(id).catch(() => {}); closeDrawer(); toast('사진을 삭제했어요'); } else { t.dataset.confirm = '1'; t.textContent = '한 번 더 누르면 삭제'; } break;
   }
@@ -1746,7 +1907,15 @@ document.addEventListener('change', ev => {
   else if (D && D.kind === 'event' && t.closest && t.closest('.drawer,.evd') && (t.dataset.rr || t.dataset.rm || /^e_(r1|r2|r3|rm|mpd|rt|tc|sub|start|end|status)$/.test(t.id))) { readEventForm(); renderDrawer(); }
   else if (t.id === 'photoMonthSel') { S.photoMonth = t.value; render(); }
   else if (t.id === 'fitXlsx' && t.files && t.files[0] && D) { readFitXlsx(t.files[0]); }
-  else if (t.classList.contains('attPhotoIn') && t.files && t.files.length) { uploadEvidence(t.dataset.date, [...t.files]); t.value = ''; }
+  else if (t.id === 'photoAutoIn' && t.files && t.files.length) { openPhotoSort([...t.files]); t.value = ''; }
+  else if (t.classList.contains('psDate') && D && D.kind === 'photoSort') { D.items[+t.dataset.i].date = t.value; if (t.value) D.items[+t.dataset.i].src = D.items[+t.dataset.i].src === 'none' || D.items[+t.dataset.i].src === 'guess' ? 'set' : D.items[+t.dataset.i].src; renderDrawer(); }
+  else if (t.id === 'psAdd' && D && D.kind === 'photoSort') { D.addDays = t.checked; }
+  else if (t.id === 'ab_img' && t.files && t.files.length && D && D.kind === 'abs') { readAbsImages([...t.files]); t.value = ''; }
+  else if (t.classList.contains('abOn') && D && D.parsed) { D.parsed[+t.dataset.i].on = t.checked; D.paste = ($('#ab_paste') || {}).value || D.paste; renderDrawer(); }
+  else if (t.classList.contains('abWhy') && D && D.parsed) { D.parsed[+t.dataset.i].reason = t.value.trim(); }
+  else if (t.classList.contains('abDates') && D && D.parsed) { const y = D.month.slice(0, 4); D.parsed[+t.dataset.i].dates = [...new Set((t.value.match(/\d{1,2}\s*[\/.월]\s*\d{1,2}/g) || []).map(x => { const [m, d] = x.split(/\s*[\/.월]\s*/).map(Number); return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`; }))].sort(); D.paste = ($('#ab_paste') || {}).value || D.paste; renderDrawer(); }
+  else if (t.id === 'ab_pid' && D && D.kind === 'abs') { D.pid = t.value; D.txt = val('ab_txt'); renderDrawer(); }
+  else if (t.classList.contains('attPhotoIn') && t.files && t.files.length) { openPhotoSort([...t.files], t.dataset.date); t.value = ''; }
   else if (t.id === 'fitMonthSel') { S.fitMonth = t.value; render(); }
   else if (t.id === 'fitPlayerSel') { S.fitPlayer = t.value; S.fitPMonth = null; render(); }
   else if (t.id === 'fitPMonthSel') { S.fitPMonth = t.value; render(); }
@@ -1757,6 +1926,194 @@ document.addEventListener('change', ev => {
 
 // ---------- photo uploads (file picker + paste) ----------
 const upErr = e => toast(e && e.code === 'too_large' ? '사진이 너무 커요 (20MB 이하)' : e && e.code === 'unsupported_type' ? 'JPG·PNG 사진만 올릴 수 있어요' : e && e.code === 'quota_or_state' ? '사진 저장 공간이 가득 찼어요' : '사진을 올리지 못했어요');
+// 사진 날짜 자동 분류: 사진 정보(EXIF) → 파일 이름 → 파일 저장 날짜(추정) 순으로 찾아요
+async function exifDate(file) {
+  try {
+    const v = new DataView(await file.slice(0, 256 * 1024).arrayBuffer());
+    if (v.getUint16(0) !== 0xFFD8) return null;
+    let o = 2;
+    while (o + 10 < v.byteLength) {
+      const mk = v.getUint16(o); if ((mk & 0xFF00) !== 0xFF00) break; const len = v.getUint16(o + 2);
+      if (mk === 0xFFE1 && v.getUint32(o + 4) === 0x45786966) {
+        const t = o + 10, le = v.getUint16(t) === 0x4949; const g16 = q => v.getUint16(q, le), g32 = q => v.getUint32(q, le);
+        const str = q => { let r = ''; for (let k = 0; k < 19; k++) r += String.fromCharCode(v.getUint8(q + k)); return r; };
+        const scan = (ifd, want) => { const out = {}; const n = g16(ifd); for (let k = 0; k < n; k++) { const e = ifd + 2 + k * 12; const tag = g16(e); if (want.includes(tag)) out[tag] = g32(e + 8); } return out; };
+        const i0 = scan(t + g32(t + 4), [0x8769, 0x0132]); let raw = null;
+        if (i0[0x8769]) { const ex = scan(t + i0[0x8769], [0x9003, 0x9004]); const q = ex[0x9003] || ex[0x9004]; if (q) raw = str(t + q); }
+        if (!raw && i0[0x0132]) raw = str(t + i0[0x0132]);
+        const m = raw && raw.match(/^(\d{4}):(\d{2}):(\d{2})/); return m && m[1] !== '0000' ? `${m[1]}-${m[2]}-${m[3]}` : null;
+      }
+      if (mk === 0xFFDA) break; o += 2 + len;
+    }
+  } catch {}
+  return null;
+}
+function nameDate(n) { const m = String(n || '').match(/(20\d{2})[-_.]?(0[1-9]|1[0-2])[-_.]?(0[1-9]|[12]\d|3[01])/); return m ? `${m[1]}-${m[2]}-${m[3]}` : null; }
+const isoLocal = t => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+async function openPhotoSort(files, sel) {
+  files = files.filter(f => /^image\//.test(f.type) || /\.(jpe?g|png|heic|webp)$/i.test(f.name || '')); if (!files.length) return;
+  toast('사진 날짜 확인하는 중…');
+  const items = [];
+  for (const f of files) {
+    let date = await exifDate(f), src = 'exif';
+    if (!date) { date = nameDate(f.name); src = 'name'; }
+    if (!date && sel) { date = sel; src = 'sel'; }
+    if (!date && f.lastModified) { date = isoLocal(f.lastModified); src = 'guess'; }
+    if (!date) src = 'none';
+    items.push({ f, url: URL.createObjectURL(f), date: date || '', src });
+  }
+  items.sort((a, b) => (a.date || '9').localeCompare(b.date || '9'));
+  D = { kind: 'photoSort', items, addDays: true, busy: false }; renderDrawer();
+}
+// 불참 사유 입력: 선수 + 날짜 여러 개 + 사유
+const ABS_QUICK = ['병원 예약', '개인 사정', '회사 사정', '보호자 사정', '부상', '대회 참가', '교육', '경조사'];
+function dAbs() {
+  const A = D; const cm = A.month; const y = +cm.slice(0, 4), mo = +cm.slice(5, 7); const first = new Date(y, mo - 1, 1).getDay(), nd = new Date(y, mo, 0).getDate();
+  const iso = dd => `${cm}-${String(dd).padStart(2, '0')}`;
+  let cells = DOW.map((w, k) => `<span class="cw ${k === 0 ? 'sun' : k === 6 ? 'sat' : ''}">${w}</span>`).join(''); for (let k = 0; k < first; k++) cells += '<span></span>';
+  for (let dd = 1; dd <= nd; dd++) { const d = iso(dd); const sel = A.dates.includes(d); const tr = isTrain(d); const had = A.pid && absOfD(d, A.pid); const w = (first + dd - 1) % 7;
+    const hn = holi(d); cells += `<button class="cd ${sel ? 'sel' : ''} ${tr ? 'tr' : ''} ${w === 0 || hn ? 'sun' : w === 6 ? 'sat' : ''} ${hn ? 'hol' : ''}" data-act="absDay" data-d="${d}" title="${esc(hn)}"><b>${dd}</b><i>${had ? '사유' : tr ? '훈련' : hn ? esc(hn.replace(' 연휴', '')) : ''}</i></button>`; }
+  const ath = athletes({ all: true });
+  const mine = A.pid ? Object.entries(S.att).flatMap(([mk, m]) => Object.entries(m.absent || {}).filter(([, o]) => o[A.pid]).map(([d, o]) => [d, o[A.pid]])).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 12) : [];
+  return `<div class="dh"><h2>불참 사유 입력</h2><button class="btn sm" data-act="close">닫기</button></div>
+  <div class="db">
+    <label class="small muted abl">선수<select class="in" id="ab_pid"><option value="">선수 고르기</option>${ath.map(([id, p]) => `<option value="${id}" ${id === A.pid ? 'selected' : ''}>${esc(p.name)} (${esc(p.team || '')})</option>`).join('')}</select></label>
+    <div><div class="calh"><button class="btn ghost sm" data-act="absNav" data-v="-1" aria-label="이전 달">‹</button><b>${y}년 ${mo}월</b><button class="btn ghost sm" data-act="absNav" data-v="1" aria-label="다음 달">›</button><span style="flex:1"></span><span class="muted small">불참 날짜를 모두 누르세요 · ${A.dates.length}일 선택</span></div>
+      <div class="calg">${cells}</div></div>
+    <label class="small muted abl">사유<input class="in" id="ab_txt" value="${esc(A.txt || '')}" placeholder="예: 병원 예약"></label>
+    <div class="evcs">${ABS_QUICK.map(q => `<button class="chip" data-act="absQuick" data-v="${q}">${q}</button>`).join('')}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" data-act="absSave" ${A.pid && A.dates.length ? '' : 'disabled'}>저장</button><button class="btn" data-act="absClear" ${A.pid && A.dates.length ? '' : 'disabled'}>고른 날 사유 지우기</button></div>
+    <div class="muted small">출석으로 체크된 날은 출석이 우선이에요. 사유는 편집 권한이 있는 사람만 보고, 공유용 페이지에는 '불참' 표시만 나가요.</div>
+    <div class="panel"><b class="small">밴드 불참 댓글 한꺼번에 넣기</b>
+      <div class="muted small" style="margin:4px 0 6px">밴드 댓글 화면을 <b>캡처해서 올리거나, 캡처를 복사해서 이 창에 붙여넣기(Ctrl+V)</b> 하면 Claude가 이름·날짜·사유를 읽어 와요(여러 장 가능). 댓글 글을 복사할 수 있으면 아래 칸에 붙여넣으면 바로 읽어요. 저장 전에 미리보기에서 고칠 수 있어요.</div>
+      <label class="btn pri sm upl" ${A.imgBusy ? 'aria-disabled="true"' : ''}>${A.imgBusy ? '캡처 읽는 중… (30초~1분)' : '캡처 사진 올리기'}<input type="file" accept="image/*" multiple id="ab_img" ${A.imgBusy ? 'disabled' : ''}></label>
+      ${A.imgErr ? `<div class="small" style="color:var(--bad);margin-top:6px">${esc(A.imgErr)}</div>` : ''}
+      <div class="muted small" style="margin:10px 0 4px">또는 글 붙여넣기</div>
+      <textarea class="in" id="ab_paste" rows="4" placeholder="캡처 이미지나 댓글 글을 여기에 붙여넣기&#10;예) WR 서울휠럭 최찬광&#10;10월 8일 오후 8:09&#10;26일28일30일 보호자 문제로 운동 불참 입니다">${esc(A.paste || '')}</textarea>
+      <div style="display:flex;gap:8px;margin-top:6px"><button class="btn sm" data-act="absParse">읽기</button>${A.parsed ? '<button class="btn sm ghost" data-act="absParseClear">지우기</button>' : ''}</div>
+      ${A.parsed ? `<div class="abp">${A.parsed.length ? A.parsed.map((r, i) => { const dsTxt = r.dates.map(d => `${+d.slice(5, 7)}/${+d.slice(8)}`).join(' '); const warn = r.dates.filter(d => markOf(d, r.pid)); const notTr = r.dates.filter(d => !isTrain(d));
+        return `<div class="abr ${r.on ? '' : 'off'}"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" class="abOn" data-i="${i}" ${r.on ? 'checked' : ''} ${r.pid ? '' : 'disabled'}><b>${esc(r.pid ? P(r.pid).name : (r.name || '?'))}</b>${r.pid ? '' : '<span class="tag bad">명단에 없음</span>'}</label>
+          <input class="in abDates" data-i="${i}" value="${dsTxt}" placeholder="날짜 예: 10/26 10/28">
+          <input class="in abWhy" data-i="${i}" value="${esc(r.reason)}">
+          <div class="muted small" style="grid-column:1/-1">원문: ${esc(r.raw)}${!r.dates.length ? ' · <b style="color:var(--bad)">날짜를 적어 주세요</b>' : ''}${warn.length ? ` · 출석 체크된 날(${warn.map(d => `${+d.slice(5, 7)}/${+d.slice(8)}`).join(', ')})은 건너뛰어요` : ''}${notTr.length ? ` · 훈련일 아님: ${notTr.map(d => `${+d.slice(5, 7)}/${+d.slice(8)}`).join(', ')}` : ''}</div></div>`; }).join('') : '<div class="muted small">읽을 수 있는 내용이 없어요. 선수 이름이 들어 있는지 확인해 주세요.</div>'}
+        ${A.parsed.some(r => r.on && r.dates.length) ? `<button class="btn pri" data-act="absParseSave" style="margin-top:8px">체크한 ${A.parsed.filter(r => r.on && r.dates.length).length}건 저장</button>` : ''}</div>` : ''}
+    </div>
+    ${mine.length ? `<div class="panel"><b class="small">${esc(P(A.pid).name)} 최근 불참 사유</b><div class="small" style="margin-top:6px;line-height:1.8">${mine.map(([d, r]) => `${+d.slice(5, 7)}/${+d.slice(8)}(${dow(d)}) ${esc(r)}`).join('<br>')}</div></div>` : ''}
+  </div>`;
+}
+// 밴드 댓글 붙여넣기 → 선수·날짜·사유 자동 읽기 (저장 전에 미리보기에서 고칠 수 있어요)
+function parseAbsText(txt, ym) {
+  const y = +ym.slice(0, 4); let pm = +ym.slice(5, 7);
+  const ath = athletes({ all: true }).map(([id, p]) => [id, (p.name || '').replace(/\s/g, '')]).filter(([, n]) => n.length >= 2).sort((a, b) => b[1].length - a[1].length);
+  const iso = (m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  const out = []; let cur = null, post = null;
+  for (const raw of String(txt).split(/\r?\n/)) {
+    const line = raw.trim(); if (!line) continue; const flat = line.replace(/\s/g, '');
+    const ts = line.match(/^(\d{1,2})월\s*(\d{1,2})일\s*(오전|오후)?\s*\d{1,2}:\d{2}$/); if (ts) { pm = +ts[1]; post = iso(+ts[1], +ts[2]); continue; }
+    const who = ath.find(([, n]) => flat.includes(n));
+    let body = line;
+    if (who && (line.length <= who[1].length + 16) && !/\d+\s*일|오늘|불참|못/.test(line.replace(/\(.*?\)/g, ''))) { cur = who[0]; post = null; continue; }
+    if (who) { cur = who[0]; body = line.replace(new RegExp(who[1].split('').join('\\s*')), '').trim(); }
+    if (!cur) continue;
+    const ds = new Set(); let b2 = body;
+    b2 = b2.replace(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/g, (_, m, d) => { ds.add(iso(+m, +d)); return ' '; });
+    b2 = b2.replace(/(\d{1,2})\/(\d{1,2})/g, (_, m, d) => { ds.add(iso(+m, +d)); return ' '; });
+    b2 = b2.replace(/\d{1,2}(?:\s*(?:일|,|\.|·|및|과|와|\/)\s*\d{1,2})*\s*일(?:은|는|에|엔|도)?/g, mt => { (mt.match(/\d{1,2}/g) || []).forEach(d => ds.add(iso(pm, +d))); return ' '; });
+    if (/오늘/.test(b2) && post) { ds.add(post); b2 = b2.replace(/오늘/g, ' '); }
+    let reason = b2.replace(/\(?[월화수목금토일]요일\)?/g, ' ').replace(/(으로|로|때문에|인해|인하여)?\s*(운동|훈련)?\s*(을|에)?\s*(불참|못\s*갑?니다|못\s*가요|못가|참석\s*못|빠집니다|빠져요).*$/, '').replace(/[ㅠㅜ]+|[.!~]+$/g, '').replace(/\s+/g, ' ').trim();
+    reason = reason.replace(/^[.,·\s]+/, '').replace(/^(은|는|이|가)\s+/, '').replace(/(으로|로)$/, '').trim();
+    const key = cur + '|' + post; const last = out[out.length - 1];
+    if (last && last.key === key) { last.dates = [...new Set(last.dates.concat([...ds]))].sort(); if (reason) last.reason = last.reason && last.reason !== '개인 사정' ? last.reason + ' ' + reason : reason; last.raw += ' / ' + line; last.on = last.dates.length > 0; continue; }
+    out.push({ key, pid: cur, dates: [...ds].sort(), reason: reason || '개인 사정', raw: line, on: ds.size > 0 });
+  }
+  return out;
+}
+// 캡처 사진 → Claude가 읽기 (긴 캡처는 잘라서 보내요)
+async function splitShot(file) {
+  try {
+    const bmp = await createImageBitmap(file); const W = bmp.width, H = bmp.height;
+    if (H <= W * 1.5) return [file];
+    const ph = Math.round(W * 1.3), ov = Math.round(W * 0.12), out = [];
+    for (let y = 0; y < H; y += ph - ov) { const h = Math.min(ph, H - y); const c = document.createElement('canvas'); c.width = W; c.height = h; c.getContext('2d').drawImage(bmp, 0, y, W, h, 0, 0, W, h); out.push(await new Promise(r => c.toBlob(r, 'image/jpeg', .9))); if (y + h >= H) break; }
+    return out;
+  } catch { return [file]; }
+}
+async function readAbsImages(files) {
+  const A = D; A.imgErr = ''; A.paste = ($('#ab_paste') || {}).value || A.paste || '';
+  const sample = window.__claudeSnap && window.__claudeSnap.use ? await window.__claudeSnap.use('sample') : null;
+  if (!sample) { A.imgErr = '이 화면에서는 Claude에게 사진을 보낼 수 없어요. claude.ai 앱에서 열어 주세요.'; renderDrawer(); return; }
+  const lim = await sample.limits().catch(() => null);
+  if (!lim || !lim.images) { A.imgErr = '이 화면에서는 사진 읽기를 쓸 수 없어요. 글 붙여넣기를 이용해 주세요.'; renderDrawer(); return; }
+  A.imgBusy = true; renderDrawer();
+  try {
+    let blobs = []; for (const f of files) blobs = blobs.concat(await splitShot(f));
+    const names = athletes({ all: true }).map(([, p]) => p.name).filter(Boolean);
+    const y = A.month.slice(0, 4), mo = +A.month.slice(5, 7);
+    const prompt = `이 이미지들은 휠체어럭비 팀 밴드(네이버 밴드) 게시글의 불참 알림 댓글 캡처예요(긴 화면을 잘라 순서대로 보냈고, 조각끼리 조금 겹쳐요).
+각 댓글은 [작성자 이름 줄] [작성 날짜·시간 줄, 예: "10월 8일 오후 8:09"] [내용]으로 되어 있어요.
+
+선수 명단: ${names.join(', ')}
+연도: ${y}년. 작성 날짜를 못 읽으면 ${mo}월로 보세요.
+
+댓글마다 아래 JSON 객체 하나씩, 전체를 JSON 배열 하나로만 답하세요(다른 글 없이).
+{"name": 작성자를 선수 명단의 이름과 똑같이(명단에 없으면 보이는 이름 그대로), "posted": "YYYY-MM-DD" 작성일, "dates": ["YYYY-MM-DD", ...] 불참하는 날짜들, "reason": 사유를 짧게(10자 안팎, 예: "병원 예약", "보호자 사정", "대회 참가"), "absence": 불참 알림이면 true / 참석·기타 알림이면 false, "text": 댓글 내용 그대로}
+날짜 규칙: "오늘"은 작성일. "26일28일30일", "12,14,16일", "19.26일"처럼 일만 쓰면 작성일과 같은 달(작성일보다 한참 앞선 날이면 다음 달). "당분간", "이번주까지"처럼 날짜를 정할 수 없으면 "dates": [] 로 두고 reason 에 그 말을 넣으세요.
+같은 댓글이 겹친 조각에 두 번 보이면 한 번만 넣으세요.`;
+    const max = lim.images.maxCount || 5; let all = [];
+    for (let i = 0; i < blobs.length; i += max) { const r = await sample.json(prompt, { images: blobs.slice(i, i + max) }); if (Array.isArray(r)) all = all.concat(r); }
+    const byName = {}; athletes({ all: true }).forEach(([id, p]) => { byName[(p.name || '').replace(/\s/g, '')] = id; });
+    const seen = new Set(); const rows = [];
+    for (const r of all) {
+      if (!r || typeof r !== 'object') continue; const nm = String(r.name || '').replace(/\s/g, '');
+      const pid = byName[nm] || Object.entries(byName).find(([n]) => n.length >= 2 && nm.includes(n))?.[1] || null;
+      const dates = [...new Set((Array.isArray(r.dates) ? r.dates : []).map(String).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)))].sort();
+      const k = (pid || nm) + '|' + (r.posted || '') + '|' + dates.join(','); if (seen.has(k)) continue; seen.add(k);
+      rows.push({ pid, name: r.name, dates, reason: String(r.reason || '개인 사정').slice(0, 30), raw: String(r.text || '').slice(0, 120) + (r.posted ? ` (${String(r.posted).slice(5).replace('-', '/')} 작성)` : ''), on: !!pid && r.absence !== false && dates.length > 0 });
+    }
+    A.parsed = rows; if (!rows.length) A.imgErr = '캡처에서 불참 댓글을 찾지 못했어요.';
+  } catch (e) {
+    A.imgErr = e && e.code === 'not_granted' ? 'Claude 사용을 허용해야 캡처를 읽을 수 있어요.' : e && e.code === 'rate_limited' ? '잠시 후 다시 해 주세요(사용량 제한).' : e && e.code === 'image_rejected' ? '이 사진은 읽을 수 없어요. 다른 캡처로 해 주세요.' : '캡처를 읽지 못했어요. 다시 해 주세요.';
+    console.warn(e);
+  }
+  A.imgBusy = false; if (D === A) renderDrawer();
+}
+function absWrite(clear) {
+  const A = D; const txt = (val('ab_txt') || '').trim(); if (!clear && !txt) { toast('사유를 적어 주세요'); return; }
+  const by = {}; A.dates.forEach(d => (by[d.slice(0, 7)] = by[d.slice(0, 7)] || []).push(d));
+  for (const [mk, ds] of Object.entries(by)) { const m = monthDoc(mk); m.absent = m.absent || {}; ds.forEach(d => { m.absent[d] = m.absent[d] || {}; if (clear) delete m.absent[d][A.pid]; else m.absent[d][A.pid] = txt; if (!Object.keys(m.absent[d]).length) delete m.absent[d]; }); S.att[mk] = m; saveDoc('attendance/' + mk, m); }
+  toast(`${P(A.pid).name} ${A.dates.length}일 ${clear ? '사유를 지웠어요' : '불참 사유를 저장했어요'}`); A.dates = []; A.txt = ''; renderDrawer(); render();
+}
+function dPhotoSort() {
+  const it = D.items; const by = {};
+  it.forEach((x, i) => (by[x.date || ''] = by[x.date || ''] || []).push(i));
+  const SRC = { exif: ['사진 정보', 'good'], name: ['파일 이름', 'good'], set: ['직접 고름', 'good'], sel: ['고른 날짜', 'warn'], guess: ['추정', 'warn'], none: ['날짜 없음', 'bad'] };
+  const keys = Object.keys(by).sort((a, b) => (a || '9').localeCompare(b || '9'));
+  const nNo = (by[''] || []).length, nGuess = it.filter(x => x.src === 'guess').length;
+  const notTrain = keys.filter(d => d && !isTrain(d));
+  return `<div class="dh"><h2>사진 ${it.length}장 날짜별 분류</h2><button class="btn sm" data-act="close">닫기</button></div>
+  <div class="db">
+    <div class="small">${keys.filter(Boolean).map(d => `<b class="num">${+d.slice(5, 7)}/${+d.slice(8)}(${dow(d)})</b> ${by[d].length}장`).join(' · ')}${nNo ? ` · <span style="color:var(--bad)">날짜 못 찾음 ${nNo}장</span>` : ''}</div>
+    ${it.some(x => x.src === 'sel') ? `<div class="lock">'고른 날짜'는 사진에 찍은 날짜 정보가 없어서 지금 출석 체크 화면의 날짜로 넣은 거예요.</div>` : ''}
+    ${nGuess ? `<div class="lock">'추정'은 사진에 찍은 날짜 정보가 없어서(카톡으로 받은 사진 등) 파일 저장 날짜로 짐작한 거예요. 맞는지 꼭 확인해 주세요.</div>` : ''}
+    ${keys.map(d => `<div class="evday"><div class="evh"><b class="num">${d ? `${d.slice(0, 4)}.${+d.slice(5, 7)}.${+d.slice(8)} (${dow(d)})` : '날짜를 골라주세요'}</b><span class="muted small">${by[d].length}장</span>${d ? (isTrain(d) ? '<span class="tag good">훈련일</span>' : '<span class="tag warn">훈련일 아님</span>') : ''}</div>
+      <div class="psg">${by[d].map(i => { const x = it[i]; return `<div class="psi"><img src="${x.url}" alt="" loading="lazy"><input class="in psDate" type="date" data-i="${i}" value="${x.date}" ${D.busy ? 'disabled' : ''}><span class="tag ${SRC[x.src][1]}">${SRC[x.src][0]}</span></div>`; }).join('')}</div></div>`).join('')}
+    ${notTrain.length ? `<label class="small" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="psAdd" ${D.addDays ? 'checked' : ''}> 훈련일이 아닌 날(${notTrain.map(d => `${+d.slice(5, 7)}/${+d.slice(8)}`).join(', ')})도 훈련일로 추가하기 <span class="muted">(끄면 사진만 저장돼요)</span></label>` : ''}
+    <div style="display:flex;gap:8px"><button class="btn pri" data-act="psGo" ${D.busy || it.length === nNo ? 'disabled' : ''}>${D.busy ? '올리는 중…' : `${it.length - nNo}장 올리기`}</button><button class="btn" data-act="close">취소</button></div>
+    ${nNo ? '<div class="muted small">날짜를 고르지 않은 사진은 빼고 올려요.</div>' : ''}
+  </div>`;
+}
+async function photoSortGo() {
+  if (!D || D.kind !== 'photoSort' || D.busy) return;
+  const it = D.items.filter(x => x.date); const add = D.addDays; D.busy = true; renderDrawer();
+  const got = {}; let n = 0;
+  for (const x of it) { try { const r = await uploadImage(x.f, 2400); (got[x.date] = got[x.date] || []).push(r.id); n++; toast(`사진 올리는 중… ${n}/${it.length}`); } catch (e) { upErr(e); } }
+  const byM = {}; Object.keys(got).forEach(d => (byM[d.slice(0, 7)] = byM[d.slice(0, 7)] || []).push(d));
+  for (const [mk, ds] of Object.entries(byM)) { const m = monthDoc(mk); ds.forEach(d => { m.photos[d] = (m.photos[d] || []).concat(got[d]); if (add && !m.days.includes(d)) { m.days.push(d); m.days.sort(); } }); commitMonth(mk, m); }
+  (D && D.items || []).forEach(x => URL.revokeObjectURL(x.url));
+  const ds = Object.keys(got).sort(); const last = ds[ds.length - 1];
+  if (last) { S.photoMonth = last.slice(0, 7); if (S.tab === 'att' && S.attView === 'check') { const inM = ds.filter(d => d.startsWith(last.slice(0, 7))); S.dates = inM; S.date = inM[0]; S.calMonth = last.slice(0, 7); } }
+  closeDrawer(); render(); toast(`${Object.keys(got).length}일에 사진 ${n}장을 나눠 넣었어요`);
+}
 async function uploadEvidence(d, files) {
   toast(`사진 ${files.length}장 올리는 중…`); const ids = [];
   for (const f of files) { try { ids.push((await uploadImage(f, 1600)).id); } catch (e) { upErr(e); } }
@@ -1780,6 +2137,12 @@ function uploadEntityPhoto(kind, id, side, file) {
   }).catch(upErr);
 }
 document.addEventListener('paste', e => {
+  // 불참 사유 창: 캡처 이미지를 붙여넣으면 Claude가 읽고, 글을 붙여넣으면 바로 읽기
+  if (D && D.kind === 'abs' && !D.imgBusy) {
+    const imgs = [...(e.clipboardData && e.clipboardData.files || [])].filter(f => /^image\//.test(f.type));
+    if (imgs.length) { e.preventDefault(); readAbsImages(imgs); return; }
+    if (e.target && e.target.id === 'ab_paste') { setTimeout(() => { const v = ($('#ab_paste') || {}).value || ''; if (v.trim()) { D.paste = v; D.txt = val('ab_txt'); D.parsed = parseAbsText(v, D.month); renderDrawer(); } }, 0); return; }
+  }
   const tgt = e.target; if (tgt && /^(INPUT|TEXTAREA)$/.test(tgt.tagName) && tgt.type !== 'file') return;
   const files = [...(e.clipboardData && e.clipboardData.files || [])].filter(f => /^image\//.test(f.type));
   if (!files.length) return;
@@ -1787,7 +2150,8 @@ document.addEventListener('paste', e => {
   e.preventDefault();
   if (D && D.kind === 'player' && S.players[D.id]) return uploadEntityPhoto('player', D.id, null, files[0]);
   if (D && D.kind === 'chair' && S.chairs[D.id]) return uploadEntityPhoto('chair', D.id, null, files[0]);
-  if (!D && S.tab === 'att' && S.attView === 'check') { if ((S.dates || []).length > 1) { toast('사진은 날짜를 하나만 골랐을 때 붙여넣을 수 있어요'); return; } return uploadEvidence(S.date, files); }
+  if (!D && S.tab === 'att' && S.attView === 'photos' && S.canEdit && S.assets) return openPhotoSort(files);
+  if (!D && S.tab === 'att' && S.attView === 'check') { return openPhotoSort(files, (S.dates || []).length > 1 ? null : S.date); }
   toast('출석 체크 화면, 선수 화면, 휠체어 화면에서 붙여넣을 수 있어요');
 });
 // 숙박 칸: 누른 채로 끌어서 여러 칸 칠하기
