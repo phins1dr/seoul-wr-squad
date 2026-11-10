@@ -8,7 +8,7 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.2.0';
+const VERSION='1.3.0';
 function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*c,turn:2.0+0.9*c,pass:6+3.2*c};} // 로우는 출발·방향전환이 더 느림
 
 /* ---------- 공간 (누가 먼저 닿는 자리인가) ----------
@@ -77,6 +77,42 @@ function space(ps,opts){opts=opts||{};const cell=opts.cell||0.25,W=28,H=15,nx=Ma
   const ownerAt=(x,y)=>{const i=Math.floor(x/cell),j=Math.floor(y/cell);if(i<0||j<0||i>=nx||j>=ny)return null;const k=owner[j*nx+i];return k<0?null:ps[k].id;};
   const cellsOf=(id,mode)=>{const k=ps.findIndex(p=>p.id===id),out=[];for(let i=0;i<N;i++){const ok=mode==='front'?view[i]===k:owner[i]===k&&(!mode||lead[i]>=margin);if(ok)out.push({x:cx(i),y:cy(i)});}return out;};
   return {cell,nx,ny,owner,lead,view,area,safe,back,fwd,front,stuck,team,ownerAt,cellsOf};}
+/* ---------- 공격 얼라이먼트 (감독 노션 '26.11.9' 경기분석, 라인업 3.5-1.5-1.5-1.5) ----------
+   인바운드 직전 공격 4명 배치. 좌표는 노션 그림에서 옮김 (x: 우리 베이스라인 0 → 공격 방향, 센터라인 14 / y: 1번 쪽 사이드 0)
+   그림의 원은 실제 휠체어보다 커서, 붙어 있는 두 선수는 실제 붙은 간격(약 1.4m)으로 줄임 (1셋 1·4번: 1.9m로 두면 1번이 못 빠져나와 12초에 걸림)
+   인바운더 롱패스(최찬광 같은): cfg.ibPass=17 (m). 1.5 등급 기본 패스 거리 10.8m로는 2셋의 2번(약 17m)에게 바로 못 줌
+   ※ 2x2·3x1·2x1x1은 수비 대형(cfg.form), 이건 공격 대형(cfg.align)
+   - 1셋     : 1·4번이 베이스라인 쪽에 같이(4번이 1번 범퍼 지킴), 2번은 센터라인 위(롱).
+               2번이 센터라인 위면 1번or3번 진출공간이 넓어 3:2. 2번이 센터라인 아래면 4:4 → 1:1에서 밀리는 상대면 어렵고 박스 +가 안 나옴
+               인바체크가 있으면 1번or2번이 1:1로 득점해야 하고, 2번이 1번 픽앤롤은 가능하지만 오래 걸리고 4명이 다 아래로 몰림
+   - 2셋     : 2·4번이 같이 센터라인 위 → 인바운더가 2번에게 바로(롱패스). 인바운더 롱패스가 좋으면 이걸
+   - 4갈메기 : 4번 혼자 센터라인 위 사이드(1번 쪽), 2번은 센터라인 바로 아래로 수비를 끌고 내려가 줌 → 4번 쪽 프론트 공간
+   - 2셋 아래: 2셋이지만 센터라인 아래로 조정. 휘슬 뒤 2번이 돌아서 달리는 공간으로 패스, 4번은 2번 수비를 막아줌(픽)
+               1번이 받고 3번에게 리턴패스 하면 망함 → 안 함
+   공통: 1번 로우트랩은 절대 당하면 안 됨(팀이 망하는 길) / 2셋·4갈메기면 수비 2명 이상이 프론트로 갈 수밖에 없다 */
+const ALIGN={
+  '1set':   {name:'1셋',low:1,A1:{x:3.8,y:4.0},A2:{x:15.7,y:12.4},A4:{x:3.8,y:5.4},target:null},
+  '2set':   {name:'2셋',low:2,A1:{x:3.8,y:4.0},A2:{x:15.2,y:12.6},A4:{x:16.9,y:10.6},target:'A2'},
+  '4gull':  {name:'4갈메기',low:4,A1:{x:3.8,y:4.0},A2:{x:11.6,y:12.7},A4:{x:15.4,y:1.9},target:'A4'},
+  '2setlow':{name:'2셋(센터라인 아래)',low:2,A1:{x:3.8,y:4.0},A2:{x:9.5,y:12.2},A4:{x:10.6,y:5.4},target:'A2',run2:[{x:12.5,y:3.2},{x:15.2,y:7.5}],pick4:true,noReturn:true}};
+const CENTER_X=14;
+/* readAlign(ps, o): 인바운드 직전 수비를 읽고 공격 대형을 고른다 (노션 규칙)
+   ps: 공격 A(+x 방향, A3 인바운더) + 수비 D. o: {ibLong(인바운더 롱패스 가능, 없으면 A3.pass로 판단), space:true(진출공간 계산)}
+   반환: {rec:'1set'|'2set'|'4gull', play:'3:2'|'4:4'|'1:1', ibCheck, below(센터라인 아래 수비 수), front, a2high, trap1, open(1·3번 앞 공간 m²), why:[...]} */
+function readAlign(ps,o){o=o||{};const A=id=>ps.find(p=>p.id===id),D=ps.filter(p=>p.team==='D');const a1=A('A1'),a2=A('A2'),a3=A('A3');
+  const ibLong=o.ibLong!=null?o.ibLong:!(a3&&a3.pass&&a2&&a3.pass<Math.hypot(ALIGN['2set'].A2.x-a3.x,ALIGN['2set'].A2.y-a3.y)-0.5); // 인바운더가 2셋 2번 자리까지 패스가 닿나
+  const near=(a,r)=>a?D.filter(d=>Math.hypot(d.x-a.x,d.y-a.y)<r).length:0;
+  const ibCheck=!!a3&&near(a3,2.6)>0,below=D.filter(d=>d.x<CENTER_X).length,front=D.length-below,a2high=!!a2&&a2.x>CENTER_X,trap1=near(a1,2.0)>=2;
+  const why=[];let rec,play;
+  if(ibCheck||below>=3){rec=ibLong?'2set':'4gull';play=front>=2?'3:2':'4:4';
+    why.push(ibCheck?'인바체크가 있음':'센터라인 아래 수비 '+below+'명');
+    why.push(rec==='2set'?'2셋: 2번에게 바로, 인바운더 롱패스를 살림':'4갈메기: 2번이 수비를 끌고 내려가 4번 쪽 프론트를 엶');
+    why.push('2셋·4갈메기면 수비 2명 이상이 프론트로 갈 수밖에 없음');}
+  else if(a2high){rec='1set';play='3:2';why.push('2번이 센터라인 위: 1번or3번 진출공간이 넓어 3:2');}
+  else{rec='1set';play='4:4';why.push('2번이 센터라인 아래: 4:4, 1:1에서 밀리는 상대면 어렵고 박스 +가 안 나옴 → 2번을 센터라인 위로');}
+  if(trap1)why.push('1번 로우트랩 위험: 1번에게 주지 말 것');
+  let open=null;if(o.space!==false&&a1){const sp=space(ps,{});open=+(((sp.front.A1||0)+(sp.front.A3||0))).toFixed(1);}
+  return {rec,play,ibCheck,below,front,a2high,trap1,open,why};}
 function create(opts){opts=opts||{};
 const noop=()=>{};
 const hooks={msg:opts.msg||noop,log:opts.log||noop,event:opts.event||noop,end:opts.end||noop,input:opts.input||(()=>({x:0,y:0})),control:opts.control||(()=>null),aim:opts.aim||null,beforeNew:opts.beforeNew||noop};
@@ -101,10 +137,12 @@ function resolveDef(){const c=cfg;if(c.def==='diamond'||c.def==='key')return;if(
     else{c.ibCheck=false;c.noIb='delay';c.form='2x1x1';c.trap=[1,2].sort((a,b)=>parseFloat(c.lineA[b-1])-parseFloat(c.lineA[a-1]))[0];}} // 딜레이: 인바운드 전엔 센 선수(1·2번 중)에게 같이 붙어 약한 선수에게 가게, 인바운드 후 인바운더에게
   else{c.ibCheck=false;c.form=c.inPos;c.noIb=c.after==='keep'?'trap':'delay';}}
 function newGame(){hooks.beforeNew();resolveDef();
-  const L=cfg.lineA,D=cfg.lineD;const PX={key:3.5,low:6,high:9,top:16};const dx=PX[cfg.p1]||3.5;
+  const L=cfg.lineA,D=cfg.lineD;const PX={key:3.5,low:6,high:9,top:16};const dx=PX[cfg.p1]||3.5;const lowSave=cfg.low;
+  const place=alKey=>{ // alKey: 공격 얼라이먼트(ALIGN), 없으면 예전 설정(p1·p2·low)
   const x2=PX[cfg.p2]||12.2;let y2=cfg.p2s==='same'?4.2:11.2;if(cfg.p2s==='same'&&Math.abs(x2-dx)<2.2)y2=1.8; // 같은 라인·같은 높이면 바깥쪽으로
   const A=[ // 공격 시작 위치 (x: 베이스라인→위, y: 사이드)
     {num:1,x:dx,y:4.2},{num:2,x:x2,y:y2},{num:3,x:-0.8,y:7.5},{num:4,...({1:{x:dx+0.2,y:5.6},2:{x:x2+0.2,y:y2+(y2>7.5?-1.4:1.4)},3:{x:1.2,y:6.2},4:{x:dx+2.5,y:6.5}})[cfg.low]}];
+  const AL=alKey&&ALIGN[alKey];if(AL){cfg.low=AL.low;for(const a of A){const q=AL['A'+a.num];if(q){a.x=q.x;a.y=q.y;}}}else cfg.low=lowSave;
   const ps=[];
   A.forEach((a,i)=>{const cls=L[i];ps.push({id:'A'+a.num,team:'A',num:a.num,cls,chair:parseFloat(cls)<=1.5?'D':'A',x:a.x,y:a.y,a:a.num===3?0:Math.PI/2*0+0,v:0,...speedOf(cls)});});
   // 수비: 번호끼리, 마크보다 위(롱자리). 4번은 인바운더 체크
@@ -112,6 +150,11 @@ function newGame(){hooks.beforeNew();resolveDef();
     if(mp===3){if(cfg.ibCheck){x=1.6;y=7.5;}else if(cfg.noIb==='center'){x=12.6;y=7.5;}else{const t=ps.find(q=>q.team==='A'&&q.num===(cfg.form==='2x2'?2:cfg.trap));x=t.x-1.4;y=t.y;}}
     if(cfg.def==='diamond'){const dp=({4:{x:1.45,y:7.5},2:{x:4.5,y:2.3},3:{x:4.5,y:12.7},1:{x:12,y:7.5}})[n];x=dp.x;y=dp.y;}
     ps.push({id:'D'+n,team:'D',num:n,cls,chair:parseFloat(cls)<=1.5?'D':'A',x,y,a:Math.PI,v:0,...speedOf(cls)});});
+  if(cfg.ibPass){const ib=ps.find(q=>q.id==='A3');ib.pass=+cfg.ibPass;} // 인바운더 롱패스 (선수 특성)
+  return ps;};
+  // 공격 대형: cfg.align = '1set'|'2set'|'4gull'|'2setlow'|'auto'(1셋으로 서 보고 수비를 읽어 고름). 없으면 예전 설정
+  let alKey=cfg.align&&cfg.align!=='auto'&&ALIGN[cfg.align]?cfg.align:null,alRead=null,ps=place(alKey||(cfg.align==='auto'?'1set':null));
+  if(cfg.align==='auto'){alRead=readAlign(ps,{ibLong:cfg.ibLong});alKey=alRead.rec;if(alKey!=='1set')ps=place(alKey);}
   // 홈(얼라이먼트) 위치 저장
   for(const p of ps)p.home={x:p.x,y:p.y};
   const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -122,7 +165,9 @@ function newGame(){hooks.beforeNew();resolveDef();
     for(const p of ps)if(p.team==='D'){const c=parseFloat(p.cls);p.ready=Math.random()<clamp(0.2+0.2*c,0.25,0.85);} // 등급이 높을수록 미리 길목을 막을 확률↑
   }
   G={ps,ball:{holder:'A3',x:0,y:0,fly:null},t:0,phase:cfg.trans?'trans':'ready',transT:cfg.trans?rnd(5,8):0,inboundT:0,backT:0,shotT:0,holdT:0,keyT:{},crossed:false,inbounded:false,
-     events:[],samples:[],frames:[],rt:0,keepId:null,stuck:{},result:null,sw:{},pick:null,pickCool:0,cfg:{...cfg,lineupA:L.join('-'),lineupD:D.join('-')}};
+     events:[],samples:[],frames:[],rt:0,keepId:null,stuck:{},result:null,sw:{},pick:null,pickCool:0,cfg:{...cfg,lineupA:L.join('-'),lineupD:D.join('-')},
+     align:alKey?{key:alKey,name:ALIGN[alKey].name,read:alRead}:null};
+  if(G.align)ev('align',{key:G.align.key,name:G.align.name,why:alRead?alRead.why:[]});
   if(cfg.mode==='ctrl')cfg.me=3;passSel=null;if(cfg.trans)msg('트랜지션 · 데드타임이에요. 휘슬 전에 내 자리로!',2600);else msg('휘슬을 기다려요',0);hooks.event('newGame',{});
 }
 const P=id=>G.ps.find(p=>p.id===id);
@@ -155,12 +200,12 @@ function attackAI(p){
     const st=G.stuck[p.id]||0;
     // 012 작전 — 수비가 2면 패스 (0.5는 제외, 아주 좋은 찬스는 예외, 가까운 거리는 안 함)
     const myC=defCount(p);
-    if(myC>=2&&G.holdT>0.25){let r=null,rs=-9;for(const t of G.ps){if(t.team!=='A'||t===p||(t.id==='A3'&&!G.inbounded))continue;const d=hyp(t.x-p.x,t.y-p.y);if(d>p.pass||d<3)continue;const c=defCount(t);const great=c===0&&t.x>p.x+6;if(parseFloat(t.cls)<=0.5&&!great)continue;const sc=(c===0?2:c===1?0:-3)+Math.min(openness(t),3)*0.4+(t.x-p.x)*0.05;if(sc>rs){rs=sc;r=t;}}
+    if(myC>=2&&G.holdT>0.25){let r=null,rs=-9;for(const t of G.ps){if(t.team!=='A'||t===p||(t.id==='A3'&&!G.inbounded)||passBad(p,t))continue;const d=hyp(t.x-p.x,t.y-p.y);if(d>p.pass||d<3)continue;const c=defCount(t);const great=c===0&&t.x>p.x+6;if(parseFloat(t.cls)<=0.5&&!great)continue;const sc=(c===0?2:c===1?0:-3)+Math.min(openness(t),3)*0.4+(t.x-p.x)*0.05;if(sc>rs){rs=sc;r=t;}}
       if(r&&rs>0.5){doPass(p,r);return {x:0,y:0};}}
     // 수비가 1이고 막히면 바꾸기 (픽앤롤로 수비를 바꾼다)
     if(myC===1&&(G.stuck[p.id]||0)>0.6&&!G.pick&&G.inbounded)startPick();
     // 로우포인터가 공을 잡으면 옆의 하이·미들에게 리턴 패스
-    if(parseFloat(p.cls)<=1.5&&G.holdT>0.35){let r=null,rs=-9;for(const t of G.ps){if(t.team!=='A'||t===p||parseFloat(t.cls)<2||(t.id==='A3'&&!G.inbounded))continue;const d=hyp(t.x-p.x,t.y-p.y);if(d>p.pass)continue;const o=openness(t);if(o<1.0||defCount(t)>=2)continue;{let ln=9;for(const q of G.ps)if(q.team==='D')ln=Math.min(ln,segDist(q,p,t));if(ln<0.9)continue;}const sc=o-d*0.15+(t.x-p.x)*0.05;if(sc>rs){rs=sc;r=t;}}if(r){doPass(p,r);return {x:0,y:0};}}
+    if(parseFloat(p.cls)<=1.5&&G.holdT>0.35){let r=null,rs=-9;for(const t of G.ps){if(t.team!=='A'||t===p||parseFloat(t.cls)<2||(t.id==='A3'&&!G.inbounded)||passBad(p,t))continue;const d=hyp(t.x-p.x,t.y-p.y);if(d>p.pass)continue;const o=openness(t);if(o<1.0||defCount(t)>=2)continue;{let ln=9;for(const q of G.ps)if(q.team==='D')ln=Math.min(ln,segDist(q,p,t));if(ln<0.9)continue;}const sc=o-d*0.15+(t.x-p.x)*0.05;if(sc>rs){rs=sc;r=t;}}if(r){doPass(p,r);return {x:0,y:0};}}
     // 12초가 급하면 앞쪽 열린 선수에게
     if(!G.crossed&&G.backT>7.5&&G.holdT>0.3){const t=bestTarget(p);if(t&&t.x>p.x+1.5&&t.score>0){doPass(p,t);return {x:0,y:0};}}
     if(st>1.1||G.holdT>6.2&&!cfg.autoBounce){const t=bestTarget(p);if(t&&(t.score>0.4||st>2)){doPass(p,t);}else if(!cfg.autoBounce)bounce(p);}
@@ -176,6 +221,9 @@ function attackAI(p){
     const mate=P('A'+lowAct); // 1셋·2셋·3셋: 그 선수 앞에서 범퍼 지키기(트레일러)
     if(lowAct===3&&!G.inbounded){const ib=P('A3');return steerTo(p,ib.x+1.9,ib.y+(p.y<7.5?-1.1:1.1),false);} // 인바운드 헬프: 인바체크 옆에서 길 열기
     return steerTo(p,mate.x+2.0,mate.y+(mate.y<7.5?0.4:-0.4),false);}
+  {const AL=G.align&&ALIGN[G.align.key];if(AL&&!G.inbounded&&G.phase==='live'){
+    if(AL.run2&&p.num===2){let i=p.runI||0;if(hyp(AL.run2[i].x-p.x,AL.run2[i].y-p.y)<0.8&&i<AL.run2.length-1)p.runI=++i;return steerTo(p,AL.run2[i].x,AL.run2[i].y,false);} // 2번: 돌아서 달리는 공간
+    if(AL.pick4&&p.num===4){const a2=P('A2'),d=a2&&(defOf(a2)||G.ps.filter(q=>q.team==='D').sort((u,v)=>hyp(u.x-a2.x,u.y-a2.y)-hyp(v.x-a2.x,v.y-a2.y))[0]);if(d){const gx=a2.x-d.x,gy=a2.y-d.y,g=hyp(gx,gy)||1;return steerTo(p,d.x-gx/g*0.9,d.y-gy/g*0.9,false);}}}} // 4번: 2번 수비 픽
   if((p.num===1||p.num===2)&&!G.inbounded)return steerTo(p,p.home.x,p.home.y,true); // 인바운드 전: 정한 위치
   if(p.num===2){const bx=holder?holder.x:b.x;if(bx<12)return steerTo(p,12.4,p.y>7.5?12:3,true);
     return steerTo(p,Math.min(26.8,bx+5),p.y>7.5?11.5:3.5,false);}
@@ -213,13 +261,17 @@ function openSpot(p,from){ // 볼보다 앞쪽에서 수비가 가장 먼 곳 (0
     const sc=o-0.12*hyp(x-p.x,y-p.y)+0.08*dx-(mate<2.5?2:0);if(sc>bs){bs=sc;best={x,y};}}
   if(!best)best={x:Math.min(26.3,bx+3),y:p.y};p.spot=best;p.spotT=G.t;return best;}
 function openness(t){let m=9;for(const d of G.ps)if(d.team==='D')m=Math.min(m,hyp(d.x-t.x,d.y-t.y));return m;}
-function bestTarget(from){let best=null;
+// 패스하면 안 되는 상대: 센터라인을 넘은 뒤 백코트로(백코트 바이올레이션), 2셋 아래에서 1번→3번 리턴(망함)
+function passBad(from,t){if(G.crossed&&t.x<CENTER_X)return true;const AL=G.align&&ALIGN[G.align.key];return !!(AL&&AL.noReturn&&from.id==='A1'&&t.id==='A3');}
+function bestTarget(from){let best=null;const AL=G.align&&ALIGN[G.align.key];
   for(const t of G.ps){if(t.team!=='A'||t===from)continue;if(t.id==='A3'&&!G.inbounded)continue;const dist=hyp(t.x-from.x,t.y-from.y);if(dist>from.pass)continue;
+    if(passBad(from,t))continue;
     // 패스길에 수비가 있으면 감점
     const h=holdPos(from);const high=hyp(t.x-h.x,t.y-h.y)>4;const a0=high?{x:h.x+(t.x-h.x)*0.7,y:h.y+(t.y-h.y)*0.7}:{x:h.x+(t.x-h.x)*0.25,y:h.y+(t.y-h.y)*0.25}; // 가로채기 판정과 같은 구간
     let lane=9;for(const d of G.ps){if(d.team!=='D')continue;lane=Math.min(lane,segDist(d,a0,t));}
     const blocked=lane<0.8;const dc2=defCount(t)>=2;const s=-(dc2?2.5:0)+Math.min(openness(t),3)*0.5+Math.min(lane,2)*0.6+(t.x-from.x)*0.06-(dist>from.pass*0.8?0.6:0)-(blocked?3:0)-(openness(t)<1.1?1.6:0);
-    if(!best||s>best.score)best={p:t,score:s};}
+    let s2=s;if(AL&&from.id==='A3'&&!G.inbounded){if(t.id===AL.target)s2+=0.9;if(t.id==='A1'&&trapped(t))s2-=4;} // 대형의 첫 패스 / 1번 로우트랩이면 안 줌
+    if(!best||s2>best.score)best={p:t,score:s2};}
   return best&&{...best.p,score:best.score,id:best.p.id};}
 function segDist(c,a,b){const vx=b.x-a.x,vy=b.y-a.y,L=vx*vx+vy*vy||1;let u=((c.x-a.x)*vx+(c.y-a.y)*vy)/L;u=clamp(u,0,1);return hyp(a.x+vx*u-c.x,a.y+vy*u-c.y);}
 // 인바체크 안 할 때, 인바운더 담당 수비의 위치 (센터라인 / 트랩 / 딜레이)
@@ -574,7 +626,7 @@ function tick(dt){
   get G(){return G},get cfg(){return cfg},set cfg(v){cfg=v},stats,req,
   get passSel(){return passSel},set passSel(v){passSel=v},get flash(){return flash},
   newGame,tick,whistle,doPass,bounce,startPick,startReverse,P,me,defCount,bestTargetForMe,holdPos,
-  KEY,KEYDRAW,R,speedOf,space:o=>space(G.ps,o)};
+  KEY,KEYDRAW,R,speedOf,space:o=>space(G.ps,o),readAlign:o=>readAlign(G.ps,o),ALIGN};
 }
 
 /* ---------- 경기: 4피리어드 · 점수 · 공수 교대 · 사람 조종 ----------
@@ -621,7 +673,7 @@ function match(opts){opts=opts||{};
   M.brain=b;M.names=names;
   return M;}
 
-const API={VERSION,create,match,speedOf,space};
+const API={VERSION,create,match,speedOf,space,readAlign,ALIGN};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.RugbyBrain=API;
 })(typeof window!=='undefined'?window:globalThis);
