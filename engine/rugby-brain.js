@@ -8,8 +8,60 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.0.0';
+const VERSION='1.1.0';
 function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*c,turn:2.0+0.9*c,pass:6+3.2*c};} // 로우는 출발·방향전환이 더 느림
+
+/* ---------- 공간 (누가 먼저 닿는 자리인가) ----------
+   space(ps, opts) : 코트를 칸(기본 0.25m)으로 나눠, 칸마다 가장 먼저 도착하는 선수를 정한다.
+   - 도착 시간 = 방향 전환 시간 + 가속해서 가는 시간 (등급별 speedOf 사용)
+   - 휠체어는 다른 휠체어를 넘어갈 수 없다 → 다른 선수 주변(2R)은 돌아서 간다 (격자 최단경로)
+   - 코트 밖은 칸이 없다 → 베이스라인·사이드라인은 벽. 깊이 내려가 받을수록 공간이 줄어드는 이유
+   ps: [{id, team:'A'|'D', x, y, cls, a?(바라보는 방향, rad), max?,acc?,turn?}]  (게임의 G.ps를 그대로 넣어도 됨)
+   opts: {cell:0.25, margin:0.3(초, 이만큼 먼저 닿아야 '안전한 공간'), only:['A1',...](계산할 선수만)}
+   반환: {cell,nx,ny, owner:Int16Array(칸→ps 인덱스, -1 없음), lead:Float32Array(주인 팀이 상대보다 몇 초 먼저),
+          area:{id:m²}, safe:{id:m²}, back:{id:m²}(안전 공간 중 내 베이스라인 쪽 = 인바운드 받는 공간), fwd:{id:m²}(앞쪽),
+          team:{A:m²,D:m²}, ownerAt(x,y), cellsOf(id,safeOnly)} */
+const SPACE_R=0.62;
+function spaceTime(p,d,ang){const s=(p.max&&p.acc)?p:speedOf(p.cls||'2.0');
+  const d0=s.max*s.max/(2*s.acc);let t=d<=d0?Math.sqrt(2*d/s.acc):s.max/s.acc+(d-d0)/s.max;
+  if(p.a!=null&&d>0.3){let da=Math.abs(((ang-p.a)%(2*Math.PI)+3*Math.PI)%(2*Math.PI)-Math.PI);t+=da/(s.turn||speedOf(p.cls||'2.0').turn);}
+  return t;}
+function space(ps,opts){opts=opts||{};const cell=opts.cell||0.25,W=28,H=15,nx=Math.round(W/cell),ny=Math.round(H/cell),N=nx*ny;
+  const margin=opts.margin==null?0.3:opts.margin,block=2*SPACE_R;
+  const cx=i=>(i%nx+0.5)*cell,cy=i=>(Math.floor(i/nx)+0.5)*cell;
+  const best=new Float32Array(N).fill(Infinity),owner=new Int16Array(N).fill(-1);
+  const teamBest={A:new Float32Array(N).fill(Infinity),D:new Float32Array(N).fill(Infinity)};
+  const SQ2=Math.SQRT2*cell,NB=[[1,0,cell],[-1,0,cell],[0,1,cell],[0,-1,cell],[1,1,SQ2],[1,-1,SQ2],[-1,1,SQ2],[-1,-1,SQ2]];
+  ps.forEach((p,k)=>{if(p.team!=='A'&&p.team!=='D')return;
+    // 다른 휠체어 자리는 막힘
+    const blocked=new Uint8Array(N);
+    for(const q of ps){if(q===p)continue;const r=Math.ceil(block/cell);const qi=Math.floor(q.x/cell),qj=Math.floor(q.y/cell);
+      for(let j=qj-r;j<=qj+r;j++)for(let i=qi-r;i<=qi+r;i++){if(i<0||j<0||i>=nx||j>=ny)continue;if(Math.hypot((i+0.5)*cell-q.x,(j+0.5)*cell-q.y)<block)blocked[j*nx+i]=1;}}
+    // 출발 칸 (코트 밖 인바운더는 가장 가까운 코트 칸에서, 그 거리만큼 더해서)
+    const si=Math.min(nx-1,Math.max(0,Math.floor(p.x/cell))),sj=Math.min(ny-1,Math.max(0,Math.floor(p.y/cell))),s=sj*nx+si;
+    const dist=new Float64Array(N).fill(Infinity);dist[s]=Math.hypot(cx(s)-p.x,cy(s)-p.y);blocked[s]=0;
+    // 격자 최단경로 (이진 힙, 칸 번호·거리를 따로 저장)
+    const hv=new Int32Array(N*8+8),hd=new Float64Array(N*8+8);let hn=0;
+    const push=(i,d)=>{let c=hn++;while(c>0){const pa=(c-1)>>1;if(hd[pa]<=d)break;hv[c]=hv[pa];hd[c]=hd[pa];c=pa;}hv[c]=i;hd[c]=d;};
+    let pi=0,pd=0;const pop=()=>{pi=hv[0];pd=hd[0];const li=hv[--hn],ld=hd[hn];let c=0;
+      for(;;){const l=2*c+1,r=l+1;let m=-1,md=ld;if(l<hn&&hd[l]<md){m=l;md=hd[l];}if(r<hn&&hd[r]<md)m=r;if(m<0)break;hv[c]=hv[m];hd[c]=hd[m];c=m;}hv[c]=li;hd[c]=ld;};
+    push(s,dist[s]);
+    while(hn){pop();const i=pi,d=pd;if(d>dist[i])continue;const x=i%nx,y=(i-x)/nx;
+      for(const [dx,dy,w] of NB){const X=x+dx,Y=y+dy;if(X<0||Y<0||X>=nx||Y>=ny)continue;const j=Y*nx+X;if(blocked[j])continue;const nd=d+w;if(nd<dist[j]){dist[j]=nd;push(j,nd);}}}
+    for(let i=0;i<N;i++){if(dist[i]===Infinity)continue;const t=spaceTime(p,dist[i],Math.atan2(cy(i)-p.y,cx(i)-p.x));
+      if(t<teamBest[p.team][i])teamBest[p.team][i]=t;if(t<best[i]){best[i]=t;owner[i]=k;}}
+  });
+  const lead=new Float32Array(N),area={},safe={},back={},fwd={},team={A:0,D:0},ca=cell*cell;
+  for(const p of ps){area[p.id]=0;safe[p.id]=0;back[p.id]=0;fwd[p.id]=0;}
+  for(let i=0;i<N;i++){const k=owner[i];if(k<0)continue;const p=ps[k],o=p.team==='A'?'D':'A';lead[i]=teamBest[o][i]-best[i];
+    area[p.id]+=ca;team[p.team]+=ca;if(lead[i]>=margin){safe[p.id]+=ca;
+      // 뒤쪽 = 내 진영 베이스라인 쪽(공격 A는 x가 작은 쪽). 인바운드 패스를 받는 공간
+      if(p.team==='A'?cx(i)<p.x:cx(i)>p.x)back[p.id]+=ca;else fwd[p.id]+=ca;}}
+  const r1=v=>+v.toFixed(1);
+  for(const id in area){area[id]=r1(area[id]);safe[id]=r1(safe[id]);back[id]=r1(back[id]);fwd[id]=r1(fwd[id]);}team.A=r1(team.A);team.D=r1(team.D);
+  const ownerAt=(x,y)=>{const i=Math.floor(x/cell),j=Math.floor(y/cell);if(i<0||j<0||i>=nx||j>=ny)return null;const k=owner[j*nx+i];return k<0?null:ps[k].id;};
+  const cellsOf=(id,safeOnly)=>{const k=ps.findIndex(p=>p.id===id),out=[];for(let i=0;i<N;i++)if(owner[i]===k&&(!safeOnly||lead[i]>=margin))out.push({x:cx(i),y:cy(i)});return out;};
+  return {cell,nx,ny,owner,lead,area,safe,back,fwd,team,ownerAt,cellsOf};}
 function create(opts){opts=opts||{};
 const noop=()=>{};
 const hooks={msg:opts.msg||noop,log:opts.log||noop,event:opts.event||noop,end:opts.end||noop,input:opts.input||(()=>({x:0,y:0})),control:opts.control||(()=>null),aim:opts.aim||null,beforeNew:opts.beforeNew||noop};
@@ -507,7 +559,7 @@ function tick(dt){
   get G(){return G},get cfg(){return cfg},set cfg(v){cfg=v},stats,req,
   get passSel(){return passSel},set passSel(v){passSel=v},get flash(){return flash},
   newGame,tick,whistle,doPass,bounce,startPick,startReverse,P,me,defCount,bestTargetForMe,holdPos,
-  KEY,KEYDRAW,R,speedOf};
+  KEY,KEYDRAW,R,speedOf,space:o=>space(G.ps,o)};
 }
 
 /* ---------- 경기: 4피리어드 · 점수 · 공수 교대 · 사람 조종 ----------
@@ -554,7 +606,7 @@ function match(opts){opts=opts||{};
   M.brain=b;M.names=names;
   return M;}
 
-const API={VERSION,create,match,speedOf};
+const API={VERSION,create,match,speedOf,space};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.RugbyBrain=API;
 })(typeof window!=='undefined'?window:globalThis);
