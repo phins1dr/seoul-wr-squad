@@ -8,7 +8,7 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.1.0';
+const VERSION='1.2.0';
 function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*c,turn:2.0+0.9*c,pass:6+3.2*c};} // 로우는 출발·방향전환이 더 느림
 
 /* ---------- 공간 (누가 먼저 닿는 자리인가) ----------
@@ -20,7 +20,14 @@ function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*
    opts: {cell:0.25, margin:0.3(초, 이만큼 먼저 닿아야 '안전한 공간'), only:['A1',...](계산할 선수만)}
    반환: {cell,nx,ny, owner:Int16Array(칸→ps 인덱스, -1 없음), lead:Float32Array(주인 팀이 상대보다 몇 초 먼저),
           area:{id:m²}, safe:{id:m²}, back:{id:m²}(안전 공간 중 내 베이스라인 쪽 = 인바운드 받는 공간), fwd:{id:m²}(앞쪽),
-          team:{A:m²,D:m²}, ownerAt(x,y), cellsOf(id,safeOnly)} */
+          team:{A:m²,D:m²}, ownerAt(x,y), cellsOf(id,mode)}
+   화면 표시용 (감독 기준, 2026-11-10):
+   - 범퍼 앞쪽만 표시: a가 있으면 안전 공간 중 선수 중심에서 범퍼 방향 앞쪽 반면만 view에 넣는다 (뒤쪽은 표시 안 함)
+   - 휠체어끼리 붙어 있을 때(거리 < 2R+contact) 내 범퍼가 상대 휠체어에 막힌 선수(상대가 내 범퍼 앞 ±60° 안)는 '막힘' →
+     진출 공간 0, 도착 시간에 opts.stuck(기본 0.8초) 벌점. 서로 정면이면 더 정면으로 박은 쪽이 막힘.
+     매 프레임 새로 계산하므로 막는 선수가 사라지면 공간이 다시 나타남
+   - 추가 반환: view:Int16Array(칸→표시할 선수 인덱스, -1 없음), front:{id:m²}(표시 면적), stuck:{막힌id:막은id}
+   - cellsOf(id,'front') = 표시용 칸, cellsOf(id,true) = 안전 공간 전체 */
 const SPACE_R=0.62;
 function spaceTime(p,d,ang){const s=(p.max&&p.acc)?p:speedOf(p.cls||'2.0');
   const d0=s.max*s.max/(2*s.acc);let t=d<=d0?Math.sqrt(2*d/s.acc):s.max/s.acc+(d-d0)/s.max;
@@ -28,6 +35,11 @@ function spaceTime(p,d,ang){const s=(p.max&&p.acc)?p:speedOf(p.cls||'2.0');
   return t;}
 function space(ps,opts){opts=opts||{};const cell=opts.cell||0.25,W=28,H=15,nx=Math.round(W/cell),ny=Math.round(H/cell),N=nx*ny;
   const margin=opts.margin==null?0.3:opts.margin,block=2*SPACE_R;
+  // 범퍼 막힘: 붙어 있고 상대 휠체어가 내 범퍼 앞(±60°)에 있으면 막힘. 둘 다면 더 정면으로 박은 쪽만
+  const touch=block+(opts.contact==null?0.12:opts.contact),stuckPen=opts.stuck==null?0.8:opts.stuck,stuck={},stuckK=new Uint8Array(ps.length);
+  const into=(p,q)=>{if(p.a==null)return -2;const dx=q.x-p.x,dy=q.y-p.y,d=Math.hypot(dx,dy);if(d>=touch||d<1e-6)return -2;return (Math.cos(p.a)*dx+Math.sin(p.a)*dy)/d;};
+  for(let k=0;k<ps.length;k++)for(let m=k+1;m<ps.length;m++){const p=ps[k],q=ps[m],cp=into(p,q),cq=into(q,p),C=0.5;
+    if(cp>C&&(cq<=C||cp>=cq)){stuckK[k]=1;stuck[p.id]=q.id;}else if(cq>C){stuckK[m]=1;stuck[q.id]=p.id;}}
   const cx=i=>(i%nx+0.5)*cell,cy=i=>(Math.floor(i/nx)+0.5)*cell;
   const best=new Float32Array(N).fill(Infinity),owner=new Int16Array(N).fill(-1);
   const teamBest={A:new Float32Array(N).fill(Infinity),D:new Float32Array(N).fill(Infinity)};
@@ -48,20 +60,23 @@ function space(ps,opts){opts=opts||{};const cell=opts.cell||0.25,W=28,H=15,nx=Ma
     push(s,dist[s]);
     while(hn){pop();const i=pi,d=pd;if(d>dist[i])continue;const x=i%nx,y=(i-x)/nx;
       for(const [dx,dy,w] of NB){const X=x+dx,Y=y+dy;if(X<0||Y<0||X>=nx||Y>=ny)continue;const j=Y*nx+X;if(blocked[j])continue;const nd=d+w;if(nd<dist[j]){dist[j]=nd;push(j,nd);}}}
-    for(let i=0;i<N;i++){if(dist[i]===Infinity)continue;const t=spaceTime(p,dist[i],Math.atan2(cy(i)-p.y,cx(i)-p.x));
+    const pen=stuckK[k]?stuckPen:0;
+    for(let i=0;i<N;i++){if(dist[i]===Infinity)continue;const t=pen+spaceTime(p,dist[i],Math.atan2(cy(i)-p.y,cx(i)-p.x));
       if(t<teamBest[p.team][i])teamBest[p.team][i]=t;if(t<best[i]){best[i]=t;owner[i]=k;}}
   });
-  const lead=new Float32Array(N),area={},safe={},back={},fwd={},team={A:0,D:0},ca=cell*cell;
-  for(const p of ps){area[p.id]=0;safe[p.id]=0;back[p.id]=0;fwd[p.id]=0;}
+  const lead=new Float32Array(N),view=new Int16Array(N).fill(-1),area={},safe={},back={},fwd={},front={},team={A:0,D:0},ca=cell*cell;
+  for(const p of ps){area[p.id]=0;safe[p.id]=0;back[p.id]=0;fwd[p.id]=0;front[p.id]=0;}
   for(let i=0;i<N;i++){const k=owner[i];if(k<0)continue;const p=ps[k],o=p.team==='A'?'D':'A';lead[i]=teamBest[o][i]-best[i];
     area[p.id]+=ca;team[p.team]+=ca;if(lead[i]>=margin){safe[p.id]+=ca;
       // 뒤쪽 = 내 진영 베이스라인 쪽(공격 A는 x가 작은 쪽). 인바운드 패스를 받는 공간
-      if(p.team==='A'?cx(i)<p.x:cx(i)>p.x)back[p.id]+=ca;else fwd[p.id]+=ca;}}
+      if(p.team==='A'?cx(i)<p.x:cx(i)>p.x)back[p.id]+=ca;else fwd[p.id]+=ca;
+      // 표시용: 막힌 선수는 없음, 범퍼 뒤쪽은 표시 안 함
+      if(!stuckK[k]&&(p.a==null||Math.cos(p.a)*(cx(i)-p.x)+Math.sin(p.a)*(cy(i)-p.y)>=0)){view[i]=k;front[p.id]+=ca;}}}
   const r1=v=>+v.toFixed(1);
-  for(const id in area){area[id]=r1(area[id]);safe[id]=r1(safe[id]);back[id]=r1(back[id]);fwd[id]=r1(fwd[id]);}team.A=r1(team.A);team.D=r1(team.D);
+  for(const id in area){area[id]=r1(area[id]);safe[id]=r1(safe[id]);back[id]=r1(back[id]);fwd[id]=r1(fwd[id]);front[id]=r1(front[id]);}team.A=r1(team.A);team.D=r1(team.D);
   const ownerAt=(x,y)=>{const i=Math.floor(x/cell),j=Math.floor(y/cell);if(i<0||j<0||i>=nx||j>=ny)return null;const k=owner[j*nx+i];return k<0?null:ps[k].id;};
-  const cellsOf=(id,safeOnly)=>{const k=ps.findIndex(p=>p.id===id),out=[];for(let i=0;i<N;i++)if(owner[i]===k&&(!safeOnly||lead[i]>=margin))out.push({x:cx(i),y:cy(i)});return out;};
-  return {cell,nx,ny,owner,lead,area,safe,back,fwd,team,ownerAt,cellsOf};}
+  const cellsOf=(id,mode)=>{const k=ps.findIndex(p=>p.id===id),out=[];for(let i=0;i<N;i++){const ok=mode==='front'?view[i]===k:owner[i]===k&&(!mode||lead[i]>=margin);if(ok)out.push({x:cx(i),y:cy(i)});}return out;};
+  return {cell,nx,ny,owner,lead,view,area,safe,back,fwd,front,stuck,team,ownerAt,cellsOf};}
 function create(opts){opts=opts||{};
 const noop=()=>{};
 const hooks={msg:opts.msg||noop,log:opts.log||noop,event:opts.event||noop,end:opts.end||noop,input:opts.input||(()=>({x:0,y:0})),control:opts.control||(()=>null),aim:opts.aim||null,beforeNew:opts.beforeNew||noop};
