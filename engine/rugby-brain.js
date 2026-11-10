@@ -8,7 +8,7 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.3.0';
+const VERSION='1.4.0';
 function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*c,turn:2.0+0.9*c,pass:6+3.2*c};} // 로우는 출발·방향전환이 더 느림
 
 /* ---------- 공간 (누가 먼저 닿는 자리인가) ----------
@@ -96,8 +96,29 @@ const ALIGN={
   '4gull':  {name:'4갈메기',low:4,A1:{x:3.8,y:4.0},A2:{x:11.6,y:12.7},A4:{x:15.4,y:1.9},target:'A4'},
   '2setlow':{name:'2셋(센터라인 아래)',low:2,A1:{x:3.8,y:4.0},A2:{x:9.5,y:12.2},A4:{x:10.6,y:5.4},target:'A2',run2:[{x:12.5,y:3.2},{x:15.2,y:7.5}],pick4:true,noReturn:true}};
 const CENTER_X=14;
+/* SCENES: 감독 노션 '26.11.9' 장면 (럭비랩·아카데미가 같이 씀)
+   {key,name,memo,cfg:{align,ibPass?},pos:{id:{x,y,a?}}} — 공격 1·2·4번은 ALIGN 자리, pos는 그 위에 덮어쓸 자리(주로 수비).
+   불러 쓰기: b=create({cfg:{...장면.cfg}}); b.newGame(); b.setup(장면.pos)  (a는 rad, 0=공격 방향, PI=수비가 바라보는 방향) */
+const PI=Math.PI,IBCHK={x:1.4,y:7.5,a:PI};
+const SCENES=[
+  {key:'1set-high',name:'1셋 · 2번 위',memo:'2번이 센터라인 위에 서서 수비 2명을 데리고 올라감 → 아래는 1·3·4번 3명 vs 수비 2명 = 3:2. 1번or3번 진출공간이 넓음.',
+   cfg:{align:'1set'},pos:{D1:{x:5.4,y:3.3,a:PI},D2:{x:16.9,y:11.7,a:PI},D3:{x:15.6,y:8.2,a:PI},D4:{x:5.8,y:6.6,a:PI}}},
+  {key:'1set-low',name:'1셋 · 2번 아래',memo:'2번이 센터라인 아래로 내려오면 수비도 다 내려옴 → 4:4. 1:1에서 밀리는 상대면 어렵고 박스 +가 안 나옴 → 2번을 센터라인 위로.',
+   cfg:{align:'1set'},pos:{A2:{x:11.4,y:12.2,a:0},D1:{x:5.4,y:3.3,a:PI},D2:{x:12.8,y:11.6,a:PI},D3:{x:9.2,y:8.4,a:PI},D4:{x:5.8,y:6.6,a:PI}}},
+  {key:'ibcheck',name:'인바체크',memo:'수비 1명이 인바운더(3번)를 바로 체크. 인바운더 롱패스가 되면 2셋, 안 되면 4갈메기로 바꿈 (아래 \'인바운더 롱패스\'를 꺼 보면 판단이 바뀜).',
+   cfg:{align:'1set',ibPass:17},pos:{D1:{x:5.4,y:3.3,a:PI},D2:{x:16.9,y:11.7,a:PI},D3:{x:15.4,y:7.6,a:PI},D4:IBCHK}},
+  {key:'2set',name:'2셋',memo:'2·4번이 같이 센터라인 위 → 인바운더가 2번에게 바로 롱패스. 인바운더 롱패스가 좋을 때.',
+   cfg:{align:'2set',ibPass:17},pos:{D1:{x:5.4,y:3.3,a:PI},D2:{x:16.5,y:12.0,a:PI},D3:{x:18.1,y:9.9,a:PI},D4:IBCHK}},
+  {key:'4gull',name:'4갈메기',memo:'4번 혼자 센터라인 위 사이드(1번 쪽). 2번은 센터라인 바로 아래로 수비를 끌고 내려가서 4번 쪽 프론트 공간을 열어 줌.',
+   cfg:{align:'4gull'},pos:{D1:{x:5.4,y:3.3,a:PI},D2:{x:12.8,y:12.0,a:PI},D3:{x:16.6,y:2.7,a:PI},D4:IBCHK}},
+  {key:'front2',name:'프론트 수비 2명',memo:'2셋·4갈메기면 수비 2명 이상이 프론트로 갈 수밖에 없음 → 아래는 1번·3번 vs 수비 2명.',
+   cfg:{align:'2set',ibPass:17},pos:{D1:{x:5.4,y:3.3,a:PI},D2:{x:16.5,y:12.0,a:PI},D3:{x:18.1,y:9.9,a:PI},D4:{x:5.6,y:8.6,a:PI}}},
+  {key:'trap1',name:'1번 로우트랩',memo:'수비 2명이 1번을 베이스라인 쪽에서 가둠. 1번 로우트랩은 절대 당하면 안 됨(팀이 망하는 길) → 1번에게 인바운드 안 줌.',
+   cfg:{align:'1set'},pos:{D1:{x:5.2,y:3.5,a:PI},D2:{x:16.9,y:11.7,a:PI},D3:{x:9.0,y:8.0,a:PI},D4:{x:3.6,y:2.4,a:PI/2}}},
+  {key:'2setlow',name:'2셋 아래',memo:'2셋을 센터라인 아래로. 휘슬 뒤 2번이 돌아서 달리는 공간으로 패스, 4번은 2번 수비를 픽. 1번이 받고 3번에게 리턴하면 망함 → 안 함. 1·3번 타이밍이 중요.',
+   cfg:{align:'2setlow',ibPass:17},pos:{D1:{x:5.4,y:3.3,a:PI},D2:{x:10.9,y:11.5,a:PI},D3:{x:12.0,y:6.2,a:PI},D4:IBCHK}}];
 /* readAlign(ps, o): 인바운드 직전 수비를 읽고 공격 대형을 고른다 (노션 규칙)
-   ps: 공격 A(+x 방향, A3 인바운더) + 수비 D. o: {ibLong(인바운더 롱패스 가능, 없으면 A3.pass로 판단), space:true(진출공간 계산)}
+   ps: 공격 A(+x 방향, A3 인바운더) + 수비 D. o: {ibLong(인바운더 롱패스 가능, 없으면 A3.pass로 판단), space:true(진출공간 계산), sp(이미 계산한 space 결과 재사용)}
    반환: {rec:'1set'|'2set'|'4gull', play:'3:2'|'4:4'|'1:1', ibCheck, below(센터라인 아래 수비 수), front, a2high, trap1, open(1·3번 앞 공간 m²), why:[...]} */
 function readAlign(ps,o){o=o||{};const A=id=>ps.find(p=>p.id===id),D=ps.filter(p=>p.team==='D');const a1=A('A1'),a2=A('A2'),a3=A('A3');
   const ibLong=o.ibLong!=null?o.ibLong:!(a3&&a3.pass&&a2&&a3.pass<Math.hypot(ALIGN['2set'].A2.x-a3.x,ALIGN['2set'].A2.y-a3.y)-0.5); // 인바운더가 2셋 2번 자리까지 패스가 닿나
@@ -111,7 +132,8 @@ function readAlign(ps,o){o=o||{};const A=id=>ps.find(p=>p.id===id),D=ps.filter(p
   else if(a2high){rec='1set';play='3:2';why.push('2번이 센터라인 위: 1번or3번 진출공간이 넓어 3:2');}
   else{rec='1set';play='4:4';why.push('2번이 센터라인 아래: 4:4, 1:1에서 밀리는 상대면 어렵고 박스 +가 안 나옴 → 2번을 센터라인 위로');}
   if(trap1)why.push('1번 로우트랩 위험: 1번에게 주지 말 것');
-  let open=null;if(o.space!==false&&a1){const sp=space(ps,{});open=+(((sp.front.A1||0)+(sp.front.A3||0))).toFixed(1);}
+  let open=null;if(o.space!==false&&a1){const sp=o.sp||space(ps,{}); // o.sp: 이미 계산한 space() 결과가 있으면 재사용
+  open=+(((sp.front.A1||0)+(sp.front.A3||0))).toFixed(1);}
   return {rec,play,ibCheck,below,front,a2high,trap1,open,why};}
 function create(opts){opts=opts||{};
 const noop=()=>{};
@@ -622,11 +644,24 @@ function tick(dt){
       hookStep(dt);collide();stepBall(dt);if(G.phase==='live')rules(dt);
       sampT+=dt;if(sampT>=0.2){sampT=0;sample();}}
     }
-  req.pass=false;req.bounce=false;req.pick=false;req.rev=false;}return {
+  req.pass=false;req.bounce=false;req.pick=false;req.rev=false;}
+/* setup(pos, o): 선수를 원하는 자리에 세운다 (럭비랩 장면·끌어 옮기기). pos: {id:{x,y,a?}} 또는 [{id,x,y,a?}]
+   휘슬 전(ready)이면 홈 자리도 같이 바꾼다. cfg.align==='auto'이고 o.auto!==false면 이 수비를 readAlign으로 다시 읽어서
+   공격 1·2·4번을 고른 대형 자리로 옮긴다(G.align.read에 판단 저장). 반환: G.align */
+function setup(pos,o){o=o||{};if(!G)return null;const list=Array.isArray(pos)?pos:Object.keys(pos||{}).map(id=>Object.assign({id},pos[id]));
+  const ready=G.phase==='ready'||G.phase==='trans';
+  for(const q of list){const p=P(q.id);if(!p)continue;if(q.x!=null)p.x=+q.x;if(q.y!=null)p.y=+q.y;if(q.a!=null)p.a=+q.a;p.v=0;if(ready)p.home={x:p.x,y:p.y};}
+  if(ready&&cfg.align==='auto'&&o.auto!==false){const AL1=ALIGN['1set'];for(const id of ['A1','A2','A4']){const p=P(id);if(!list.some(q=>q.id===id)){p.x=AL1[id].x;p.y=AL1[id].y;}}
+    const rd=readAlign(G.ps,{ibLong:cfg.ibLong});const AL=ALIGN[rd.rec];
+    for(const id of ['A1','A2','A4']){const p=P(id);p.x=AL[id].x;p.y=AL[id].y;p.a=0;p.home={x:p.x,y:p.y};}
+    cfg.low=AL.low;G.align={key:rd.rec,name:AL.name,read:rd};}
+  if(G.ball.holder){const h=holdPos(P(G.ball.holder));G.ball.x=h.x;G.ball.y=h.y;}
+  G.stuck={};return G.align;}
+return {
   get G(){return G},get cfg(){return cfg},set cfg(v){cfg=v},stats,req,
   get passSel(){return passSel},set passSel(v){passSel=v},get flash(){return flash},
   newGame,tick,whistle,doPass,bounce,startPick,startReverse,P,me,defCount,bestTargetForMe,holdPos,
-  KEY,KEYDRAW,R,speedOf,space:o=>space(G.ps,o),readAlign:o=>readAlign(G.ps,o),ALIGN};
+  KEY,KEYDRAW,R,speedOf,space:o=>space(G.ps,o),readAlign:o=>readAlign(G.ps,o),setup,ALIGN,SCENES};
 }
 
 /* ---------- 경기: 4피리어드 · 점수 · 공수 교대 · 사람 조종 ----------
@@ -673,7 +708,7 @@ function match(opts){opts=opts||{};
   M.brain=b;M.names=names;
   return M;}
 
-const API={VERSION,create,match,speedOf,space,readAlign,ALIGN};
+const API={VERSION,create,match,speedOf,space,readAlign,ALIGN,SCENES};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.RugbyBrain=API;
 })(typeof window!=='undefined'?window:globalThis);

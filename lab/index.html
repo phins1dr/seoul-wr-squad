@@ -1,0 +1,407 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<title>AI럭비랩</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10151c">
+<link rel="icon" href="../rugby-game/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gothic+A1:wght@400;700;800&family=IBM+Plex+Mono:wght@600&display=swap">
+<style>
+/* 새 AI럭비랩 — 두뇌(engine/rugby-brain.js)를 불러 쓰는 얇은 화면. 판단 로직은 여기 없음 */
+:root{color-scheme:dark;
+  --arena:#10151c;--panel:#161c24;--panel2:#1f2732;--line:#2e3846;--ink:#e7ebf0;--muted:#9fb0c3;--dim:#6f8196;
+  --blue:#4a90d9;--red:#ff4b4b;--hot:#ff6a1a;--green:#35d07f;--warn:#ffb020;
+  --f-display:"Do Hyeon","Gothic A1","Apple SD Gothic Neo",sans-serif;
+  --f-body:"Gothic A1","Apple SD Gothic Neo","Malgun Gothic",-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;background:var(--arena);color:var(--ink);font-family:var(--f-body);-webkit-tap-highlight-color:transparent}
+button,select,input,textarea{font:inherit;color:inherit}
+.wrap{max-width:1380px;margin:0 auto;padding:12px max(16px,env(safe-area-inset-right)) 28px max(16px,env(safe-area-inset-left))}
+/* 머리: 장면 이름이 제일 크게 */
+header{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.ttl{flex:1;min-width:0}
+.ttl small{display:block;font:600 11px var(--f-mono);letter-spacing:.24em;color:#ff8a4c;margin-bottom:2px}
+.ttl h1{margin:0;font:400 clamp(28px,4.4vw,44px)/1.05 var(--f-display);word-break:keep-all}
+.ttl h1 .tag{display:inline-block;vertical-align:middle;margin-left:8px;font:800 11px var(--f-body);padding:3px 8px;border-radius:999px;background:var(--panel2);color:var(--muted);letter-spacing:0}
+.ttl h1 .tag.mine{background:#2b2140;color:#c9b2ff}.ttl h1 .tag.edit{background:#3a2a12;color:var(--warn)}
+.ttl p{margin:6px 0 0;color:#c3ccd8;font-size:13.5px;line-height:1.55;max-width:780px}
+.hbtn{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:720px){.ttl{flex-basis:100%}.hbtn{width:100%}.hbtn .btn{flex:1}}
+.btn{border:1.5px solid var(--line);background:var(--panel2);border-radius:10px;padding:7px 12px;font:800 13px var(--f-body);cursor:pointer;min-height:38px;white-space:nowrap}
+.btn:hover{border-color:#4a5768}.btn:active{transform:scale(.97)}
+.btn.go{background:var(--hot);border-color:var(--hot);color:#fff}
+.btn:focus-visible,.chip:focus-visible,.seg button:focus-visible{outline:3px solid #ffd84a;outline-offset:2px}
+/* 장면 고르기 */
+.scenes{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.scenes .grp{font:800 11px var(--f-body);color:var(--dim);align-self:center;white-space:nowrap;padding:0 2px 0 6px}
+.chip{flex:none;border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:6px 13px;font:800 13px var(--f-body);cursor:pointer;white-space:nowrap;min-height:36px;display:flex;align-items:center;gap:6px}
+.chip:hover{border-color:#4a5768}.chip.on{background:var(--hot);border-color:var(--hot);color:#fff}
+.chip.mine{border-style:dashed}.chip.mine.on{border-style:solid;background:#7b4dff;border-color:#7b4dff}
+.chip .x{opacity:.6;font-weight:400;padding:0 0 0 2px}.chip .x:hover{opacity:1}
+/* 본문 */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-items:start}
+@media (max-width:980px){.layout{grid-template-columns:1fr}}
+.stage{min-width:0}
+.court{position:relative;border-radius:14px;overflow:hidden;background:#0c1016;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+#cv{display:block;width:100%;touch-action:none;cursor:grab}
+#cv.drag{cursor:grabbing}
+.hint{position:absolute;right:10px;bottom:8px;font:700 11.5px var(--f-body);color:rgba(255,255,255,.82);background:rgba(16,21,28,.7);padding:4px 9px;border-radius:999px;pointer-events:none}
+@media (max-width:560px){.hint{display:none}}
+/* 조작 */
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.ctrl .sp{flex:1}
+.pbtn{border:0;border-radius:10px;min-height:42px;padding:0 14px;font:400 18px var(--f-display);cursor:pointer;background:#2a3340;color:#fff;display:flex;align-items:center;gap:6px}
+.pbtn.go{background:var(--hot)}.pbtn:active{transform:scale(.96)}.pbtn:disabled{opacity:.4;cursor:default}
+.pbtn:focus-visible{outline:3px solid #ffd84a;outline-offset:2px}
+.seg{display:flex;background:var(--panel2);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;border-radius:8px;padding:6px 10px;font:800 12.5px var(--f-body);cursor:pointer;min-height:34px;color:var(--muted)}
+.seg button.on{background:#3a4658;color:#fff}.seg button.rec{box-shadow:inset 0 -3px 0 var(--green)}
+.tog{display:flex;align-items:center;gap:6px;font:800 12.5px var(--f-body);color:var(--muted);cursor:pointer;background:var(--panel2);border-radius:10px;padding:0 10px;min-height:40px}
+.tog input{accent-color:var(--hot);width:16px;height:16px}
+.lbl{font:800 11px var(--f-body);color:var(--dim)}
+.status{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
+.status b{color:var(--ink)}
+.pill{font:800 12px var(--f-body);padding:3px 9px;border-radius:999px;background:var(--panel2)}
+.pill.live{background:#13402a;color:#7ff0b2}.pill.over{background:#40201a;color:#ffb39b}.pill.ready{background:#2a3340;color:#cdd8e6}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+/* 패널 */
+.panel{display:grid;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.card h2{margin:0 0 8px;font:800 12px var(--f-body);color:var(--muted);letter-spacing:.04em;display:flex;align-items:center;gap:6px}
+.card h2 .n{margin-left:auto;font-weight:700;color:var(--dim)}
+.rec{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.rec .big{font:400 34px/1 var(--f-display);color:#fff}
+.rec .play{font:600 15px var(--f-mono);padding:3px 9px;border-radius:8px;background:#13402a;color:#7ff0b2}
+.rec .play.p44{background:#3a2a12;color:var(--warn)}
+.cmp{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.5}
+.cmp b{color:var(--ink)}.cmp .diff{color:var(--warn);font-weight:800}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.fact{background:var(--panel2);border-radius:9px;padding:7px 9px}
+.fact span{display:block;font-size:11px;color:var(--dim);font-weight:700}
+.fact b{font-size:14px}
+.fact.bad b{color:var(--red)}.fact.ok b{color:var(--green)}
+.alert{margin-top:8px;background:#3d1518;border:1px solid #6b2229;color:#ffc9cc;border-radius:9px;padding:7px 10px;font:800 13px var(--f-body)}
+ol.why{margin:0;padding:0;list-style:none;counter-reset:w;display:grid;gap:6px}
+ol.why li{counter-increment:w;display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:13.5px;line-height:1.5}
+ol.why li::before{content:counter(w);font:600 11px/20px var(--f-mono);width:20px;height:20px;text-align:center;border-radius:6px;background:var(--panel2);color:var(--muted)}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:54px 1fr 58px;gap:8px;align-items:center;font-size:13px}
+.bar i{display:block;height:10px;border-radius:5px;background:var(--panel2);overflow:hidden}
+.bar i em{display:block;height:100%;background:var(--green);border-radius:5px}
+.bar.d i em{background:var(--red);opacity:.7}
+.bar .v{text-align:right;font:600 12.5px var(--f-mono);color:var(--muted)}
+.bar.stk .v{color:var(--red)}
+.who{display:inline-flex;align-items:center;gap:5px;font-weight:800}
+.who::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--blue)}
+.who.d::before{background:var(--red)}
+.stk{font-size:12.5px;color:#ffc9cc;margin-top:8px;line-height:1.5}
+.sel{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.sel .rot{display:flex;gap:4px;margin-left:auto}
+.sel .rot button{width:38px;height:36px;border-radius:9px;border:1.5px solid var(--line);background:var(--panel2);cursor:pointer;font-size:16px}
+.empty{font-size:13px;color:var(--dim);line-height:1.5}
+.log{max-height:170px;overflow:auto;display:grid;gap:3px;font-size:12.5px}
+.log div{display:grid;grid-template-columns:44px 1fr;gap:6px;color:#c3ccd8}
+.log div.empty{display:block}.log div span{color:var(--dim)}.log div.end{color:#fff;font-weight:800}
+/* 저장 창 */
+dialog{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:16px;padding:18px;width:min(440px,calc(100vw - 32px))}
+dialog::backdrop{background:rgba(5,8,12,.6);backdrop-filter:blur(2px)}
+dialog h3{margin:0 0 12px;font:400 24px var(--f-display)}
+dialog label{display:block;font:800 12px var(--f-body);color:var(--muted);margin:10px 0 4px}
+dialog input,dialog textarea{width:100%;background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font-size:14px}
+dialog textarea{min-height:92px;resize:vertical;line-height:1.5}
+dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#232c38;border:1px solid var(--line);padding:9px 16px;border-radius:999px;font:800 13px var(--f-body);box-shadow:0 6px 20px rgba(0,0,0,.4);z-index:30;max-width:calc(100vw - 32px);text-align:center}
+footer{margin-top:16px;font-size:11.5px;color:var(--dim)}
+</style></head><body>
+<div class="wrap">
+<header>
+  <div class="ttl"><small>AI RUGBY LAB · 크로스체크</small><h1 id="scName">장면</h1><p id="scMemo"></p></div>
+  <div class="hbtn">
+    <button class="btn go" id="bSave">장면 저장</button>
+    <button class="btn" id="bExport">내보내기</button>
+    <button class="btn" id="bImport">불러오기</button>
+    <input type="file" id="fImport" accept=".json,application/json" hidden>
+  </div>
+</header>
+<nav class="scenes" id="scenes" aria-label="장면 고르기"></nav>
+<div class="layout">
+  <section class="stage">
+    <div class="court"><canvas id="cv" aria-label="코트"></canvas><div class="hint">선수 끌기 · 앞 동그라미 돌리기 = 범퍼 방향</div></div>
+    <div class="ctrl">
+      <button class="pbtn go" id="bWhistle">📣 휘슬</button>
+      <button class="pbtn" id="bPlay">▶ 재생</button>
+      <button class="pbtn" id="bStep">한 단계</button>
+      <button class="pbtn" id="bReset" title="장면 처음 자리로">↺ 처음</button>
+      <div class="seg" id="speed" aria-label="속도"><button data-v="0.5">0.5×</button><button data-v="1" class="on">1×</button><button data-v="2">2×</button></div>
+    </div>
+    <div class="ctrl">
+      <span class="lbl">공격 대형</span>
+      <div class="seg" id="align"></div>
+      <label class="tog"><input type="checkbox" id="ibLong"> 인바운더 롱패스 17m</label>
+      <label class="tog"><input type="checkbox" id="showD"> 수비 공간도</label>
+    </div>
+    <div class="status" id="status"></div>
+  </section>
+  <aside class="panel">
+    <div class="card"><h2>🧠 두뇌 판단 <span class="n">인바운드 직전 기준</span></h2><div id="pRead"></div></div>
+    <div class="card"><h2>왜?</h2><ol class="why" id="pWhy"></ol></div>
+    <div class="card"><h2>범퍼 앞 공간 <span class="n">초록 = 상대보다 0.3초 먼저</span></h2><div id="pSpace"></div></div>
+    <div class="card"><h2>선택한 선수</h2><div id="pSel"></div></div>
+    <div class="card"><h2>진행 기록</h2><div class="log" id="pLog"><div class="empty">휘슬을 불면 여기에 패스·인바운드·결과가 적혀요.</div></div></div>
+  </aside>
+</div>
+<footer id="foot"></footer>
+</div>
+<dialog id="dlg"><form method="dialog" id="fSave">
+  <h3>장면 저장</h3>
+  <label for="iName">장면 이름 <span style="font-weight:600;color:var(--dim)">(채팅에서 이 이름으로 물어보세요)</span></label>
+  <input id="iName" maxlength="40" required>
+  <label for="iMemo">메모</label>
+  <textarea id="iMemo" maxlength="600" placeholder="예: 수비 3번이 센터라인에 걸쳐 있을 때 2번이 왜 못 받나?"></textarea>
+  <div class="row"><button type="button" class="btn" id="bCancel">취소</button><button class="btn go" id="bOk">저장</button></div>
+</form></dialog>
+<div class="toast" id="toast" hidden></div>
+
+<script src="../engine/rugby-brain.js"></script>
+<script src="../engine/rugby-chairs.js"></script>
+<script>
+'use strict';
+const RB=RugbyBrain,ALIGN=RB.ALIGN;
+const LINE_A=['3.5','1.5','1.5','1.5']; // 노션 26.11.9 라인업
+const STORE='rugbyLab.scenes.v1',LAST='rugbyLab.last';
+const $=id=>document.getElementById(id);
+const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}};
+const lbl=id=>id?(id[0]==='A'?id.slice(1)+'번':'수비'+id.slice(1)):'';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+const clone=o=>JSON.parse(JSON.stringify(o||{}));
+const r1=v=>Math.round(v*10)/10;
+
+/* ---------- 상태 ---------- */
+let mine=ls.get(STORE,[]);if(!Array.isArray(mine))mine=[];
+let scene=null,work={},alignSel='1set',ibLong=false,showD=false,dirty=false;
+let b=null,sp=null,rd=null,running=false,speed=1,acc=0,spT=0,sel=null,logs=[];
+
+/* ---------- 두뇌 만들기 (판단은 전부 엔진) ---------- */
+function build(){
+  const cfg={lineA:LINE_A.slice(),trans:false,autoWhistle:false,mode:'watch',align:alignSel};
+  if(ibLong)cfg.ibPass=17;
+  b=RB.create({cfg,event:onEvent});b.newGame();
+  // 장면 원래 대형이면 공격 자리까지, 대형을 바꿨으면 수비·인바운더만 장면 그대로 (공격은 ALIGN 자리)
+  const same=alignSel===scene.cfg.align;const pos={};
+  for(const id in work)if(same||id[0]==='D'||id==='A3')pos[id]=work[id];
+  b.setup(pos);running=false;logs=[];acc=0;recalc();renderAll();}
+function recalc(){sp=b.space();rd=b.readAlign({sp});spT=0;}
+
+/* ---------- 장면 ---------- */
+function loadScene(sc){scene=sc;work=clone(sc.pos);alignSel=sc.cfg.align||'1set';ibLong=!!sc.cfg.ibPass;sel=null;dirty=false;
+  ls.set(LAST,{src:sc.src,key:sc.key});build();renderScenes();
+  const on=document.querySelector('.chip.on');if(on)on.scrollIntoView({block:'nearest',inline:'nearest'});}
+const presets=RB.SCENES.map(s=>Object.assign({src:'preset'},clone(s)));
+function allMine(){return mine.map(s=>Object.assign({src:'mine'},s));}
+function renderScenes(){const nav=$('scenes');nav.innerHTML='';
+  const add=(t)=>{const g=document.createElement('span');g.className='grp';g.textContent=t;nav.appendChild(g);};
+  add('노션 26.11.9');
+  for(const s of presets)nav.appendChild(chip(s));
+  if(mine.length){add('내 장면');for(const s of allMine())nav.appendChild(chip(s));}}
+function chip(s){const c=document.createElement('button');c.className='chip'+(s.src==='mine'?' mine':'')+(scene&&scene.src===s.src&&scene.key===s.key?' on':'');
+  c.innerHTML=esc(s.name)+(s.src==='mine'?'<span class="x" title="삭제" data-del="1">✕</span>':'');
+  c.onclick=e=>{if(e.target.dataset.del){if(confirm(`'${s.name}' 장면을 지울까요? (이 브라우저에서만 지워짐)`)){mine=mine.filter(m=>m.key!==s.key);ls.set(STORE,mine);if(scene.src==='mine'&&scene.key===s.key)loadScene(presets[0]);else renderScenes();toast('지웠어요');}return;}loadScene(s);};
+  return c;}
+
+/* ---------- 엔진 이벤트 → 기록 ---------- */
+const EVK={whistle:'휘슬',inbound:'인바운드',catch:'받음',pass:'패스',cross:'센터라인 넘음',pick:'픽',hook:'갈고리',unhook:'갈고리 풀림',loose:'공이 굴러감',pickup:'주움',switch:'수비 스위치',press:'프레스',bounce:'바운스',reverse:'리버스',keydef:'키 수비',
+  try:'득점',turnover:'턴오버',violation:'바이올레이션',foul:'파울'};
+function onEvent(type,x){if(type==='newGame'||type==='align'||type==='hit')return;const t=b&&b.G?b.G.t:0;let s=EVK[type]||type;x=x||{};
+  if(type==='pass')s=`${lbl(x.from)} → ${lbl(x.to)} 패스 ${x.d!=null?x.d+'m':''}`;
+  else if(type==='inbound')s=`인바운드 → ${lbl(x.to)}`;
+  else if(type==='catch'||type==='pickup')s=`${lbl(x.who)} ${EVK[type]}`;
+  else if(type==='hook')s=`갈고리: ${lbl(x.by)} → ${lbl(x.who)}`;
+  else if(type==='pick')s=`${lbl(x.picker)} 픽 (${lbl(x.def)})`;
+  else if(type==='switch')s=`수비 스위치 ${lbl(x.a)}↔${lbl(x.b)}`;
+  else if(x.text)s=`${EVK[type]||type}: ${x.text}`;
+  logs.push({t,s,end:['try','turnover','violation','foul'].includes(type)});}
+
+/* ---------- 코트 그리기 (캔버스 2D) ---------- */
+const cv=$('cv'),cx=cv.getContext('2d');const X0=-2.2,X1=29.3,Y0=-1.3,Y1=16.1,WW=X1-X0,WH=Y1-Y0;
+let S=20,DPR=1;
+function fit(){const w=cv.clientWidth||cv.parentElement.clientWidth;DPR=Math.min(2.5,window.devicePixelRatio||1);const h=w*WH/WW;cv.style.height=h+'px';cv.width=Math.round(w*DPR);cv.height=Math.round(h*DPR);S=cv.width/WW;draw();}
+const IMG={};for(const k of ['A','D']){const im=new Image();im.onload=()=>{IMG[k]=im;draw();};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(RugbyChairs[k]);}
+const off=document.createElement('canvas'),ox=off.getContext('2d');
+function spaceLayer(){if(!sp)return null;if(off.width!==sp.nx||off.height!==sp.ny){off.width=sp.nx;off.height=sp.ny;}
+  const im=ox.createImageData(sp.nx,sp.ny),d=im.data,ps=b.G.ps,si=sel?ps.findIndex(p=>p.id===sel):-1;
+  for(let i=0;i<sp.view.length;i++){const k=sp.view[i];if(k<0)continue;const p=ps[k];const o=i*4;
+    if(p.team==='A'){const hi=k===si;d[o]=hi?120:53;d[o+1]=hi?255:208;d[o+2]=hi?170:127;d[o+3]=hi?150:105;}
+    else if(showD){d[o]=255;d[o+1]=75;d[o+2]=75;d[o+3]=60;}}
+  ox.putImageData(im,0,0);return off;}
+function draw(){if(!b||!b.G)return;const g=cx,G=b.G;g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,cv.width,cv.height);
+  g.setTransform(S,0,0,S,-X0*S,-Y0*S);
+  // 바닥
+  g.fillStyle='#b8894f';g.fillRect(-0.7,-0.7,29.4,16.4);g.fillStyle='#e6c595';g.fillRect(0,0,28,15);
+  g.strokeStyle='rgba(110,70,25,.10)';g.lineWidth=0.035;g.beginPath();for(let y=0.42;y<15;y+=0.42){g.moveTo(0,y);g.lineTo(28,y);}g.stroke();
+  // 키·센터
+  const K={d:1.75,w:8};g.fillStyle='rgba(27,34,48,.10)';g.fillRect(0,7.5-K.w/2,K.d,K.w);g.fillRect(28-K.d,7.5-K.w/2,K.d,K.w);
+  g.beginPath();g.arc(14,7.5,1.75,0,7);g.fill();
+  // 공간
+  const L=spaceLayer();if(L){g.imageSmoothingEnabled=false;g.drawImage(L,0,0,28,15);}
+  // 라인
+  g.strokeStyle='#2a2f36';g.lineWidth=0.08;g.strokeRect(0,0,28,15);g.beginPath();g.moveTo(14,0);g.lineTo(14,15);g.stroke();
+  g.beginPath();g.arc(14,7.5,1.75,0,7);g.stroke();g.strokeRect(0,7.5-K.w/2,K.d,K.w);g.strokeRect(28-K.d,7.5-K.w/2,K.d,K.w);
+  g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=0.14;g.beginPath();g.moveTo(28,7.5-K.w/2);g.lineTo(28,7.5+K.w/2);g.moveTo(0,7.5-K.w/2);g.lineTo(0,7.5+K.w/2);g.stroke();
+  for(const gx of [0,28])for(const gy of [7.5-K.w/2,7.5+K.w/2]){g.fillStyle='#ff6a1a';g.beginPath();g.arc(gx,gy,0.26,0,7);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(gx,gy,0.1,0,7);g.fill();}
+  // 글씨: 방향·장면 이름 (캡처해도 어떤 장면인지 보이게)
+  g.fillStyle='rgba(255,255,255,.85)';g.font=`800 0.62px "Gothic A1",sans-serif`;g.textBaseline='middle';g.textAlign='left';
+  g.fillText('▶ 공격 방향   '+(scene?scene.name:'')+(dirty?' (수정함)':''),0,-0.72);
+  g.textAlign='right';g.fillStyle='rgba(255,255,255,.6)';g.fillText(G.align?'대형: '+G.align.name+(alignSel==='auto'?' (자동)':''):'',28,-0.72);
+  g.textAlign='center';g.fillStyle='rgba(42,47,54,.45)';g.font=`800 0.55px "Gothic A1",sans-serif`;g.fillText('센터라인',14,15.45);
+  // 선수
+  const stuck=sp?sp.stuck:{};
+  for(const p of G.ps){const isSel=p.id===sel;
+    g.save();g.translate(p.x,p.y);
+    g.fillStyle='rgba(0,0,0,.22)';g.beginPath();g.ellipse(0.1,0.16,1.15,0.95,p.a,0,7);g.fill();
+    if(isSel){g.strokeStyle='#ffd84a';g.lineWidth=0.09;g.beginPath();g.arc(0,0,1.25,0,7);g.stroke();}
+    g.rotate(p.a);
+    const im=IMG[p.chair||'A'];if(im)g.drawImage(im,-85/210*2.73,-80/170*2.21,2.73,2.21);
+    g.restore();
+    // 범퍼 방향 표시 + 번호판
+    const col=p.team==='A'?'#3b7fd0':'#e23b3b';
+    g.strokeStyle=col;g.lineWidth=0.1;g.beginPath();g.moveTo(p.x+Math.cos(p.a)*0.95,p.y+Math.sin(p.a)*0.95);g.lineTo(p.x+Math.cos(p.a)*1.35,p.y+Math.sin(p.a)*1.35);g.stroke();
+    g.fillStyle=col;g.beginPath();g.arc(p.x,p.y,0.42,0,7);g.fill();g.strokeStyle='#fff';g.lineWidth=0.06;g.stroke();
+    g.fillStyle='#fff';g.font=`800 0.5px "Gothic A1",sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText(p.num,p.x,p.y+0.02);
+    g.fillStyle='rgba(16,21,28,.78)';g.font=`600 0.34px "IBM Plex Mono",monospace`;g.fillText(p.cls,p.x,p.y+0.78);
+    if(stuck[p.id]){g.strokeStyle='#ff2a2a';g.lineWidth=0.12;g.setLineDash([0.25,0.15]);g.beginPath();g.arc(p.x,p.y,1.05,0,7);g.stroke();g.setLineDash([]);
+      g.fillStyle='#ff2a2a';g.beginPath();g.roundRect?g.roundRect(p.x-0.55,p.y-1.55,1.1,0.42,0.12):g.rect(p.x-0.55,p.y-1.55,1.1,0.42);g.fill();g.fillStyle='#fff';g.font=`800 0.3px "Gothic A1",sans-serif`;g.fillText('막힘',p.x,p.y-1.33);}
+    if(isSel&&!running){const h=handle(p);g.strokeStyle='rgba(255,216,74,.8)';g.lineWidth=0.05;g.beginPath();g.moveTo(p.x,p.y);g.lineTo(h.x,h.y);g.stroke();
+      g.fillStyle='#ffd84a';g.beginPath();g.arc(h.x,h.y,0.32,0,7);g.fill();g.fillStyle='#10151c';g.font=`800 0.36px sans-serif`;g.fillText('↻',h.x,h.y+0.02);}}
+  // 공
+  let bx=G.ball.x,by=G.ball.y;if(G.ball.holder){const h=b.holdPos(b.P(G.ball.holder));bx=h.x;by=h.y;}
+  g.fillStyle='#fff';g.beginPath();g.arc(bx,by,0.24,0,7);g.fill();g.strokeStyle='#ff6a1a';g.lineWidth=0.07;g.stroke();}
+const handle=p=>({x:p.x+Math.cos(p.a)*1.9,y:p.y+Math.sin(p.a)*1.9});
+
+/* ---------- 끌어 옮기기 · 범퍼 돌리기 ---------- */
+let drag=null,pend=false;
+function world(e){const r=cv.getBoundingClientRect();return {x:X0+(e.clientX-r.left)/r.width*WW,y:Y0+(e.clientY-r.top)/r.height*WH};}
+cv.addEventListener('pointerdown',e=>{if(!b)return;const w=world(e),G=b.G;
+  if(sel&&!running){const p=b.P(sel),h=handle(p);if(Math.hypot(w.x-h.x,w.y-h.y)<0.65){drag={id:sel,rot:true};cv.setPointerCapture(e.pointerId);return;}}
+  let best=null,bd=1.0;for(const p of G.ps){const d=Math.hypot(w.x-p.x,w.y-p.y);if(d<bd){bd=d;best=p;}}
+  if(best){sel=best.id;if(!running){drag={id:best.id,dx:best.x-w.x,dy:best.y-w.y,moved:false};cv.setPointerCapture(e.pointerId);cv.classList.add('drag');}}else sel=null;
+  renderPanel();draw();});
+cv.addEventListener('pointermove',e=>{if(!drag)return;const w=world(e),p=b.P(drag.id);
+  if(drag.rot){p.a=Math.atan2(w.y-p.y,w.x-p.x);}
+  else{const minX=p.id==='A3'?-1.6:0.3;p.x=Math.max(minX,Math.min(27.7,w.x+drag.dx));p.y=Math.max(p.id==='A3'?-1:0.3,Math.min(p.id==='A3'?16:14.7,w.y+drag.dy));drag.moved=true;}
+  if(!pend){pend=true;requestAnimationFrame(()=>{pend=false;if(!b)return;recalc();renderPanel();draw();});}});
+function endDrag(){if(!drag)return;const p=b.P(drag.id);commit(p,drag.id[0]==='D');drag=null;cv.classList.remove('drag');}
+cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);
+// 옮긴 자리를 엔진에 넣고 다시 계산 (자동 대형이면 수비를 옮길 때 대형도 다시 고름)
+function commit(p,reRead){const ready=b.G.phase==='ready';
+  if(ready)work[p.id]={x:r1(p.x),y:r1(p.y),a:+p.a.toFixed(3)};
+  b.setup({[p.id]:{x:p.x,y:p.y,a:p.a}},{auto:reRead});
+  if(ready&&alignSel==='auto')for(const q of b.G.ps)if(q.team==='A'&&q.id!=='A3')delete work[q.id];
+  dirty=true;recalc();renderAll();}
+function rotateSel(deg){if(!sel||running)return;const p=b.P(sel);p.a+=deg*Math.PI/180;commit(p,false);}
+addEventListener('keydown',e=>{if(e.target.closest('input,textarea,dialog'))return;if(e.key==='['||e.key==='q')rotateSel(-15);else if(e.key===']'||e.key==='e')rotateSel(15);else if(e.key===' '){e.preventDefault();togglePlay();}else if(e.key==='Escape'){sel=null;renderPanel();draw();}});
+
+/* ---------- 돌려보기 ---------- */
+const DT=1/60;
+function startIfReady(){if(b.G.phase==='ready'){b.whistle();}}
+function togglePlay(){if(b.G.phase==='over'){build();}if(running){running=false;}else{startIfReady();running=true;acc=0;last=performance.now();}renderCtrl();}
+function step(){if(b.G.phase==='over')return;running=false;startIfReady();for(let i=0;i<12&&b.G.phase==='live';i++)b.tick(DT);recalc();renderAll();}
+let last=performance.now();
+function loop(now){const dt=Math.min(0.25,(now-last)/1000);last=now;
+  if(running&&b){acc+=dt*speed;let n=0;while(acc>=DT&&n<40){b.tick(DT);acc-=DT;n++;spT+=DT;if(b.G.phase!=='live')break;}
+    if(b.G.phase!=='live'){running=false;recalc();renderAll();}
+    else{let re=false;if(spT>=0.25){recalc();re=true;}draw();renderStatus();if(re)renderPanel();}}
+  requestAnimationFrame(loop);}
+
+/* ---------- 패널 ---------- */
+function renderAll(){renderCtrl();renderPanel();renderHead();draw();}
+function renderHead(){$('scName').innerHTML=esc(scene.name)+(scene.src==='mine'?'<span class="tag mine">내 장면</span>':'')+(dirty?'<span class="tag edit">수정함 · 저장 안 됨</span>':'');
+  $('scMemo').textContent=scene.memo||'';document.title=scene.name+' · AI럭비랩';}
+function renderCtrl(){const ph=b.G.phase;
+  $('bPlay').textContent=running?'⏸ 멈춤':(ph==='over'?'↺ 다시':'▶ 재생');
+  $('bWhistle').disabled=ph!=='ready';$('bStep').disabled=ph==='over';
+  const seg=$('align');seg.innerHTML='';
+  for(const [k,n] of [['auto','자동'],...Object.keys(ALIGN).map(k=>[k,ALIGN[k].name])]){const bt=document.createElement('button');bt.textContent=n;bt.className=(k===alignSel?'on':'')+(rd&&rd.rec===k?' rec':'');bt.title=rd&&rd.rec===k?'두뇌 추천':'';bt.onclick=()=>{if(alignSel===k)return;alignSel=k;build();};seg.appendChild(bt);}
+  $('ibLong').checked=ibLong;$('showD').checked=showD;renderStatus();}
+function renderStatus(){const G=b.G,ph=G.phase;const P={ready:['ready','휘슬 전'],live:['live','진행 중'],over:['over','끝'],trans:['ready','트랜지션']}[ph]||['ready',ph];
+  const holder=G.ball.holder?lbl(G.ball.holder):(G.ball.fly?'패스 중':'굴러감');
+  let s=`<span class="pill ${P[0]}">${P[1]}</span><span>시간 <b class="mono">${G.t.toFixed(1)}초</b></span><span>공 <b>${esc(holder)}</b></span>`;
+  if(ph==='live'&&!G.inbounded)s+=`<span>인바운드 <b class="mono">${Math.max(0,8-G.t).toFixed(1)}</b>초 남음</span>`;
+  if(ph==='over'){const e=logs.filter(l=>l.end).pop();if(e)s+=`<span><b>${esc(e.s)}</b></span>`;}
+  $('status').innerHTML=s;}
+function renderPanel(){if(!rd)return;const G=b.G,AL=ALIGN[rd.rec];
+  const cur=G.align?G.align.name:'-';const diff=G.align&&G.align.key!==rd.rec;
+  let h=`<div class="rec"><span class="big">${esc(AL.name)}</span><span class="play ${rd.play==='4:4'?'p44':''}">${rd.play}</span></div>`;
+  h+=`<div class="cmp">지금 선 대형: <b>${esc(cur)}</b>${alignSel==='auto'?' (자동이 고름)':''}${diff?` · <span class="diff">두뇌는 ${esc(AL.name)} 추천</span>`:' · 두뇌도 같은 생각'}</div>`;
+  h+=`<div class="facts">
+    <div class="fact ${rd.ibCheck?'bad':'ok'}"><span>인바체크</span><b>${rd.ibCheck?'있음':'없음'}</b></div>
+    <div class="fact"><span>센터라인 아래 / 위 수비</span><b>${rd.below}명 / ${rd.front}명</b></div>
+    <div class="fact ${rd.a2high?'ok':''}"><span>2번 위치</span><b>센터라인 ${rd.a2high?'위':'아래'}</b></div>
+    <div class="fact"><span>1·3번 앞 공간</span><b class="mono">${rd.open!=null?rd.open+'㎡':'-'}</b></div></div>`;
+  if(rd.trap1)h+=`<div class="alert">⚠ 1번 로우트랩 위험 — 1번에게 인바운드 주지 말 것</div>`;
+  if(G.phase!=='ready')h+=`<div class="cmp" style="margin-top:8px">※ 휘슬 뒤라 이 판단은 지금 자리를 다시 읽은 것 (참고용)</div>`;
+  $('pRead').innerHTML=h;
+  $('pWhy').innerHTML=rd.why.map(w=>`<li>${esc(w)}</li>`).join('');
+  // 공간
+  const A=G.ps.filter(p=>p.team==='A'),D=G.ps.filter(p=>p.team==='D');const mx=Math.max(8,...G.ps.map(p=>sp.front[p.id]||0));
+  const bar=p=>{const v=sp.front[p.id]||0,st=sp.stuck[p.id];return `<div class="bar ${p.team==='D'?'d':''} ${st?'stk':''}"><span class="who ${p.team==='D'?'d':''}">${lbl(p.id)}</span><i><em style="width:${Math.min(100,v/mx*100)}%"></em></i><span class="v">${st?'막힘':v+'㎡'}</span></div>`;};
+  let s=`<div class="bars">${A.map(bar).join('')}</div>`;
+  if(showD)s+=`<div class="bars" style="margin-top:8px">${D.map(bar).join('')}</div>`;
+  else s+=`<div class="cmp">수비 범퍼 앞 공간 합계 <b class="mono">${r1(D.reduce((a,p)=>a+(sp.front[p.id]||0),0))}㎡</b> · 공격 합계 <b class="mono">${r1(A.reduce((a,p)=>a+(sp.front[p.id]||0),0))}㎡</b></div>`;
+  const st=Object.keys(sp.stuck);if(st.length)s+=`<div class="stk">${st.map(id=>`⛔ ${lbl(id)} 범퍼가 ${lbl(sp.stuck[id])}에 막힘 → 진출 공간 0`).join('<br>')}</div>`;
+  $('pSpace').innerHTML=s;
+  // 선택
+  const p=sel&&b.P(sel);
+  $('pSel').innerHTML=p?`<div class="sel"><span class="who ${p.team==='D'?'d':''}">${p.team==='A'?'공격 ':''}${lbl(p.id)}</span><span>등급 <b class="mono">${p.cls}</b></span><span>범퍼 <b class="mono">${Math.round(((p.a*180/Math.PI)%360+360)%360)}°</b></span>
+     <span class="mono" style="color:var(--dim)">(${r1(p.x)}, ${r1(p.y)})</span>
+     <div class="rot"><button title="왼쪽으로 15°" onclick="rotateSel(-15)">↺</button><button title="오른쪽으로 15°" onclick="rotateSel(15)">↻</button></div></div>
+     <div class="cmp">범퍼 앞 <b class="mono">${sp.front[p.id]||0}㎡</b> · 안전 전체 <b class="mono">${sp.safe[p.id]||0}㎡</b> · 뒤쪽(받는 공간) <b class="mono">${sp.back[p.id]||0}㎡</b></div>`
+    :`<div class="empty">코트에서 선수를 누르면 여기 나와요. 끌어서 옮기고, 앞쪽 노란 동그라미(↻)를 돌리거나 ↺↻ 버튼·[ ] 키로 범퍼 방향을 바꿔요. 옮기면 공간과 판단이 바로 다시 계산돼요.</div>`;
+  // 기록
+  $('pLog').innerHTML=logs.length?logs.map(l=>`<div class="${l.end?'end':''}"><span class="mono">${l.t.toFixed(1)}s</span>${esc(l.s)}</div>`).join(''):'<div class="empty">휘슬을 불면 여기에 패스·인바운드·결과가 적혀요.</div>';
+  const lg=$('pLog');lg.scrollTop=lg.scrollHeight;}
+
+/* ---------- 저장 · 내보내기 · 불러오기 ---------- */
+let toastT=0;function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2200);}
+function snapshot(name,memo){const G=b.G,pos={};
+  for(const p of G.ps)pos[p.id]={x:r1(G.phase==='ready'?p.x:p.x),y:r1(p.y),a:+p.a.toFixed(3)};
+  const al=G.align?G.align.key:(alignSel==='auto'?'1set':alignSel);
+  const cfg={align:al};if(ibLong)cfg.ibPass=17;
+  return {key:'m'+Date.now().toString(36),name,memo,cfg,pos,saved:new Date().toISOString().slice(0,16).replace('T',' ')};}
+$('bSave').onclick=()=>{$('iName').value=scene.src==='mine'?scene.name:scene.name+(dirty?' 변형':' 사본');$('iMemo').value=scene.memo||'';$('dlg').showModal();setTimeout(()=>$('iName').select(),30);};
+$('bCancel').onclick=()=>$('dlg').close();
+$('fSave').addEventListener('submit',e=>{const name=$('iName').value.trim();if(!name){e.preventDefault();return;}
+  const s=snapshot(name,$('iMemo').value.trim());
+  const same=mine.findIndex(m=>m.name===name);
+  if(same>=0){if(!confirm(`'${name}' 이름이 이미 있어요. 덮어쓸까요?`)){e.preventDefault();return;}s.key=mine[same].key;mine[same]=s;}else mine.push(s);
+  if(!ls.set(STORE,mine))toast('브라우저 저장이 막혀 있어요 — 내보내기로 파일을 받아 두세요');else toast(`'${name}' 저장했어요`);
+  loadScene(Object.assign({src:'mine'},s));});
+$('bExport').onclick=()=>{const list=mine.length?mine:[];
+  const data={app:'rugby-lab',v:1,engine:RB.VERSION,exported:new Date().toISOString(),scenes:list.length?list:[snapshot(scene.name,scene.memo||'')]};
+  const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='rugby-lab-scenes-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  toast(list.length?`내 장면 ${list.length}개 내보냈어요`:'저장한 장면이 없어서 지금 장면만 내보냈어요');};
+$('bImport').onclick=()=>$('fImport').click();
+$('fImport').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const data=JSON.parse(await f.text());const arr=Array.isArray(data)?data:(data.scenes||[data]);let n=0;
+    for(const s of arr){if(!s||!s.name||!s.pos||typeof s.pos!=='object')continue;const c={key:s.key||('m'+Date.now().toString(36)+n),name:String(s.name).slice(0,40),memo:String(s.memo||'').slice(0,600),cfg:{align:ALIGN[s.cfg&&s.cfg.align]?s.cfg.align:'1set',...(s.cfg&&s.cfg.ibPass?{ibPass:+s.cfg.ibPass}:{})},pos:{},saved:s.saved||''};
+      for(const id in s.pos){if(!/^[AD][1-4]$/.test(id))continue;const q=s.pos[id];if(isFinite(q.x)&&isFinite(q.y))c.pos[id]={x:+q.x,y:+q.y,a:isFinite(q.a)?+q.a:(id[0]==='A'?0:Math.PI)};}
+      const i=mine.findIndex(m=>m.key===c.key||m.name===c.name);if(i>=0)mine[i]=c;else mine.push(c);n++;}
+    ls.set(STORE,mine);renderScenes();toast(n?`장면 ${n}개 불러왔어요`:'불러올 장면이 없어요');}
+  catch(err){toast('JSON 파일을 못 읽었어요');}};
+
+/* ---------- 버튼 ---------- */
+$('bWhistle').onclick=()=>{startIfReady();running=true;last=performance.now();renderCtrl();};
+$('bPlay').onclick=togglePlay;$('bStep').onclick=step;
+$('bReset').onclick=()=>{work=clone(scene.pos);alignSel=scene.cfg.align||'1set';ibLong=!!scene.cfg.ibPass;dirty=false;build();};
+$('ibLong').onchange=e=>{ibLong=e.target.checked;dirty=true;build();};
+$('showD').onchange=e=>{showD=e.target.checked;renderPanel();draw();};
+for(const bt of $('speed').children)bt.onclick=()=>{speed=+bt.dataset.v;for(const x of $('speed').children)x.classList.toggle('on',x===bt);};
+$('foot').textContent=`럭비두뇌 v${RB.VERSION} · 판단·공간·규칙은 전부 engine/rugby-brain.js · 공격 라인업 ${LINE_A.join('-')} · 내 장면은 이 브라우저(localStorage)에 저장`;
+
+/* ---------- 시작 ---------- */
+addEventListener('resize',()=>fit());
+const lastSc=ls.get(LAST,null);let first=presets[0];
+if(lastSc){const f=(lastSc.src==='mine'?allMine():presets).find(s=>s.key===lastSc.key);if(f)first=f;}
+loadScene(first);fit();if(document.fonts)document.fonts.ready.then(draw);requestAnimationFrame(loop);
+</script>
+</body></html>
