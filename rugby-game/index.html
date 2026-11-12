@@ -188,26 +188,25 @@ const uiG=new PIXI.Graphics();ui.addChild(uiG);
 const top=new PIXI.Container();app.stage.addChild(top);             // 흔들리지 않는 연출 (득점 글자·꽃가루)
 const topG=new PIXI.Graphics();top.addChild(topG);
 function drawCourt(){const K={d:2.3,w:9.6,r:2.2},KEYW=8;const g=court;g.clear();
-  g.beginFill(0xc99c63).drawRect(-0.7,-0.7,29.4,16.4).endFill();g.beginFill(0xe6c595).drawRect(0,0,28,15).endFill();
-  for(let y=0.42;y<15;y+=0.42){g.lineStyle(0.035,0x6e4619,0.10).moveTo(0,y).lineTo(28,y);}
   g.lineStyle(0);g.beginFill(0x1b2230,0.10).drawRect(0,7.5-K.w/2,K.d,K.w).drawRect(28-K.d,7.5-K.w/2,K.d,K.w).drawCircle(14,7.5,K.r).endFill();
   g.lineStyle(0.08,0x2a2f36,1).drawRect(0,0,28,15).moveTo(14,0).lineTo(14,15).drawCircle(14,7.5,K.r).drawRect(0,7.5-K.w/2,K.d,K.w).drawRect(28-K.d,7.5-K.w/2,K.d,K.w);
   g.lineStyle(0.14,0xffffff,0.55).moveTo(0,7.5-KEYW/2).lineTo(0,7.5+KEYW/2).moveTo(28,7.5-KEYW/2).lineTo(28,7.5+KEYW/2);
   g.lineStyle(0);for(const gx of [0,28])for(const gy of [7.5-K.w/2,7.5+K.w/2]){g.beginFill(0xff6a1a).drawCircle(gx,gy,0.26).endFill();g.beginFill(0xffffff).drawCircle(gx,gy,0.1).endFill();}}
 drawCourt();
+// 나무 코트 바닥 (엔진 공용 그림)
+{const FL=RugbyChairs.floor({x0:-3,y0:-3,x1:31,y1:18,px:72});const fs=new PIXI.Sprite(PIXI.Texture.from(FL.canvas));fs.position.set(FL.x0,FL.y0);fs.width=FL.w;fs.height=FL.h;world.addChildAt(fs,0);}
 // 휠체어 그림 → 텍스처
-const TEX={};for(const k of ['A','D']){const im=new Image();im.onload=()=>{TEX[k]=PIXI.Texture.from(im);for(const v of SPR.values())if(v.chair===k)v.spr.texture=TEX[k];};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(RugbyChairs[k]);}
+// 휠체어 그림: RugbyChairs.look (팀색·등번호·바퀴 회전) — 선수별로 draw()에서 고름
 const SPR=new Map(); // 자리(k번째 선수) → 그래픽
 const numStyle=new PIXI.TextStyle({fontFamily:'Gothic A1, Apple SD Gothic Neo, sans-serif',fontWeight:'800',fill:'#ffffff',fontSize:14});
 const clsStyle=new PIXI.TextStyle({fontFamily:'IBM Plex Mono, monospace',fontWeight:'600',fill:'#1b2230',fontSize:11});
 function chairGfx(k){let v=SPR.get(k);if(v)return v;
-  const shadow=new PIXI.Graphics().beginFill(0x000000,0.14).drawEllipse(0,0,0.85,0.7).endFill();under.addChild(shadow);
-  const c=new PIXI.Container();const spr=new PIXI.Sprite(PIXI.Texture.EMPTY);spr.anchor.set(85/210,80/170);spr.width=2.73;spr.height=2.21;
-  const plate=new PIXI.Graphics().beginFill(0xffffff).drawRoundedRect(-0.377,-0.494,0.754,0.988,0.234).endFill();
-  c.addChild(spr,plate);chairs.addChild(c);
+  const shadow=new PIXI.Sprite(PIXI.Texture.EMPTY);shadow.alpha=0.8;under.addChild(shadow);
+  const c=new PIXI.Container();const spr=new PIXI.Sprite(PIXI.Texture.EMPTY);
+  c.addChild(spr);chairs.addChild(c);
   const num=new PIXI.Text('',numStyle);num.anchor.set(0.5);num.resolution=DPR;ui.addChild(num);
   const cls=new PIXI.Text('',clsStyle);cls.anchor.set(0.5);cls.resolution=DPR;ui.addChild(cls);
-  v={c,spr,plate,shadow,num,cls,chair:null,bump:0};SPR.set(k,v);return v;}
+  v={c,spr,shadow,num,cls,chair:null,bump:0,look:null,lk:'',rs:{}};SPR.set(k,v);return v;}
 const ball=new PIXI.Graphics().lineStyle(0.05,0x222222).beginFill(0xffffff).drawCircle(0,0,0.28).endFill();
 const ballSh=new PIXI.Graphics().beginFill(0x000000,0.25).drawEllipse(0,0,0.3,0.22).endFill();ballG.addChild(ballSh,ball);
 const meTag=new PIXI.Text('나',new PIXI.TextStyle({fontFamily:'Gothic A1, sans-serif',fontWeight:'800',fill:'#ffffff',fontSize:15}));meTag.anchor.set(0.5);meTag.resolution=DPR;ui.addChild(meTag);
@@ -275,10 +274,13 @@ function draw(){const G=M.brain.G;if(!G)return;const f=F();
   world.scale.set(S2*f);world.position.set(CW/2-f*CX*S2,CH/2-f*CY*S2);
   marks.clear();for(const s of skids){marks.lineStyle(0.07,0x3a2a18,Math.min(0.28,s.life*0.16)).moveTo(s.x,s.y).lineTo(s.px,s.py);}
   numStyle.fontSize=Math.max(11,Math.round(0.5*S2));clsStyle.fontSize=Math.max(9,Math.round(0.3*S2));
-  G.ps.forEach((p,k)=>{const v=chairGfx(k);if(v.chair!==p.chair){v.chair=p.chair;if(TEX[p.chair])v.spr.texture=TEX[p.chair];}
+  G.ps.forEach((p,k)=>{const v=chairGfx(k);const lk=p.chair+M.team(p.id)+p.num;
+    if(v.lk!==lk){v.lk=lk;const L=v.look=RugbyChairs.look({type:p.chair,color:TEAMCOL[M.team(p.id)],num:p.num});v.rs={};
+      for(const sp of [v.spr,v.shadow]){sp.anchor.set(L.ax,L.ay);sp.width=L.W;sp.height=L.H;}v.shadow.texture=L.shadowTex();}
+    v.spr.texture=v.look.tex(RugbyChairs.roll(v.rs,p.x,p.y,p.a));
     v.bump*=0.82;const sc=1+v.bump;v.c.position.set(p.x,p.y);v.c.rotation=p.a;v.c.scale.set(sc,1/sc);
-    v.plate.tint=hex(TEAMCOL[M.team(p.id)]);v.shadow.position.set(p.x+0.12,p.y+0.18);v.shadow.rotation=p.a;
-    const s=w2s(p.x,p.y);v.num.text=String(p.num);v.num.position.set(s.sx,s.sy+1);
+    v.shadow.position.set(p.x+0.1,p.y+0.16);v.shadow.rotation=p.a;
+    const s=w2s(p.x,p.y);v.num.visible=false; /* 번호는 이제 저지 등번호로 */
     v.cls.visible=S.cls;if(S.cls){v.cls.text=p.cls;v.cls.position.set(s.sx+0.85*S2,s.sy+0.7*S2);}});
   // 공: 패스 중엔 포물선처럼 떠오름
   const b=G.ball;let alt=0;if(b.fly){const u=Math.min(1,b.fly.t/b.fly.dur);alt=Math.sin(Math.PI*u)*Math.min(1,Math.hypot(b.fly.tx-b.fly.sx,b.fly.ty-b.fly.sy)/8);}

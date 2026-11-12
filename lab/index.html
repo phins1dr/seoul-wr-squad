@@ -225,7 +225,7 @@ function onEvent(type,x){if(type==='newGame'||type==='align'||type==='hit')retur
 const cv=$('cv'),cx=cv.getContext('2d');const X0=-2.2,X1=29.3,Y0=-1.3,Y1=16.1,WW=X1-X0,WH=Y1-Y0;
 let S=20,DPR=1;
 function fit(){const w=cv.clientWidth||cv.parentElement.clientWidth;DPR=Math.min(2.5,window.devicePixelRatio||1);const h=w*WH/WW;cv.style.height=h+'px';cv.width=Math.round(w*DPR);cv.height=Math.round(h*DPR);S=cv.width/WW;draw();}
-const IMG={};for(const k of ['A','D']){const im=new Image();im.onload=()=>{IMG[k]=im;draw();};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(RugbyChairs[k]);}
+const ROLL={}; // 선수별 바퀴 굴러간 거리 (RugbyChairs.roll)
 const off=document.createElement('canvas'),ox=off.getContext('2d');
 function spaceLayer(){if(!sp)return null;if(off.width!==sp.nx||off.height!==sp.ny){off.width=sp.nx;off.height=sp.ny;}
   const im=ox.createImageData(sp.nx,sp.ny),d=im.data,ps=b.G.ps,si=sel?ps.findIndex(p=>p.id===sel):-1;
@@ -236,8 +236,7 @@ function spaceLayer(){if(!sp)return null;if(off.width!==sp.nx||off.height!==sp.n
 function draw(){if(!b||!b.G)return;const g=cx,G=b.G;g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,cv.width,cv.height);
   g.setTransform(S,0,0,S,-X0*S,-Y0*S);
   // 바닥
-  g.fillStyle='#b8894f';g.fillRect(-0.7,-0.7,29.4,16.4);g.fillStyle='#e6c595';g.fillRect(0,0,28,15);
-  g.strokeStyle='rgba(110,70,25,.10)';g.lineWidth=0.035;g.beginPath();for(let y=0.42;y<15;y+=0.42){g.moveTo(0,y);g.lineTo(28,y);}g.stroke();
+  {const F=RugbyChairs.floor({x0:X0,y0:Y0,x1:X1,y1:Y1,px:Math.min(110,S)});g.drawImage(F.canvas,F.x0,F.y0,F.w,F.h);}
   // 키·센터
   const K={d:1.75,w:8};g.fillStyle='rgba(27,34,48,.10)';g.fillRect(0,7.5-K.w/2,K.d,K.w);g.fillRect(28-K.d,7.5-K.w/2,K.d,K.w);
   g.beginPath();g.arc(14,7.5,1.75,0,7);g.fill();
@@ -256,17 +255,13 @@ function draw(){if(!b||!b.G)return;const g=cx,G=b.G;g.setTransform(1,0,0,1,0,0);
   // 선수
   const stuck=sp?sp.stuck:{};
   for(const p of G.ps){const isSel=p.id===sel;
-    g.save();g.translate(p.x,p.y);
-    g.fillStyle='rgba(0,0,0,.22)';g.beginPath();g.ellipse(0.1,0.16,1.15,0.95,p.a,0,7);g.fill();
-    if(isSel){g.strokeStyle='#ffd84a';g.lineWidth=0.09;g.beginPath();g.arc(0,0,1.25,0,7);g.stroke();}
-    g.rotate(p.a);
-    const im=IMG[p.chair||'A'];if(im)g.drawImage(im,-85/210*2.73,-80/170*2.21,2.73,2.21);
-    g.restore();
+    if(isSel){g.strokeStyle='#ffd84a';g.lineWidth=0.09;g.beginPath();g.arc(p.x,p.y,1.25,0,7);g.stroke();}
+    const col0=p.team==='A'?'#3b7fd0':'#e23b3b';
+    RugbyChairs.draw(g,RugbyChairs.look({type:p.chair||'A',color:col0,num:p.num}),p.x,p.y,p.a,RugbyChairs.roll(ROLL[p.id]||(ROLL[p.id]={}),p.x,p.y,p.a));
     // 범퍼 방향 표시 + 번호판
     const col=p.team==='A'?'#3b7fd0':'#e23b3b';
     g.strokeStyle=col;g.lineWidth=0.1;g.beginPath();g.moveTo(p.x+Math.cos(p.a)*0.95,p.y+Math.sin(p.a)*0.95);g.lineTo(p.x+Math.cos(p.a)*1.35,p.y+Math.sin(p.a)*1.35);g.stroke();
-    g.fillStyle=col;g.beginPath();g.arc(p.x,p.y,0.42,0,7);g.fill();g.strokeStyle='#fff';g.lineWidth=0.06;g.stroke();
-    g.fillStyle='#fff';g.font=`800 0.5px "Gothic A1",sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText(p.num,p.x,p.y+0.02);
+    g.textAlign='center';g.textBaseline='middle';
     g.fillStyle='rgba(16,21,28,.78)';g.font=`600 0.34px "IBM Plex Mono",monospace`;g.fillText(p.cls,p.x,p.y+0.78);
     if(stuck[p.id]){g.strokeStyle='#ff2a2a';g.lineWidth=0.12;g.setLineDash([0.25,0.15]);g.beginPath();g.arc(p.x,p.y,1.05,0,7);g.stroke();g.setLineDash([]);
       g.fillStyle='#ff2a2a';g.beginPath();g.roundRect?g.roundRect(p.x-0.55,p.y-1.55,1.1,0.42,0.12):g.rect(p.x-0.55,p.y-1.55,1.1,0.42);g.fill();g.fillStyle='#fff';g.font=`800 0.3px "Gothic A1",sans-serif`;g.fillText('막힘',p.x,p.y-1.33);}

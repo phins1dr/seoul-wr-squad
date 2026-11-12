@@ -1,0 +1,17 @@
+<!doctype html><meta charset="utf-8"><title>휠체어 그림 미리보기</title>
+<style>body{margin:0;background:#0c1016;color:#e5e7eb;font:14px "Gothic A1",sans-serif}canvas{display:block;width:100%}</style>
+<canvas id="cv"></canvas>
+<script src="rugby-chairs.js"></script>
+<script>
+const cv=document.getElementById('cv'),g=cv.getContext('2d');
+const Q=new URLSearchParams(location.search),Z=+(Q.get("z")||1),CX=+(Q.get("x")||7),CY=+(Q.get("y")||3.5),X0=CX-8/Z,Y0=CY-4.5/Z,X1=CX+8/Z,Y1=CY+4.5/Z;
+const ps=[{t:'A',c:'#4a90d9',n:7,x:2.5,y:2},{t:'D',c:'#4a90d9',n:12,x:6.5,y:2},{t:'A',c:'#ff2a2a',n:3,x:10.5,y:2.2},{t:'D',c:'#ff2a2a',n:21,x:5,y:5.4},{t:'A',c:'#4a90d9',n:5,x:10,y:5.6,spin:1}];
+let t=0,last=performance.now();
+function fr(now){const dt=(now-last)/1000;last=now;t+=dt;
+ const w=cv.clientWidth,DPR=devicePixelRatio||1,S=w*DPR/(X1-X0);cv.width=w*DPR;cv.height=(Y1-Y0)*S;
+ g.setTransform(S,0,0,S,-X0*S,-Y0*S);
+ const F=RugbyChairs.floor({x0:X0,y0:Y0,x1:X1,y1:Y1,px:S});g.drawImage(F.canvas,F.x0,F.y0,F.w,F.h);
+ for(const p of ps){const L=RugbyChairs.look({type:p.t,color:p.c,num:p.n});const a=p.spin?t*0.8:0;RugbyChairs.draw(g,L,p.x,p.y,a,t*1.5);}
+ requestAnimationFrame(fr);}
+requestAnimationFrame(fr);
+</script>

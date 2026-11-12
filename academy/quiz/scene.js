@@ -18,11 +18,7 @@
   }
 
   function drawCourt(g) {
-    g.beginFill(0xc99c63).drawRect(-PAD, -PAD, CW, CH).endFill();
-    g.beginFill(0xe6c595).drawRect(0, 0, W, H).endFill();
-    for (let y = 0.42; y < H; y += 0.42) {
-      g.lineStyle(0.035, 0x6e4619, 0.10).moveTo(0, y).lineTo(W, y);
-    }
+    // 바닥 나무는 RugbyChairs.floor 스프라이트가 깐다 (create 안에서)
     // 키 에어리어·센터서클 음영
     g.lineStyle(0);
     g.beginFill(0x1b2230, 0.10)
@@ -93,7 +89,11 @@
     const under = new PIXI.Container();
     const chairs = new PIXI.Container();
     const ballG = new PIXI.Container();
-    world.addChild(court, hi, under, chairs, ballG);
+    // 나무 코트 바닥 (엔진 공용 그림)
+    const FL = root.RugbyChairs.floor({ x0: -PAD, y0: -PAD, x1: W + PAD, y1: H + PAD, px: 72 });
+    const floorSpr = new PIXI.Sprite(PIXI.Texture.from(FL.canvas));
+    floorSpr.position.set(FL.x0, FL.y0); floorSpr.width = FL.w; floorSpr.height = FL.h;
+    world.addChild(floorSpr, court, hi, under, chairs, ballG);
     drawCourt(court);
     drawHighlight(hi, data.highlight);
 
@@ -105,38 +105,28 @@
 
     const actors = new Map();
 
-    // 휠체어 텍스처 (게임과 같은 그림) — actors 선언 뒤에 둬야 onload가 먼저 와도 안전하다
-    const TEX = {};
-    for (const k of ['A', 'D']) {
-      const im = new Image();
-      im.onload = () => {
-        TEX[k] = PIXI.Texture.from(im);
-        for (const v of actors.values()) if (v.texKey === k) v.spr.texture = TEX[k];
-      };
-      im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(root.RugbyChairs[k]);
-    }
+    // 휠체어 그림: 엔진 공용 RugbyChairs.look (선수별 팀색·등번호, 바퀴 회전 그림)
     const ball = new PIXI.Graphics().lineStyle(0.045, 0x222222, 1).beginFill(0xffffff).drawCircle(0, 0, 0.3).endFill();
     const ballSh = new PIXI.Graphics().beginFill(0x000000, 0.22).drawEllipse(0, 0, 0.32, 0.24).endFill();
     ballG.addChild(ballSh, ball);
 
     function makeActor(a) {
-      const shadow = new PIXI.Graphics().beginFill(0x000000, 0.14).drawEllipse(0, 0, 0.85, 0.7).endFill();
+      const look = root.RugbyChairs.look({ type: a.chair || (a.team === 'B' ? 'D' : 'A'), color: TEAMCOL[a.team] || TEAMCOL.A, num: a.num !== undefined ? a.num : a.id });
+      const shadow = new PIXI.Sprite(look.shadowTex());
+      shadow.anchor.set(look.ax, look.ay); shadow.width = look.W; shadow.height = look.H; shadow.alpha = 0.8;
       under.addChild(shadow);
       const c = new PIXI.Container();
-      const texKey = a.team === 'B' ? 'D' : 'A';
-      const spr = new PIXI.Sprite(TEX[texKey] || PIXI.Texture.EMPTY);
-      spr.anchor.set(85 / 210, 80 / 170);
-      spr.width = 2.73; spr.height = 2.21;
-      const plate = new PIXI.Graphics().beginFill(0xffffff).drawRoundedRect(-0.377, -0.494, 0.754, 0.988, 0.234).endFill();
-      plate.tint = hex(TEAMCOL[a.team] || TEAMCOL.A);
-      c.addChild(spr, plate);
+      const spr = new PIXI.Sprite(look.tex(0));
+      spr.anchor.set(look.ax, look.ay);
+      spr.width = look.W; spr.height = look.H;
+      c.addChild(spr);
       chairs.addChild(c);
       const label = new PIXI.Text(a.id, new PIXI.TextStyle({ fontFamily: FONT, fontWeight: '800', fontSize: 14, fill: '#ffffff' }));
       label.resolution = Math.min(root.devicePixelRatio || 1, 2) * 2;
       label.anchor.set(0.5);
       const bg = new PIXI.Graphics();
       ui.addChild(bg, label);
-      const v = { ...a, c, spr, plate, shadow, label, bg, texKey };
+      const v = { ...a, c, spr, shadow, label, bg, look, rs: {} };
       actors.set(a.id, v);
       return v;
     }
@@ -266,7 +256,8 @@
         const a = st.face[id] || 0;
         v.c.position.set(p[0], p[1]);
         v.c.rotation = a;
-        v.shadow.position.set(p[0] + 0.12, p[1] + 0.18);
+        v.spr.texture = v.look.tex(root.RugbyChairs.roll(v.rs, p[0], p[1], a));
+        v.shadow.position.set(p[0] + 0.1, p[1] + 0.16);
         v.shadow.rotation = a;
         const s = w2s(p[0], p[1]);
         const ly = s.sy - Math.max(20, 0.78 * S);

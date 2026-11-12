@@ -18,7 +18,7 @@
 |---|---|
 | `index.html` + `snapshot.json` + `img/` | 선수단 공유 화면(출석부·체력테스트·휠체어 현황). `tools/build_snapshot.py`로 매월 갱신 |
 | `engine/rugby-brain.js` | **럭비두뇌** (v1.4.0) — 선수 움직임 AI, 휠체어 물리, 규정(8초·12초·40초 등), 4피리어드 경기 진행, **공간 계산 `space()`**, **공격 얼라이먼트 `ALIGN`·`readAlign()`**, **노션 장면 `SCENES`·자리 세우기 `b.setup()`**. 화면 없이 Node(또는 bun)에서도 돌아감 |
-| `engine/rugby-chairs.js` | 휠체어 그림(공격형 A, 수비형 D) |
+| `engine/rugby-chairs.js` | **휠체어·코트 그림 (2026-11-13 코드 그리기로 교체)** — `look({type,color,num})`(팀색·등번호, 바퀴 회전 12컷 `frame(roll)`/`tex(roll)`, 그림자 `shadow`), `draw(ctx,L,x,y,a,roll)`, `roll()`(굴러간 거리), `floor({x0,y0,x1,y1,px})`(나무 바닥). 공격형 A=실물 멜로스 Rhino 사진 기준 D자 알루미늄 범퍼 링·검정 디스크·색 타이어, 수비형 D=튀어나온 범퍼+갈고리. 비율은 멜로스 사양서(바퀴 24~26", 캠버 16~20°). 퀴즈·게임·랩 모두 이걸 씀. 미리보기 `engine/chairs-preview.html?z=2.6&x=4.5&y=2` |
 | `engine/pixi.min.js` | 화면 그리기용 PixiJS (외부 CDN 의존 없이 내장) |
 | `rugby-game/` | 휠체어럭비 게임. **`engine/rugby-brain.js`를 이미 사용 중** |
 | `lab/` | **새 AI럭비랩 (크로스체크 채널, 2026-11-10 1단계)**. `engine/`의 두뇌를 불러 쓰는 얇은 화면(캔버스 2D, pixi 안 씀). 판단 로직 없음 |
