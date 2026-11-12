@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>휠체어럭비 규정 &amp; 케이스북</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f7f9">
+<meta name="description" content="휠체어럭비 경기규정 전문과 케이스북 퀴즈. 상황을 코트 위 움직이는 장면으로 보고 판정을 맞혀보세요.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gothic+A1:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="loadError" class="load-error" hidden></div>
+
+<main id="app">
+
+  <!-- ================= 홈 (게임 우선) ================= -->
+  <section class="view" id="view-home">
+    <header class="home-head">
+      <p class="eyebrow">WHEELCHAIR RUGBY · 2026</p>
+      <h1 class="home-title">휠체어럭비 <span>규정 &amp; 케이스북</span></h1>
+      <p class="edition-badge"><b>2026</b> WWR 국제 경기규정 · 케이스북 기준</p>
+    </header>
+
+    <!-- 게임: 첫 화면의 주인공 -->
+    <section class="game-card">
+      <p class="game-kicker">TODAY'S CHALLENGE</p>
+      <p class="game-state" id="homeDailyState">오늘의 10문제</p>
+      <button class="btn primary big" id="btnDaily" type="button">오늘의 10문제 도전</button>
+      <p class="mode-desc">하루 동안 고정된 10문제입니다. 누구나 같은 문제를 풀고, 풀면 연속 도전일수에 반영됩니다.</p>
+      <p class="game-note" id="dailyNote"></p>
+      <div class="game-sub">
+        <button class="btn" id="btnRandom" type="button">전체 랜덤 10문제</button>
+        <button class="btn ghost" id="btnResume" type="button" hidden>이어풀기</button>
+      </div>
+      <p class="mode-desc">풀 때마다 새로 섞입니다. 연속 도전일수에는 반영되지 않지만, 맞힌 문항은 레벨과 랭킹에 똑같이 쌓입니다.</p>
+    </section>
+
+    <!-- 랭킹 -->
+    <section class="home-rank">
+      <div class="home-rank-head">
+        <p class="game-kicker">RANKING</p>
+        <button class="text-link" id="btnHomeRank" type="button">랭킹 코드 · 내 기록 →</button>
+      </div>
+      <p class="rank-level" id="homeLevel">새내기 심판</p>
+      <div class="level-bar"><span id="homeLevelBar"></span></div>
+      <p class="rank-next" id="homeLevelNext"></p>
+      <p class="rank-meta">연속 도전 <b id="homeStreak">0</b>일</p>
+      <p class="rank-calc">순위는 맞힌 <b>서로 다른 문항 수</b>로 매깁니다. 같은 문제를 다시 풀어도 늘지 않고, 최대 <b class="rankCalcMax">217</b>문항입니다.</p>
+      <div class="rank-mini" id="homeRankBoard"></div>
+      <div class="rank-mini-actions">
+        <button class="btn ghost sm" id="btnHomeCode" type="button">내 코드 복사</button>
+        <button class="btn ghost sm" id="btnHomeRankAdd" type="button">친구 코드 붙여넣기</button>
+      </div>
+      <p class="rank-note">서버가 없는 사이트라 <b>실시간 순위가 아닙니다.</b> 내 기록을 코드로 복사해 서로 붙여넣으면 그 코드들로 순위표를 만듭니다.</p>
+    </section>
+
+    <!-- 배지·최근 기록 한 줄 -->
+    <div class="mini-row">
+      <button class="mini-card" id="btnHomeBadges" type="button">
+        <span class="mini-label">배지</span>
+        <span class="mini-value" id="homeBadgeCount">0 / 15</span>
+        <span class="mini-sub" id="homeBadgeStrip">아직 없음</span>
+      </button>
+      <div class="mini-card static">
+        <span class="mini-label">최근 기록</span>
+        <span class="mini-value" id="homeRecent">아직 기록 없음</span>
+        <span class="mini-sub" id="homeSolved">푼 문항 0 / 217</span>
+      </div>
+    </div>
+
+    <!-- 보조: 찾으면 보는 메뉴 -->
+    <nav class="aux-grid" aria-label="자료와 다른 메뉴">
+      <button class="aux" id="entryQuiz" type="button">
+        <span class="aux-kicker">Ⅱ. 케이스북</span>
+        <span class="aux-title">케이스 목록</span>
+        <span class="aux-sub"><b id="caseCount">217</b>문항 · 코트 장면 <b id="sceneCount">7</b> · 장별로 풀기</span>
+      </button>
+      <button class="aux" id="entryRules" type="button">
+        <span class="aux-kicker">Ⅰ. 경기규정</span>
+        <span class="aux-title">규정 보기</span>
+        <span class="aux-sub"><b id="ruleCount">111</b>개 조항 · 14장 · 조항 검색</span>
+      </button>
+      <button class="aux" id="entryChanges" type="button">
+        <span class="aux-kicker">Ⅲ. 2026 개정</span>
+        <span class="aux-title">개정 사항</span>
+        <span class="aux-sub">8초 · 페널티 시간 · 타임아웃</span>
+      </button>
+      <button class="aux" id="entryMe" type="button">
+        <span class="aux-kicker">Ⅳ. 내 기록</span>
+        <span class="aux-title">레벨 · 배지</span>
+        <span class="aux-sub">팀 랭킹 · 기록 지우기</span>
+      </button>
+    </nav>
+
+    <!-- 찾으면 보는 자료실 -->
+    <details class="archive">
+      <summary>자료실 · 출처와 설명</summary>
+      <div class="archive-body">
+        <p class="archive-lead">국제 경기규정 전문을 조항별로 읽고, 케이스북의 상황을 코트 위 움직이는 장면으로 보면서 판정을 맞혀보세요.</p>
+        <p class="src-label">출처</p>
+        <p id="metaSource"></p>
+        <p class="muted" id="metaEdition"></p>
+        <p class="muted">영문 원문은 World Wheelchair Rugby 2026년 4월판 규정과 케이스북을 그대로 옮겼습니다. 국문은 2021년 대한장애인럭비협회 번역을 조항 내용이 같은 부분에 재사용하고, 2026년에 바뀐 부분은 새로 번역했습니다. 권리는 원저작자에게 있습니다.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= 규정 목록 ================= -->
+  <section class="view" id="view-rules" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-back="home" type="button" aria-label="홈으로">←</button>
+      <div class="bar-title"><b>경기규정</b><small>Ⅰ. 휠체어럭비 경기규정 · 1~91쪽</small></div>
+    </header>
+
+    <div class="search-wrap">
+      <input id="ruleSearch" type="search" inputmode="search" enterkeyhint="search"
+             placeholder="조항 번호·키워드 검색 (예: 29, 범퍼, throw-in)" aria-label="규정 검색" autocomplete="off">
+      <button id="searchClear" class="search-clear" type="button" aria-label="검색어 지우기" hidden>✕</button>
+    </div>
+
+    <div id="searchPanel" hidden>
+      <p class="search-summary" id="searchSummary"></p>
+      <div id="searchResults" class="result-list"></div>
+    </div>
+
+    <div id="chapterAccordion" class="accordion"></div>
+    <p class="foot-note">조항 번호는 규정집 목차를 기준으로 했습니다. 원문 조판상 66조 머리글이 빠지고 69조가 두 번 인쇄되어 있어 바로잡았습니다.</p>
+  </section>
+
+  <!-- ================= 조문 ================= -->
+  <section class="view" id="view-article" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-back="rules" type="button" aria-label="규정 목록으로">←</button>
+      <div class="bar-title"><b id="artNo">1조</b><small id="artChapter">1장</small></div>
+      <button class="icon-btn lang-btn" id="btnLang" type="button" aria-label="원문 언어 전환">EN</button>
+    </header>
+
+    <article class="article">
+      <h2 id="artTitleKo">정의</h2>
+      <p class="art-title-en" id="artTitleEn">Definition</p>
+      <div class="art-2026" id="art2026" hidden></div>
+      <div class="art-body" id="artBodyKo"></div>
+      <div class="art-body en" id="artBodyEn" hidden></div>
+      <p class="art-src" id="artSrc"></p>
+
+      <section class="related" id="artRelated" hidden>
+        <h3>이 조항을 다룬 케이스</h3>
+        <div id="artCaseList" class="result-list"></div>
+      </section>
+    </article>
+
+    <nav class="pager">
+      <button class="btn ghost" id="btnPrevArt" type="button">← 이전 조항</button>
+      <button class="btn ghost" id="btnNextArt" type="button">다음 조항 →</button>
+    </nav>
+  </section>
+
+  <!-- ================= 퀴즈 홈 ================= -->
+  <section class="view" id="view-quizhome" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-back="home" type="button" aria-label="홈으로">←</button>
+      <div class="bar-title"><b>케이스 목록</b><small>Ⅱ. 휠체어럭비 케이스북 · 92~203쪽</small></div>
+    </header>
+
+    <p class="muted" id="homeStats"></p>
+    <p class="muted" id="homeProgress"></p>
+
+    <div class="list-actions">
+      <button class="btn primary" id="btnListRandom" type="button">섞어서 랜덤 10문제</button>
+    </div>
+
+    <h2 class="sec-title">장별로 골라 풀기</h2>
+    <div id="chapterList" class="chapters"></div>
+    <p class="foot-note">2026 케이스북의 케이스 항목을 하나씩 퀴즈로 옮겼습니다. 장면이 있는 문항은 위치·이동이 판정을 가르는 케이스입니다.</p>
+  </section>
+
+  <!-- ================= 장별 케이스 ================= -->
+  <section class="view" id="view-chapter" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-back="quizhome" type="button" aria-label="퀴즈 홈으로">←</button>
+      <div class="bar-title"><b id="chapterTitle">3장 장비</b><small id="chapterSub"></small></div>
+    </header>
+    <div class="chapter-actions">
+      <button class="btn primary" id="btnChapterAll" type="button">이 장 풀기</button>
+    </div>
+    <div id="caseList" class="case-list"></div>
+  </section>
+
+  <!-- ================= 문제 ================= -->
+  <section class="view" id="view-quiz" hidden>
+    <header class="bar quiz-bar">
+      <button class="icon-btn" id="btnQuizBack" type="button" aria-label="그만두기">←</button>
+      <div class="bar-progress">
+        <b id="quizStep">1 / 10</b>
+        <span id="quizMode"></span>
+      </div>
+      <button class="icon-btn lang-btn" id="btnQuizLang" type="button" aria-label="문제 언어 전환">EN</button>
+      <span class="score-pill" id="quizScore">0점</span>
+    </header>
+
+    <div class="quiz-body">
+      <div class="q-head">
+        <span class="q-no" id="qNo">케이스 3.21.2</span>
+        <span class="q-ch" id="qChapter">3장 장비</span>
+      </div>
+
+      <div id="sceneBox" class="scene-card">
+        <div id="sceneWrap" class="scene-wrap"><canvas id="sceneCanvas"></canvas></div>
+        <div class="scene-foot">
+          <p id="sceneCaption">　</p>
+          <button class="replay" id="sceneReplay" type="button" aria-label="장면 다시 재생">↻ 다시</button>
+        </div>
+      </div>
+      <div id="textOnlyBox" class="text-only" hidden>
+        <span class="text-only-label">글 문제</span>
+        <span>선수 위치가 아니라 규정·절차가 핵심인 케이스입니다.</span>
+      </div>
+
+      <h2 class="q-text" id="qText"></h2>
+      <p class="q-text-en" id="qTextEn" hidden></p>
+      <div class="choices" id="choices"></div>
+      <div id="feedback" class="feedback" hidden></div>
+    </div>
+
+    <div class="quiz-foot" id="quizFoot">
+      <button class="btn primary big" id="btnCheck" type="button" disabled>정답 확인</button>
+      <button class="btn primary big" id="btnNext" type="button" hidden>다음 문제</button>
+    </div>
+  </section>
+
+  <!-- ================= 결과 ================= -->
+  <section class="view" id="view-result" hidden>
+    <div class="result-hero">
+      <p class="eyebrow">RESULT</p>
+      <div class="score-ring"><b id="resScore">0 / 0</b><span id="resPct">0%</span></div>
+      <p id="resMsg"></p>
+    </div>
+    <div class="result-actions">
+      <button class="btn primary" id="btnAgain" type="button">한 판 더 (랜덤 10문제)</button>
+      <button class="btn" id="btnWrongAgain" type="button" hidden>틀린 문제만 다시 풀기</button>
+      <button class="btn ghost" id="btnHome" type="button">홈으로</button>
+    </div>
+    <h2 class="sec-title">틀린 문제</h2>
+    <div id="resWrong" class="result-list"></div>
+  </section>
+
+  <!-- ================= 2026 개정 사항 ================= -->
+  <section class="view" id="view-changes" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-back="home" type="button" aria-label="홈으로">←</button>
+      <div class="bar-title"><b>2026 개정 사항</b><small>WWR Summary of Rule Changes · 2026-01-01</small></div>
+    </header>
+    <div id="changesBody" class="changes-body"></div>
+  </section>
+
+  <!-- ================= 내 기록 / 배지 / 랭킹 ================= -->
+  <section class="view" id="view-me" hidden>
+    <header class="bar">
+      <button class="icon-btn" data-back="home" type="button" aria-label="홈으로">←</button>
+      <div class="bar-title"><b>내 기록</b><small>레벨 · 배지 · 팀 랭킹</small></div>
+    </header>
+
+    <div class="me-card">
+      <p class="me-label">현재 레벨</p>
+      <p class="me-level" id="meLevel">새내기 심판</p>
+      <div class="level-bar"><span id="meLevelBar"></span></div>
+      <p class="muted" id="meLevelNext"></p>
+      <p class="me-streak" id="meStreak"></p>
+      <p class="me-streak-note">연속 도전은 오늘의 10문제를 풀어야 올라갑니다.</p>
+    </div>
+
+    <h2 class="sec-title">배지</h2>
+    <div id="badgeGrid" class="badge-grid"></div>
+
+    <h2 class="sec-title">팀 랭킹</h2>
+    <div class="rank-box" id="rankBox">
+      <p class="rank-calc">순위는 맞힌 <b>서로 다른 문항 수</b>로 매깁니다. 같은 문제를 다시 풀어도 늘지 않고, 최대 <b class="rankCalcMax">217</b>문항입니다.</p>
+      <p class="muted">서버가 없는 사이트라 <b>실시간 순위가 아닙니다.</b> 내 기록을 코드로 복사해 서로 붙여넣으면 그 코드들로 순위표를 만듭니다.</p>
+      <label class="rank-label" for="rankNick">닉네임</label>
+      <input id="rankNick" class="rank-input" type="text" maxlength="14" placeholder="예: 블리츠 감독" autocomplete="off">
+      <div class="rank-actions">
+        <button class="btn" id="btnRankMake" type="button">내 기록 코드 만들기</button>
+        <button class="btn ghost" id="btnRankCopy" type="button" hidden>코드 복사</button>
+      </div>
+      <textarea id="rankCode" class="rank-code" rows="2" placeholder="내 코드가 여기에 나옵니다"></textarea>
+      <label class="rank-label" for="rankPaste">친구 코드 붙여넣기</label>
+      <textarea id="rankPaste" class="rank-code" rows="3" placeholder="받은 코드를 한 줄에 하나씩 붙여넣고 아래 버튼을 누르세요"></textarea>
+      <button class="btn ghost" id="btnRankAdd" type="button">순위표에 추가</button>
+      <div id="rankBoard" class="rank-board"></div>
+    </div>
+
+    <h2 class="sec-title">저장 데이터</h2>
+    <p class="muted">푼 문제, 연속 도전, 배지, 랭킹 코드는 이 브라우저에만 저장됩니다.</p>
+    <button class="btn ghost danger" id="btnReset" type="button">내 기록 모두 지우기</button>
+  </section>
+
+  <div id="popup" class="popup" hidden>
+    <div class="popup-card">
+      <p class="popup-kicker" id="popupKicker">LEVEL UP</p>
+      <p class="popup-title" id="popupTitle"></p>
+      <p class="popup-text" id="popupText"></p>
+      <button class="btn primary" id="popupClose" type="button">확인</button>
+    </div>
+  </div>
+
+  <footer class="site-foot">
+    <p class="foot-src"><b>출처</b> World Wheelchair Rugby, International rules for the sport of Wheelchair Rugby (April 2026) · WWR Casebook 2026 · Summary of Rule Changes (01 Jan 2026). 국문 번역은 2021년 대한장애인럭비협회 번역본을 일부 재사용하고 2026년 변경분을 새로 번역했습니다.</p>
+    <p>원문을 변형 없이 인용 형태로 수록했습니다. 규정 본문과 번역의 권리는 원저작자에게 있습니다.</p>
+  </footer>
+
+</main>
+
+<script src="../../engine/pixi.min.js"></script>
+<script src="../../engine/rugby-chairs.js"></script>
+<script src="scene.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
