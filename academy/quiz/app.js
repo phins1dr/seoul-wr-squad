@@ -90,6 +90,7 @@
   function renderHome() {
     if ($('ruleCount')) $('ruleCount').textContent = ART.length;
     if ($('caseCount')) $('caseCount').textContent = CASES.length;
+    document.querySelectorAll('.rankCalcMax').forEach((el) => { el.textContent = CASES.length; });
     if ($('sceneCount')) $('sceneCount').textContent = CASES.filter((c) => c.scene).length;
 
     /* ---- 오늘의 도전 ---- */
@@ -106,7 +107,7 @@
     if ($('dailyNote')) {
       $('dailyNote').textContent = done
         ? `오늘 몫은 끝냈습니다. 내일 또 새 10문제가 나옵니다. (최고 ${st.best || st.days || 1}일)`
-        : (st.days ? `연속 ${st.days}일째 도전 중 · 최고 ${st.best}일` : '14장에서 골고루 섞어 냅니다. 맞히면 레벨이 올라갑니다.');
+        : (st.days ? `연속 ${st.days}일째 도전 중 · 최고 ${st.best}일` : '아직 연속 도전 기록이 없습니다.');
     }
     const resume = $('btnResume');
     const saved = savedSession();

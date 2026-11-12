@@ -66,6 +66,10 @@ a{color:var(--accent-deep)}
 .game-card .btn.primary.big{min-height:58px;font-size:19px;border-color:var(--accent-bright);
   background:var(--accent-bright);color:#08211d;box-shadow:0 6px 16px rgba(45,212,191,.22)}
 .game-note{margin:10px 0 0;font-size:14.5px;line-height:1.55;color:var(--hero-muted)}
+/* 모드 설명 — 버튼 바로 아래 작은 보조 줄. 접지 않고 늘 보이되 본문보다 조용하게. */
+.mode-desc{margin:9px 0 0;font-size:13.5px;line-height:1.58;color:var(--hero-muted);
+  word-break:keep-all;overflow-wrap:anywhere;letter-spacing:-.005em}
+.game-sub + .mode-desc{margin-top:10px}
 .game-sub{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
 .game-sub .btn{flex:1 1 44%;min-height:50px;font-size:15.5px;padding:0 12px;
   background:rgba(255,255,255,.06);border-color:var(--hero-line);color:var(--hero-ink);box-shadow:none}
@@ -89,6 +93,12 @@ a{color:var(--accent-deep)}
 .rank-mini-actions .btn{flex:1 1 auto}
 .rank-note{margin:11px 0 0;font-size:13px;line-height:1.55;color:var(--faint)}
 .rank-note b{color:var(--ink2)}
+/* 랭킹 산정 기준 한 줄 */
+.rank-calc{margin:11px 0 0;font-size:13.5px;line-height:1.6;color:var(--muted);
+  word-break:keep-all;overflow-wrap:anywhere}
+.rank-calc b{color:var(--ink2);font-weight:700}
+.rank-calc + .rank-note{margin-top:6px}
+.rank-calc + .rank-mini{margin-top:9px}
 
 /* 배지·최근 기록 한 줄 */
 .mini-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
@@ -324,6 +334,8 @@ a{color:var(--accent-deep)}
 .level-bar{height:10px;border-radius:999px;background:var(--card3);border:1px solid var(--line2);overflow:hidden}
 .level-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#3fb8ac);transition:width .4s ease}
 .me-streak{margin:12px 0 0;font-size:15px;color:var(--ink2)}
+.me-streak-note{margin:4px 0 0;font-size:13.5px;line-height:1.6;color:var(--muted);
+  word-break:keep-all;overflow-wrap:anywhere}
 .badge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
 .badge{display:grid;gap:2px;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);opacity:.75}
 .badge.got{opacity:1;border-color:var(--ok-line);background:linear-gradient(165deg,#ffffff,#eef8f3);box-shadow:0 1px 2px rgba(16,21,28,.04)}
