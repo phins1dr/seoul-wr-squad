@@ -76,17 +76,98 @@
     window.scrollTo(0, 0);
   }
 
-  /* ================= 홈 ================= */
+  /* ================= 홈 (게임 우선) ================= */
+  function levelPct(lv) {
+    if (!lv.next) return 100;
+    const base = LEVELS[lv.i].xp, top = lv.next.xp;
+    return Math.max(4, Math.min(100, Math.round(((lv.xp - base) / (top - base)) * 100)));
+  }
+  function savedSession() {
+    const s = load(KEY_SESSION, null);
+    return (s && s.ids && s.ids.length && s.i < s.ids.length) ? s : null;
+  }
+
   function renderHome() {
-    $('ruleCount').textContent = ART.length;
-    $('caseCount').textContent = CASES.length;
-    $('sceneCount').textContent = CASES.filter((c) => c.scene).length;
+    if ($('ruleCount')) $('ruleCount').textContent = ART.length;
+    if ($('caseCount')) $('caseCount').textContent = CASES.length;
+    if ($('sceneCount')) $('sceneCount').textContent = CASES.filter((c) => c.scene).length;
+
+    /* ---- 오늘의 도전 ---- */
+    const ids = todayIds();
+    const done = !!(game.daily && game.daily.date === todayKey() && game.daily.done);
+    const st = game.streak;
+    const dbtn = $('btnDaily');
+    if (dbtn) dbtn.textContent = done ? '오늘의 10문제 다시 풀기' : '오늘의 10문제 도전';
+    if ($('homeDailyState')) {
+      $('homeDailyState').textContent = done
+        ? `오늘 도전 완료 · 연속 ${st.days || 1}일`
+        : `오늘의 10문제 · ${ids.length}문항`;
+    }
+    if ($('dailyNote')) {
+      $('dailyNote').textContent = done
+        ? `오늘 몫은 끝냈습니다. 내일 또 새 10문제가 나옵니다. (최고 ${st.best || st.days || 1}일)`
+        : (st.days ? `연속 ${st.days}일째 도전 중 · 최고 ${st.best}일` : '14장에서 골고루 섞어 냅니다. 맞히면 레벨이 올라갑니다.');
+    }
+    const resume = $('btnResume');
+    const saved = savedSession();
+    if (resume) {
+      if (saved) {
+        resume.hidden = false;
+        resume.textContent = `이어풀기 (${saved.i + 1}/${saved.ids.length})`;
+      } else { resume.hidden = true; resume.textContent = '이어풀기'; }
+    }
+
+    /* ---- 랭킹 ---- */
     const lv = levelOf();
-    if ($('homeStreak')) $('homeStreak').textContent = game.streak.days || 0;
+    if ($('homeLevel')) $('homeLevel').textContent = lv.name;
+    if ($('homeLevelBar')) $('homeLevelBar').style.width = levelPct(lv) + '%';
+    if ($('homeLevelNext')) {
+      $('homeLevelNext').textContent = lv.next
+        ? `다음 '${lv.next.name}'까지 ${lv.need}문항 · 누적 ${lv.xp}문항 정답`
+        : `최고 레벨입니다 · 누적 ${lv.xp}문항 정답`;
+    }
+    if ($('homeStreak')) $('homeStreak').textContent = st.days || 0;
+    renderHomeRankBoard();
+
+    /* ---- 배지·최근 기록 ---- */
+    const list = badgeList();
+    const got = list.filter((b) => game.badges[b.id]);
+    if ($('homeBadgeCount')) $('homeBadgeCount').textContent = `${got.length} / ${list.length}`;
+    if ($('homeBadgeStrip')) {
+      $('homeBadgeStrip').textContent = got.length ? got.slice(-3).map((b) => b.icon).join(' ') : '아직 없음';
+    }
+    const answered = Object.keys(progress);
+    const last = answered.map((k) => ({ k, at: (progress[k] && progress[k].at) || 0 })).sort((a, b) => b.at - a.at)[0];
+    const lc = last ? BYID.get(last.k) : null;
+    if ($('homeRecent')) {
+      $('homeRecent').textContent = lc
+        ? `케이스 ${lc.caseNo} · ${progress[lc.id].ok ? '맞힘 ✓' : '틀림 ✕'}`
+        : '아직 기록 없음';
+    }
+    if ($('homeSolved')) $('homeSolved').textContent = `푼 문항 ${answered.length} / ${CASES.length}`;
+
     const m = RULES ? RULES.meta : {};
-    $('metaSource').textContent = '2026 WWR 국제 경기규정 전문(111조·14장) · 2026 케이스북 · 2026 개정 요약';
-    $('metaEdition').textContent = (m.edition || '') + (m.editionKo ? ' · ' + m.editionKo : '');
+    if ($('metaSource')) $('metaSource').textContent = '2026 WWR 국제 경기규정 전문(111조·14장) · 2026 케이스북 · 2026 개정 요약';
+    if ($('metaEdition')) $('metaEdition').textContent = (m.edition || '') + (m.editionKo ? ' · ' + m.editionKo : '');
     show('home');
+  }
+
+  function renderHomeRankBoard() {
+    const box = $('homeRankBoard');
+    if (!box) return;
+    const board = (game.rank.board || []).slice().sort((a, b) => b.x - a.x).slice(0, 3);
+    box.innerHTML = '';
+    if (!board.length) {
+      box.innerHTML = '<p class="empty sm">아직 붙여넣은 코드가 없습니다. 내 코드를 보내고 친구 코드를 받으면 여기에 순위가 나옵니다.</p>';
+      return;
+    }
+    board.forEach((e, i) => {
+      const row = document.createElement('div');
+      row.className = 'rank-row';
+      row.innerHTML = `<span class="rank-no">${i + 1}</span><span class="rank-nick">${esc(e.n)}</span>
+        <span class="rank-lv">${esc(e.l)}</span><span class="rank-x">${e.x}문항</span>`;
+      box.appendChild(row);
+    });
   }
 
   /* ================= 규정 목록 ================= */
@@ -272,24 +353,9 @@
   function renderQuizHome() {
     const total = CASES.length;
     const sceneN = CASES.filter((c) => c.scene).length;
-    $('homeStats').textContent = `전체 ${total}문항 · 코트 장면 ${sceneN} · 글 문제 ${total - sceneN}`;
+    if ($('homeStats')) $('homeStats').textContent = `전체 ${total}문항 · 코트 장면 ${sceneN} · 글 문제 ${total - sceneN}`;
     const answered = Object.keys(progress).length;
-    $('homeProgress').textContent = answered ? `지금까지 ${answered}문항을 풀었습니다` : '아직 푼 문제가 없습니다';
-    const ids = todayIds();
-    const dbtn = $('btnDaily');
-    if (dbtn) dbtn.textContent = game.daily && game.daily.done ? '오늘의 10문제 완료 ✓' : '오늘의 10문제 도전';
-    if ($('dailyNote')) {
-      const s = game.streak;
-      $('dailyNote').textContent = s.days ? `연속 ${s.days}일째 도전 중 (최고 ${s.best}일)` : '오늘부터 연속 도전을 시작해 보세요';
-    }
-    const saved = load(KEY_SESSION, null);
-    const resume = $('btnResume');
-    if (saved && saved.ids && saved.i < saved.ids.length && saved.mode !== 'case') {
-      resume.hidden = false;
-      resume.textContent = `이어풀기 (${saved.i + 1}/${saved.ids.length} · ${saved.label || ''})`;
-    } else {
-      resume.hidden = true;
-    }
+    if ($('homeProgress')) $('homeProgress').textContent = answered ? `지금까지 ${answered}문항을 풀었습니다` : '아직 푼 문제가 없습니다';
     const list = $('chapterList');
     list.innerHTML = '';
     const counts = {};
@@ -341,6 +407,11 @@
     save(KEY_SESSION, session);
     renderQuiz();
   }
+  /* 14장 전체에서 섞어 10문항 (같은 판 안에서 문제 중복 없음) */
+  function startRandom(from) {
+    const ids = shuffle(CASES.map((c) => c.id)).slice(0, Math.min(10, CASES.length));
+    startSession(ids, 'random', '전체 랜덤 10문제', from || 'home');
+  }
   function currentCase() { return session ? BYID.get(session.ids[session.i]) : null; }
 
   function renderQuiz() {
@@ -355,6 +426,7 @@
     $('quizMode').textContent = session.label || '';
     $('btnQuizBack').onclick = () => {
       if (from === 'chapter' && (session.mode === 'chapter' || session.mode === 'case')) openChapter(currentChapter || c.chapter);
+      else if (from === 'home') renderHome();
       else renderQuizHome();
     };
 
@@ -518,6 +590,8 @@
     }
     $('btnWrongAgain').hidden = !wrong.length;
     $('btnWrongAgain').onclick = () => startSession(wrong.map((a) => a.id), 'review', '틀린 문제 다시', 'quizhome');
+    const again = $('btnAgain');
+    if (again) again.onclick = () => startRandom('home');
     finishSession(answers, right, total);
     show('result');
     save(KEY_SESSION, null);
@@ -612,19 +686,69 @@
     show('me');
   }
 
-  function makeCode() {
-    const nick = ($('rankNick') && $('rankNick').value || '').trim() || '이름없음';
-    game.rank.nick = nick;
+  /* -------- 내 기록·랭킹 코드 -------- */
+  function buildCode(nick) {
     const lv = levelOf();
     const payload = { n: nick, x: xpOf(), q: Object.keys(progress).length, l: lv.name, d: todayKey() };
+    return 'WR2026.' + encodeURIComponent(JSON.stringify(payload));
+  }
+
+  function makeCode() {
+    const nick = (($('rankNick') && $('rankNick').value) || '').trim() || '이름없음';
+    game.rank.nick = nick;
+    const code = buildCode(nick);
     saveGame();
-    const code = 'WR2026.' + encodeURIComponent(JSON.stringify(payload));
     $('rankCode').value = code;
     const cp = $('btnRankCopy');
     if (cp) cp.hidden = false;
     return code;
   }
 
+  function copyText(t) {
+    try {
+      if (window.navigator && window.navigator.clipboard && window.navigator.clipboard.writeText) {
+        window.navigator.clipboard.writeText(t);
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  /* 홈에서 바로 코드 복사. 닉네임이 없으면 내 기록 화면으로 보낸다. */
+  function homeCopyCode() {
+    const nick = (game.rank.nick || '').trim();
+    if (!nick) {
+      popup('RANKING', '닉네임을 먼저 정해 주세요', '내 기록 화면의 랭킹 칸에서 닉네임을 넣으면 코드를 만들 수 있습니다.');
+      openMeRank('code');
+      return;
+    }
+    const code = buildCode(nick);
+    saveGame();
+    const copied = copyText(code);
+    popup('RANKING', copied ? '내 코드를 복사했습니다' : '내 코드를 만들었습니다',
+      copied ? '팀원에게 붙여넣어 보내면, 받은 코드끼리 순위표를 만들 수 있습니다. 서버가 없어 실시간 순위는 아닙니다.'
+        : '브라우저가 복사를 막았습니다. 내 기록 화면의 코드 칸에서 직접 복사해 주세요.');
+    if (!copied) {
+      renderMe();
+      const el = $('rankCode');
+      if (el) el.value = code;
+      const cp = $('btnRankCopy');
+      if (cp) cp.hidden = false;
+    }
+  }
+
+  /* 내 기록 화면을 열고 랭킹 칸으로 데려간다 */
+  function openMeRank(target) {
+    renderMe();
+    const box = $('rankBox');
+    if (box && box.scrollIntoView) {
+      setTimeout(() => { try { box.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'start' }); } catch (e) {} }, 60);
+    }
+    const el = target === 'paste' ? $('rankPaste') : target === 'nick' ? $('rankNick') : null;
+    if (el && el.focus) setTimeout(() => { try { el.focus(); } catch (e) {} }, 220);
+  }
+
+  /* -------- 랭킹 코드 모으기 -------- */
   function addCodes() {
     const raw = ($('rankPaste') && $('rankPaste').value) || '';
     const lines = raw.split(/\n+/).map((x) => x.trim()).filter(Boolean);
@@ -729,19 +853,19 @@
   $('entryQuiz').addEventListener('click', renderQuizHome);
   $('entryChanges') && $('entryChanges').addEventListener('click', renderChanges);
   $('entryMe') && $('entryMe').addEventListener('click', renderMe);
-  $('btnRandom').addEventListener('click', () => {
-    const ids = shuffle(CASES.map((c) => c.id)).slice(0, Math.min(10, CASES.length));
-    startSession(ids, 'random', '전체 랜덤', 'quizhome');
-  });
-  $('btnDaily') && $('btnDaily').addEventListener('click', () => {
-    startSession(todayIds(), 'daily', '오늘의 10문제', 'quizhome');
-  });
+  $('btnRandom').addEventListener('click', () => startRandom('home'));
+  $('btnDaily') && $('btnDaily').addEventListener('click', () => startSession(todayIds(), 'daily', '오늘의 10문제', 'home'));
   $('btnResume').addEventListener('click', () => {
-    const saved = load(KEY_SESSION, null);
-    if (!saved || !saved.ids) return renderQuizHome();
+    const saved = savedSession();
+    if (!saved) return renderHome();
     session = saved;
     renderQuiz();
   });
+  $('btnListRandom') && $('btnListRandom').addEventListener('click', () => startRandom('quizhome'));
+  $('btnHomeRank') && $('btnHomeRank').addEventListener('click', () => openMeRank('code'));
+  $('btnHomeRankAdd') && $('btnHomeRankAdd').addEventListener('click', () => openMeRank('paste'));
+  $('btnHomeCode') && $('btnHomeCode').addEventListener('click', homeCopyCode);
+  $('btnHomeBadges') && $('btnHomeBadges').addEventListener('click', renderMe);
   $('btnHome').addEventListener('click', renderHome);
   $('btnQuizLang') && $('btnQuizLang').addEventListener('click', () => { caseLang = caseLang === 'en' ? 'ko' : 'en'; renderQuiz(); });
   $('popupClose') && $('popupClose').addEventListener('click', () => { $('popup').hidden = true; });
