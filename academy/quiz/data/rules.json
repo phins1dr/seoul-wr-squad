@@ -1,0 +1,2420 @@
+{
+ "meta": {
+  "title": "휠체어럭비 국제 경기규정",
+  "edition": "International Rules for the Sport of Wheelchair Rugby — April 2026, World Wheelchair Rugby",
+  "editionKo": "2026년 4월판 WWR 국제 경기규정 (2026년 1월 1일 개정판을 이어받은 최신 원문)",
+  "scope": "2026 International Rules 1~111조 및 부록 A~C (원문 48쪽)",
+  "translation": "영문 원문은 WWR 2026년 4월판 그대로입니다. 국문은 2021년 대한장애인럭비협회 번역본을 조항 내용이 실질적으로 같은 경우 그대로 재사용했고, 2026년에 내용이 바뀌었거나 2021년 번역에 오류가 있던 조항은 새로 번역했습니다.",
+  "changedCount": 23,
+  "articleCount": 111,
+  "chapterCount": 14,
+  "sourceNote": "출처: World Wheelchair Rugby, International rules for the sport of Wheelchair Rugby (April 2026), worldwheelchair.rugby"
+ },
+ "chapters": [
+  {
+   "id": 1,
+   "title": "게임",
+   "en": "The Game",
+   "section": "SECTION 1. The Game",
+   "articles": [
+    1
+   ]
+  },
+  {
+   "id": 2,
+   "title": "경기장",
+   "en": "Field of play",
+   "section": "SECTION 2. Field of play",
+   "articles": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ]
+  },
+  {
+   "id": 3,
+   "title": "장비",
+   "en": "Equipment",
+   "section": "SECTION 3. Equipment",
+   "articles": [
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22
+   ]
+  },
+  {
+   "id": 4,
+   "title": "휠체어",
+   "en": "Wheelchair",
+   "section": "SECTION 4. Wheelchair",
+   "articles": [
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32
+   ]
+  },
+  {
+   "id": 5,
+   "title": "팀",
+   "en": "Teams",
+   "section": "SECTION 5. Teams",
+   "articles": [
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+   ]
+  },
+  {
+   "id": 6,
+   "title": "오피셜",
+   "en": "Officials",
+   "section": "SECTION 6. Officials",
+   "articles": [
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49
+   ]
+  },
+  {
+   "id": 7,
+   "title": "시간 규정",
+   "en": "Timing Regulations",
+   "section": "SECTION 7. Timing Regulations",
+   "articles": [
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59
+   ]
+  },
+  {
+   "id": 8,
+   "title": "경기 규정",
+   "en": "Playing regulations",
+   "section": "SECTION 8. Playing regulations",
+   "articles": [
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71
+   ]
+  },
+  {
+   "id": 9,
+   "title": "바이얼레이션",
+   "en": "Violations",
+   "section": "SECTION 9. Violations",
+   "articles": [
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83
+   ]
+  },
+  {
+   "id": 10,
+   "title": "접촉의 원칙",
+   "en": "Principles of contact",
+   "section": "SECTION 10. Principles of contact",
+   "articles": [
+    84,
+    85,
+    86,
+    87
+   ]
+  },
+  {
+   "id": 11,
+   "title": "일반 파울",
+   "en": "Common Fouls",
+   "section": "SECTION 11. Common Fouls",
+   "articles": [
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97
+   ]
+  },
+  {
+   "id": 12,
+   "title": "테크니컬·플래그런트·디스퀄리파잉 파울",
+   "en": "Technical, Flagrant and Disqualifying fouls",
+   "section": "SECTION 12. Technical, Flagrant and Disqualifying fouls",
+   "articles": [
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104
+   ]
+  },
+  {
+   "id": 13,
+   "title": "페널티",
+   "en": "Penalties",
+   "section": "SECTION 13. Penalties",
+   "articles": [
+    105,
+    106,
+    107,
+    108
+   ]
+  },
+  {
+   "id": 14,
+   "title": "게임 종료",
+   "en": "Concluding the Game",
+   "section": "SECTION 14. Concluding the Game",
+   "articles": [
+    109,
+    110,
+    111
+   ]
+  }
+ ],
+ "articles": [
+  {
+   "no": 1,
+   "chapter": 1,
+   "titleKo": "정의",
+   "titleEn": "Definition",
+   "page": 7,
+   "bodyKo": [
+    "휠체어럭비는 장애를 가진 남성과 여성 선수를 위한 팀 스포츠이다. 목표는 볼을 소유한 상태로 상대 팀의 트라이라인을 통과하여 득점을 하는 것이다. 본 규정에서 정한 제약조건에 의거하여 어떠한 방향에 있는 선수에게도 볼을 패스, 던지기, 치기, 굴리기, 드리블, 또는 운반할 수 있다. 경기가 종료되었을 때 더 많은 득점을 한 팀이 승리 팀이 된다."
+   ],
+   "bodyEn": [
+    "Wheelchair Rugby is a team sport for male and female athletes with a disability. The aim is to score tries by crossing the opposing team’s try line while in possession of the ball. The ball may be passed, thrown, batted, rolled, dribbled, or carried in any direction subject to the restrictions laid down in the rules. The team scoring the most tries by the end of the game is declared the winner."
+   ]
+  },
+  {
+   "no": 2,
+   "chapter": 2,
+   "titleKo": "경기장",
+   "titleEn": "Field of play",
+   "page": 7,
+   "bodyKo": [
+    "경기장은 게임이 시행되는 코트와 팀과 심판이 게임 중에 사용하는 주변지역을 포함한다. (부록A 참고)"
+   ],
+   "bodyEn": [
+    "The field of play includes the court where the game is played, and the surrounding areas used by the teams and team officials during the game. (See Annex A)"
+   ]
+  },
+  {
+   "no": 3,
+   "chapter": 2,
+   "titleKo": "코트",
+   "titleEn": "Court",
+   "page": 7,
+   "bodyKo": [
+    "휠체어럭비는 폭 15m, 길이 28m의 실내코트에서 행해진다. 코트에는 경계선, 센터라인, 센터서클, 2개의 키 에어리어를 7조에 규정된 바와 같이 표시해야 한다. 코트 위의 모든 선은 같은 폭과 같은 색으로 표시해야 한다."
+   ],
+   "bodyEn": [
+    "Wheelchair Rugby is played on an indoor court measuring fifteen (15) meters in width by twenty-eight (28) meters in length. The court shall be marked with boundary lines, centreline, centre circle, and two (2) key areas, as defined in Article 7 . All lines on the court should be the same width and should be marked the same colour."
+   ]
+  },
+  {
+   "no": 4,
+   "chapter": 2,
+   "titleKo": "경계선",
+   "titleEn": "Boundary lines",
+   "page": 7,
+   "bodyKo": [
+    "코트의 경계선은 엔드라인과 사이드라인으로 구성된다. 코트의 치수는 이 라인의 안쪽 끝부터 측정된다. 안쪽 끝은 인바운드와 아웃오브바운드 지역의 경계를 정의한다. 모든 경계선은 아웃오브바운드로 간주된다."
+   ],
+   "bodyEn": [
+    "The boundary lines of the court consist of the end lines and the sidelines. The court dimensions are measured from the inside edges of these lines. The inside edges define the boundary between the in- bounds and out-of-bounds areas. All boundary lines are considered to be out-of-bounds."
+   ]
+  },
+  {
+   "no": 5,
+   "chapter": 2,
+   "titleKo": "센터라인",
+   "titleEn": "Centreline",
+   "page": 7,
+   "bodyKo": [
+    "코트에는 각 엔드라인에서 14m 떨어진 지점에서 사이드라인에서 사이드라인까지 코트를 폭으로 가로 지르는 센터라인이 표시되어야 한다."
+   ],
+   "bodyEn": [
+    "The court shall be marked with a centreline across the width of the court from sideline to sideline at a distance fourteen (14) meters from each end line."
+   ]
+  },
+  {
+   "no": 6,
+   "chapter": 2,
+   "titleKo": "센터서클",
+   "titleEn": "Centre circle",
+   "page": 7,
+   "bodyKo": [
+    "코트에는 각 사이드라인으로부터 7.5m 떨어진 곳의 센터라인 위에 중심이 위치한 센터서클이 표시되어야 한다. 센터서클은 중심으로부터 서클을 만드는 선의 바깥쪽 경계까지로 측정된 1.8m의 반지름을 가져야 한다."
+   ],
+   "bodyEn": [
+    "The court shall be marked with a centre circle, positioned on the centreline with its centre a distance of 7.5 meters from each sideline. The centre circle shall have a radius of 1.8 meters, measured from the centre to the outer edge of the line marking the circle."
+   ]
+  },
+  {
+   "no": 7,
+   "chapter": 2,
+   "titleKo": "키 에어리어",
+   "titleEn": "Key area",
+   "page": 8,
+   "bodyKo": [
+    "코트에는 각 엔드라인 쪽, 양 사이드라인의 중앙에 키 에어리어를 포함해야 한다. 각 키 에어리어는 엔드라인과 평행하게 표시된 선, 그리고 이 선과 만나는 엔드라인과 수직을 이루는 두 선들에 의해 규정된다. 각 키 에어리어는 바깥쪽 끝에서부터 엔드라인까지 수직으로 표시하여 측정된 8m의 폭과, 엔드라인의 안쪽 끝에서부터 엔드라인과 평행하게 표시된 선의 바깥 쪽 끝까지 측정된 1.75m의 길이를 가져야 한다. 키 에어리어를 만드는데 사용된 선은 키 에어리어의 일부로 간주된다."
+   ],
+   "bodyEn": [
+    "The court shall include key areas at each end of the court, centred between the sidelines. Each key area shall be defined by two (2) lines marked perpendicular to the end line, joined by a line marked parallel to the end line.",
+    "Each key area shall be eight (8) meters in width, measured from the outside edge of the lines marked perpendicular to the end line, and 1.75 meters in length, measured from the inside edge of the end line to the outside edge of the line marked parallel to the end line.",
+    "The lines marking the key area are considered to be part of the key area."
+   ]
+  },
+  {
+   "no": 8,
+   "chapter": 2,
+   "titleKo": "트라이라인",
+   "titleEn": "Try line",
+   "page": 8,
+   "bodyKo": [
+    "트라이라인은 키 에어리어에 포함된 엔드라인이 된다. 트라이라인의 양끝은 포스트(Post) 에 의해서 표시되어야 한다. 각 포스트는 최소 45cm이며, 80cm가 초과되어서는 안 된다. 포스트는 사각형의 바닥으로 되어야 한다. 포스트는 아웃오브바운드에 위치해야 하고, 한 쪽이 (센터라인 쪽으로는) 엔드라인의 안쪽 끝에 닿아야 하고 (사이드라인 쪽으로는) 한 쪽은 키 에어리아의 바깥쪽을 닿아야 한다. 트라이라인과 포스트는 아웃오브바운드로 간주된다."
+   ],
+   "bodyEn": [
+    "The try line is the portion of the end line that is within the key area. The ends of each try line shall be marked by posts. Each post must be a minimum of forty -five (45) centimeters high and must not exceed eighty (80) centimeters.",
+    "Each post must have a square base. The posts shall be located out - of-bounds such that one side touches the inside edge of the end line and one side touches outside edge of the key area. The try lines and the posts are considered to be out-of-bounds."
+   ]
+  },
+  {
+   "no": 9,
+   "chapter": 2,
+   "titleKo": "백코트와 프론트코트",
+   "titleEn": "Backcourt and frontcourt",
+   "page": 8,
+   "bodyKo": [
+    "각 팀은 백코트와 프론트코트를 갖는다. 팀의 백코트는 자신이 방어를 하는 트라이라인을 포함한 엔드라인의 안쪽 끝에서부터 센터라인까지를 포함하는 지역이다. 프론트코트는 센터라인에서부터 상대편이 방어를 하는 트라이라인을 포함한 엔드라인의 안쪽 끝까지를 포함하는 지역이다. 센터라인은 각 팀의 백코트 지역으로 간주된다."
+   ],
+   "bodyEn": [
+    "Each team has a backcourt and a frontcourt. A team’s backcourt is the area from the inside edge of the end line that includes the try line that team is defending up to and including the centreline. The frontcourt is the area from the centreline to the insi de edge of the end line that includes the try line the opposing team is defending. The centreline is considered to be part of each team’s backcourt area."
+   ]
+  },
+  {
+   "no": 10,
+   "chapter": 2,
+   "titleKo": "기록석",
+   "titleEn": "Scoring table",
+   "page": 8,
+   "bodyKo": [
+    "경기장은 코트의 밖 센터라인과 사이드라인에서 최소 1.5m에 위치한 기록석을 포함해야 한다. (부록 A 참고)"
+   ],
+   "bodyEn": [
+    "The field of play shall include a scoring table located at the centreline outside of the court and a minimum 1.5 meters from the sideline. (See Annex A)"
+   ]
+  },
+  {
+   "no": 11,
+   "chapter": 2,
+   "titleKo": "벤치지역",
+   "titleEn": "Bench area",
+   "page": 8,
+   "bodyKo": [
+    "경기장에는 코트 밖에 기록석과 동일한 쪽에 두 개의 벤치지역이 있어야 한다. 각 벤치지역의 (좌우) 끝은 사이드라인에서 수직으로 시작되는 2m길이의 선으로 경계되어야 한다. (엔드라인 쪽의) 한 선은 엔드라인에서부터 연장되어야 하고, (센터라인 쪽의) 다른 한 선은 센터라인으로부터 5m거리에 표시되어야 한다. 벤치지역을 표시하는 선은 코트를 구성하는데 사용된 선의 색과는 다른 색으로 표시될 수 있다."
+   ],
+   "bodyEn": [
+    "The field of play shall include two (2) bench areas, outside the court on the same side as the scoring table. The ends of each bench area shall be defined by lines two (2) meters in length, beginning at and perpendicular to the sideline.",
+    "One line shall extend from the end line and the other shall be marked five (5) meters from the centreline. The lines marking the bench areas may be marked in a different colour to that used for the lines marking the court."
+   ]
+  },
+  {
+   "no": 12,
+   "chapter": 2,
+   "titleKo": "선수교체지역",
+   "titleEn": "Substitution area",
+   "page": 8,
+   "bodyKo": [
+    "경기장에는 코트 밖 기록석과 벤치사이에 선수 교체지역이 있어야 한다. 선수 교체지역의 끝은 사이드라인에서 수직으로 시작되는 2m 길이의 선으로 경계되어야 한다. (이 두 선들은) 센터라인과 3m의 거리를 두고 센터라인의 양쪽에 각각 한 선씩 표시되어야 한다. 선수 교체지역을 표시하는 선은 코트를 구성하는데 사용된 선의 색과는 다른 색으로 표시되어야 한다."
+   ],
+   "bodyEn": [
+    "The field of play shall include a substitution area, located outside the court between the team bench and the scoring table. The beginning of the substitution area shall be defined by a line two (2) meters in length, beginning at and perpendicular to the sideline, three (3) meters from the centreline.",
+    "The end of the substitution is the line marking the beginning of the team bench area. The lines marking the substitution area may be marked in a different colour to that used for the lines marking the court."
+   ]
+  },
+  {
+   "no": 13,
+   "chapter": 2,
+   "titleKo": "페널티지역",
+   "titleEn": "Penalty area",
+   "page": 9,
+   "bodyKo": [
+    "경기장에는 기록석의 맞은 편 코트 쪽에 페널티지역이 있어야 한다. 이 지역은 센터라인의 양측에 한 개씩, 두 개의 페널티 박스들을 포함한다. 각 페널티 박스는 3개의 선으로 표시되어야 한다. 첫 번째 선은 사이드라인과 평행한 2m 길이로, 사이드라인과 1m 떨어져, 센터라인에서 1m 거리에서부터 시작되어야 한다. 나머지 두 선들은 첫 번째 선과 수직으로 첫 번째 선의 양끝에서 시작하여 사이드라인에서 멀어지며 1m 길이로 표시되어야 한다.",
+    "페널티박스 출구는 두 개의 선으로 나타나야하고(길이 30cm) 센터라인에서부터 페널티박스 중간 지점 까지 1m의 라인으로 표시하여야 한다. 각 팀은 자신의 벤치지역에서 정면으로 마주하는 쪽의 페널티 박스를 할당받는다. 페널티 책상은 두 페널티박스의 사이에, 기록석의 정면 및 사이드라인으로부터 최소 1.5m에 위치하여야한다. (부록 A 참고)"
+   ],
+   "bodyEn": [
+    "The field of play shall include a penalty area on the side of the court opposite the scoring table. This area will include two (2) penalty boxes, one (1) on each side of the centreline. Each penalty box shall be marked by three (3) lines.",
+    "The first line should be two (2) meters in length parallel to the sideline, marked one (1) meter from the sideline and beginning one (1) meter from the centreline. The other two (2) lines should be marked perpendicular to the first line and beginning at each end of it, running one (1) meter in length away from the sideline.",
+    "The exit for the penalty box shall be shown by two (2) lines, thirty (30) centimeters in length, marked as an extension of the line one (1) meter from the centreline and at the midpoint of the penalty box.",
+    "Each team will be assigned the penalty box that is directly opposite its bench area. A penalty table shall be positioned between the two (2) penalty boxes, directly opposite the scoring table and a minimum 1.5 meters from the sideline.",
+    "(See Annex A)"
+   ]
+  },
+  {
+   "no": 14,
+   "chapter": 3,
+   "titleKo": "볼",
+   "titleEn": "Ball",
+   "page": 10,
+   "bodyKo": [
+    "게임은 WWR에서 승인된 공으로 진행되어야 한다. 공은 최소 7.5파운드의 압력으로 충전되어야 한다. 심판 1은 제공된 볼의 적합성에 관하여 유일하게 판정을 내릴 수 있는 사람이다."
+   ],
+   "bodyEn": [
+    "The game shall be played with an WWR approved ball. The ball shall be inflated to at least 7.5 pounds pressure. Referee 1 shall be the sole judge as to the suitability of the ball provided."
+   ]
+  },
+  {
+   "no": 15,
+   "chapter": 3,
+   "titleKo": "게임시계",
+   "titleEn": "Game clock",
+   "page": 10,
+   "bodyKo": [
+    "기록석에는 계시 장치 또는 경기 피리어드, 페널티, 그리고 타임아웃의 시간을 측정하는 장치가 제공되어야 한다. 이것이 공식시계로 사용된다."
+   ],
+   "bodyEn": [
+    "The scoring table shall be provided with a timing device or devices to time the periods of play, penalties, and time-outs. This shall be the official game clock."
+   ]
+  },
+  {
+   "no": 16,
+   "chapter": 3,
+   "titleKo": "40초시계",
+   "titleEn": "Forty Second Clock",
+   "page": 10,
+   "bodyKo": [
+    "기록석에는 계시 장치 또는 40초 공격제한 시간을 측정하는 장치들이 제공되어야 한다. 40초시계는 다른 경기 시계 소리와 뚜렷하게 구분되는 소리여야 한다. 40초시계는 15초로 리셋될 수 있게 해야 한다."
+   ],
+   "bodyEn": [
+    "The scoring table shall be provided with a timing device or devices to time the forty (40) second scoring period. The forty (40) second device will have a distinct sound that is different from the game clock. The forty (40) second device must be able to be reset to fifteen (15) seconds."
+   ]
+  },
+  {
+   "no": 17,
+   "chapter": 3,
+   "titleKo": "신호장치",
+   "titleEn": "Signaling device",
+   "page": 10,
+   "bodyKo": [
+    "기록석에는 경기시간의 종료, 타임아웃, 선수교체의 요구, 그리고 심판들의 주의가 필요한 다른 상황들을 알리기 위한 장치 또는 음성신호를 보낼 수 있는 장치가 제공되어야 한다. 이 장치는 경기시계 또는 스코어보드와 통합될 수도 있다."
+   ],
+   "bodyEn": [
+    "The scoring table shall be provided with a device or devices to provide an audible signal of the expiration of playing time, time- outs, requests for substitutions, and other situations requiring the attention of the Referees. This may be integrated with the game clock or scoreboard."
+   ]
+  },
+  {
+   "no": 18,
+   "chapter": 3,
+   "titleKo": "스코어보드",
+   "titleEn": "Scoreboard",
+   "page": 10,
+   "bodyKo": [
+    "경기장에는 선수들과 관중들에게 득점 상황을 게시하기 위한 장치를 갖추어야 한다. 이 장치는 수동식, 기계식 또는 전자식으로 작동 될 수도 있다. 이는 경기시계를 표시부의 일부로 포함할 수도 있다."
+   ],
+   "bodyEn": [
+    "The field of play should be equipped with a device to present the running score of the game to the players and spectators. This device may be operated manually, mechanically, or electronically. It may include the game clock as part of the display."
+   ]
+  },
+  {
+   "no": 19,
+   "chapter": 3,
+   "titleKo": "소유권 교대 지시 화살표",
+   "titleEn": "Alternating possession directional arrow",
+   "page": 10,
+   "bodyKo": [
+    "기록석에는 62조에서 명시된 소유권 교대 절차 하에 다음 소유권을 위한 경기의 방향을 표시하기 위한 장치가 제공되어야 한다. 이 장치는 수동식이나 기계식 또는 전자식으로 작동 될 수도 있고 득점 게시판이나 경기시계의 일부로 포함될 수 있다."
+   ],
+   "bodyEn": [
+    "The scoring table shall be provided with a device to display the direction of play for the next possession under the alternating possession procedure detailed in Article 62 . This device may be operated manually, mechanically, or electronically, and may be incorporated into the scoreboard or game clock."
+   ]
+  },
+  {
+   "no": 20,
+   "chapter": 3,
+   "titleKo": "기록지",
+   "titleEn": "Record sheets",
+   "page": 11,
+   "bodyKo": [
+    "기록석과 페널티 책상에는 경기 득점과 경기 중에 발생한 페널티를 기록하기 위한 기록지가 제공되어야 한다. 표준 득점 기록지 (스코어 시트) - 부록 B 참고표준 페널티 기록지 (페널티 시트) - 부록 C 참고"
+   ],
+   "bodyEn": [
+    "The scoring table and penalty table shall be provided with record sheets to record the score of the game and the penalties served during the game. The standard score sheet is provided at Annex B. The standard penalty sheet is provided at Annex C."
+   ]
+  },
+  {
+   "no": 21,
+   "chapter": 3,
+   "titleKo": "유니폼",
+   "titleEn": "Uniform",
+   "page": 11,
+   "bodyKo": [
+    "팀별로 모든 유니폼 상의는 반드시 동일한 색과 명암을 갖고 있어야 한다. 유니폼 상의 속에 받쳐 입어 밖으로 보이는 모든 것은 유니폼 상의의 주된 색과 같은 색과 명암을 띄어야 한다. 각 팀에게 있어서, 모든 유니폼 하의는 반드시 동일한 색과 명암을 갖고 있어야 한다. 유니폼 하의는 유니폼 상의와 다른 색일 수 있다. 유니폼 하의 속에 받쳐 입어 밖으로 보이는 모든 것은 반드시 유니폼 하의의 주된 색과 같은 색과 명암을 띄어야 한다. 각 팀에게 있어서 개별 선수들은 길거나 짧은 유니폼 하의를 입을 수 있다.",
+    "모든 유니폼 상의는 앞면과 뒷면에 1-15, 20-25, 30-35, 40-45 그리고 50-55 사이의 번호를 달고 있어야 한다. 한 팀의 개개인의 선수들은 반드시 서로 다른 번호를 가지고 있어야 한다. 앞면의 번호는 반드시 오른쪽에 위치해야 하고 최소 6cm이며, 최대 10cm의 높이여야 한다. 뒷면의 번호는 가운데에 위치해야 하고, 최소 15cm, 최대 20cm 의 높이여야 한다. 두 번호들은 반드시 항시 보일 수 있어야 한다. 번호는 또한 휠체어의 등받이에 표시 될 수도 있다. 다른 어떠한 번호들도 유니폼에 보일 수 없다.",
+    "WWR 승인 대회에서, 기술 대표(TD) 는 모든 경기를 위해 각 팀의 유니폼 색을 결정해야 한다. 유니폼 설명과 관련한 자세사항은 IWRF 로고, 브랜딩 및 파트너쉽 가이드라인에서 확인이 가능합니다.https://worldwheelchair.rugby/wp-content/uploads/2022/03/210118-WWR-Logo-Branding-and-Partnership-Guidelines.pdf"
+   ],
+   "bodyEn": [
+    "On each team, all uniform tops must be of the same colour and shade. Anything worn under the uniform top that is visible must be of the same colour and shade as the dominant colour of the uniform top. On each team, all uniform bottoms must be of the same colour and shade.",
+    "The uniform bottom may be a different colour from the uniform top. Anything worn under the uniform bottom that is visible must be of the same colour and shade as the dominant colour of the uniform bottom.",
+    "On each team, individual players may wear either long or short uniform bottoms. All uniform tops shall bear a number between 1-15, 20-25, 30-35, 40-45 and 50-55 inclusive, on the front and back. Each player on a team must have a different number.",
+    "The number on the front must be on the players right side and the height must be no less than six (6) centimeters and no more than ten (10) centimeters. The number on the back must be in the centre and must be no less than fifteen (15) centimeters and no more than twenty (20) centimeters high.",
+    "Both numbers must be visible at all times. Numbers may also be marked on the backrest of the wheelchair. No other numbers may appear on the uniform. For games at WWR-sanctioned tournaments, the Technical Delegate shall decide the uniform colour to be worn by each team for all games.",
+    "Additional details regarding uniform specifications can be located in the WWR Logo, Branding and Partnership Guidelines. https:/ /worldwheelchair.rugby/wp- content/uploads/2022/03/210118-WWR-Logo-Branding­ and-Partnership-Guidelines.pdf"
+   ]
+  },
+  {
+   "no": 22,
+   "chapter": 3,
+   "titleKo": "손 보호구",
+   "titleEn": "Hand protection",
+   "page": 11,
+   "bodyKo": [
+    "선수들은 손을 보호하기 위한 어떠한 장비도 사용 가능하다. 하지만, 이는 다른 선수들을 위험하게 할 수 있는 어떠한 소재(예. 단단하거나 거친 소재) 도 포함할 수 없다."
+   ],
+   "bodyEn": [
+    "Players may wear any form of hand protection; however, it cannot include any material that may be hazardous to other players, such as hard or rough material."
+   ]
+  },
+  {
+   "no": 23,
+   "chapter": 4,
+   "titleKo": "규정 준수",
+   "titleEn": "Compliance with specifications",
+   "page": 12,
+   "bodyKo": [
+    "휠체어는 선수의 일부분으로 고려된다. 각 선수는 자신의 휠체어가 경기가 끝날 때까지 모든 규정을 준수할 책임이 있다. 휠체어가 본 규정에 적합하지 않는 경우, 규정을 준수할 때까지 경기에 사용할 수 없다."
+   ],
+   "bodyEn": [
+    "The wheelchair is considered to be part of the player. Each player is responsible for ensuring that their wheelchair meets all specifications for the duration of the game. If a wheelchair does not meet these specifications, it shall be barred from the game until it is brought into compliance."
+   ]
+  },
+  {
+   "no": 24,
+   "chapter": 4,
+   "titleKo": "폭",
+   "titleEn": "Width",
+   "page": 12,
+   "bodyKo": [
+    "휠체어의 폭의 최대치에 관한 규정은 없다. 휠체어의 어떠한 부분도 푸시림의 가장 넓은 부분을 넘어서 더 뻗어 나갈 수 없다(휠체어의 폭은 얼마든지 넓을 수 있지만, 가장 넓은 곳은 푸시-림의 가장 넓은 부위가 되어야 한다. 이 밖으로 다른 부분이 더 넓게 존재할 수 없다)."
+   ],
+   "bodyEn": [
+    "There is no maximum width of wheelchair. No point on the wheelchair may extend in width beyond the widest point of the push rims."
+   ]
+  },
+  {
+   "no": 25,
+   "chapter": 4,
+   "titleKo": "길이",
+   "titleEn": "Length",
+   "page": 12,
+   "bodyKo": [
+    "휠체어의 길이는 메인 휠의 가장 앞부분에서부터 휠체어의 가장 앞부분까지로 측정되고, 46cm를 넘을 수 없다. (휠체어 그림 B 참고)."
+   ],
+   "bodyEn": [
+    "The length of the wheelchair as measured from the front- most part of the back wheel to the front- most part of the wheelchair cannot exceed forty-six (46) centimeters. (See Wheelchair diagram B)"
+   ]
+  },
+  {
+   "no": 26,
+   "chapter": 4,
+   "titleKo": "높이",
+   "titleEn": "Height",
+   "page": 12,
+   "bodyKo": [
+    "휠체어의 높이는 바닥에서부터 측면의 레일(휠체어 측면의 프레임) 의 전면과 후면사이의 중앙부분에서 좌석 측면의 레일(을 구성하는) 관의 중간지점까지로 측정하며 53cm를 넘을 수 없다. (휠체어 그림 B 참고)."
+   ],
+   "bodyEn": [
+    "The height of the wheelchair, as measured from the floor to the midpoint of the seat side rail tubing halfway between the front and back of the side rail, cannot exceed fifty -three (53) centimeters. (See Wheelchair diagram B)"
+   ]
+  },
+  {
+   "no": 27,
+   "chapter": 4,
+   "titleKo": "휠",
+   "titleEn": "Wheels",
+   "page": 12,
+   "bodyKo": [
+    "휠체어는 4개의 바퀴가 있어야 한다. 뒷부분에서 휠체어를 추진하는 데 쓰이는 두 개의 큰 바퀴를 메인 휠(main wheels)이라 하고, 앞부분의 작은 두 바퀴를 캐스터(casters)라 한다. (휠체어 그림 A 참고)",
+    "a. 메인 휠의 최대 지름은 70cm이다. 각 메인 휠에는 다른 휠체어와 접촉되는 부분을 보호하는 바큇살 보호장치(spoke guard)와 푸시림(push rim)이 있어야 한다. 메인 휠 둘레로 어떠한 막대나 판도 튀어나와서는 안 된다. 메인 휠의 가장 뒤쪽을 휠체어의 끝부분으로 보며, 이 지점을 넘어 무엇도 나올 수 없다. (28조 참고)",
+    "b. 캐스터는 중심 간 거리가 최소 20cm 이상 떨어진 별도의 축에 있어야 한다. 캐스터 휠은 빛을 발해서는 안 된다. 캐스터를 감싸는 하우징은 하우징 안쪽 끝에서 메인프레임 바깥쪽 끝까지 측정하여 메인프레임에서 2.5cm를 넘게 떨어져 있어서는 안 된다."
+   ],
+   "bodyEn": [
+    "The wheelchair shall have four (4) wheels. The two (2) large wheels at the back that are used to propel the wheelchair are referred to as the main wheels; the two (2) small wheels at the front are referred to as the casters. (See Wheelchair diagram A)",
+    "a. The main wheels shall have maximum diameter of seventy (70) centimeters. Each main wheel must be fitted with a spoke guard that protects the area contacted by another wheelchair, and a push rim. There shall be no bars or plates extending around the main wh eels. The rearmost part of the main wheel shall be considered the back of the wheelchair, and nothing can extend past this point. (See Article 28)",
+    "b. The casters must be on separate axles positioned a minimum of Twenty (20) centimeters apart, measured centre to centre. Caster wheels must not emit light. The housing that holds the caster must be positioned no more than 2.5 centimeters away from the main frame of the wheelchair, measured from the inside edge of the housing to the outside edge of the mainframe."
+   ],
+   "changed2026": true,
+   "changeNote": "캐스터 휠의 빛 방출 금지 문구가 추가되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 28,
+   "chapter": 4,
+   "titleKo": "안티팁",
+   "titleEn": "Anti-tip devices",
+   "page": 12,
+   "bodyKo": [
+    "휠체어 후방에 안티 팁의 축 사이의 간격이 최소 40cm 이여야 한다. 안티 팁 장치가 고정형인 경우, 이는 메인 휠의 가장 뒤로 튀어나온 부분보다 더 뒤로 튀어나올 수 없다. 안티 팁 장치가 회전한다면, 이를 고정하는 하우징은 메인 휠의 가장 뒤로 튀어나온 부분보다 더 뒤로 튀어나올 수 없다. 안티 팁 장치 바퀴의 하단은 바닥으로부터 2cm를 넘을 수 없다. (휠체어 그림 B를 참고). 스프링이 장착된 안티 팁은 금지된다. 본문을 간결하게 표현하기 위해 범퍼는 범퍼 또는 픽 바를 지칭하는 표현으로 사용된다. 본 용어는 교체사용이 가능하다."
+   ],
+   "bodyEn": [
+    "The wheelchair shall be fitted with an anti-tip device attached at the rear of the wheelchair, which must contain two (2) wheels a minimum of forty (40) centimeters apart, measured centre to centre. If the wheels of the anti-tip device are fixed, they cannot project further to the rear than the rearmost point of the main wheels.",
+    "If the wheels of the anti -tip device swivel, the housing that holds them cannot project further to the rear than the rearmost point of the main wheels. The bottom of the wheels of the anti-tip device must be no more than two (2) centimeters above the floor.",
+    "(See Wheelchair diagram B).",
+    "Spring-loaded anti-tips are prohibited.",
+    "To simplify the text, bumper will be used to indicate a bumper or pick bar. The terms are interchangeable."
+   ]
+  },
+  {
+   "no": 29,
+   "chapter": 4,
+   "titleKo": "범퍼",
+   "titleEn": "Bumper",
+   "page": 13,
+   "bodyKo": [
+    "휠체어의 앞부분을 보호하기 위해 범퍼가 장착된다. 범퍼 또는 범퍼가 부착되어 있지 않은 경우 휠체어의 가장 앞부분은 다음의 요구사항을 일치해야 한다.",
+    "a. 전방의 캐스터가 부착되어 있는 막대 또는 관의 중앙부분에서부터 (전방으로 굽어 있는 부위) 측정되는 범퍼의 가장 앞부분이 바닥으로부터 정확히 11cm이여야 한다. 11cm 위 또는 아래 5mm 의 여유는 허용한다. (휠체어 그림 B 참고)",
+    "b. 범퍼의 가장 앞부분은 측면에서 (반대편) 측면까지의 측정에서 최소한 20cm의 넓이를 갖고 있어야 하고, 반대쪽으로 곧게 놓여야 한다(가장 앞부분의 튀어나온 부분이 20cm 폭은 되어야 한다. - 날카롭거나 좁으면 안 된다). 기본적 파손으로 인해 수평면에서 10mm 여유는 허용 한다.",
+    "c. 가장 앞쪽으로 나온 부분에서 범퍼는 캐스터 하우징의 전방 끝 쪽을 넘어 20cm 이상 돌출 될 수 없다 (휠체어 그림 B 참고) (캐스터 하우징 전방 끝을 기준으로 20cm 이상 범퍼가 앞으로 튀어나올 수 없다).",
+    "d. 가장 넓은 부분에서 범퍼는 휠체어의 양 쪽 캐스터 하우징의 바깥쪽 끝단보다 2cm 이상 돌출 될 수 없다(휠체어 그림 A 참고).",
+    "e. 범퍼의 가장 낮은 부분은 바닥으로부터 최소한 3cm 이상 떨어져야 한다 (휠체어 그림 B 참고).",
+    "f. 범퍼의 가장 높은 부분은 바닥으로부터 20cm 이상 떨어져 있을 수 없다 (휠체어 그림 B 참고).",
+    "g. 범퍼를 만들기 위해 사용된 막대 또는 관은 지름이 최소 0.635cm이상이어야 한다. (휠체어 그림 C 참고)",
+    "h. 범퍼를 만들기 위해 사용된 막대 또는 관은 반드시 둥글어야 하고, 선수에게 불공정한 기계적 이점을 제공할 수 있는 모서리나 돌출물이 없어야 한다.",
+    "i. 범퍼를 만들기 위해 사용된 모든 막대 또는 관은 구부리는 기계를 사용하여 모든 가장자리가 둥글게 굽어 있어야 한다. 굽히기는 관이 주름지거나, 편평하게 되거나, 돌출부위가 생기지 않도록 해야 한다.",
+    "j. 모든 굽은 상태의 안쪽 만곡 정도는 지름이 2cm 이상이어야 한다(굽힘이 있는 경우, 어디에서건 간에 안쪽 지름이 2cm 미만이 되게 날카롭게 굽힐 수 없다).",
+    "k. 바깥쪽 끝에서 바깥쪽 끝까지 측정하여 범퍼의 어느 부위에서 측정되더라도 최소 외각은 3.27cm이다. (휠체어 그림 C 참고) (위 j항과 비슷하게 범퍼를 이룬 관의 밖과 밖을 연결하는 지름이 3.27cm 미만이 되게 날카롭게 굽힐 수 없다).",
+    "l. 범퍼와 휠체어의 메인프레임은 범퍼의 가장 넓은 지점으로부터 막대(bar) 로 연결되어야 한다(범퍼의 가장 넓은 곳에서부터 메인프레임을 연결하는 막대가 있어야 한다, 즉 범퍼의 가장 넓은 부분이 범퍼만으로 구성되어 튀어나올 수 없다. 휠체어 그림 D 참고).",
+    "이 막대는 직선이어야 하고, 위에서 내려다본 수평면상에서 측정하여 범퍼에서 메인 프레임으로 45° 또는 이상의 각으로 만들어져야 한다. 주의: 본 막대 (bar) 는 메인프레임에 부착할 필요가 없다."
+   ],
+   "bodyEn": [
+    "The wheelchair may be equipped with a bumper projecting from the front of the wheelchair. The bumper, or the front -most part of the wheelchair if no bumper is present, must conform to the following requirements:",
+    "a. The front-most part of the bumper, measured to the midpoint of the rod or tubing with the casters in a forward-rolling position, must be eleven (11) centimeters from the floor. An allowance of five (5) millimeters either above or below eleven (11) centimeters is permitted. (See Wheelchair diagram B)",
+    "b. The front-most part of the bumper must be a minimum of twenty (20) centimeters wide measured side to side and must span straight across. An allowance of ten (10) millimeters is permitted in the horizontal plane due to general play damage.",
+    "c. At its front-most point, the bumper must not extend more than twenty (20) centimeters beyond the forward edge of the caster housings. (See Wheelchair diagram B)",
+    "d. At its widest point, the bumper must not extend more than two (2) centimeters beyond the outside edges of the caster housings on each side of the wheelchair. (See Wheelchair diagram A)",
+    "e. The lowest point of the bumper must be a minimum of three (3) centimeters above the floor. (See Wheelchair diagram B)",
+    "f. The highest point of the bumper must be no more than twenty (20) centimeters above the floor. (See Wheelchair diagram B)",
+    "g. The rod or tubing used for the bumper must be a minimum of 0.635 centimeters in diameter. (See Wheelchair diagram C)",
+    "h. The rod or tubing used for the bumper must be rounded and can have no edges or protrusions that could give a player an unfair mechanical advantage.",
+    "i. All rods or tubing used for the bumper should be bent on a bender so that all corners are round. The bends shall not cause the tube to wrinkle, flatten, or flare.",
+    "j. The inside curvature of all bends must be a minimum of two (2) centimeters in diameter.",
+    "k. The minimum outside measurement of any portion of the bumper, measured from outer edge to outer edge, is 3.27 centimeters. (See Wheelchair diagram C)",
+    "l. There must be a bar from the bumper towards the main frame of the wheelchair extending from the widest point of the bumper. This bar must be straight and must be made at an angle of forty - five (45°) or greater from the bumper to the main frame, measured in the horizontal plane as viewed from above. Note: This bar does not have to attach to the main frame."
+   ]
+  },
+  {
+   "no": 30,
+   "chapter": 4,
+   "titleKo": "윙",
+   "titleEn": "Wings",
+   "page": 14,
+   "bodyKo": [
+    "휠체어에는 휠체어의 앞에서부터 메인 휠 사이의 양쪽 측면에 윙이 설치될 수 있다. 각 윙은 다음의 요구사항과 일치해야 한다.",
+    "a. 윙의 접촉이 발생하는 가장 바깥 지점은 캐스터 하우징 앞바닥으로부터 정확히 11cm의 높이여야 한다(가장 밖으로 튀어나와 다른 휠체어 등과 접촉할 수 있는 부분이 바닥으로부터 11cm).",
+    "i. 윙은 메인 휠 타이어의 중앙을 넘어 뻗어 나갈 수 없다(앞에서 보았을 때 메인 휠 타이어의 중앙부분보다 윙이 더 옆으로 나갈 수 없다).",
+    "ii. 캐스터 하우징 뒤에 있는 윙의 첫 번째 접촉지점은 11cm의 높이 이거나 그 이하이어야 한다.",
+    "b. 윙의 가장 아래 부분은 바닥으로부터 최소한 3cm 이상 떨어져야 한다.",
+    "(휠체어 그림 B 참고).",
+    "c. 윙의 가장 높은 부분은 바닥으로부터 20cm를 넘을 수 없다",
+    "(휠체어 그림 B 참고).",
+    "d. 윙을 만들기 위해 사용된 막대 또는 관은 최소한 지름이 0.635cm 이상이어야 한다.",
+    "e. 윙은 뒷바퀴에서 끝나거나 메인프레임과 연결된 상태로 뒷바퀴를 지나서 계속될 수도 있다 (위에서 보았을 때 윙이 앞에서 나와 뒤로 가다가 뒷바퀴 앞에서 그냥 끝이 나던지, 뒷바퀴의 안쪽으로 연장되어서-e 조항에 의해서 밖으로 나갈 수는 없다- 들어와 메인프레임에 연결 될 수 있다). 메인 휠에서 끝나는 윙은 다음의 추가 요구조건을 준수해야 한다.",
+    "ⅰ. 날카로운 가장자리 없이 끝 부분이 모두 둥글어야 한다.",
+    "ⅱ. 메인 휠과의 간격이 1cm 미만으로 끝나야 한다(휠체어 그림 B 참고)f. 윙의 위쪽 끝에서 윙의 위쪽 끝 위로 뻗어 있는 10cm와 윙의 전방으로부터 메인 휠 타이어의 뒤로 1cm까지의 윙 위의 공간은 반드시 장애물이 없어야 한다. 윙의 전방으로부터 메인 휠 타이어의 뒤로 1cm 까지 공간에서 윙 위로 10cm 높이까지는 장애물이 없어야 한다."
+   ],
+   "bodyEn": [
+    "The wheelchair may be equipped with wings on either side in the area between the front of the wheelchair and the main wheels. Each wing must conform to the following requirements:",
+    "a. The outer-most point of contact of the wing must be exactly eleven (11) centimeters from the floor in front of the caster housing.",
+    "i. The wing must not extend beyond the centre of the tire on the main wheel.",
+    "ii. First point of contact on the wing behind the caster housing must be at eleven (11) centimeters or below.",
+    "b. The lowest point of the wing must be a minimum of three (3) centimeters from the floor. (See Wheelchair diagram B)",
+    "c. The highest point of the wing must be no more than twenty (20) centimeters from the floor. (See Wheelchair diagram B)",
+    "d. The rod or tubing used for the wing must be a minimum of 0.635 centimeters in diameter.",
+    "e. The wing may stop at the rear wheel, or it may continue past the rear wheel with a connection to the main frame. A wing that stops at the main wheel must conform to the following additional requirements:",
+    "i. It must be rounded at the end without any sharp edges.",
+    "ii. It must end within one (1) centimeter of the main wheel. (See Wheelchair diagram B)",
+    "f. The space above the wing, extending from the top edge of the wing to ten (10) centimeters above the top edge of the wing and from the front of the wing to one (1) centimeter behind the tire of the main wheel, must be obstacle free."
+   ]
+  },
+  {
+   "no": 31,
+   "chapter": 4,
+   "titleKo": "편의성과 안전성",
+   "titleEn": "Comfort and safety",
+   "page": 14,
+   "bodyKo": [
+    "휠체어는 다음 추가적인 세부사항을 충족해야 한다.",
+    "a. 모든 휠체어의 돌출부에는 푸시-바, 크로스바, 볼 홀더 또는 후크에 반",
+    "드시 패드를 장착해야 한다. 주의: 의자를 밀기 위한 손잡이는 허용되지",
+    "않습니다.",
+    "b. 어떠한 조향 장치, 제동장치, 기어 또는 다른 기계적 장치도 휠체어 조",
+    "작을 돕기 위하여 부착하는 것이 허가되지 않는다. 만약 휠체어에 이러",
+    "한 장치들이 부착되어 있다면, 이러한 것들은 사용 불가능하게 바뀌어",
+    "야 하고, 안전 위험요소로 작용하지 않게 위치를 바꾸어야 한다.",
+    "c. 휠체어는 휠체어가 앞으로 전복되는 것을 막기 위하여 휠체어의 앞쪽 끝 아래 부분에 장치를 부착할 수 있다. 이 장치는 다음의 세부사항을 충족해야 한다.",
+    "ⅰ. 이 장치는 휠체어의 가장 앞으로 튀어나온 부분일 수 없다.",
+    "ⅱ. 바닥으로부터의 최소 높이 규정은 없지만, 항상 바닥에 닿으면 안된다.",
+    "ⅲ. 바닥에 흠집을 내서는 안 된다.",
+    "ⅳ. 이 장치와 바닥과의 모든 접촉은 신체적 이점 규칙(79조) 에 의하여 판정된다.",
+    "d. 타이어는 경기장 표면에 뚜렷한 자국을 남겨서는 안 된다.",
+    "e. 보정 하중은 휠체어에 부착할 수 없다.",
+    "f. 최대 10cm의 두께를 갖는 한 개의 쿠션이 휠체어의 좌석에 허용된다.",
+    "g. 선수는 무릎사이에 패드를 사용할 수 있다. 이 패드는 무릎의 위쪽 부분 위로 튀어나올 수 없다.",
+    "h. 선수는 휠체어에 스트랩으로 묶여 있을 수 있다.",
+    "i. 선수의 발이 휠체어의 발판에서 미끄러져 나갈 가능성이 있다면 이러한 일이 발생되는 것을 방지하기 위해 다리의 뒤 또는 발 주위에 스트랩이나 신축성 있는 것을 사용해야 한다.",
+    "j. 선수들은 볼을 올려놓기 위한 추가 장치를 사용할 수 있다. 보조 장비 또는 볼 홀더는 볼의 아래에서 25% 미만까지 접촉해야 한다. 볼 홀더는 경기 하는 동안 볼의 75%가 보여야 한다.",
+    "주의: 퍼센트는 공 지름을 참조하여 반영된다.ⅰ 볼 홀더가 휠체어에 고정된다면, 홀더는 단단한 물체이며, 지름이 19mm 이상의 재료로 제작되어야 한다. ⅱ 볼 홀더는 체어 위에 계속 올릴 수 있거나 제거가 가능하거나 조절할 수 있는 받침대에 프레임을 고정할 수 있다. ⅲ 볼 홀더의 주 기능은 볼을 올려야 하는 것이다.",
+    "볼을 이 장비에 위 치할 때, 선수의 위치는 중립 위치여야 하며 볼은 장비에 반대하여 위치해야 한다. ⅳ 볼의 어느 부분이 프레임 안으로 들어가서는 안 된다. v 볼의 75%가 볼 홀더의 높이 위로 보여야 한다.vi 볼 홀더는 기계적인 이점을 만들어서는 안 된다. (예, 이 장비는 접착력이 없어야 하며, 스프링이 있거나 장비 내에 볼에게압력을 주어서는 안 된다.)vii. 장비는 패드가 잘 설치되어야 한다.viii. 볼 홀더가 닫힌 모양인 경우, 이 길이는 14cm 또는 넓은 두 지점 사이가 14cm 미만이어야 한다.",
+    "(내부 길이 – 패드 포함) 부적격:",
+    "1) 장비에 볼을 올려놓지 않는다.",
+    "2) 장비가 볼의 50% 이상의 면적을 커버한다. 적격:",
+    "1) 볼은 장비에 올려놓는다.",
+    "2) 볼 홀더는 패드가 잘 설치되어야 한다.",
+    "3) 단단한 물체이며, 제거 가능해야 한다.(예비 홀더도 점검하며, 또한 적격이어야 한다.) 부적격:1. 장비에 볼을 올려놓는 역할을 하지 않는다.2. 장비가 볼의 50%의 면적을 커버한다. 적격:",
+    "1) 장비는 볼을 올려놓는 역할을 한다.",
+    "2) 볼의 75%는 경기 중에 보여야 한다. 부적격:1. 볼이 프레임 안에 들어있다. 적격:",
+    "1) 장비는 볼을 올려놓는 역할을 한다.",
+    "2) 볼은 프레임 밖에 위치해야 한다. 부적격:1. 내부 길이가 14cm보다 커야 한다.2. 볼은 장비에 딱 맞게 압력을 줄 수 있다. 적격:",
+    "1) 가장 가까운 두 지점의 길이는 14cm 미만이어야 한다.",
+    "2) 볼의 75%는 경기 중에 보여야 한다.",
+    "3) 장비는 볼을 지탱하고 있다."
+   ],
+   "bodyEn": [
+    "The wheelchair must conform to the following additional specifications:",
+    "a. All protrusions from the wheelchair, such as push -bars, crossbars, ball holders or hooks, must be padded. Note: Handles for pushing the chair are not permitted.",
+    "b. No steering devices, brakes, gears, or other mechanical devices are permitted to help operate the wheelchair. If the wheelchair is equipped with such devices, they must be modified so they are not operational and must be repositioned, so they do not represent a safety hazard.",
+    "c. The wheelchair may be fitted with a device under the front end to prevent it from tipping forward. This device must conform to the following specifications:",
+    "i. It cannot be the front-most point of the wheelchair.",
+    "ii. There is no minimum height above the floor, but it may not be in constant contact with the floor.",
+    "iii. It cannot damage the floor.",
+    "iv. Any contact between this device and the floor will be governed by the Physical Advantage rule (Article 78).",
+    "d. Tires must not leave noticeable marks on the playing surface.",
+    "e. No counterweights may be added to the wheelchair.",
+    "f. One (1) cushion, with a maximum thickness of ten (10) centimeters, is permitted on the seat of the wheelchair.",
+    "g. A player may use padding between his knees. This padding must not protrude above the top of the knees.",
+    "h. A player may be strapped to the wheelchair.",
+    "i. If there is a possibility of a player’s feet slipping off the footrest of the wheelchair, a strap or elastic must be used behind the legs or around the feet to prevent this from occurring.",
+    "j. A player may use an additional device to support the ball. The support device, or ball holder, must make contact with no more than the bottom twenty -five (25) percent of the ball. The ball holder must ensure that seventy-five (75) percent of the ball is visible to be played.",
+    "Note: Percentage refers to the diameter of the ball.",
+    "i. When a ball holder is fitted to a chair, it must be rigid and made from materials measuring no less than nineteen (19) millimeters in diameter.",
+    "ii. The ball holder may be permanently mounted to the chair or fixed to the frame with brackets that allow the device to be removable or adjusted.",
+    "iii. The primary function of the ball holder must be to support the ball. When the ball is placed in the device, and the athlete is in a neutral position, the ball must rest against the device. The ball holder must partially support the ball to remain on the lap.",
+    "iv. No part of the ball can rest within the frame.",
+    "v. Seventy-five (75) percent of the ball must be visible above the height of the ball holder.",
+    "vi. The ball holder must not create a mechanical advantage (Example: it must be free of adhesive, cannot be spring loaded or allow the ball to be pressure fit within the device).",
+    "vii. The device must be well padded.",
+    "viii. If the ball holder is a closed shape, it must measure fourteen (14) centimeters or less between the widest two (2) points (inside measurement - including padding).",
+    "Illegal: 1) The device is not supporting the ball 2) The device covers more than 50% of the ball",
+    "Legal: 1) The ball is supported by the device 2) The ball holder is well padded 3) It is rigid as well as removable (spares were checked and are also legal)",
+    "Illegal: 1) The device is not supporting the ball 2) The device covers more than 50% of the ball",
+    "Legal: 1) The device is supporting the ball 2) 75% of the ball is available to be played",
+    "Illegal: 1) The ball is inside the frame",
+    "Legal: 1) The device is supporting the ball 2) The ball is outside the frame",
+    "Illegal: 1) Inside measure is greater than 14cm 2) The ball can be pressure fit to the device.",
+    "Legal: 1) The measurement between the widest two points is less than 14cm 2) 75% of the ball is available to be played 3) The device is supporting the ball"
+   ]
+  },
+  {
+   "no": 32,
+   "chapter": 4,
+   "titleKo": "개조",
+   "titleEn": "Modifications:",
+   "page": 17,
+   "bodyKo": [
+    "휠체어 또는 선수의 장비 중 어떠한 부분도 편의성, 안전성 또는 의학적인 이유로 인하여 개조될 수 있다. 이러한 개조는 반드시 안전해야 하고 본 규정의 모든 휠체어 요구사항에 일치하여야 하며, 어떠한 기계적인 이점도 만들어내지 않아야 한다. 개조는 팀의 쇼트 리스트/로스터(등록 명단) 에 명시해야 하며, 대회 시작 전에 TD와 헤드 오피셜이 승인해야 한다. 기계적 이익을 제공하거나, 본 규정에 명시된 것과 같이 현재 승인된 휠체어의 표준에 일치하지 않는 새로운 변경은 WWR로부터 사전 허가 없이 이루어질 수 없다.",
+    "이러한 변경은 WWR의 기술 위원회에 서면으로 작성하여 제출되고 허가 받아야 한다. 승인은 세계선수권대회, 지역 선수권대회 또는 패럴림픽 경기 시작 2개월 전에 받아야 하고 다른 승인 경기의 경우에는 1개월 이전에 받아야 한다. WWR가 요구와 결정 절차를 적절히 수행하는데 한 달이 요구되기 때문에 요구는 세계선수권대회, 지역선수권대회 또는 패럴림픽 경기 시작 3개월 이전에 이루어져야 하고 다른 모든 승인된 경기의 2개월 이전에 이루어져야 한다.",
+    "이러한 경기의 시작은 개막식 날짜로 하고, 개막식이 없는 경우 시합 첫날을 기준으로 한다."
+   ],
+   "bodyEn": [
+    "Any part of the wheelchair or player equipment may be modified to improve comfort or safety or for medical reasons. These modifications must be safe, must conform to all the wheelchair specifications in these Rules, and may not create any mechanical advantage.",
+    "Modifications made must be identified on the team’s short list/team roster and approved by the Technical Delegate and Head Official prior to the start of competition. Innovative changes that give a mechanical advantage or that do not conform to the presently accepted norms for a wheelchair, as detailed in these Rules, may not be made without prior approval from the WWR.",
+    "Such changes must be presented to and approved by the Technical Commission of the WWR, in writing. Approval must be received no less than two (2) months prior to the commencement of World Championship, Zone Championship, or Paralympic Games, and one (1) month prior to any other sanctioned event.",
+    "As the WWR requires one (1) month to properly process a request and render a decision, requests should be made three (3) months prior to World Championship, Zone Championship, or Paralympic Games, and two (2) months prior to other sanctioned events.",
+    "The commencement of such events is the date of the opening ceremonies, or if there are no opening ceremonies, the date of the first day of competition.",
+    "WHEELCHAIR Diagrams"
+   ]
+  },
+  {
+   "no": 33,
+   "chapter": 5,
+   "titleKo": "팀의 지정",
+   "titleEn": "Designation of teams",
+   "page": 19,
+   "bodyKo": [
+    "홈팀이 스코어 시트에 A팀으로 기록되어야 한다. 경기가 중립 코트에서 실시될 때에는 공식 일정표에 먼저 나오는 팀이 A팀으로 기록된다. WWR의 승인 경기에서는 모든 경기장들이 중립으로 간주된다."
+   ],
+   "bodyEn": [
+    "The Home team shall be listed as Team A on the score sheet. When the game is played on a neutral court, the team appearing first on the official schedule shall be listed as Team A. At WWR-sanctioned events, all playing venues will be considered as neutral."
+   ]
+  },
+  {
+   "no": 34,
+   "chapter": 5,
+   "titleKo": "선수",
+   "titleEn": "Players",
+   "page": 19,
+   "bodyKo": [
+    "각 팀은 최대 12명의 선수들을 가진다. 각 팀에서는 4명의 선수들만이 동시에 코트 에 출전한다. 페널티를 수행하고 있는 선수들은 코트 위에 있는 것으로 간주된다. 경기 중 코트 위에 있지 않은 팀의 선수들을 교체선수들이라 지칭한다."
+   ],
+   "bodyEn": [
+    "Each team shall have a maximum of twelve members. No more than four (4) players from each team may be on the court at one time. Players serving penalties are considered to be on the court. Team members who are not on the court during play are termed substitutes."
+   ]
+  },
+  {
+   "no": 35,
+   "chapter": 5,
+   "titleKo": "등급분류",
+   "titleEn": "Classification",
+   "page": 19,
+   "bodyKo": [
+    "모든 선수는 WWR 등급분류 매뉴얼에 명시된 WWR 등급분류 시스템에 따라 등급분류를 받아야 한다.",
+    "코트에 있는 팀 선수들의 등급분류 점수 합계는 8점 이하여야 한다. 코트에 있는 0.5~1.5등급 여자 선수 한 명마다 팀은 8점에 더하여 0.5점을 추가로 허용받는다. 코트에 있는 2.0~3.5등급 여자 선수 한 명마다 팀은 8점에 더하여 1.0점을 추가로 허용받는다.",
+    "부상이나 자격박탈 같은 상황 때문에 등급분류 점수 최대치를 지키면서 4명의 선수를 출전시키지 못하게 되면, 그 팀은 3명의 선수로 경기할 수 있다. 이 경우 코트에 있는 선수들의 등급분류 점수 합은 8점 미만이어야 한다."
+   ],
+   "bodyEn": [
+    "All players must be classified according to the WWR classification system as detailed in the WWR Classifier Handbook: https://worldwheelchair.rugby/wp-content/uploads/2021/12/WWR-Classifier-Handbook-2022.pdf The sum of the classification points of a team’s players on the court must be eight (8) or less.",
+    "For each female player classified 0.5 to 1.5 on the court a team will be allowed an extra 0.5 points over and above the eight (8) points for the team. For each female player classified 2.0 to 3.5 on the court a team will be allowed an extra 1.0 points over and above the eight (8) points for the team.",
+    "If conditions such as injuries or disqualification, result in a team being unable to field four (4) players while respecting the maximum classification point value, the team shall be permitted to field three (3) players.",
+    "In this case, the sum of the classification points of the players on the court must be less than eight (8)."
+   ],
+   "changed2026": true,
+   "changeNote": "여자 선수 등급분류 점수 보정: 0.5~1.5등급은 팀당 +0.5점, 2.0~3.5등급은 +1.0점.",
+   "koNew": true
+  },
+  {
+   "no": 36,
+   "chapter": 5,
+   "titleKo": "명단",
+   "titleEn": "Rosters",
+   "page": 19,
+   "bodyKo": [
+    "경기 시작 예정 시각 10분 전까지 각 코치는 스코어시트에 기재된 다음 정보를 서명으로 확인해야 한다.",
+    "a. 모든 팀 구성원의 이름, 등급분류, 유니폼 번호",
+    "b. 경기를 시작할 4명의 선수 지정",
+    "c. 팀 코치와 보조코치의 이름",
+    "A팀 코치가 이 정보를 먼저 제공하고, 그다음 B팀 코치가 제공한다. A팀 코치는 스코어시트를 다시 검토할 기회를 한 번 더 갖는다.",
+    "각 팀은 코트에 4명의 선수를 내보내 경기를 시작해야 한다. 이 로스터에 이름이 올라 있는 선수만 경기할 수 있다. 늦게 도착한 교체 선수도 로스터에 이름이 있으면 경기할 수 있다."
+   ],
+   "bodyEn": [
+    "No less than ten (10) minutes before the game is scheduled to begin, each coach shall confirm, with a signature, the following information inscribed on the score sheet:",
+    "a. The names, classifications, and uniform numbers of all team members.",
+    "b. Identify the four (4) players who will begin the game.",
+    "c. The name of the team coach and assistant coach. The coach of Team A shall be the first to provide this information and then the coach of Team B. The coach of Team A will be allowed a second opportunity to review the scoresheet.",
+    "Each team must begin the game with four (4) players on the court. Only players who are listed on this roster shall be permitted to play. Substitutes who arrive late to the game may play if their names appear on the roster."
+   ],
+   "changed2026": true,
+   "changeNote": "선발 선수의 10분 이후 교체 제한 문구가 삭제되고 코치 서명 절차가 정리되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 37,
+   "chapter": 5,
+   "titleKo": "주장",
+   "titleEn": "Captains",
+   "page": 20,
+   "bodyKo": [
+    "각 팀은 최소 한 명의 주장을 지정해야 한다. 주장은 팀 내에서 코치나 다른 선수들을 대표하여 심판들과 의사소통 할 수 있도록 인정한 유일한 선수이다. 주장은 심판들과 함께 일할 책임이 있고, 그의 팀 동료들이 적합한 경기 예절을 유지하도록 할 책임이 있다. 스코어 시트의 이름 옆에 ‘C’자를 새겨 넣음으로써 다른 선수들과 구별될 수 있도록 한다. 주장이 경기 중인 코트를 떠날 때는, 주장 대리가 지명되어야 한다. 주장 대리는 점수표의 이름 옆에 ‘AC’자를 새겨 넣음으로써 다른 선수들과 구별 될 수 있다."
+   ],
+   "bodyEn": [
+    "Each team must designate at least one (1) captain. The captain is the only player from the team who is authorized to communicate with the officials on behalf of the coach or other players. The captain is responsible to work with the officials and his teammates to maintain proper court decorum.",
+    "The captain shall be distinguished from other players by inscribing the letter “C” next to their name on the score sheet. When the captain leaves the playing court, an alternate captain shall be designated.",
+    "The alternate captain can be distinguished by inscribing the letters “AC” next to their name on the score sheet."
+   ]
+  },
+  {
+   "no": 38,
+   "chapter": 5,
+   "titleKo": "코치",
+   "titleEn": "Coaches",
+   "page": 20,
+   "bodyKo": [
+    "각 팀은 코치를 지명해야 하고, 그의 이름은 득점기록지에 기록되어야 한다. 팀은 보조 코치를 지명할 수 있고, 그의 이름은 득점기록지에 기록되어야 한다. 보조 코치는 만약 어떠한 이유로라도 코치가 (역할을) 계속할 수 없으면 코치의 책임을 맡아야 한다. 팀의 주장은 코치의 역할을 할 수 있다. 주장이 디스퀄리파잉 파울에 의하여 경기장을 떠나야 하거나 어떠한 이유로라도 코치로서의 역할을 계속할 수 없다면 주장 대리가 그를 대신해 코치 역할을 수행할 수 있다. 팀의 주장은 코치의 역할을 할 수 있다. 주장이 디스퀄리파잉 파울에 의하여 경기장을 떠나야 하거나, 어떠한 이유로라도 코치로서의 역할을 계속할 수 없다면 주장 대리가 그를 대신해 코치 역할을 수행할 수 있다."
+   ],
+   "bodyEn": [
+    "Each team must designate a coach, whose name must be inscribed on the score sheet. A team may designate an assistant coach, whose name must be inscribed on the score sheet. The assistant coach shall assume the responsibilities of the coach if for any reason the coach is unable to continue.",
+    "The team captain may act as coach. If the captain must leave the field of play due to a disqualifying foul, or if he is unable to continue to act as coach for any other reason, the alternate captain may replace him as coach."
+   ]
+  },
+  {
+   "no": 39,
+   "chapter": 5,
+   "titleKo": "트라이와 벤치의 선택",
+   "titleEn": "Try and bench selection",
+   "page": 20,
+   "bodyKo": [
+    "경기일정에 첫 번째로 명시된 팀은 벤치A로 배정되며 그 다음의 팀은 벤치B로 배정된다. 기록석을 정면으로 바라보았을 때 A팀은 기록석 왼쪽에 위치하며 B팀은 오른쪽에 위치한다. 경기의 전반전 동안(1, 2 피리어드), 각 팀은 그들의 벤치지역에 가장 가까운 트라이라인을 수비해야 하고, 그들의 벤치지역에서 가장 먼 트라이라인으로 공격해야 한다. 후반전에는(3, 4 피리어드) 팀들은 동일한 벤치지역을 유지하지만 그들이 수비하고 공격하던 트라이라인을 바꾸어야 한다(벤치지역은 경기가 끝날 때까지 유지하고, 공수 진영만 후반-3피리어드 시작 때-에 반대로 바꾼다). 연장전의 경우, 팀들은 첫 번째 연장전 피리어드에는 동일한 트라이라인을 유지해야 하고, 뒤이은 각 연장전 피리어드마다(연장전 2 피리어드부터 매 피리어드마다) 트라이라인을 교체해야 한다."
+   ],
+   "bodyEn": [
+    "The team listed first on the schedule shall be assigned team bench A, the team listed second will be assigned team bench B. When facing the score table Team, A shall occupy the area to the left of the score bench and Team B shall occupy the area to the right.",
+    "For the first half of the game, each team shall defend the try line that is closest to their bench area and shall score over the try line that is farthest from their bench area. For the second half, teams shall keep the same bench area but shall exchange the try lines they defend and score on.",
+    "In the event of overtime, teams shall keep the same try lines for all overtime periods as they had for the second half."
+   ]
+  },
+  {
+   "no": 40,
+   "chapter": 6,
+   "titleKo": "게임 오피셜",
+   "titleEn": "Game Officials",
+   "page": 21,
+   "bodyKo": [
+    "각 경기는 레퍼리 1과 레퍼리 2로 불리는 두 명의 레퍼리가 진행한다. 레퍼리는 게임 커미셔너와 테이블 오피셜의 지원을 받는다.",
+    "테이블 오피셜은 스코어키퍼, 타임키퍼, 40초 시계 오퍼레이터, 페널티 타임키퍼로 구성된다.",
+    "대회 기간 동안 모든 레퍼리와 게임 커미셔너는 심판장(Head Official)의 감독 아래에 있다. 심판장은 레퍼리와 게임 커미셔너의 배정과 감독을 책임진다.",
+    "모든 테이블 오피셜은 테이블 심판장(Head Table Official)의 감독 아래에 있다. 테이블 심판장은 테이블 오피셜의 배정과 감독을 책임진다."
+   ],
+   "bodyEn": [
+    "Each game shall be officiated by two (2) Referees, known as Referee 1 and Referee 2. The Referees shall be assisted by a Game Commissioner and the Table Officials. The Table Officials will consist of a Scorekeeper, a Timekeeper, a Forty Second Operator, and a Penalty Timekeeper.",
+    "During a tournament, all Referees and Game Commissioners shall be under the supervision of the Head Official. The Head Official is responsible for the assignment and supervision of Referees and Game Commissioners.",
+    "All Table Officials shall be under the supervision of the Head Table Official. The Head Table Official is responsible for the assignment and supervision of the Table Officials."
+   ],
+   "changed2026": true,
+   "changeNote": "기술위원(TC) 자리가 게임 커미셔너로 바뀌고 테이블 심판장 표현이 반영되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 41,
+   "chapter": 6,
+   "titleKo": "오피셜의 권한",
+   "titleEn": "Officials’ jurisdiction",
+   "page": 21,
+   "bodyKo": [
+    "심판들의 의무와 권한은 그들이 경기장에 도착 할 때 시작되고, 모든 정규와 연장 경기의 피리어드가 끝났음을 레퍼리 1이 스코어시트에 그의 서명을 하여 승인함과 함께 종료된다. 이후의 어떠한 사건들도 스코어시트에 기록되어야 하고, 이는 경기 관계자 또는 다른 관련 권한을 가진 사람들에 의해 다루어진다. 심판들은 코트 위와 경기장 내에서 범해지는 규칙의 바이얼레이션에 관하여 판정할 권리를 가지고 있다.",
+    "레퍼리들은 그들이 경기장에 대한 효력을 가지고 있을 때 경기장 외의 상황을 다룰 권리가 있다 (심판이 경기장 내의 상황에 대한 판정권한이 있을 때-경기 진행 중 등- 경기장 외부의 상황에 대해서도 경기의 진행을 위해서 판정할 수 있다). 심판들은 본 규칙의 어떠한 변화도 허가할 권한을 가지고 있지 않다(이 규칙에 의해서만 판정해야하고, 규칙을 변경할 수 없다)."
+   ],
+   "bodyEn": [
+    "The officials’ duties and authority begin when they arrive at the field of play and end with the expiration of all periods of regulation and overtime play as approved by Referee 1 by his signature on the score sheet.",
+    "Any subsequent incidents should be note d on the score sheet and will be dealt with by the tournament organizers or other relevant authorities. The Referees have authority to make decisions regarding infractions of the rules committed on the court and within the field of play.",
+    "The Referees are authorized to deal with situations beyond the field of play when they have an effect on the field of play. The officials are not authorized to approve any changes to these Rules."
+   ]
+  },
+  {
+   "no": 42,
+   "chapter": 6,
+   "titleKo": "정정가능오류",
+   "titleEn": "Correctable errors",
+   "page": 21,
+   "bodyKo": [
+    "경기 운영상의 오류는 다음의 경우에 정정할 수 있다.",
+    "a. 오류는 행정상의 오류여야 한다. 예를 들어 잘못된 벌칙을 적용했거나 경기시계·40초 시계를 적절히 시작하거나 멈추지 못한 경우다. 레퍼리의 판정이나 해석상의 오류는 정정 대상이 아니다.",
+    "b. 정정 요구는 오류가 발생한 뒤 다음 경기 중단 이후 볼이 살아나기 전까지 코치나 팀 주장이 해야 한다.",
+    "c. 요구는 게임 커미셔너(GC)에게 해야 하며, GC는 곧바로 이를 기록하고 다음 경기 중단 때 레퍼리에게 알린다.",
+    "d. 레퍼리 1과 GC는 요청된 정정의 모든 상황을 검토해야 한다. 필요하면 GC는 심판장이나 다른 선임 국제 심판(테크니컬 딜리게이트)의 의견을 구할 수 있다.",
+    "e. 레퍼리 1이 정정 가능한 오류가 발생했다고 판단하면, 그 오류 이후에 일어난 모든 일은 무효가 되고 경기는 오류가 발생한 시점부터 다시 시작된다. 경기시계, 40초 시계, 점수는 오류가 발생한 시점에 맞춰 다시 설정한다.",
+    "f. 요청한 정정이 받아들여지지 않으면 경기는 즉시 재개된다. 정정을 요청한 코치에게 테크니컬 파울이 주어진다.",
+    "g. 코치는 정정을 횟수 제한 없이 요청할 수 있다. 다만 판정이 코치의 의견과 반대면 테크니컬 파울이 주어진다. 코치가 그런 테크니컬 파울을 세 번 받으면 더는 요청할 수 없다. 코치의 의견이 받아들여진 요청은 이 한도에 포함되지 않는다."
+   ],
+   "bodyEn": [
+    "An error in game administration may be corrected under the following circumstances:",
+    "a. The error must be one of administration, such as applying an incorrect sanction or failing to start or stop the game clock or forty (40) second clock appropriately. Errors in judgment or interpretation by the Referees are not subject to correction.",
+    "b. A request for correction must be made by a coach or team captain before the ball becomes live after the next stoppage in play following the error.",
+    "c. The request must be made to the Game Commissioner (GC), who should immediately note it and inform the Referees at the next stoppage in play.",
+    "d. Referee 1 and the GC shall consider all the circumstances of the requested correction. If needed, the GC can seek further input from the Head Official or other senior International official (Technical Delegate).",
+    "e. If Referee 1decides that a correctable error has occurred, everything that took place after the error is nullified and play is resumed from the point at which the error occurred. The game clock, forty (40) second clock and score shall be reset to the point where the error occurred.",
+    "f. If the requested correction was not upheld by Referee 1, play will resume immediately. The coach who requested the correction will be charged with a technical foul.",
+    "g. A coach is permitted to request any number of corrections. However, if the ruling goes against the coach, a technical foul will be awarded. If a coach has received three such technical fouls, no further requests will be permitted. Requests that are ruled in favour of the coach do not count toward this limit."
+   ],
+   "changeNote": "표현만 정리되었습니다(규칙 내용 변화 없음).",
+   "koNew": true
+  },
+  {
+   "no": 43,
+   "chapter": 6,
+   "titleKo": "레퍼리",
+   "titleEn": "Referees",
+   "page": 22,
+   "bodyKo": [
+    "레퍼리는 이 규칙에 따라 경기를 운영한다. 레퍼리는 WWR 심판 매뉴얼에 명시된 동작, 절차, 신호를 사용해야 한다. 레퍼리는 이 규칙에서 구체적으로 다루지 않은 경기 상황을 판정할 권한을 가진다.",
+    "판정을 설명하기 위해 말로 소통해야 한다면 국제 경기에서는 영어를 사용한다. 이는 선수나 코치가 판정 설명을 요구할 권리가 있다는 뜻도, 레퍼리가 직무를 수행하려면 영어를 해야 한다는 뜻도 아니다. 혼란이나 예외적인 사건 때문에 경기가 길게 지연되는 경우에만 적용된다.",
+    "레퍼리는 다음의 사유로 선수를 코트에서 내보낼 권한을 가진다.",
+    "a. 심판이 선수가 머리에 심한 충격을 받았다고 확인하거나, WWR 의료 가이드라인 – 뇌진탕(WWR 뇌진탕 가이드라인 참고)에 따른 뇌진탕 증상을 보이는 경우",
+    "b. 선수에게 열린 상처나 출혈이 있거나 WWR 의료 가이드라인에 명시된 다른 문제가 있으면 60초 레퍼리 타임아웃이 주어진다. 주어진 시간 안에 문제가 해결되지 않으면 그 선수(들)는 교체되어야 한다. 상처의 출혈이 멈추고 깨끗하게 처리되어 덮인 뒤에는 일반적인 교체 절차로 경기에 복귀할 수 있다. 유니폼이 오염되면 깨끗하게 하거나 덮거나 교체해야 한다. 유니폼 교체가 필요하면 번호 변경을 반영해 스코어시트를 수정하며 페널티는 없다. (WWR 체액 가이드라인 참고)",
+    "이 규정에 따라 코트에서 나간 선수는 WWR 의료 가이드라인의 경기 복귀 기준을 충족할 때까지 경기장으로 돌아올 수 없다."
+   ],
+   "bodyEn": [
+    "The Referees are to conduct the game in accordance with these Rules. The Referees shall use the mechanics, procedures, and signals as detailed in the WWR Referee Manual. The Referees have the power to rule on any game situation that is not specifically covered in these Rules.",
+    "If verbal communication is necessary to explain a decision, the English language shall be used for all international games. This does not mean that a player or coach has the right to request an explanation for a call, nor that a Referee must speak English to carry out his duties.",
+    "This applies only to situations involving confusion and lengthy delays in a game that are the result of events that are unusual or outside the scope of the Rules.",
+    "The Referees are empowered to remove a player from the court for the following reasons:",
+    "a. If an official identifies that a player has suffered a significant blow to the head or the player is displaying the symptoms of concussion as per the WWR Medical Guidelines - Concussion (See WWR Concussion Guidelines).",
+    "b. If a player has an open or bleeding wound, or other issues outlined in the WWR Medical Guidelines, a sixty (60) second Referee time out will be provided. If the issue cannot be resolved in the time allotted the player(s) must be substituted.",
+    "The player(s) may return to the game, through the typical substitution process once the wound has stopped bleeding and has been cleaned and covered. Should a uniform become contaminated it must be cleaned, covered, or replaced.",
+    "If uniform replacement is required the score sheet will be amended, at no penalty, to reflect the change in number. (See WWR Bodily Fluid Guidelines).",
+    "Any player that is removed under these rulings will not be permitted to return to the field of play until they have met the return to play criteria outlined in the WWR Medical Guidelines."
+   ],
+   "changed2026": true,
+   "changeNote": "주어진 시간(60초) 안에 처리하지 못하면 교체하도록 명시되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 44,
+   "chapter": 6,
+   "titleKo": "레퍼리 1의 책임",
+   "titleEn": "Responsibilities of Referee 1",
+   "page": 22,
+   "bodyKo": [
+    "레퍼리 1은 경기의 운영에 관한 전반적인 책임을 진다. 그는 또한 다음의 추가적인 의무를 가진다.",
+    "a. 선수들 또는 심판들에 의해서 사용되는 모든 장비에 대한 점검과 승인",
+    "b. 위험하다고 판정된 모든 것의 착용 또는 모든 장비의 사용을 불허",
+    "c. 경기의 시작 전에 모든 다른 심판들에 대한 승인",
+    "d. 경기의 시작, 연장전, 피리어드 인바운드 시작 시 팁 오프의 수행",
+    "e. 경기시계 또는 스코어보드의 작동에 관련되거나 테이블 심판들의 관할하에 있는 다른 영역에 관한 모든 분쟁과 불일치에 대한 최종 결정을 함",
+    "f. 수정 가능한 실수에 대하여 최종 결정을 함",
+    "g. 상황이 정당할 때 경기의 몰수를 선언 (111조)",
+    "h. 각 피리어드의 종료 후와 필요하다면 언제든지 스코어시트가 정확한지를 확인"
+   ],
+   "bodyEn": [
+    "Referee 1 has overall responsibility for the conduct of the game. He has the following additional duties:",
+    "a. Inspect and approve all equipment used by players and officials.",
+    "b. Disallow the wearing of any objects or use of any equipment judged to be dangerous.",
+    "c. Acknowledge all other officials prior to the start of the game.",
+    "d. Administer the tip-off at the start of the game, overtime periods and the inbound at the start of each quarter.",
+    "e. Render the final decision on all conflicts or discrepancies regarding the operation of the game clock or scoreboard, or other areas under the jurisdiction of the table officials.",
+    "f. Render a final decision on a correctable error.",
+    "g. Declare the game a forfeit when conditions warrant. (Article 111)",
+    "h. Verify that the score sheet is correct at the end of each period of play and at any other time it is",
+    "necessary."
+   ],
+   "koRefFixed": [
+    "112조→111조"
+   ]
+  },
+  {
+   "no": 45,
+   "chapter": 6,
+   "titleKo": "게임 커미셔너",
+   "titleEn": "Game Commissioner",
+   "page": 24,
+   "bodyKo": [
+    "게임 커미셔너는 다음의 의무를 가진다.",
+    "a. 기록석에서 테이블 심판들의 업무를 감독",
+    "b. 경기의 운영에 있어서 심판들을 지원",
+    "c. 수정 가능한 오류에 대한 심판들을 지원",
+    "d. 스코어시트의 정확성을 보증",
+    "e. 경기시계의 적절한 작동을 보증",
+    "f. 40초시계의 적절한 작동을 보증",
+    "g. 스코어 보드의 적절한 작동을 보증",
+    "h. 소유권 교대 지시 화살표의 적절한 작동을 보증",
+    "i. 타임아웃 기록을 보증",
+    "j. 체어 항의에 대한 레퍼리 지원"
+   ],
+   "bodyEn": [
+    "The Game Commissioner has the following duties:",
+    "a. Supervise the work of the table officials at the scoring table.",
+    "b. Assist the Referees with the conduct of the game.",
+    "c. Assist the Referees with any correctable error situations.",
+    "d. Ensure the accuracy of the score sheet.",
+    "e. Ensure the proper operation of the game clock.",
+    "f. Ensure the proper operation of the forty (40) second clock.",
+    "g. Ensure the proper operation of the scoreboard.",
+    "h. Ensure the proper operation of the alternate possession direction arrow.",
+    "i. Ensure the recording of time-outs.",
+    "j. Assist the Referees with any chair protests."
+   ]
+  },
+  {
+   "no": 46,
+   "chapter": 6,
+   "titleKo": "스코어키퍼",
+   "titleEn": "Scorekeeper",
+   "page": 24,
+   "bodyKo": [
+    "스코어키퍼는 다음의 의무를 가진다.",
+    "a. 경기 시작 전에 필요한 모든 정보가 스코어시트에 올바로 기재되었는지 확인한다.",
+    "b. 모든 트라이를 시간 순서대로 스코어시트에 기록한다.",
+    "c. 모든 타임아웃을 스코어시트에 기록한다. 요청한 시간, 피리어드, 팀을 함께 적는다.",
+    "d. 각 팀 코트 위 선수들의 등급분류 점수 합계를 확인하고 어느 팀도 최대치를 넘지 않게 한다. (35조)",
+    "e. 스코어보드가 경기시계와 연동되어 있지 않으면 직접 작동한다.",
+    "f. 소유권 교대 화살표가 경기시계와 연동되어 있지 않으면 직접 작동한다.",
+    "g. 어떤 이상이 있으면 레퍼리에게 알린다. 이상이 발생한 뒤 첫 번째 경기 중단 때 알린다."
+   ],
+   "bodyEn": [
+    "The Scorekeeper has the following duties:",
+    "a. Verify that all required information is properly inscribed on the score sheet prior to the start of the game.",
+    "b. Record all tries on the score sheet in chronological order.",
+    "c. Record all time-outs on the score sheet, including the time, the period, and the team who requested it.",
+    "d. Monitor the total classification point value of all players on the court for each team and ensure that no team exceeds the maximum value. (Article 35)",
+    "e. Operate the scoreboard when it is not integrated with the game clock.",
+    "f. Operate the alternate possession arrow when it is not integrated with the game clock.",
+    "g. Inform the Referee of any irregularities. This should be done at the first stoppage in play following the irregularity."
+   ],
+   "changed2026": true,
+   "changeNote": "타임아웃을 기록할 때 시간·피리어드·팀을 함께 적도록 명시되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 47,
+   "chapter": 6,
+   "titleKo": "타임키퍼",
+   "titleEn": "Timekeeper",
+   "page": 25,
+   "bodyKo": [
+    "타임키퍼는 다음의 의무를 가진다.",
+    "a. 게임시계를 작동",
+    "b. 경기시작 3분전임을 레퍼리 1에게 알림",
+    "c. 정규시간과 연장전을 포함한 경기의 모든 피리어드와 휴식의 시간 측정",
+    "d. 정규시간과 연장전의 각 피리어드의 종료를 표시함",
+    "e. 각 타임아웃 (56조) 과 장비로 인한 타임아웃 (58조) 의 시간을 측정하고 50초가 지난 후 음향 신호를 제공한다.",
+    "f. 선수교체를 위한 모든 요청을 심판들에게 알림",
+    "g. 스코어보드가 경기시계에 포함되어 있는 경우 스코어보드를 작동",
+    "h. 소유권 교대 지시 화살표가 경기시계에 포함되어 있는 경우 소유권 교대 지시화살표를 작동",
+    "i. 어떠한 부정행위라도 있다면 심판에게 알리기. 이는 부정행위가 발생한다음의 첫 번째 경기 중지 시에 실시되어야 한다."
+   ],
+   "bodyEn": [
+    "The Timekeeper has the following duties:",
+    "a. Operate the game clock.",
+    "b. Notify Referee 1 at the three (3) minute mark prior to the start of the game.",
+    "c. Time all periods of play and intervals in regulation and overtime play.",
+    "d. Indicate the end of each period of regular and overtime play.",
+    "e. Time each time- out (Article 56) and equipment time- out (Article 58), providing an audible signal after fifty seconds have elapsed",
+    "f. Notify the Referees of all requests for substitutions.",
+    "g. Operate the scoreboard when it is integrated with the game clock.",
+    "h. Operate the alternate possession direction arrow when it is integrated with the game clock.",
+    "i. Inform the Referee of any irregularities. This should be done at the first stoppage in play following the irregularity."
+   ]
+  },
+  {
+   "no": 48,
+   "chapter": 6,
+   "titleKo": "40초 오퍼레이터",
+   "titleEn": "Forty Second Operator",
+   "page": 25,
+   "bodyKo": [
+    "40초시계 오퍼레이터(조작원) 은 다음의 의무를 가진다.",
+    "a. 40초 시계를 작동",
+    "b. 52조에 의해 40초시계의 작동과 재 작동"
+   ],
+   "bodyEn": [
+    "The Forty Second Operator has the following duties:",
+    "a. Operate the forty (40) second scoring clock.",
+    "b. Start or restart the forty (40) second clock as per Article 52"
+   ]
+  },
+  {
+   "no": 49,
+   "chapter": 6,
+   "titleKo": "페널티 타임키퍼",
+   "titleEn": "Penalty Timekeeper",
+   "page": 25,
+   "bodyKo": [
+    "페널티 타임키퍼는 다음의 의무를 가진다.",
+    "a. 페널티 박스 구역을 관리한다.",
+    "b. 페널티가 주어질 때마다 페널티 기록지에 다음 정보를 기록한다. ⅰ. 파울이 발생한 시간과 피리어드 ⅱ. 파울을 범한 팀(A 또는 B) ⅲ. 선수 번호",
+    "c. 호각 전 접촉(90조)에 대한 경고를 기록한다.",
+    "d. 경기시계로 각 페널티 시간을 잰다.",
+    "e. 페널티를 받은 선수가 코트로 돌아갈 수 있는 때를 알린다.",
+    "f. 어떤 이상이 있으면 레퍼리에게 알린다. 이상이 발생한 뒤 첫 번째 경기 중단 때 알린다."
+   ],
+   "bodyEn": [
+    "The Penalty timekeeper has the following duties:",
+    "a. Supervise the penalty box area.",
+    "b. For each penalty awarded, record the following information on the Penalty Record Sheet:",
+    "i. the time and period the foul was committed,",
+    "ii. the team that committed the foul (A or B), and",
+    "iii. the number of the player.",
+    "c. Record warnings for contact before the whistle (Article 90).",
+    "d. Time each penalty using the game clock.",
+    "e. Indicate when penalized players may return to the court.",
+    "f. Inform the Referee of any irregularities. This should be done at the first stoppage in play following the irregularity."
+   ],
+   "changed2026": true,
+   "changeNote": "페널티 기록 항목이 '파울을 범한 선수와 피리어드'에서 '파울이 발생한 시간과 피리어드'로 바뀌었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 50,
+   "chapter": 7,
+   "titleKo": "게임시간",
+   "titleEn": "Playing time",
+   "page": 26,
+   "bodyKo": [
+    "휠체어럭비는 8분씩 4피리어드로 진행된다. 1피리어드와 3피리어드가 끝나면 3분간 휴식한다. 2피리어드가 끝나면 10분간 휴식한다.",
+    "연장전의 각 피리어드는 3분이다. 정규 경기 종료와 첫 연장 피리어드 사이에는 3분간 휴식이 있다. 연장 피리어드가 더 필요하면 연장 피리어드마다 2분간 휴식이 있다."
+   ],
+   "bodyEn": [
+    "Wheelchair rugby is played in four (4) periods of eight (8) minutes. There is a three (3) minute interval at the end of the first period and the third period. There is a ten (10) minute interval at the end of the second period.",
+    "In the event of overtime, each period of overtime shall be three (3) minutes. There shall be a three (3) minute interval between the end of regulation play and the first overtime period. If additional overtime periods are required, there shall be a two (2) minute interval following each overtime period."
+   ],
+   "changed2026": true,
+   "changeNote": "피리어드 사이 휴식이 1·3피리어드 뒤 3분, 2피리어드 뒤 10분으로 고정되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 51,
+   "chapter": 7,
+   "titleKo": "게임시계 작동",
+   "titleEn": "Game clock operations",
+   "page": 26,
+   "bodyKo": [
+    "경기시계는 다음의 시점에 (시간이 가기) 시작해야 한다.",
+    "a. 팁 오프 중, 볼이 가장 높은 지점에 도달한 후 선수가 터치하였을 때",
+    "b. 스로인 중, 볼이 코트 안에 있는 선수가 터치하였을 때경기시계는 (다음의 시점에) 정지되어야 한다.",
+    "a. 정규와 연장전 각 피리어드의 종료 시",
+    "b. 득점이 기록되었을 때",
+    "c. 레퍼리가 바이얼레이션, 파울, 타임아웃 또는 다른 모든 경기의 중지를 신호하기 위하여 자신의 호각을 불 때"
+   ],
+   "bodyEn": [
+    "The game clock shall be started at the following times:",
+    "a. When the ball is touched by a player after reaching its highest point during a tip-off.",
+    "b. When the ball has been touched by a player on the court during a throw- in. The game clock shall be stopped:",
+    "a. At the end of each period of regulation and overtime play.",
+    "b. When a try is scored.",
+    "c. When a Referee blows the whistle to signal a violation, foul, or any other stoppage in play."
+   ]
+  },
+  {
+   "no": 52,
+   "chapter": 7,
+   "titleKo": "40초시계 작동",
+   "titleEn": "Forty Second clock operations",
+   "page": 26,
+   "bodyKo": [
+    "40초 시계는 아웃오브바운드에서 스로인한 뒤 코트 안의 선수가 볼을 터치할 때 시작되고, 팀이 경기 중 살아 있는 볼의 소유권을 얻을 때마다 다시 시작된다. 상대가 볼을 단순히 터치했더라도 볼 소유권이 그대로 유지되면 새로운 40초가 시작되지 않는다.",
+    "다음의 경우 40초 시계를 멈추고 40초로 리셋한다.",
+    "• 심판이 수비자 파울이나 바이얼레이션으로 호각을 불 때",
+    "• 심판이 공격자 파울이나 바이얼레이션으로 호각을 불어 볼 소유권이 바뀔 때",
+    "• 볼을 소유하지 않은 팀과 관련된 동작 때문에 경기가 중단될 때",
+    "다음의 경우 앞서 볼을 소유했던 같은 팀이 스로인을 얻으면 40초 시계를 멈추되 40초로 리셋하지 않는다.",
+    "• 볼이 아웃오브바운드된 경우",
+    "• 같은 팀 선수가 레퍼리 타임아웃(부상, 장비)을 요청한 경우",
+    "• 볼 소유권이 유지되는 헬드볼 상황",
+    "• 볼 소유권이 유지되는 공격자 파울",
+    "볼 소유 팀이 타임아웃을 요청해 부여받았고 40초 시계에 남은 시간이 15초 미만이면, 40초 시계를 멈추고 15초로 리셋한다.",
+    "경기시계에 남은 시간이 40초 미만이거나, 어느 피리어드든 타임아웃이 부여된 뒤 경기시계에 남은 시간이 15초 미만인 상황에서 팀이 경기 중 살아 있는 볼의 소유권을 얻으면 40초 시계를 멈추고 끈다."
+   ],
+   "bodyEn": [
+    "The forty (40) second clock shall be started when touched by a player on court following a throw in from out of bounds and is restarted whenever a team gains possession of a live ball on the playing court.",
+    "The mere touching of the ball by an opponent does not start a new forty (40) second period if the other team remains in possession of the ball. The forty (40) second clock shall be stopped and reset to forty (40) seconds when:",
+    "• An official blows his whistle for a defensive foul or violation.",
+    "• An official blows his whistle for an offensive foul or violation that results in a change of possession.",
+    "• The game is stopped because of an action connected with the team not in possession of the ball. The forty (40) second clock shall be stopped, but not reset to forty (40) seconds, when the same team that previously had possession of the ball is awarded a throw-in as a result of:",
+    "• A ball having gone out-of-bounds.",
+    "• A player of the same team requesting a Referee’s timeout (injury, equipment).",
+    "• A held ball situation where the team retains possession.",
+    "• An offensive foul where the team retains possession. The forty (40) second clock shall be stopped and reset to fifteen (15) seconds when the team in possession of the ball requests, and is awarded a timeout, and time remaining on the forty (40) second clock is less than fifteen (15) seconds.",
+    "Stopped and switched off when a team gains possession of a live ball on the playing court, and there are fewer than forty (40) seconds remaining on the game clock or fifteen (15) seconds remaining on the game clock after a timeout has been awarded in any period."
+   ],
+   "changeNote": "표현만 정리되었습니다(규칙 내용 변화 없음).",
+   "koNew": true
+  },
+  {
+   "no": 53,
+   "chapter": 7,
+   "titleKo": "페널티시계 작동",
+   "titleEn": "Penalty clock operations",
+   "page": 27,
+   "bodyKo": [
+    "경기시계가 페널티의 시간을 측정하기 위한 페널티시계로 사용되어야 한다."
+   ],
+   "bodyEn": [
+    "The game clock shall be used as the penalty clock to measure the timing of penalties."
+   ]
+  },
+  {
+   "no": 54,
+   "chapter": 7,
+   "titleKo": "라이브볼",
+   "titleEn": "Live ball",
+   "page": 27,
+   "bodyKo": [
+    "볼은 레퍼리가 (아래와 같은 상황에서) 호각을 불었을 때 살아있는(경기 중인) 상태가 된다.",
+    "a. 팁 오프를 진행하기 위해 센터서클에 들어가기 전 또는",
+    "b. 선수에게 주어진 볼이 스로인을 위해 (그 선수를) 떠났을 때"
+   ],
+   "bodyEn": [
+    "The ball becomes live when the Referee blows his whistle:",
+    "a. before entering the centre circle to administer a tip-off, or",
+    "b. upon placing the ball at the disposal of a player for a throw-in."
+   ]
+  },
+  {
+   "no": 55,
+   "chapter": 7,
+   "titleKo": "데드볼",
+   "titleEn": "Dead ball",
+   "page": 27,
+   "bodyKo": [
+    "볼은 심판이 득점, 바이얼레이션, 파울, 타임아웃, 혹은 다른 모든 경기의 중지를 신호하기 위하여 자신의 호각을 불었을 때 데드 볼(경기 중이 아닌) 상태가 된다."
+   ],
+   "bodyEn": [
+    "The ball becomes dead when the Referee blows his whistle to signal a try, a violation, a foul, a time-out, or any other stoppage in play."
+   ]
+  },
+  {
+   "no": 56,
+   "chapter": 7,
+   "titleKo": "타임아웃",
+   "titleEn": "Time-outs",
+   "page": 27,
+   "bodyKo": [
+    "각 팀은 전·후반마다 60초 타임아웃을 3개씩 가지며, 정규 경기 중 언제든 사용할 수 있다. 타임아웃이 부여되면 팀은 각자의 벤치로 가야 하고, 50초 경보가 울릴 때까지 그곳에 있어야 한다. 전반이 끝났을 때 남은 타임아웃은 후반으로 넘어가지 않는다.",
+    "정규 경기가 끝났을 때 남은 타임아웃은 연장전으로 넘어가지 않는다. 연장전에서는 팀마다 연장 피리어드마다 타임아웃 1개를 받는다. 연장 피리어드가 끝났을 때 남은 타임아웃은 다음 연장 피리어드로 넘어가지 않는다.",
+    "코치나 보조코치만 다음의 시점에 타임아웃을 요청할 수 있다.",
+    "• 트라이 뒤의 타임아웃 요청은 트라이가 인정되기 전에 타임키퍼에게 전달해야 인정된다. 타임키퍼는 다음 경기 중단 때 레퍼리진에 요청을 전달한다. 타임아웃은 볼이 데드가 된 뒤에만 부여된다.",
+    "• 트라이가 아닌 다른 중단으로 볼이 데드가 된 경우에는 인바운드하는 선수가 볼을 받을 수 있게 놓일 때까지 요청할 수 있다.",
+    "타임아웃 요청에는 어떠한 조건도 붙일 수 없다. 코치는 타임키퍼가 레퍼리진에 요청을 알리기 전까지 요청을 철회할 수 있다.",
+    "레퍼리가 타임아웃 요청을 받아들이면 호각을 불고 타임아웃이 부여되었음을 신호하며 어느 팀이 요청했는지 알린다. 이 정보는 스코어시트에 기록된다.",
+    "50초 경보가 울리면 팀이 코트로 돌아와 경기 재개를 준비해야 한다는 뜻이다. 타임아웃 시간이 끝나면 경기는 스로인으로 재개된다.",
+    "공격 팀에 타임아웃이 부여되고(공격 팀의 장비 타임아웃 뒤는 제외) 쿼터나 연장 피리어드에 남은 시간이 1분 미만이며 스로인 위치가 백코트라면, 코치는 볼을 프론트코트로 옮겨 줄 것을 요청할 수 있다. 볼을 옮기면 스로인 위치는 트라이 라인에 가장 가까운 페널티 박스 옆이 된다.",
+    "경기 재개 경보 뒤 선수들은 자기 위치를 잡을 시간을 준다. 레퍼리가 선수들이 지연한다고 판단하면 경기는 다음과 같이 재개된다.",
+    "a. 스로인하는 팀이 지연하면 레퍼리는 적절한 지점에서 볼을 바닥에 놓고 스로인 절차를 시작한다. 스로인 바이얼레이션이 나기 전에 인바운드하는 선수가 자기 위치를 잡으면, 레퍼리는 볼을 그 선수에게 맡기고 8초 카운트를 계속한다.",
+    "b. 스로인하지 않는 팀이 늦으면 레퍼리는 볼을 상대 팀에 주어 스로인하게 하고 경기를 재개한다."
+   ],
+   "bodyEn": [
+    "Each team has three (3) time-outs, of sixty (60) seconds in length, per half that may be taken any time during regulation play. Teams must go to their respective benches when the time out is awarded and must remain there until the fifty (50) second warning sounds. Any time-outs remaining at the end of the first half will not be carried over to the second half.",
+    "At the end of regulation play, any time-outs remaining will not be carried over into overtime play. In the event of overtime, each team will receive one (1) time-out per overtime period. Any time-outs remaining at the end of the overtime period will not be carried over into subsequent overtime periods.",
+    "Only the coach or assistant coach may request a time-out at the following times in the game:",
+    "• A request for a time out after a Try must be provided to the timekeeper prior to the Try being scored in order for the request to be granted. The timekeeper will relay the request to the referee crew at the next stoppage in play. The time out will only be granted once the ball is dead.",
+    "• A request for a time out on a dead ball created by any stoppage that is not a Try, until the ball is placed at the disposal of the athlete inbounding the ball.",
+    "No conditions may be placed on the time out request. The coach may withdraw the time out request prior to the timekeeper signalling the request to referee crew.",
+    "When the Referee accepts a request for a time-out, they shall blow the whistle, signal that a time-out has been awarded, and indicate the team that has requested the time- out. This information shall be inscribed on the score sheet.",
+    "When the fifty (50) seconds warning sounds it indicates that teams must return to the court and prepare to resume play. When the time-out has expired, play shall resume with a throw-in.",
+    "If a time-out is granted to the offensive team (except after an offensive Equipment Timeout) with less than one (1) minute remaining in the quarter or overtime period, and the location of the throw in is in the backcourt, the coach may request the ball be advanced to the front court. When the ball is advanced, the throw in location will be beside the penalty box closest to the try line.",
+    "Following the warning to resume play, players shall be given time to position themselves. If a Referee judges that a player or players are delaying, play shall resume as follows:",
+    "a. If the team taking the throw -in is delaying, the Referee will begin the throw -in procedure at the appropriate point, placing the ball on the floor. If the in-bounding player takes his position before a violation of the throw - in occurs, the Referee shall p lace the ball at his disposal and continue the eight (8) second count.",
+    "b. If the team not taking the throw-in is late, the Referee shall give the ball to the other team for the throw-in and play shall resume."
+   ],
+   "changed2026": true,
+   "changeNote": "타임아웃이 전·후반 각 3개(60초)로 바뀌고, 부여 시 벤치로 가야 하며, 요청 시점과 철회 규정이 새로 정리되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 57,
+   "chapter": 7,
+   "titleKo": "레퍼리 타임아웃",
+   "titleEn": "Referees’ time-out",
+   "page": 28,
+   "bodyKo": [
+    "레퍼리는 경기 중 어떠한 때라도 어떠한 상황에 주의를 기울이고 해결하기 위하여 경기를 중지시킬 수 있다. 경기 중의 이러한 중지의 지속시간은 각 상황에 따라 다를 수 있다. 다음 규칙들은 특별한 종류의 상황들에 적용된다.",
+    "a. 상황이 발생한 장소에서 누구라도 위험한 경우 심판은 즉시 경기를 중지시켜야 한다. 이 정지는 이 상황을 해결하는데 필요한 만큼 계속되어야 한다.",
+    "b. 선수가 부상을 당한 경우, 심판은 즉시 경기를 중지시켜야 한다. 이 정지는 부상당한 선수가 의료 지원을 하려 이송되는데 필요한 만큼 계속되어야 한다. 만약 부상이 경미하고 선수가 처치를 받고 1분 이내로 경기에 복귀하는 게 가능하다면 그렇게 할 수 있다. 만약 선수가 1분 이내에 경기에 복귀할 수 없다면, 반드시 타임아웃이 요청되거나 다른 선수로 교체되어야 한다.",
+    "c. 테이블 심판들이나 경기시계의 작동에 영향을 줄 수 있는 그들의 장비에 문제가 있다면, 심판은 즉시 경기를 중지시켜야 한다. 이 중지는 이 상황을 해결하는데 필요한 만큼 계속되어야 한다.",
+    "d. 테이블 심판들이나 경기시계의 작동에 영향을 주지 않는 그들의 장비에 문제가 있다면, 심판은 다음 번 경기의 중지(파울 등으로 인한 경기 의 중지) 때에 경기를 중지시켜야 한다. 경기 중단은 이 상황을 해결하는데 필요한 만큼 계속되어야 한다.",
+    "e. 만약 수정 가능한 오류가 발생하였다면 (42조) 심판은 그 오류를 인지 하자마자 경기를 중지시켜야 한다."
+   ],
+   "bodyEn": [
+    "A Referee may stop play at any time to attend to and resolve any situation. The duration of this stoppage in play will vary with each situation. The following rules apply to specific types of situation:",
+    "a. If a situation occurs which places any person in danger, the Referee shall stop play immediately. The stoppage shall last as long as is required to resolve the situation.",
+    "b. If a player is injured, the Referee shall stop play immediately. The stoppage shall last as long as is required to remove the injured player to medical assistance. If the injury is minor and the player can be treated and return to play within one (1) minute, he may do so. If the injured player cannot return to play within one (1) minute, a time-out must be requested, or another player must be substituted.",
+    "c. If there is a problem with the table officials or their equipment that affects the operation of the game clock, the Referee shall stop play immediately. The stoppage shall last as long as is required to resolve the situation.",
+    "d. If there is a problem with the table officials or their equipment that does not affect the operation of the game clock, the Referee shall stop play at the next stoppage in play. The stoppage shall last as long as is required to resolve the situation.",
+    "e. If a correctable error situation occurs, (Article 42) the Referee shall stop play as soon as he is aware of the error."
+   ]
+  },
+  {
+   "no": 58,
+   "chapter": 7,
+   "titleKo": "장비 타임아웃",
+   "titleEn": "Equipment time-out",
+   "page": 28,
+   "bodyKo": [
+    "이 조항은 넘어짐으로 인해 움직일 수 없게 된 선수에게는, 같은 시점에 장비 문제가 겹쳤더라도 적용되지 않는다.",
+    "선수의 휠체어나 장비 일부가 고장 나거나 손상되었거나 조정이 필요하면 그 선수는 경기 중단을 요청할 수 있다. 레퍼리는 다음과 같이 중단을 허용한다.",
+    "a. 장비 문제가 누군가를 위험하게 하면 레퍼리는 즉시 경기를 중단한다.",
+    "b. 위험이 없고 선수가 움직일 수 있으면 다음 경기 중단 때 경기를 중단한다.",
+    "c. 위험이 없고 선수가 움직일 수 없으며 공격 팀이 득점 위치에 있지 않으면 즉시 경기를 중단한다.",
+    "d. 위험이 없고 선수가 움직일 수 없으며 공격 팀이 득점 위치에 있으면 현재 공격 기회가 끝나는 대로 경기를 중단한다.",
+    "장비 타임아웃이 주어지면 해당 선수는 문제를 해결할 1분을 갖는다. 1분 안에 해결되지 않으면 타임아웃을 요청하거나 다른 선수로 교체해야 한다.",
+    "장비 타임아웃은 교체 기회가 아니다. 장비 타임아웃을 요청한 선수의 장비 고장 때문에 경기를 할 수 없는 경우에는 교체가 허용될 수 있다."
+   ],
+   "bodyEn": [
+    "This article does not apply to a player who is immobilized due to a fall, even if there is an equipment problem at the same time.",
+    "If any part of a player’s wheelchair or equipment malfunctions, becomes damaged, or requires some adjustment, he may request a stoppage in play. The Referee will grant the stoppage as follows:",
+    "a. If the equipment problem is placing anyone in danger, the Referee shall stop play immediately.",
+    "b. If there is no danger and the player is mobile, the Referee shall stop play at the next stoppage in play.",
+    "c. If there is no danger, the player is immobile, and the offensive team is not in a scoring position, the Referee shall stop play immediately.",
+    "d. If there is no danger, the player is immobile, and the offensive team is in a scoring position, the Referee shall stop the play as soon as the current scoring opportunity has ended. When an equipment time-out is granted, the affected player has one (1) minute to resolve the problem. If the problem cannot be resolved in one (1) minute, a time- out must be requested, or another player must be substituted.",
+    "An equipment timeout is not an opportunity for a substitution. Substitutions may be permitted if the player requesting the equipment time- out has an equipment malfunction that prevents them from playing."
+   ],
+   "changed2026": true,
+   "changeNote": "넘어짐으로 움직일 수 없는 선수에게는 이 조항을 적용하지 않는다는 단서가 붙었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 59,
+   "chapter": 7,
+   "titleKo": "넘어진 선수",
+   "titleEn": "Fallen player",
+   "page": 29,
+   "bodyKo": [
+    "이 조항은 오로지 장비 문제만으로 움직일 수 없게 된 선수에게는 적용되지 않는다.",
+    "넘어진 선수(Fallen Player)는 넘어짐 때문에 더는 휠체어를 움직일 수 없는 상황에 있는 선수다. 넘어진 선수는 스스로 경기에 복귀할 수 없으므로 경기는 가능한 첫 기회에 중단되어야 한다. 레퍼리는 다음과 같이 경기를 중단한다.",
+    "a. 공격 팀이 득점 위치에 있지 않으면 즉시 경기를 중단한다.",
+    "b. 넘어진 선수가 위험하거나 다쳤으면 즉시 경기를 중단한다.",
+    "c. 넘어진 선수가 경기를 방해하는 위치에 있으면 즉시 경기를 중단한다.",
+    "d. 공격 팀이 득점 위치에 있고 위험이나 부상이 없으며 넘어진 선수가 경기를 방해하지 않으면, 현재 공격 기회가 끝나는 대로 경기를 중단한다.",
+    "경기가 중단되면 레퍼리는 넘어진 선수의 팀 관계자가 코트에 들어와 도울 수 있게 한다. 팀 관계자는 바닥 추가 손상을 막기 위해 매트를 사용해 휠체어를 세워야 한다. 경기는 넘어진 선수가 준비되는 대로 재개된다. 넘어진 선수가 경기에 복귀할 준비를 하는 데 1분 넘게 걸리면 타임아웃을 요청하거나 다른 선수로 교체해야 한다."
+   ],
+   "bodyEn": [
+    "This article does not apply to a player who is immobilized solely due to an equipment problem.",
+    "A fallen player is one who is in a position where he is no longer able to move his wheelchair as a result of a fall. As a fallen player may not return to play by his own effort, play must be stopped at the first possible opportunity. The Referee will stop the play as follows:",
+    "a. If the offensive team is not in a scoring position, the Referee shall stop play immediately.",
+    "b. If the fallen player is in danger or is injured, the Referee shall stop play immediately.",
+    "c. If the fallen player is in a position that interferes with the play, the Referee shall stop play immediately.",
+    "d. If the offensive team is in a scoring position, there is no danger or injury, and the fallen player is not in a position that interferes with the play, Referee shall stop the play as soon as the current scoring opportunity has ended.",
+    "After the Referee has stopped play, he shall permit the fallen player’s team staff to enter the court to provide assistance. Team staff must use a mat to right the chair to protect the floor from further damage.",
+    "Play will resume as soon as the fallen player is ready. If more than one (1) minute is required for the fallen player to be ready to resume play, a time-out must be requested, or another player must be substituted."
+   ],
+   "changed2026": true,
+   "changeNote": "장비 문제만으로 움직일 수 없는 선수 예외가 이 조항 첫머리로 정리되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 60,
+   "chapter": 8,
+   "titleKo": "경기의 시작",
+   "titleEn": "Beginning the game",
+   "page": 30,
+   "bodyKo": [
+    "경기는 센터서클에서 팁 오프로 시작되어야 한다. 레퍼리 1이 팁 오프를 위해 센터 서클에 들어서기 전에 공식 접촉의 시작을 표시하기 위하여 호각을 불 때 경기가 시작된다. 팀이 경기의 시작 시기에 4명의 선수들을 출전시키지 못한 경우, 경기는 시작되지 않아야 한다. 만약 그 팀이 예정된 시작 시간의 15분 이내에도 4명의 선수들을 출전시키지 못하면 그들은 경기를 실격 당한다."
+   ],
+   "bodyEn": [
+    "The game shall be started with a tip-off in the centre circle. The game begins when Referee 1 blows his whistle to indicate the start of legal contact before entering the centre circle for the tip-off.",
+    "If a team cannot field four (4) players at the beginning of the game, the game shall not begin. If that team is unable to field four (4) players within fifteen (15) minutes of the scheduled start time, they shall forfeit the game."
+   ]
+  },
+  {
+   "no": 61,
+   "chapter": 8,
+   "titleKo": "팁 오프",
+   "titleEn": "Tip-off",
+   "page": 30,
+   "bodyKo": [
+    "팁 오프에 앞서, 각 팀에서 센터로 불리는 한 명의 선수가 센터서클로 들어와야 한다. 이 선수들은 그들이 수비하는 트라이라인과 같은 쪽의 센터라인 쪽에 위치해야 한다(자신의 백코트 쪽에 위치한다). 모든 나머지 선수들은 센터서클 밖에 위치해야 한다. (센터) 서클의 밖에 위치한 같은 팀에 속한 선수들은 만약 상대방 선수가 한 자리를 요구하면 서클 주위의 이웃한 자리를 점유할 수 없다(상대편의 요구가 없으면 같은 팀의 선수들이 연이어 서클 주위에 위치할 수 있지만 상대편의 선수가 자리를 요구하면 양보해야 한다).",
+    "팁 오프를 진행하기 위해 레퍼리 1은 공식 접촉의 시작을 표시하기 위해 호각을 불고, 이어서 센터 서클로 들어가야 한다. 그는(레퍼리 1) 센터 사이로 그들 누구라도 닿을 수 있는 높이보다 더 높게 올라갔다가 그들 사이로 떨어질 수 있도록 수직으로 볼을 토스해야 한다. 볼이 최고 높이에 도달한 후 바닥에 닿기 전에 볼은 반드시 센터 중의 한 명이 한번 이상은 접촉해야 한다. 다음과 같은 상황에서는 팁 오프가 다시 실시되어야 한다.",
+    "a. 만약 양 팀에 의해 동시에 바이얼레이션이 발생하였다면",
+    "b. 만약 센터가 볼을 접촉하기 전에 바닥에 닿았다면",
+    "c. 만약 레퍼리 1이 토스를 잘못하였다면"
+   ],
+   "bodyEn": [
+    "Prior to the tip-off, one (1) player from each team, referred to as a centre, shall enter the centre circle. These players shall take up a position on the same side of the centre line as the try line they are defending.",
+    "All other players must position themselves outside of the centre circle. Players outside the circle who are on the same team may not occupy adjacent positions around the circle if an opposing player requests one of the positions.",
+    "To administer the tip-off, Referee 1 shall blow his whistle to indicate the start of legal contact and then enter the centre circle. He shall toss the ball vertically between the centres so that it reaches a height greater than either of them can reach and then drops between them.",
+    "After the ball has reached its highest point, it must be touched at least once by at least one (1) of the centres before it touches the floor. The tip-off shall be re-taken in the following situations:",
+    "a. If there is a simultaneous violation by both teams.",
+    "b. If the ball touches the floor before it is touched by a centre.",
+    "c. If Referee 1 makes a bad toss."
+   ]
+  },
+  {
+   "no": 62,
+   "chapter": 8,
+   "titleKo": "소유권 교대",
+   "titleEn": "Alternating possession",
+   "page": 30,
+   "bodyKo": [
+    "팀들은 볼의 소유권을 정규경기의 두 번째, 세 번째, 네 번째 피리어드의 시작 때에 교대 한다; 그리고 각 헬드볼 이후에 교대하게 된다. (71조). 팁 오프 이후 볼의 소유권을 갖지 못한 팀에게 소유권 교대 절차에 있어서 첫 번째 소유권이 주어진다(팁 오프 때 볼을 소유하지 못한 팀에게 2피리어드의 시작 때 볼의 소유권이 주어진다). 만약 팁 오프의 바이얼레이션이 팀에게 볼의 소유권을 갖게 했다면, 다른 팀에게 교대 절차의 첫 번째 소유권이 주어진다. 소유권 교대 지시 화살표는 이 절차에 따라 다음의 소유권 차례의 방향을 표시해야 한다. 피리어드의 시작 또는 헬드볼 이후에 적법하게 볼이 인바운드 된 이후 화살표는 다음 소유권 교대의 방향을 표시하게 바뀌어야 한다."
+   ],
+   "bodyEn": [
+    "Teams will alternate taking possession of the ball at the start of the second, third, and fourth periods of regulation time; and following each held ball (Article 71). The team that does not gain possession of the ball after the tip -off shall be awarded the first possession under the alternating possession procedure.",
+    "If a violation of the tip-off led to a team being awarded possession of the ball, the other team shall be given the first possession of the alternating process. The alternating possession directional arrow shall indicate the direction of play for the next possession under this procedure.",
+    "After the ball has been legally in-bounded at the start of a period or after a held ball, the arrow shall be switched to indicate the direction for the next alternating possession."
+   ]
+  },
+  {
+   "no": 63,
+   "chapter": 8,
+   "titleKo": "선수의 위치",
+   "titleEn": "Location of a person",
+   "page": 30,
+   "bodyKo": [
+    "사람의 위치는 그 사람과 바닥 사이의 접촉 지점에 의해 결정된다. 만약 사람의 어느 부분이라도 아웃오브바운드 지역과 접촉하고 있다면 그 사람은 아웃오브바운드로 간주된다. 만약 코트의 한 부분에 접촉하고 있는 사람이 코트의 다른 부분에 새로이 접촉하였다면, 그는 새로운 부분에 있는 것으로 간주된다(백코트에 접촉해 있던 사람이 프런트코트에 새로이 접촉하였다면 그는 프런트코트에 있는 것으로 간주된다)."
+   ],
+   "bodyEn": [
+    "The location of a person is determined by the point of contact between that person and the floor. If any part of a person is in contact with an out- of-bounds area, the person is considered to be out of bounds. If a person who is in one part of the court makes contact with another part of the court, he is considered to be in the new part."
+   ]
+  },
+  {
+   "no": 64,
+   "chapter": 8,
+   "titleKo": "볼의 위치",
+   "titleEn": "Location of the ball",
+   "page": 31,
+   "bodyKo": [
+    "볼의 위치는 볼이 바닥 또는 사람과 접촉하고 있는 지점에 의해 결정된다. 볼이 바닥 또는 사람과 접촉하지 않고 있을 때 볼의 위치는 볼의 마지막 접촉 지점에 의해서 결정된다. 바닥 또는 사람과 접촉이 새로이 발생한 때의 새로운 위치는 새로운 접촉의 위치에 의해서 결정된다. 선수의 신체 또는 휠체어의 어느 부분이라도 볼과 접촉하였을 때 볼이 접촉한 것인지 선수에 의해서 접촉된 것인지는 반드시 선수의 고의적인 행동의 결과인 것으로 고려된다(볼과의 접촉이 있는 경우는 모두 선수가 의도적으로 접촉한 것으로 간주한다)."
+   ],
+   "bodyEn": [
+    "The location of the ball is determined by its point of contact with the floor or with a person. When the ball is not in contact with the floor or with a person, its location is determined by its last point of contact. When contact is re-established with the floor or with a person, the new location is determined by the new point of contact.",
+    "The ball is considered to have touched or been touched by a player when any part of the player’s body or wheelchair touches the ball, whether or not this is the result of a deliberate action by the player."
+   ]
+  },
+  {
+   "no": 65,
+   "chapter": 8,
+   "titleKo": "볼의 소유권",
+   "titleEn": "Possession of the ball",
+   "page": 31,
+   "bodyKo": [
+    "a. 다음과 같을 때 선수가 볼의 소유권을 가진다.ⅰ. 그가 그의 손에 볼을 잡고 있거나 그의 무릎(으로 보호하거나) 또는 자신의 몸이나 휠체어의 어느 부분에라도 기대어 확보하고, 볼이 바닥과 닿지 않은 경우ⅱ. 그가 손 또는 손으로 볼을 단단히 하여 상대방이 볼을 자유롭고 쉽게 움직이는 것을 막고 있는 경우ⅲ. 스로인을 수행하려고 볼을 받은 경우 (69조)ⅳ. 그가 자발적으로 라이브 볼을 받은 경우 (54조), 또는ⅴ. 그가 볼을 드리블하는 행위 중일 때 (67조)",
+    "b. 팀은 그 팀의 선수가 볼의 소유권을 가지고 있을 때 볼의 소유권을 얻는다. 팀의 소유권은 다음까지 계속 된다:ⅰ. 상대편 선수가 볼의 소유권을 얻은 경우, 또는ⅱ. 볼이 죽은 것(데드볼) 으로 선언될 때팀의 소유권은 볼이 선수들 사이에서 패스되고 있는 동안은 끝나지 않는다.(패스 중일 때도 팀이 볼의 소유권을 계속 가지고 있는 것이다)."
+   ],
+   "bodyEn": [
+    "i. A player has possession of the ball when:",
+    "ii. he holds the ball in his hands or secured on his lap or against any part of his body or wheelchair, and the ball is not in contact with the floor,",
+    "iii. he has a hand or hands firmly on the ball thus preventing an opponent from having free and easy movement of the ball,",
+    "iv. he is given the ball to execute a throw-in (Article 69),",
+    "v. he voluntarily accepts a live ball (Article 54), or",
+    "vi. he is in the act of dribbling the ball (Article 67). A team gains possession of the ball when a player on that team has possession of the ball. Team possession continues until:",
+    "i. an opposing player gains possession of the ball, or",
+    "ii. the ball is declared dead. Team possession does not end while the ball is being passed between players."
+   ]
+  },
+  {
+   "no": 66,
+   "chapter": 8,
+   "titleKo": "볼 다루기",
+   "titleEn": "Playing the ball",
+   "page": 31,
+   "bodyKo": [
+    "볼은 손 또는 전완 또는 무릎 또는 휠체어의 위에서 운반되기 다뤄질 수 있다. 볼이 무릎 위에서 운반될 때에는, 최소한 볼의 75%가 보여야 한다. 볼은 패스, 굴리기, 치기, 가볍게 치기, 드리블, 튀기기, 토스, 또는 다른 어떠한 방법으로도 나아갈 수 있다. 볼은 차기 또는 무릎 아래 다리의 어떠한 부분에 의해서도 의도적으로 부딪쳐질 수 없다."
+   ],
+   "bodyEn": [
+    "The ball may be played with the hands or forearms or carried on the lap or wheelchair. When the ball is carried on the lap, at least seventy-five (75) percent of the ball must be visible. The ball may be passed, rolled, batted, tapped, dribbled, bounced, tossed, or advanced in any other manner. The ball may not be kicked or deliberately struck by any part of the leg below the knee."
+   ]
+  },
+  {
+   "no": 67,
+   "chapter": 8,
+   "titleKo": "볼 드리블",
+   "titleEn": "Dribbling the ball",
+   "page": 31,
+   "bodyKo": [
+    "드리블 중에 요구되는 (휠체어) 밀기, (휠체어가 제자리에서) 축으로 피벗(회전) 하기 또는 다른 휠체어의 움직임의 횟수에 대한 제한은 없다. 드리블은 반드시 볼을 바닥에 적극적으로 밀거나 떨어뜨리는 행동이어야 한다. 놓치거나 치는 것 또는 볼의 소유권을 획득하기 위한 시도를 하는 선수는 볼을 드리블하는 것이 아닌 것으로 간주된다."
+   ],
+   "bodyEn": [
+    "There are no restrictions as to the number of pushes, pivots, or other wheelchair movements that are required between dribbles. A dribble must be a positive act of pushing or dropping the ball to the floor. A player who fumbles, bats, or attempts to gain p ossession of the ball is not considered to have dribbled the ball."
+   ]
+  },
+  {
+   "no": 68,
+   "chapter": 8,
+   "titleKo": "득점",
+   "titleEn": "Scoring",
+   "page": 32,
+   "bodyKo": [
+    "볼을 소유한 선수가 상대 팀 트라이 라인의 양쪽 포스트 사이에서 아웃오브바운드 구역에 두 바퀴가 닿으면 트라이가 인정된다. 선수는 어느 바퀴든 트라이 라인을 넘기 전에 볼을 소유하고 있어야 한다. 볼이 선수에게서 굴러 떨어지고 있으면 볼을 확보한 것이 아니므로(65조) 소유한 것으로 보지 않는다. 트라이가 인정되면 레퍼리는 호각을 불고 트라이를 신호한 뒤 볼을 확보해 상대 팀에 스로인용으로 넘긴다. 트라이는 1점이다.",
+    "이 절에서 프론트코트와 백코트는 인바운드를 하는 볼 소유 팀을 기준으로 한 프론트코트와 백코트를 뜻한다."
+   ],
+   "bodyEn": [
+    "A try is scored when a player in possession of the ball has two (2) wheels touching the out-of-bounds area across the opposing team’s try line, between the two (2) posts marking the ends of the try line.",
+    "The player must have possession of the ball before either wheel crosses the try line. If the ball is rolling off a player, it is not secured ( Article 65) and therefore the player does not have possession.",
+    "When a try is scored the Referee will sound his whistle, signal the try, and secure the ball to give to the opposing team for a throw-in. One (1) point shall be awarded for each try.",
+    "In this section, the terms “frontcourt” and “backcourt” refer to the frontcourt and backcourt of the team taking possession of the ball for the in-bound."
+   ],
+   "changed2026": true,
+   "changeNote": "프론트코트·백코트 기준 문구가 69조에서 이 조항으로 옮겨졌습니다.",
+   "koNew": true
+  },
+  {
+   "no": 69,
+   "chapter": 8,
+   "titleKo": "스로인",
+   "titleEn": "Throw–in",
+   "page": 32,
+   "bodyKo": [
+    "스로인은 트라이, 바이얼레이션 또는 파울, 타임아웃, 그 밖의 경기 중단 뒤 볼을 경기에 투입할 때, 그리고 정규 경기의 2·3·4피리어드를 시작할 때 사용한다. 스로인마다 볼 소유권을 갖는 팀이 스로인을 할 선수 한 명을 지정한다.",
+    "이 선수를 인바운더라 한다. 인바운더는 스로인 위치의 코트 밖에 자리를 잡는다. 레퍼리는 인바운더의 무릎에 볼을 놓고 호각을 불어 볼이 살아 있음을 알린다.",
+    "그다음 인바운더는 볼을 던지거나, 굴리거나, 바닥에 튕기거나, 쳐서 코트 안으로 보낼 수 있다. 스로인은 다음 위치에서 한다.",
+    "a. 트라이 뒤: 인바운더가 고른 엔드라인의 한 지점",
+    "b. 바이얼레이션 뒤(팁 오프 바이얼레이션은 제외): 바이얼레이션이 발생했을 때 볼이 있던 위치에서 가장 가까운 사이드라인의 한 지점",
+    "c. 팁 오프 바이얼레이션 뒤: 기록석 반대편 사이드라인에서 백코트에 있고 센터라인에 가장 가까운 지점",
+    "d. 파울 뒤: 파울이 발생했을 때 볼이 있던 위치에서 가장 가까운 사이드라인의 한 지점",
+    "e. 타임아웃 뒤:",
+    "ⅰ. 트라이로 볼이 데드가 된 상황에서 타임아웃이 부여되었으면 인바운더가 고른 엔드라인의 한 지점",
+    "ⅱ. 백코트에서 타임아웃이 불리고 경기시계에 남은 시간이 1분 미만이면 볼을 프론트코트로 옮길 수 있다. 옮기면 트라이 라인에 가장 가까운 페널티 박스 옆이 된다.",
+    "ⅲ. 그 밖의 경우에는 타임아웃이 불렸을 때 볼이 있던 위치에서 가장 가까운, 기록석 반대편 사이드라인의 한 지점",
+    "f. 헬드볼 뒤: 기록석 반대편에서 헬드볼이 일어난 위치에 가장 가까운 사이드라인의 한 지점",
+    "g. 정규 경기의 2·3·4피리어드 시작: 기록석 반대편 사이드라인에서 백코트에 있고 센터라인에 가장 가까운 지점"
+   ],
+   "bodyEn": [
+    "A throw-in is used to put the ball in play after a try, a violation or foul, a time out, any other stoppage in play, and to start the second, third, and fourth periods of regulation play. For each throw -in, the team taking possession of the ball will designate one (1) player to execute it.",
+    "This player is referred to as the in-bounder. The in-bounder shall position himself out-of-bounds at the throw-in location. The Referee shall place the ball on the lap of the in-bounder and blow his whistle to indicate that the ball is live.",
+    "The in-bounder may then throw, toss, bounce, bat, or otherwise propel the ball onto the court. Throw-ins shall take place at the following locations:",
+    "a. After a try: at a point on the end line chosen by the in-bounder.",
+    "b. After a violation, except for a violation of the tip -off: at a point on the sideline nearest to the location of the ball when the violation occurred.",
+    "c. After a violation of the tip-off: at a point on the sideline opposite the scoring table, in the backcourt and nearest to the centreline.",
+    "d. After a foul: at a point on the sideline nearest to the location of the ball when the foul occurred.",
+    "e. After a time-out:",
+    "i. if awarded when a try created the dead ball opportunity, the throw-in shall take place at a point on the end line chosen by the in-bounder; and",
+    "ii. if it was called in the backcourt and there was less than one (1) minute left on the game clock, the ball may advance the ball to the front court. If advanced, the location shall be beside the penalty box closest to the try line; and",
+    "iii. at any other time, the throw -in shall take place at a point on the sideline opposite the scoring table nearest to the location of the ball when the time-out was called.",
+    "f. After a held ball: at a point on the sideline opposite the scoring table and nearest to location of the held ball.",
+    "g. At the start the second, third, and fourth periods of regulation play: at a point on the sideline opposite the scoring table, in the backcourt and nearest to the centreline."
+   ],
+   "changed2026": true,
+   "changeNote": "타임아웃 뒤 볼을 프론트코트로 옮길 수 있는 요건이 정리되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 70,
+   "chapter": 8,
+   "titleKo": "교체",
+   "titleEn": "Substitutions",
+   "page": 33,
+   "bodyKo": [
+    "어느 팀이건 득점 이후를 제외하고는 경기가 중지된 후에 몇 명의 선수라도 교체할 수 있다. 만약 득점 이후에 추가적으로 경기의 중지가 있다면, 교체가 가능하다. 교체선수들은 교체를 기록석에 알리며, 경기가 중단되기 전에 선수교체 지역에서 보고한다. 다음 번 경기의 중지 때 타임키퍼가 교체가 요구되었음을 심판들에게 신호한다. 만약 심판이 교체를 허락하기로 결정하면, 그는 요청에 동의하고 교체선수들이 코트에 들어오는 것을 허락한다. 교체를 요청한 선수들이 코트에 즉시 들어가고 경기를 할 준비가 되지 않는 경우 심판은 허가를 취소하고 경기를 계속할 수 있다. 교체선수들은 벤치에서 곧바로 코트로 들어가는 것이 금지되어 있다. 페널티를 수행하고 있는 선수는 교체할 수 없다."
+   ],
+   "bodyEn": [
+    "Either team may substitute any number of players after a stoppage in play, except after a try has been scored. If there is an additional stoppage after the try, substitutions may be made. Substitutes must inform the score table of the substitution and report to the substitution area prior to the stoppage in play.",
+    "At the next stoppage in play, the Timekeeper will signal the Referees that a substitution has been requested. If the Referee determines that a substitution is permitted, he will acknowledge the request and permit the substitutes to enter the court.",
+    "If the players requesting a substitution are not immediately ready to enter the court and play, the Referee may deny them permission and proceed with the game. Substitutes are not permitted to enter the court directly from the bench.",
+    "No substitution may be made for a player who is serving a penalty."
+   ]
+  },
+  {
+   "no": 71,
+   "chapter": 8,
+   "titleKo": "헬드볼",
+   "titleEn": "Held ball",
+   "page": 33,
+   "bodyKo": [
+    "다음과 같을 때 헬드볼이 발생한다.",
+    "a. 2명 또는 그 이상의 상대편 선수들이 동시에 볼의 소유권을 가졌을 때(65조)",
+    "b. 2명 또는 그 이상의 상대편 선수들이 동시에 볼이 아웃오브바운드 되게 하였을 때",
+    "c. 라이브 볼이 2명 또는 그 이상의 상대편 선수들의 휠체어에 끼인 경우, 또는",
+    "d. 라이브 볼이 휠체어 밑에서 꼼짝 못하게 된 경우 때심판이 헬드볼이 되었다고 결정했을 때, 그는 경기의 중지를 알리기 위해 그의 호각을 불고, 헬드볼 신호를 해야 한다. 소유권 교대 절차에 의해 다음 번 소유권을 갖는 팀 (62조) 에게 스로인을 위해 볼이 주어져야 한다. 선수는 볼의 소유권을 가지고자 하는 어떠한 시도도 없는 상대편의 재량에 볼을 두거나, 휠체어에 볼을 일부러 끼게 하여 의도적인 헬드볼을 유발할 수 없다."
+   ],
+   "bodyEn": [
+    "A held ball occurs when:",
+    "a. Two (2) or more opposing players have possession of the ball at the same time (Article 65),",
+    "b. Two (2) or more opposing players simultaneously cause the ball to go out-of- bounds,",
+    "c. a live ball becomes stuck between two (2) or more opposing players’ wheelchairs, or",
+    "d. a live ball becomes trapped under a wheelchair. When the Referee determines that a held ball has occurred, he shall blow his whistle to indicate a stoppage in play and signal a held ball. The team that has the next possession under the alternating possession process (Article 62) shall be given the ball for a throw-in.",
+    "A player cannot cause an intentional held ball by placing the ball at the disposal of an opponent without any attempt by the opponent to take possession of the ball, or by intentionally trapping the ball under the wheelchair."
+   ]
+  },
+  {
+   "no": 72,
+   "chapter": 9,
+   "titleKo": "제재조치",
+   "titleEn": "Sanction",
+   "page": 34,
+   "bodyKo": [
+    "본 장(9장) 에 속한 규칙들의 모든 바이얼레이션에 대한 벌칙은 소유권의 상실이다. 한 팀에 의해 바이얼레이션이 발생한 후, 볼은 다른 팀에게 스로인을 위하여 주어진다."
+   ],
+   "bodyEn": [
+    "The sanction for all violations of the rules under this section is a loss of possession. Following a violation by one team, the ball is awarded to the other team for a throw- in."
+   ]
+  },
+  {
+   "no": 73,
+   "chapter": 9,
+   "titleKo": "백코트 바이얼레이션",
+   "titleEn": "Backcourt violation",
+   "page": 34,
+   "bodyKo": [
+    "프론트코트에서 볼의 소유권을 갖고 있는 팀은 볼의 소유권을 유지한 채로 볼을 백코트로 되돌릴 수 없다. 그렇게 하는 것은 바이얼레이션이다. 백코트 바이얼레이션이 발생하려면 아래의 모든 상황들이 반드시 있어야 한다.",
+    "a. 팀은 그들의 프론트코트에서 볼의 소유권을 가지고 있어야 한다.",
+    "b. 그 팀의 선수가 볼이 백코트로 들어오기 전에 마지막으로 볼과 접촉한 선수여야 한다.",
+    "c. 볼이 반드시 백코트로 들어와야 한다.",
+    "e. 그 팀의 선수가 볼이 백코트로 들어온 후 처음으로 볼과 접촉한 선수여야 한다."
+   ],
+   "bodyEn": [
+    "A team that has possession of the ball in the frontcourt may not return the ball to backcourt while maintaining possession of the ball. Doing so is a violation. All of the following conditions must exist for a backcourt violation to occur:",
+    "a. A team must have possession of the ball in their frontcourt.",
+    "b. A player on that team must be the last player to touch the ball before it enters the backcourt.",
+    "c. The ball must enter the backcourt.",
+    "d. A player on that team must be the first player to touch the ball after it enters the backcourt."
+   ]
+  },
+  {
+   "no": 74,
+   "chapter": 9,
+   "titleKo": "볼 아웃오브바운드 바이얼레이션",
+   "titleEn": "Ball out-of-bounds violation",
+   "page": 34,
+   "bodyKo": [
+    "선수는 볼의 아웃오브바운드를 유발할 수 없다. 볼은 아웃 오브 바운드의 사람 또는 물체에 접촉하였을 때 아웃오브바운드가 된다. 볼이 아웃오브바운드가 되기 전에 마지막으로 볼에 접촉했던 선수에게 바이얼레이션이 주어진다. 유일한 예외는 심판이 다른 선수가 의도적으로 볼의 아웃오브바운드를 유도하려고 마지막 선수에게 볼을 튀겼다고 판정하는 것이다. 이 경우에는 의도적으로 볼의 아웃오브바운드를 초래한 선수에게 바이얼레이션이 주어져야 한다."
+   ],
+   "bodyEn": [
+    "A player may not cause the ball to go out- of-bounds. The ball is out -of-bounds when it touches a person or object that is out-of-bounds. The last player to have touched the ball before it goes out -of-bounds is charged with this violation.",
+    "The sole exception is if a Referee judges that another player intentionally caused the ball to go out-of- bounds by bouncing it off the last player. In tha t case, the player who intentionally caused the ball to go out-of-bounds shall be charged with the violation."
+   ]
+  },
+  {
+   "no": 75,
+   "chapter": 9,
+   "titleKo": "12초 바이얼레이션",
+   "titleEn": "Twelve-second violation",
+   "page": 34,
+   "bodyKo": [
+    "자신의 백코트에서 볼의 소유권을 가진 팀은 프론트코트로 볼이 나아가는데 12초의 시간을 가진다. 이렇게 하지 못하는 것은 바이얼레이션이다. 볼이 프론트코트의 바닥 또는 선수에게 닿았을 때 볼은 프론트코트에 있는 것이다. 12초 카운트는 코트내의 선수가 자신의 백코트에서 볼의 소유권을 가졌을 때 시작된다. 12초 카운트는 만약 상대편 팀의 선수가 볼의 소유권을 가진 경우에는 중단한다."
+   ],
+   "bodyEn": [
+    "A team that has possession of the ball in their backcourt has twelve seconds to cause the ball to go into the frontcourt. Failure to do so is a violation. The ball is in the frontcourt when it touches the floor or a person in the frontcourt.",
+    "The twelve-second count begins when a player on the court takes possession of the ball in his backcourt. The twelve- second count stops if a player from the opposing team takes possession of the ball."
+   ]
+  },
+  {
+   "no": 76,
+   "chapter": 9,
+   "titleKo": "키킹 바이얼레이션",
+   "titleEn": "Kicking violation",
+   "page": 34,
+   "bodyKo": [
+    "선수가 의도적으로 볼을 발 또는 무릎 아래의 다리로 치는 것은 바이얼레이션이다."
+   ],
+   "bodyEn": [
+    "It is a violation for a player to deliberately strike the ball with his foot or his leg below the knee."
+   ]
+  },
+  {
+   "no": 77,
+   "chapter": 9,
+   "titleKo": "아웃 앤드 인 바이얼레이션",
+   "titleEn": "Out and in violation",
+   "page": 34,
+   "bodyKo": [
+    "볼의 소유권을 갖고 있는 선수는 득점 없이 트라이라인 위로 코트 밖으로 나가고 이어서 코트로 돌아오는 것이 허가되지 않는다. 이 바이얼레이션을 위해서는 3가지 조건들이 반드시 있어야 한다.",
+    "a. 선수는 트라이라인을 넘기 전에 볼의 소유권을 갖고 있어야 한다.",
+    "b. 그 선수의 휠체어 바퀴 하나가 상대편 팀의 트라이라인을 넘어 아웃오브바운드 지역에 접촉해야 한다.",
+    "c. 그 바퀴가 선수가 득점하기 전에 인 바운드 지역으로 되돌아오거나 아웃오브바운드 지역과의 접촉이 없어져야 한다."
+   ],
+   "bodyEn": [
+    "A player who has possession of the ball is not permitted to leave the court on the try line and then return to the court without scoring a try. Three (3) conditions must exist for this violation:",
+    "a. The player must have possession of the ball before crossing the try line.",
+    "b. One (1) wheel of the player’s wheelchair must touch the out- of-bounds area across the opposing team’s try line.",
+    "c. That wheel must return to the in-bounds area or break contact with the out-of-bounds area before the player scores a try."
+   ]
+  },
+  {
+   "no": 78,
+   "chapter": 9,
+   "titleKo": "피지컬 어드밴티지 바이얼레이션",
+   "titleEn": "Physical advantage violation",
+   "page": 35,
+   "bodyKo": [
+    "볼과 접촉하고 있는 선수는 자신의 몸 또는 자신의 휠체어 중 4바퀴들과 안티 팁 장치를 제외한 어떠한 부분도 바닥과 접촉할 수 없다."
+   ],
+   "bodyEn": [
+    "A player who is touching the ball may not touch the floor with any part of his body or any part of his wheelchair except the four (4) wheels and the anti-tip device."
+   ]
+  },
+  {
+   "no": 79,
+   "chapter": 9,
+   "titleKo": "8초 드리블 바이얼레이션",
+   "titleEn": "Eight-second dribble violation",
+   "page": 35,
+   "bodyKo": [
+    "볼을 소유한 선수는 최소한 8초마다 한 번은 볼을 패스하거나 드리블해야 한다(67조). 그러지 않으면 바이얼레이션이다."
+   ],
+   "bodyEn": [
+    "A player who has possession of the ball must either pass or dribble the ball ( Article 67) at least once every eight (8) seconds. Failure to do so is a violation."
+   ],
+   "changed2026": true,
+   "changeNote": "드리블 제한 시간이 10초에서 8초로 바뀌었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 80,
+   "chapter": 9,
+   "titleKo": "8초 키 에어리어 바이얼레이션",
+   "titleEn": "Eight seconds in the key violation",
+   "page": 35,
+   "bodyKo": [
+    "자신의 팀이 볼을 소유한 선수는 상대 팀의 키 에어리어에 8초를 넘겨 머물 수 없다."
+   ],
+   "bodyEn": [
+    "A player whose team has possession of the ball may not remain in the opposing team’s key area for more than eight (8) seconds."
+   ],
+   "changed2026": true,
+   "changeNote": "키 에어리어 제한 시간이 10초에서 8초로 바뀌었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 81,
+   "chapter": 9,
+   "titleKo": "스로인 바이얼레이션",
+   "titleEn": "Throw-in violations",
+   "page": 35,
+   "bodyKo": [
+    "스로인에는 다음의 규칙이 적용된다.",
+    "a. 레퍼리가 호각을 분 뒤, 볼은 인바운더에게서 떠나 8초 이내에 코트 안의 선수에게 닿아야 한다.",
+    "b. 인바운더는 볼을 떠나보낸 뒤 코트 안의 다른 선수가 볼을 터치하기 전에는 볼을 터치할 수 없다.",
+    "c. 인바운더는 볼이 코트나 코트 안의 선수에게 닿기 전에 볼에 마지막으로 닿은 사람이어야 한다.",
+    "d. 인바운더는 볼을 떠나보낼 때까지 코트에 들어갈 수 없다.",
+    "e. 인바운더는 볼을 떠나보낸 지점에서 1m 반경 안으로 코트에 들어와야 한다.",
+    "f. 사이드라인에서 스로인할 때 인바운더는 볼을 떠나보내기 전에 피벗할 수 있으나, 스로인 위치에서 사이드라인을 따라 옆으로 움직일 수는 없다."
+   ],
+   "bodyEn": [
+    "The following rules apply to the throw-in:",
+    "a. After the Referee has blown his whistle, the ball must be released by the in-bounder and be touched by a player on the court within eight (8) seconds.",
+    "b. After he has released the ball, the in-bounder may not touch it until another player on the court has touched it.",
+    "c. The in-bounder must be the last point of contact for the ball before the ball makes contact with the court or a player within the court.",
+    "d. The in-bounder may not enter the court until he has released the ball.",
+    "e. The in-bounder must enter the court within a one (1) meter radius of the point where the ball was released.",
+    "f. When the throw-in takes place on a sideline, the in -bounder may pivot prior to releasing the ball but may not move laterally along the sideline away from the throw-in location."
+   ],
+   "changed2026": true,
+   "changeNote": "인바운드 제한 시간이 10초에서 8초로 바뀌었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 82,
+   "chapter": 9,
+   "titleKo": "팁 오프 바이얼레이션",
+   "titleEn": "Tip-off violations",
+   "page": 35,
+   "bodyKo": [
+    "다음과 같은 규칙이 팁 오프에 적용된다:",
+    "a. 센터는 팁 오프 동안 균형을 유지하기 위하여 휠체어의 등받이를 사용하는 것 이외에 휠체어의 어느 부분도 사용할 수 없다.",
+    "b. 센터는 이익을 얻기 위하여 상대편 센터의 손 또는 팔을 칠 수 없다.",
+    "c. 센터는 볼이 바닥에 접촉 할 때까지, 또는 센터가 아닌 다른 선수에 의해 볼이 접촉 될 때까지 볼의 소유권을 획득할 수 없다.",
+    "d. 센터서클에 들어온 후, 센터들은 그들 중 한 명이 적법하게 볼에 접촉 할 때까지 떠날 수 없다.",
+    "e. 센터들을 제외한 모든 선수들은 볼이 센터들 중 한 명에 의해 접촉 될때까지 센터서클 밖에 있어야 한다."
+   ],
+   "bodyEn": [
+    "The following rules apply to the tip-off:",
+    "a. A centre may not use any part of the wheelchair except the backrest to maintain balance during the tip-off.",
+    "b. A centre may not hit the opposing centre’s hand or arm to gain an advantage.",
+    "c. A centre may not take possession of the ball until it has touched the floor or has been touched by a player who is not a centre.",
+    "d. After entering the centre circle, the centres may not leave their half of the circle until one of them has legally touched the ball.",
+    "e. All players except the centres must remain outside the centre circle until one of the centres has touched the ball."
+   ]
+  },
+  {
+   "no": 83,
+   "chapter": 9,
+   "titleKo": "40초 바이얼레이션",
+   "titleEn": "Forty Second violation",
+   "page": 36,
+   "bodyKo": [
+    "볼을 소유한 팀은 득점을 하기 위해 40초 동안 볼을 가질 수 있다. 이 시간은 40초 시계로 측정된다. (52조 참고) 40초가 종료되기 전에 득점에 실패할 경우 바이얼레이션이다. 휠체어럭비가 접촉이 있는 경기이기는 하지만 모든 상황 하에 모든 유형의 접촉이 허락되는 것은 아니다. 포지션, 위치, 속도, 그리고 선수의 취약점과 같은 기타 요소들이 고려되어야 한다. 비신사적행위는 합법적 또는 공격적인 경기운영이라는 명분하에 면책될 수 없다. 심판은 경기의 흐름을 깨지 않는 선에서 선수의 안전을 고려해야 한다.",
+    "각 상황은 사안에 따라 판정되어야 한다. 본 장(10장) 에서는 규정 적용 시 심판이 반드시 고려해야 할 원칙을 상세히 설명할 것이다. 이러한 원칙은 선수를 보호하면서 포지션 및 볼을 스스로 방어할 수 있는 기회를 제공함과 동시에 접촉을 허용한다. 또한 심판이 경기의 흐름을 방해하지 않고 각 상황을 판단할 수 있게 해준다."
+   ],
+   "bodyEn": [
+    "A team that has possession of the ball has forty (40) seconds to score a try. The forty (40) second clock shall measure this time. ( Article 52). Failure to score before the expiration of time on the forty (40) second clock is a violation.",
+    "Although wheelchair rugby is a contact sport, not all types of contact are permitted under all circumstances. Other factors such as the position, location, speed, and vulnerability of players must be considered.",
+    "Unsportsmanlike conduct cannot be excused in the name of legal, aggressive play. Referees must consider safety without detracting from the game. Each situation must be judged on its own merits. This section will detail principles that must be considered by Referees when applying the rules.",
+    "These principles permit contact while protecting players and giving them the opportunity to defend themselves, their positions, and the ball. They allow the Referees to judge each situation without interfering with the flow of the game."
+   ]
+  },
+  {
+   "no": 84,
+   "chapter": 10,
+   "titleKo": "안전성",
+   "titleEn": "Safety",
+   "page": 37,
+   "bodyKo": [
+    "휠체어럭비에서 휠체어들 간의 접촉이 허용되지만, 선수들은 상대편과 자리 또는 볼의 소유권을 경쟁할 때, 요구되는 적절한 힘을 넘어서면 안 된다. 만약 선수들이 접촉을 일으켰고 이것이 다소 다른 선수를 위험에 빠지게 한 경우, 그 선수들에게 책임이 있다. 그들이 위험한 접촉을 피하고자 감속, 정지, 또는 필요에 의해 방향의 변경을 하였다면, 가능하다. 심판들은 다음을 포함하는 여러 가지 요인을 기준으로 알맞은 강도를 판단한다.",
+    "a. 선수들의 상대적인 크기, 속도 그리고 위치",
+    "b. 접촉이 일어날 때의 각도",
+    "c. 충돌 당하고 있는 선수가 접촉을 보고 예상할 수 있는 능력(충돌을 인지하고 있었는지)",
+    "d. 정지 또는 이동, 균형을 유지하고 있었는지 또는 넘어지고 있었는지를 포함한 접촉 순간의 선수의 상태안티 팁 장치와 같은 휠체어의 특징은 접촉과 관련된 이득을 얻기 위해 상대편이 이용해서는 안 된다."
+   ],
+   "bodyEn": [
+    "While contact between wheelchairs is permitted in Wheelchair Rugby, players should not exceed the reasonable force required when challenging an opponent for position or for possession of the ball. Players are responsible if they initiate contact in a way that places another player at risk.",
+    "They are expected to make an effort to av oid dangerous contact by slowing down, stopping, or changing direction if necessary. Referees will judge reasonable force based on a number of factors, including:",
+    "a. The relative size, speed, and positions of the players.",
+    "b. The angle at which contact occurs.",
+    "c. The ability of the player being hit to see and anticipate the contact.",
+    "d. The status of the player at time of contact, including whether he is stationary or moving, maintaining his balance, or in the act of falling. The safety features of a wheelchair, such as the anti-tip devices, cannot be exploited by an opponent to gain an advantage involving contact."
+   ]
+  },
+  {
+   "no": 85,
+   "chapter": 10,
+   "titleKo": "코트에서의 위치",
+   "titleEn": "Position on the court",
+   "page": 37,
+   "bodyKo": [
+    "선수는 다른 선수가 이미 점유하지 않은 합법적인 위치를 점유할 권리가 있다. 위치를 점유한 선수는 불법적인 수단으로 그 위치를 빼앗길 수 없다. 하지만, 만약 상대편이 도전한다면 선수는 수동적으로 위치를 요구할 수 없다. 볼의 소유권을 가진 선수는 그가 볼을 보호해야하는 추가적인 책임을 가지고 있기 때문에 보다 관용이 주어진다. 새로운 위치로 이동하려는 선수는 한 명 또는 그보다 많은 상대편 선수들에게 방해받을 수 있다. 상대편 선수들은 다른 선수에게 이미 명확하게 점유되지 않은 공간을 점유하려는 시도를 하는 다른 선수에 맞서 접촉을 사용할 수 있다. (접촉을 사용해서 막을 수 있다)."
+   ],
+   "bodyEn": [
+    "A player is entitled to occupy a legal position that is not already occupied by another player. A player who is occupying a position cannot be made to give up that position by means of illegal force. However, a player cannot passively claim a position if c hallenged by an opponent.",
+    "A player who has possession of the ball will be given more latitude because he has the added responsibility to protect the ball. One (1) or more opposing players may block a player attempting to move to a new position.",
+    "Opposing players may use contact against one another in an attempt to occupy a position that is not already clearly occupied by another player."
+   ]
+  },
+  {
+   "no": 86,
+   "chapter": 10,
+   "titleKo": "수직 공간",
+   "titleEn": "Vertical space",
+   "page": 37,
+   "bodyKo": [
+    "선수는 똑바르게 앉아 있을 때 다음과 같이 한정되는 자신이 직접 접해있는 수직 공간에 대한 권리가 있다.",
+    "a. 한쪽 어깨의 바깥쪽 끝에서 다른 쪽 어깨의 바깥쪽 끝으로 측정되는 측면에서 측면",
+    "b. 그의 무릎의 전방 끝에서 그의 등 받침의 앞쪽으로 측정되는 전방에서 후방",
+    "c. 머리의 제일 위로부터 그의 다리까지로 측정되는 위에서 아래선수가 볼의 소유권을 가졌을 때, 이 공간에서 발생하는 불법적인 접촉은 만약 이 접촉이 상대편 선수가 시작하였거나 볼의 소유권을 가진 선수가 볼을 보호 또는 패스하기 위해 요구되는 일반적인 동작의 결과로 발생한 경우, 상대편 선수에게 주어진다."
+   ],
+   "bodyEn": [
+    "A player is entitled to his immediate vertical space, determined when the player is in an upright, seated position as follows:",
+    "a. Measured side-to-side, from the outside edge of one shoulder to the outside edge of the other.",
+    "b. Measured front-to-back, from the forward edge of his knees to the inside of his backrest.",
+    "c. Measured top-to-bottom, from the top of his head to his legs. When a player has possession of the ball, illegal contact within this space will be charged to the opposing player if the opposing player initiates it, or if it is initiated by the player who has possession of the ball as a result of the normal motions required to protect or pass the ball."
+   ]
+  },
+  {
+   "no": 87,
+   "chapter": 10,
+   "titleKo": "어드밴티지",
+   "titleEn": "Advantage",
+   "page": 38,
+   "bodyKo": [
+    "바이얼레이션 또는 파울을 발생하는 상황들은 경기의 상황 안에서 판정되어야 한다. 경기에 아무런 영향을 미치지 않거나 선수 또는 선수들에게 어드밴티지나 디스어드밴티지를 유발하지 않는 행동이나 상황은 무시되어야 하고, 경기는 계속되어야 한다. 경기의 흐름은 사소한 규칙의 바이얼레이션으로 방해가 되서는 안 된다. 관련된 선수들에게 영향을 미치지 않는 접촉은 우발적 접촉으로 판정될 수 있고, 경기가 계속될 수 있다. 이 원칙의 적용 시 발생되는 어드밴티지나 디스어드밴티지는 선수의 행동의 결과여야 하고, 호각을 불 것인지 불지 않을 것인지의 레퍼리들의 결정에 대한 결과가 아니어야 한다. (레퍼리들이 선수의 행동에 기초해서 판단하는 것이지, 자신들의 주관에 의한 것이어서는 안 된다)."
+   ],
+   "bodyEn": [
+    "Situations that result in violations or fouls must be judged within the context of the play. An action or situation that has no effect on the play, or that does not create an advantage or a disadvantage for a player or players, should be ignored and play s hould be allowed to continue.",
+    "The flow of the game should not be interrupted by trivial violations of the rules. Contact that occurs with no effect on the players involved can be judged to be incidental and play can be allowed to continue.",
+    "When applying this principle, the advantage or disadvantage caused must be the result of a player’s actions, and not the result of a Referee’s decisions to make or not to make a call."
+   ]
+  },
+  {
+   "no": 88,
+   "chapter": 11,
+   "titleKo": "정의 및 제재조치",
+   "titleEn": "Definition and sanctions",
+   "page": 39,
+   "bodyKo": [
+    "일반 파울은 경기를 하려는 진지한 시도에서 나온 불법 행위다. 일반 파울은 다음 중 하나의 결과를 낳는다.",
+    "a. 공격자 – 볼을 소유한 팀이 범한 일반 파울은 볼 소유권 상실로 제재한다.",
+    "b. 수비자 – 볼을 소유하지 않은 팀이 범한 일반 파울은 파울을 범한 선수가 수행하는 30초 페널티로 제재한다. 페널티를 수행하는 선수는, 페널티 트라이가 주어진 경우를 제외하고, 상대 팀이 트라이를 성공하면 30초가 끝나기 전에 풀려난다.",
+    "공격 선수가 볼을 소유하고 명백히 득점을 시도하는 상황에서 수비자 파울이 나오면, 레퍼리는 30초 페널티 대신 페널티 트라이를 줄 수 있다."
+   ],
+   "bodyEn": [
+    "Common Fouls result from an illegal action that is the result of a genuine attempt to play the game. A common foul must result in one of the following outcomes:",
+    "a. Offensive - A common foul committed by the team in possession of the ball will be sanctioned with a loss of possession.",
+    "b. Defensive - A common foul committed by the team not in possession of the ball will be sanctioned with a thirty (30) second penalty served by the player who committed the foul. The player serving the penalty will be released prior to the end of the thirty (30) second period if the opposing team scores a try, unless a penalty try is awarded.",
+    "If a defensive foul is committed when an offensive player is in possession of the ball and making a clear attempt to score, the Referee may award a penalty try in lieu of the thirty (30) second penalty."
+   ],
+   "changed2026": true,
+   "changeNote": "수비자 일반 파울의 페널티가 60초에서 30초로 바뀌었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 89,
+   "chapter": 11,
+   "titleKo": "차징 파울",
+   "titleEn": "Charging foul",
+   "page": 39,
+   "bodyKo": [
+    "선수는 경기에 적극적으로 참여하지 않는 상대방에게 과도한 속도 또는 힘으로 상대방에게 부상을 입힐 위험이 있는 공격을 할 수 없다."
+   ],
+   "bodyEn": [
+    "A player is not permitted to hit an opponent, who is not actively taking part in the play or moving on court, with excessive speed or force, relative to the opponent that risks injury to that opponent."
+   ]
+  },
+  {
+   "no": 90,
+   "chapter": 11,
+   "titleKo": "접촉비포더휘슬",
+   "titleEn": "Contact before the whistle foul",
+   "page": 39,
+   "bodyKo": [
+    "선수는 경기가 중지되는 동안에 상대편과 악의적이거나 이익을 위한 접촉을 하는 것이 허용되지 않는다. 합법적인 접촉이 가능한 피리어드는 레퍼리가 팁 오프 또는 스로인 전에 호각을 불었을 때 시작되고, 심판이 호각을 분 다음 끝난다. 각 팀은 호각이 울리기 전 접촉으로 전반과 후반 각각 한 번씩 경고를 받을 수 있다. 한 팀이 2번째 접촉하고, 그 다음 접촉이 발생하면 파울이 된다. (전반과 후반 각각 2번째부터는 파울이다). 후반전에 주어진 접촉 경고는 연장전의 모든 피리어드까지 계속된다. (만약 후반전에 1회의 경고를 받았다면 연장전이 끝날 때까지 한번이라도 더 호각이 울리기 전에 접촉을 하게 되면 파울이 된다)."
+   ],
+   "bodyEn": [
+    "A player is not permitted to make flagrant or advantageous contact with an opponent during a stoppage in play. The period for legal contact begins when a Referee blows his whistle prior to a tip -off or a throw -in and ends the next time a Referee blows his whistle.",
+    "Each team will receive one (1) warning per half for contact before the whistle. The second and subsequent incidents by a team will result in a foul. A contact warning given during the second half will continue into all periods of overtime."
+   ]
+  },
+  {
+   "no": 91,
+   "chapter": 11,
+   "titleKo": "포 인 더 키 파울",
+   "titleEn": "Four in the key foul",
+   "page": 39,
+   "bodyKo": [
+    "다른 팀이 볼의 소유권을 가지고 있을 때 3명이 넘는 수비 선수들이 자신의 키 에어리어에 들어가는 것이 허용되지 않는다. 만약 4번째 수비 선수가 키 에어리어에로 들어가면 그 선수는 파울을 받아야 한다."
+   ],
+   "bodyEn": [
+    "No more than three (3) defensive players from a team are permitted in their key area when the other team has possession of the ball. If a fourth defensive player enters the key area, that player shall be charged with the foul."
+   ]
+  },
+  {
+   "no": 92,
+   "chapter": 11,
+   "titleKo": "홀딩 파울",
+   "titleEn": "Holding foul",
+   "page": 39,
+   "bodyKo": [
+    "a. 선수는 상대편의 이동의 자유를 제한하는 목적으로 상대편에게 손 또는 몸의 어떠한 부분을 사용하여 매달리거나 잡는 것이 허용되지 않는다.",
+    "b. 선수는 어떠한 이유로 상대방에게 디스어드밴티지를 줄 정도로 상대방에게 기대는 것이 허용되지 않는다."
+   ],
+   "bodyEn": [
+    "a. A player is not permitted to grasp or hold an opponent with the hands or any other part of the body such that the opponent’s freedom of movement is impeded.",
+    "b. A player is not permitted for any reason to lean on an opponent enough to place him at a disadvantage."
+   ]
+  },
+  {
+   "no": 93,
+   "chapter": 11,
+   "titleKo": "코트 이탈 파울",
+   "titleEn": "Leaving the court foul",
+   "page": 40,
+   "bodyKo": [
+    "a. 선수는 심판이나 규칙의 다른 조항으로 허락된 때를 제외하고는 볼이 죽은 상태(데드 볼) 일 때 코트를 떠날 수 없다.",
+    "b. 볼의 소유권을 갖고 있지 않은 선수는 볼이 살아 있을 때 (라이브 볼) 고의 또는 어드밴티지를 얻기 위해 코트를 떠날 수 없다. 선수는 자기 자신 또는 다른 사람들의 부상을 피하기 위하여 코트를 떠날 수 있다. 만약 상황이 그에게 코트를 떠나게 하였다면, 그는 자신이 밖으로 나간 곳에서 가장 가까운 지점에서 코트로 복귀해야 한다. 선수가 복귀할 때, 그는 코트에 있었을 때 가지지 않았던 어드밴티지를 가지지 않고, 코트를 떠나서 상실하였던 어떠한 어드밴티지도 다시 요구할 수 없다.",
+    "c. 볼의 소유권을 갖고 있지 않은 팀의 선수는 경기가 키 에어리어 먼 곳에서 이루어지고 있지 않은 경우를 제외하고는 어떤 이유로도 자신의 트라이라인을 가로질러 코트를 떠날 수 없다.",
+    "d. 자신의 팀 동료가 볼의 소유권을 갖고 있는 선수이면 어떤 이유로도 상대편 팀의 트라이라인을 가로질러 코트를 떠날 수 없다."
+   ],
+   "bodyEn": [
+    "a. A player may not leave the court when the ball is dead unless permitted by the Referee or other articles of the rules.",
+    "b. A player who does not have the possession of the ball may not leave the court deliberately or to gain an advantage when the ball is live. He may leave the court to avoid an injury to himself or others.",
+    "If circumstances cause him to leave the court, he must return to the court at the point nearest to where he exited. When he returns, he may not gain an advantage he did not have while on the court, and he may not reclaim any advantage he lost by leaving the court.",
+    "c. A player whose team does not have the possession of the ball may not leave the court by crossing his try line for any reason unless the play is far removed from the key area.",
+    "d. A player whose teammate has possession of the ball may not leave the court by crossing the opposing team’s try line for any reason."
+   ]
+  },
+  {
+   "no": 94,
+   "chapter": 11,
+   "titleKo": "푸싱 파울",
+   "titleEn": "Pushing foul",
+   "page": 40,
+   "bodyKo": [
+    "a. 상대방과 적법한 접촉을 한 후, 선수가 자신의 휠체어를 움직이고 상대편을 알맞은 위치에서 불법적 위치로 밀어 넣기 위해 푸시 림 또는 휠 위의 자신의 손을 옮겨가며 선수의 뒷바퀴에 지속적으로 힘을 가하는 것은 허용되지 않는다.",
+    "b. 선수는 자신의 손으로 밀거나 휠체어를 밀어서 동료의 방어 또는 득점을 도와주는 것이 허용되지 않는다."
+   ],
+   "bodyEn": [
+    "a. After making legal contact with an opponent, a player is not permitted to continue to apply force to his rear wheels, by repositioning his hands on the push rims or wheels, in order to move his wheelchair and push his opponent from a legal position into an illegal position.",
+    "b. A player is not permitted to help a teammate to defend or score by pushing with his hands or his wheelchair."
+   ]
+  },
+  {
+   "no": 95,
+   "chapter": 11,
+   "titleKo": "일리걸 유스 오브 더 핸즈 파울",
+   "titleEn": "Illegal use of the hands foul",
+   "page": 40,
+   "bodyKo": [
+    "선수는 상대편과 의도적 혹은 유리한 접촉을 만들기 위해서 자신의 손이나 팔을 사용하는 것이 허용되지 않는다. 수직 공간 안에서(86조) 불법적인 손의 사용이 있을 때, 접촉이 볼의 소유권을 가진 선수가 시작하였고 볼을 보호하거나 또는 패스하고자 하는 동작의 결과로서 발생한 것이 아닌 경우를 제외하고는 볼의 소유권을 가지지 않은 선수에게 파울이 주어져야 한다. 수직 공간 외부에서 불법적인 손의 사용이 있을 때, 파울은 접촉을 시작한 선수에게 주어져야 한다."
+   ],
+   "bodyEn": [
+    "A player is not permitted to use his hands or arms to make deliberate or advantageous contact with an opponent. When illegal use of the hands occurs within the vertical space, (Article 87) the foul shall be charged to the player who does not have possession of the ball, unless the contact was initiated by the player who has possession of the ball and was not as the result of movement to protect or pass the ball.",
+    "When illegal use of the hands occurs outside the vertical space, the foul shall be charged to the player who initiated the contact."
+   ],
+   "koRefFixed": [
+    "87조→86조"
+   ]
+  },
+  {
+   "no": 96,
+   "chapter": 11,
+   "titleKo": "스피닝 파울",
+   "titleEn": "Spinning foul",
+   "page": 40,
+   "bodyKo": [
+    "선수는 상대편 선수를 안전을 위험하게 (상대편의) 휠체어가 수평 또는 수직 평면상에서 회전하기 위해 상대편의 휠체어 어느 쪽이라도 뒤쪽 휠의 축보다도 더 뒤에서 접촉하는 것이 허용되지 않는다. 선수가 상대편 선수의 휠체어의 뒤쪽 휠의 축보다 앞에서 합법적인 접촉을 한 후, 휠체어의 지속적인 움직임은 스피닝을 유발하는 접촉 지점을 축 뒤로 이동시킬 수 있다. 만약 최초의 접촉이 합법적이었고 스핀이 발생할 때까지 접촉이 지속되었다면 그 선수에게는 파울이 주어지지 않는다."
+   ],
+   "bodyEn": [
+    "A player is not permitted to make contact with an opposing player’s wheelchair at any point behind either axle of the rear wheels such that the wheelchair is made to rotate in the horizontal or vertical plane in a way that places the opposing player's safety at risk.",
+    "After a player makes legal contact in front of the axle of the rear wheel of an opposing player’s wheelchair, the continuing motion of the wheelchairs may cause the point of contact to move behind the axle, resulting in a spin.",
+    "If the initial contact was legal and the contact was unbroken from that point until the spin occurred, the player will not be charged with a foul."
+   ]
+  },
+  {
+   "no": 97,
+   "chapter": 11,
+   "titleKo": "1m 파울",
+   "titleEn": "One-meter foul",
+   "page": 40,
+   "bodyKo": [
+    "인바운더를 제외한 어떠한 선수도 스로인을 하는 사이드라인이나 엔드라인 상의 지점으로부터 반경 1m 이내의 공간으로 들어가는 것이 허용되지 않는다. 이 1m 반경은 심판이 볼이 라이브임을 알리기 위해 자신의 호각을 부는 때로부터 인바운더가 볼을 던질 때까지 유효하다. (69조)"
+   ],
+   "bodyEn": [
+    "No player is permitted to enter the area within a one- meter radius from the point on the sideline or end line where a throw-in is taking place. This one-meter radius is in effect from the time the Referee blows his whistle to indicate that the ball is live until the ball is released by the in-bounder. (Article 69)"
+   ]
+  },
+  {
+   "no": 98,
+   "chapter": 12,
+   "titleKo": "정의 및 제재조치",
+   "titleEn": "Definition and sanctions",
+   "page": 41,
+   "bodyKo": [
+    "테크니컬 파울은 행정상의 오류나 허용되는 행동과 예의 위반에서 나온다. 테크니컬 파울은 선수나 벤치 관계자가 범할 수 있다.",
+    "선수에게 주어지는 테크니컬 파울의 제재는 그 선수가 수행하는 30초 페널티다.",
+    "코치, 팀 관계자, 교체 선수를 포함한 벤치 관계자에게 주어지는 테크니컬 파울의 제재는 코치가 코트 안에서 지명한 선수가 수행하는 30초 페널티다.",
+    "디스퀄리파잉 파울이 아닌 테크니컬 파울로 30초 페널티를 수행하는 선수는, 페널티 트라이가 주어진 경우를 제외하고, 상대 팀이 트라이를 성공하면 페널티 박스에서 풀려난다."
+   ],
+   "bodyEn": [
+    "A technical foul results from an administrative error or a violation of acceptable behavior and decorum. Technical fouls may be committed by a player or by bench personnel. The sanction for a technical foul charged to a player is a thirty (30) second penalty served by the player who committed the foul.",
+    "The sanction for a technical foul charged to bench personnel, including the coach, team staff, or substitutes, is a thirty (30) second penalty served by a player on the court chosen by the coach. A player serving a thirty (30) second penalty for a technical foul that is not a disqualifying foul will be released from the penalty box if the opposing team scores a try, unless a penalty try has been awarded."
+   ],
+   "changed2026": true,
+   "changeNote": "테크니컬 파울의 페널티가 60초에서 30초로 바뀌었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 99,
+   "chapter": 12,
+   "titleKo": "선수 테크니컬 파울",
+   "titleEn": "Player technical foul",
+   "page": 41,
+   "bodyKo": [
+    "선수는 심판의 지시를 무시하거나 스포츠맨답지 않은 전술을 쓰거나 스포츠맨답지 않게 행동할 수 없다. 다음의 행위는 테크니컬 파울이 된다.",
+    "a. 누구에게든 무례하거나 모욕적인 언어를 쓰는 행위",
+    "b. 상대 선수의 눈 가까이에 손을 두는 행위",
+    "c. 불필요하게 경기를 지연시키는 행위",
+    "d. 스로인 뒤 인바운더가 코트로 완전히 돌아오는 것을 막는 행위",
+    "e. 경기를 멈추려고 고의로 휠체어에서 떨어지는 행위",
+    "f. 레퍼리의 지시를 받고도 페널티 박스로 바로 가지 않는 행위",
+    "g. 페널티 시간이 끝나기 전에, 또는 페널티 타임키퍼나 레퍼리의 허락 없이 페널티 박스를 떠나는 행위",
+    "h. 레퍼리의 승인 없이 선수 번호를 바꾸는 행위",
+    "i. 넘어진 선수가 벤치 관계자의 도움 없이 스스로 휠체어를 세우는 행위",
+    "j. 휠체어 좌석에서 몸을 들어 올리거나 다리의 일부를 써서 휠체어의 속도나 방향을 바꾸는 행위",
+    "k. 경기 중단을 얻으려고 부당한 구실을 대는 행위. 예를 들어 장비 타임아웃을 사소하게 요청하는 경우.",
+    "l. 적법했던 1차 접촉 때문에 불안정한 상태가 된 선수와 접촉하는 행위",
+    "이 목록은 완전하지 않다. 레퍼리는 허용되는 행동과 예의를 어긴 어떤 경우에도 자기 판단으로 선수에게 테크니컬 파울을 줄 수 있다."
+   ],
+   "bodyEn": [
+    "A player is not permitted to disregard the instructions of the officials, to use unsportsmanlike tactics, or to behave in an unsportsmanlike manner. The following actions will result in a technical foul:",
+    "a. Using disrespectful or abusive language towards any person.",
+    "b. Placing a hand or hands near the eyes of an opposing player.",
+    "c. Delaying the game unnecessarily.",
+    "d. Preventing the in-bounder from completely returning to the court after a throw-in.",
+    "e. Deliberately falling out of the wheelchair to stop the play.",
+    "f. Failing to proceed directly to the penalty box when directed by a Referee.",
+    "g. Leaving the penalty box prior to the expiration of a penalty or without being released by the penalty timekeeper or Referee.",
+    "h. Changing player number without the approval of a Referee.",
+    "i. Fallen player righting their chair without assistance from bench staff.",
+    "j. Raising the body off the seat of the wheelchair or using any part of the legs to modify the speed or direction of the wheelchair.",
+    "k. Using an unjustifiable excuse to obtain a stoppage in play, for example by:",
+    "i. Making a trivial request for an equipment time-out.",
+    "l. Contact with a player, who is in an unstable position as a result of primary contact that was legal. This is not a complete list; the Referees may, at their discretion, charge a player with a technical foul for any violation of acceptable behavior and decorum."
+   ],
+   "changed2026": true,
+   "changeNote": "타임아웃 요청과 관련된 항목이 삭제되고, 적법한 1차 접촉 뒤 불안정한 선수와의 접촉 항목이 들어왔습니다.",
+   "koNew": true
+  },
+  {
+   "no": 100,
+   "chapter": 12,
+   "titleKo": "벤치 테크니컬 파울",
+   "titleEn": "Bench personnel technical foul",
+   "page": 42,
+   "bodyKo": [
+    "경기가 올바르고 능률적으로 진행되려면 벤치의 예의가 특히 중요하다. 코치, 보조코치, 교체 선수, 그 밖의 팀 관계자가 예의나 경기 운영 규정을 어기면 벤치 관계자에게 테크니컬 파울이 주어진다. 다음의 행위는 테크니컬 파울이 된다.",
+    "a. 심판의 허락 없이 코트에 들어가는 행위",
+    "b. 기록석에 알리지 않고, 레퍼리의 입장 허가를 기다리지 않고 교체 선수로 코트에 들어가는 행위",
+    "c. 누구에게든 무례하거나 모욕적인 언어를 쓰는 행위",
+    "d. 심판의 지시가 있거나 경기장을 완전히 떠나는 경우가 아닌데 팀 벤치 구역을 떠나는 행위",
+    "e. 등급분류 점수 초과 – 102조 참고",
+    "이 목록은 완전하지 않다. 레퍼리는 허용되는 행동과 예의를 어긴 어떤 경우에도 자기 판단으로 벤치 관계자에게 테크니컬 파울을 줄 수 있다."
+   ],
+   "bodyEn": [
+    "For the game to progress properly and efficiently, proper bench decorum is particularly important. Violations of decorum or game administration by a coach, assistant coach, substitutes, or other team staff will result in a technical foul charged to bench personnel. The following actions will result in a technical foul:",
+    "a. Entering the court without receiving permission from an official to do so.",
+    "b. Entering the court as a substitute without reporting to the scoring table and waiting for the Referee’s permission to enter.",
+    "c. Using disrespectful or abusive language towards any person.",
+    "d. Leaving the team bench area, unless required to do so by an official or unless leaving the field of play entirely.",
+    "e. Excessive Points – see Article 102. This is not a complete list; the Referees may at their discretion charge bench personnel with a technical foul for any violation of acceptable behavior and decorum."
+   ],
+   "changed2026": true,
+   "changeNote": "등급분류 카드 제시 항목이 삭제되고 103조 참조가 102조로 바로잡혔습니다.",
+   "koNew": true
+  },
+  {
+   "no": 101,
+   "chapter": 12,
+   "titleKo": "장비 테크니컬 파울",
+   "titleEn": "Equipment technical foul",
+   "page": 42,
+   "bodyKo": [
+    "선수는 이 규칙의 사양에 맞지 않는 휠체어로 경기할 수 없다. 경기 중 어느 때든 규정에 맞지 않는 휠체어로 경기하는 것이 발견되면 그 선수에게 테크니컬 파울이 주어진다.",
+    "코치는 경기 중단 때 레퍼리에게 상대 선수의 휠체어 점검을 요청할 수 있다. 레퍼리가 그 휠체어가 적법하다고 판정하면 점검을 요청한 코치에게 테크니컬 파울이 주어진다.",
+    "경기 중의 동작 때문에 이전까지 적법했던 휠체어가 규칙에 맞지 않게 되었으면, 선수에게 테크니컬 파울을 주기 전에 문제를 고칠 기회를 준다."
+   ],
+   "bodyEn": [
+    "A player may not play with a wheelchair that does not conform to the specifications detailed in these rules. If at any time during the game a player is found to be playing with an illegal wheelchair, he shall be charged with a technical foul.",
+    "A coach may make a request to the Referee for an inspection of an opposing player’s wheelchair during a stoppage in play. If the Referee finds that the wheelchair is legal, a technical foul shall be charged to the coach who made the request.",
+    "If activity during the game has resulted in a previously legal wheelchair failing to conform to the rules, the player shall be given an opportunity to correct the problem before being charged with a technical foul."
+   ],
+   "changed2026": true,
+   "changeNote": "장비 테크니컬 파울에서 60초 타임아웃을 잃는 요소가 삭제되었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 102,
+   "chapter": 12,
+   "titleKo": "등급분류점수 초과 테크니컬 파울",
+   "titleEn": "Excessive points technical foul",
+   "page": 42,
+   "bodyKo": [
+    "페널티 박스를 포함한 코트 안에 있는 선수들의 포인트의 총합은 35조에 명시된 것처럼 최대치를 넘을 수 없다. 만약 팀이 코트 안에 있는 선수의 포인트가 초과하여 경기 중인 것이 발견되면 테크니컬 파울이 벤치에 부과된다. 코치는 테크니컬 파울을 받는 선수를 코트에서 선발한다. 선수가 정해지면, 오류를 정정하려는 교체를 진행할 수 있다. 코치는 경기 중 어느 때라도 스코어 키퍼에게 상대팀 선수들의 코트 내의 포인트를 요청할 수 있다. 스코어키퍼는 요청 시간을 적고, 다음 번 경기 중지 시에 심판에게 이를 알린다.",
+    "만약 심판이 팀이 코트 안에 있는 선수의 초과된 포인트를 찾으면 테크니컬 파울이 주어지고 위에 명시한 절차대로 진행된다. 경기는 요청이 있었던 시간으로 경기가 재개된다. 만약 심판이 그 팀이 코트 내에 초과된 포인트가 없는 것으로 결정하면, 테크니컬 파울이 요청한 코치에게 주어져야 한다."
+   ],
+   "bodyEn": [
+    "The total point value of the players on the court, including the penalty box, cannot exceed the maximum specified in Article 35. If a team is found to be playing with excessive points on the court, a technical foul shall be charged to the bench.",
+    "The coach will select a player from the lineup on court to serve the technical foul. When the player is identified, a substitution to correct the error can then be made. A coach may make a request to the scorekeeper for a point count of the other team at any time during the game.",
+    "The scorekeeper will note the time of the request and will inform the Referee at the next stoppage in play. If the Referee finds that the team has excessive points on the court, a technical foul will be given and the process listed above will be followed.",
+    "Play will resume at the point when the request was made. If the Referee determines that the team does not have excessive points on the court, a technical foul shall be charged to the coach who made the request."
+   ]
+  },
+  {
+   "no": 103,
+   "chapter": 12,
+   "titleKo": "플래그런트 파울",
+   "titleEn": "Flagrant foul",
+   "page": 43,
+   "bodyKo": [
+    "선수는 상대방에 대하여 어떠한 파울도 의도적으로 범해서는 안 된다. 플래그런트 파울이란 볼 또는 체어로 정당하게 플레이를 하는 정도를 넘어서 상대방에게 비-스포츠 적인 접촉을 한 선수에게 범해진다. 플래그런트 파울을 범한 선수는 3개의 페널티가 주어진다. 페널티는 연속적으로 수행된다. 만약 첫 번째 일반 파울에 대한 벌칙이 소유권 상실 또는 페널티 트라이가 부여된다면, 그 선수는 즉시 첫 번째 페널티 이후 두 번째 페널티가 부여된다. 만약 선수가 같은 경기에서 두 번째 플래그랜트 파울을 범할 경우, 경기에서 실격 처리된다.",
+    "이러한 상황에서 실격은 플래그런트 파울에 설명된 것과 동일할 것이다. 이 실격된 선수는 즉시 경기장에서 나가야 한다. 이 페널티는 코치가 정한 같은 팀에 있는 선수에게 부여된다. 코치는 알맞은 라인업으로 교체를 진행해야 한다."
+   ],
+   "bodyEn": [
+    "A player may not deliberately commit any foul against an opponent. A flagrant foul is committed when it is clear that a player has created an unsporting contact with an opponent that extends beyond a legitimate attempt to legally play the ball or the chair .",
+    "This includes contact that is reckless or demonstrates the intent to intimidate his opponent. A player who commits a flagrant foul shall be charged with three (3) try release penalties. The penalties are served consecutively.",
+    "If the sanction for the initial foul is a loss of possession, or a penalty try is awarded, the player will begin serving the first penalty, followed immediately by the second. If a player is charged with a second flagrant foul in the same game the player shall be disqualified from the game.",
+    "The sanction for the disqualification in this situation will be as stated for a flagrant foul. The disqualified player will leave the field of play immediately. The penalties shall be served by a player from the same team selected by the coach.",
+    "The coach will be allowed to substitute to create a legal line up."
+   ]
+  },
+  {
+   "no": 104,
+   "chapter": 12,
+   "titleKo": "디스퀄리파잉 파울",
+   "titleEn": "Disqualifying foul",
+   "page": 43,
+   "bodyKo": [
+    "뻔뻔하게 스포츠맨답지 않은 파울을 범하거나 안전을 분명히 무시하고 파울을 범한 사람은 경기 자격을 박탈당한다. 다음의 행위는 디스퀄리파잉 파울이 된다.",
+    "a. 위험한 플레이",
+    "b. 싸움",
+    "c. 계속되는 모욕적이고 공격적인 언어",
+    "d. 심판을 때리거나 무례하게 신체 접촉하는 행위",
+    "e. 판단이 매우 나쁘고 상대에게 위험이나 부상을 초래한 일반 파울",
+    "이 목록은 완전하지 않다. 레퍼리는 허용되는 행동, 예의, 안전을 뻔뻔하게 또는 심각하게 어긴 어떤 경우에도 자기 판단으로 선수나 벤치 관계자에게 디스퀄리파잉 파울을 줄 수 있다.",
+    "디스퀄리파잉 파울을 범한 사람은 즉시 경기장을 떠나야 한다. 그는 경기장 안, 경기장 주변, 또는 경기에 계속 영향을 줄 수 있는 다른 어떤 장소에도 머물 수 없다. 자격을 박탈당한 사람이 경기와 다시 관여하면 벤치 관계자에게 테크니컬 파울이 주어진다.",
+    "디스퀄리파잉 파울의 제재는 40초 페널티다. 이 페널티는 40초를 모두 수행하며, 페널티를 수행하는 선수는 상대 팀이 트라이를 성공해도 페널티 박스에서 풀려나지 않는다.",
+    "디스퀄리파잉 파울을 선수가 범했으면, 자격을 박탈당한 선수와 등급분류 점수가 같은 같은 팀 선수가 페널티를 수행한다. 그런 선수가 없으면 같은 팀에서 자격을 박탈당한 선수의 등급분류 점수에 가장 가까운 선수가 수행한다. 가장 가까운 점수의 선수가 두 명이면 점수가 높은 선수가 수행한다. 수행할 수 있는 선수가 여럿이면 코치가 선수를 고른다.",
+    "교체 선수, 코치, 보조코치, 그 밖의 팀 관계자가 디스퀄리파잉 파울을 범했으면 코치가 고른 선수가 페널티를 수행한다."
+   ],
+   "bodyEn": [
+    "A person who commits a foul that is blatantly unsportsmanlike, or that is committed with a clear disregard for safety, shall be disqualified from the game. The following actions will result in a disqualifying foul:",
+    "a. Dangerous play.",
+    "b. Fighting.",
+    "c. Continuous abusive and offensive language.",
+    "d. Striking or disrespectfully making physical contact with an official.",
+    "e. A common foul that displays very poor judgment and results in danger or injury to an opponent. This is not a complete list; the Referees may at their discretion charge players or bench personnel with a disqualifying foul for any blatant or severe violation of acceptable behavior, decorum, or safety.",
+    "A person who commits a disqualifying foul shall leave the field of play immediately. He is not permitted to remain in the field of play, the surrounding area, or any other area where he may continue to have an influence on the game.",
+    "Any further interaction by a disqualified person with the game will result in a technical foul charged to bench personnel. The sanction for a disqualifying foul is a forty (40) second penalty. This penalty is served for the full forty (40) seconds;",
+    "the player serving the penalty will not be released from the penalty box if the opposing team scores a try. If the disqualifying foul was committed by a player, the penalty shall be served by a player from the same team with a classification point value equal to that of the disqualified player.",
+    "If there is no such player, the penalty shall be served by a player from the same team with a classification point value closest to that of the disqualified player. If there are two (2) players with a classification point value closest to that of the disqualified player, the player with the highest classification point val ue shall serve the penalty.",
+    "If there is more than one (1) player who may serve the penalty, the coach shall select the player. If a substitute, a coach, an assistant coach, or other team staff committed the disqualifying foul , a player selected by the coach shall serve the penalty."
+   ],
+   "changed2026": true,
+   "changeNote": "디스퀄리파잉 파울의 페널티가 60초에서 40초로 바뀌었습니다.",
+   "koNew": true
+  },
+  {
+   "no": 105,
+   "chapter": 13,
+   "titleKo": "페널티 수행",
+   "titleEn": "Serving penalties",
+   "page": 44,
+   "bodyKo": [
+    "페널티를 수행해야 하는 선수는 의료 지원이 필요하지 않는 한 즉시 자기 팀 페널티 박스로 가야 한다. 그 선수는 페널티 박스 안에 자리를 잡고 페널티가 끝날 때까지 그곳에 있어야 한다.",
+    "페널티를 수행하는 선수는 타임아웃과 1·3피리어드 및 연장 피리어드 뒤의 휴식을 포함해 모든 경기 중단 동안 페널티 박스 안에 있어야 한다.",
+    "페널티를 수행하는 선수는 2피리어드 뒤 휴식과 연장전 첫 피리어드 전에는 페널티 박스를 떠나 자기 팀 벤치로 돌아갈 수 있다. 그 선수는 3피리어드나 연장 피리어드가 시작되기 전에 페널티 박스로 돌아와야 한다."
+   ],
+   "bodyEn": [
+    "A player who is required to serve a penalty shall report immediately to his team’s penalty box, unless he requires medical assistance. The player must position himself within the penalty box and must remain there until the end of the penalty.",
+    "A player serving a penalty must remain within the penalty box during all stoppages in play, including time-outs and the intervals following the first, third, and over-time periods. A player serving a penalty may leave the penalty box and return to his team bench during the interval following the second period and prior to the first period of over- time play.",
+    "The player must return to the penalty box prior to the commencement of the third or overtime period."
+   ],
+   "changeNote": "표현만 정리되었습니다(규칙 내용 변화 없음).",
+   "koNew": true
+  },
+  {
+   "no": 106,
+   "chapter": 13,
+   "titleKo": "페널티박스 나가기",
+   "titleEn": "Release from the penalty box",
+   "page": 44,
+   "bodyKo": [
+    "페널티를 수행하는 선수는 페널티의 시간이 경기시계로 끝났을 때 페널티 박스에서 나갈 수 있다. 만약 경기시계가 선수에게 보이지 않는다면, 페널티 시간계시원이 시간이 끝났음을 선수에게 말해줘야 한다. 선수는 반드시 코트에 표시된 선 사이로 페널티 박스를 나가야 한다. (부록A 참고) 디스퀄리파잉 파울의 결과가 아닌 페널티를 수행하고 있는 선수는 만약 상대팀이 패널티 트라이가 아닌 득점에 성공하면, 페널티 박스로부터 나가야 한다. 득점으로 페널티 박스를 나가게 되는 선수는 페널티 시간계시원 또는 심판이 코트로 나아갈 것을 지시 받는다.",
+    "(자기 마음대로 복귀하는 것이 아니라 지시를 받고 복귀하는 것이다). 만약 동일한 팀에서 한 명 이상의 선수들이 페널티를 수행하고 있다면, 그들은 그들이 페널티를 받은 것과 동일한 순서대로 페널티 박스에서 나와야 한다."
+   ],
+   "bodyEn": [
+    "A player serving a penalty is released from the penalty box when the time of the penalty has expired as indicated on the game clock. If the player cannot view the game clock, the penalty timekeeper shall tell the player when the time has expired.",
+    "A player must exit the penalty box between the lines as marked on the court. (See Annex A) A player serving a penalty that is not the result of a disqualifying foul shall be released from the penalty box if the opposing team scores a try that is not the result of a penalty try.",
+    "A player released as the result of a try will be instructed to return to the court by the penalty timekeeper or the Referee. If more than one (1) player on the same team is serving a penalty, they shall be released from the penalty box in the same order that they begin serving the penalties."
+   ]
+  },
+  {
+   "no": 107,
+   "chapter": 13,
+   "titleKo": "다중 페널티",
+   "titleEn": "Multiple penalties",
+   "page": 44,
+   "bodyKo": [
+    "동일한 팀의 2명 이상(정확히는 초과, 즉 2명까지는 가능) 의 선수들이 동시에 페널티를 수행할 수는 없다. 만약 2명 이상의 선수들에게 페널티를 수행할 것이 요구되면, 3번째와 뒤이은 모든 페널티를 받은 선수들은 코트 밖과 페널티 박스 밖으로 코트를 떠나 페널티 수행을 할 수 있는 기회가 올 때까지 기다려야 한다. 그의 팀이 경기 진행이 지속되도록 이 선수를 위한 선수교체가 있어야 한다.",
+    "(2명이 페널티 박스에 있고 3번째 선수가 경기장 밖으로 나온 것이므로, 교체를 해주지 않으면 코트에 1명의 선수밖에 남지 않아 경기를 지속할 수 없다). 페널티의 수행을 기다리는 선수는 자신의 팀 페널티 박스 안에 있는 선수들이 2명 미만으로 줄어들었을 때 페널티의 수행을 시작해야 한다. 만약 필요하다면, 코치에게 그의 팀이 최대 등급분류 포인트를 위반하지 않게 선수교체를 할 수 있는 기회가 주어져야 한다."
+   ],
+   "bodyEn": [
+    "No more than two (2) players from the same team may serve penalties at the same time. If more than two (2) players are required to serve penalties, the third and any subsequent penalized players shall leave the court and wait, off the court and outside the penalty box, for an opportunity to begin serving the penalty.",
+    "A substitute must be made for this player to allow his team to continue to play. A player waiting to serve a penalty shall begin the penalty when the number of players in his team’s penalty box is reduced to less than two (2).",
+    "If necessary, the coach shall be given an opportunity to make substitutions so that his team is not in violation of the maximum point value."
+   ]
+  },
+  {
+   "no": 108,
+   "chapter": 13,
+   "titleKo": "휴식시간 중 파울",
+   "titleEn": "Fouls during an interval",
+   "page": 44,
+   "bodyKo": [
+    "휴식시간 중에 부과된 파울로 페널티가 부여된 선수는 다음 피리어드의 시작 때에 페널티의 수행이 시작되어야 한다."
+   ],
+   "bodyEn": [
+    "A player who is required to serve a penalty as a result of a foul charged during an interval shall begin serving the penalty at the beginning of the next period."
+   ]
+  },
+  {
+   "no": 109,
+   "chapter": 14,
+   "titleKo": "승부 결정",
+   "titleEn": "Deciding the game",
+   "page": 45,
+   "bodyKo": [
+    "한 팀이 4번째 피리어드의 종료 시 다른 팀보다 득점에서 앞서고 있다면, 경기는 끝나야 하고, 가장 많은 득점을 한 팀이 승자로 선언되어야 한다. 만약 4번째 피리어드의 종료 시 팀들이 동점이라면 연장전이 실시되어야 한다. 만약 한 팀이 그 연장전 피리어드의 종료 시 다른 팀보다 득점에서 앞서고 있다면, 경기는 끝나야 하고, 가장 많은 득점을 한 팀이 승자로 선언되어야 한다. 연장전 피리어드 종료 시 팀들이 동점이라면 추가 연장전이 실시되어야 한다. 만약 한 팀이 연장전 피리어드의 종료 시 득점에서 앞서고 있다면, 경기는 끝나야 하고, 가장 많은 득점을 한 팀이 승자로 선언되어야 한다. 추가 연장전 피리어드는 한 팀이 연장전 피리어드의 종료 시 득점에 앞설 때까지 실시되어야 한다. 연장전 경기의 각 피리어드는 팁 오프로 시작되어야 한다."
+   ],
+   "bodyEn": [
+    "If a team is ahead in the score at the end of the fourth period, the game shall be ended and the team that has the greatest number of points shall be declared the winner. If teams are tied at the end of the fourth period, an overtime period shall be played.",
+    "If a team is ahead in the score at the end of the overtime period, the game shall be ended and the team that has the greatest number of points shall be declared the winner. If teams are tied at the end of an overtime period, an additional overtime period shall be played.",
+    "If a team is ahead in the score at the end of an overtime period, the game shall be ended and the team that has the greatest number of points shall be declared the winner. Additional overtime periods shall be played until one team is ahead in the score at the end of an overtime period.",
+    "Each period of overtime play shall begin with a tip-off."
+   ]
+  },
+  {
+   "no": 110,
+   "chapter": 14,
+   "titleKo": "게임 종료",
+   "titleEn": "Ending the game",
+   "page": 45,
+   "bodyKo": [
+    "만약 레퍼리 1이 판단하여, 두 팀 중 한 팀이 발생한 뻔뻔하고 지속적이며 위험한 파울, 관중이 선수들 또는 심판에게 향한 폭동 또는 위험한 행동을 보이고, 심판들의 지속적인 무관심, 또는 선수들, 코치들, 또는 관중이 다른 모든 위험하고 지속적인 행동들로 그 경기가 통제 불능의 경기로 악화되었다면 그는 경기를 즉각 종료시킬 수 있다. 이 경우, 승패는 다음과 같이 결정되어야 한다.",
+    "a. 만약 경기가 한 팀의 행동으로 종료되었다면, 그들에게 그 경기의 몰수패가 판정되어야 한다. (111조)",
+    "b. 만약 경기가 한 팀의 행동으로 종료되지 않고, 경기가 종료될 때 득점에서 앞서고 있던 팀이 승자로 선언되어야 한다.",
+    "c. 만약 경기가 한 팀의 행동으로 종료된 것이 아니고 경기가 종료될 때 득점이 동점이었다면, 승자 결정이 내려지지 않는다. 경기는 연기되고 나중에 원인이 제거되었을 때 재개되어야 한다."
+   ],
+   "bodyEn": [
+    "If in the judgment of Referee 1, the game has deteriorated into an uncontrollable event, due to blatant, continuous, and dangerous fouling by one of the teams; riotous or dangerous action by the crowd towards the players or officials;",
+    "persistent disregard of the officials; or any other dangerous and persistent act by players, coaches or spectators, he may end the game immediately. In this case, the game shall be decided as follows:",
+    "a. If the game is ended due to the actions of one (1) team, they shall be judged to have forfeit the game. (Article 111)",
+    "b. If the game is not ended due to the actions of one (1) team, the team that is ahead in the score at the time the game is ended shall be declared the winner.",
+    "c. If the game is not ended due to the actions of one (1) team and the score is tied at the time the game is ended, no decision shall be made. The game shall be suspended and resumed at a later time when the reasons for the suspension have been eliminated."
+   ],
+   "koRefFixed": [
+    "112조→111조"
+   ]
+  },
+  {
+   "no": 111,
+   "chapter": 14,
+   "titleKo": "몰수게임",
+   "titleEn": "Forfeit of game",
+   "page": 45,
+   "bodyKo": [
+    "다음의 경우 팀은 경기를 몰수당한다.",
+    "a. 경기를 거부하는 경우",
+    "b. 예정된 시작 시각부터 15분 안에 경기할 준비가 되지 않는 경우 (60조)",
+    "c. 예정된 시작 시각부터 15분 안에 코트에 4명의 선수를 내보내 경기를 시작할 수 없는 경우 (60조)",
+    "d. 팀의 행동 때문에 레퍼리 1이 경기를 종료한 경우 (110조)",
+    "e. 등급분류 점수 최대치를 지키면서 경기를 계속할 수 없는 경우",
+    "f. 최소 2명의 선수로 경기를 계속할 수 없는 경우",
+    "g. 경기 시작 전에 테크니컬 딜리게이트에게 경기하지 않겠다고 통보한 경우",
+    "몰수하지 않은 팀이 승자로 선언된다. 몰수한 팀이 몰수 시점에 점수가 뒤져 있었으면 그 시점의 점수를 최종 점수로 기록한다. 몰수한 팀이 몰수 시점에 점수가 앞서 있었으면 상대 팀이 1:0으로 이긴 것으로 최종 점수를 기록한다."
+   ],
+   "bodyEn": [
+    "A team shall forfeit a game if:",
+    "a. it refuses to play,",
+    "b. it is not ready to play within fifteen (15) minutes of the scheduled start time (Article 60),",
+    "c. it is unable to begin the game with four (4) players on the court within fifteen (15) minutes of the scheduled start time (Article 60),",
+    "d. its actions cause Referee 1 to end the game (Article 110),",
+    "e. it cannot continue the game while respecting the maximum classification point value (), or",
+    "f. it cannot continue the game with at least two (2) players,",
+    "g. it notifies the Technical Delegate prior to the scheduled start of the game that it will not play. The team that does not forfeit shall be declared the winner. If the team that forfeits is behind in points at the time of forfeiture, the score at that time shall be recorded as the final score.",
+    "If the team that forfeits is ahead in points at the time of forfeiture, a score of one (1) to zero (0) in favor of the other team shall be recorded as the final score."
+   ],
+   "changed2026": true,
+   "changeNote": "2명 미만으로는 경기를 계속할 수 없음이 명시되고 조항 참조 번호가 정리되었습니다.",
+   "koNew": true
+  }
+ ],
+ "annexes": [
+  {
+   "id": "A",
+   "titleKo": "경기장",
+   "titleEn": "Field of play",
+   "page": 46
+  },
+  {
+   "id": "B",
+   "titleKo": "스코어시트",
+   "titleEn": "Score sheet",
+   "page": 47
+  },
+  {
+   "id": "C",
+   "titleKo": "페널티시트",
+   "titleEn": "Penalty sheet",
+   "page": 48
+  }
+ ]
+}
