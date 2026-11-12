@@ -173,12 +173,17 @@
     tube(g, [[28, -50], [62, -58]], 3, '#c7cdd3', '#5b636d');
     tube(g, [[28, 50], [62, 58]], 3, '#c7cdd3', '#5b636d');
     // 범퍼 링 (넓적한 알루미늄 판 → 두껍게)
-    const R1 = ring(-1).reverse().concat(ring(1).slice(1));
+    const R1 = ring(-1).concat(ring(1).reverse().slice(1));   // 왼쪽 뒤 → 앞 가운데 → 오른쪽 뒤
     tube(g, R1, 7.2, '#e6e9ec', '#6b7380');
     // 용접 자국
     g.strokeStyle = 'rgba(120,128,138,.55)'; g.lineWidth = 0.7; g.setLineDash([1.2, 1.4]);
     g.beginPath(); g.moveTo(30, -73); g.bezierCurveTo(66, -62, 84, -34, 84, 0); g.bezierCurveTo(84, 34, 66, 62, 30, 73); g.stroke();
     g.setLineDash([]);
+    // 작은 앞 범퍼 (캐스터 사이, 링보다 살짝 앞) + 고무 스키드
+    tube(g, [[80, -16], [90, -14]], 3, '#c7cdd3', '#59616b');
+    tube(g, [[80, 16], [90, 14]], 3, '#c7cdd3', '#59616b');
+    g.fillStyle = '#15181c'; g.beginPath(); g.roundRect ? g.roundRect(90, -22, 6, 44, 2) : g.rect(90, -22, 6, 44); g.fill();
+    tube(g, [[91, -22], [91, 22]], 4.6, '#eef1f3', '#59616b');
     // 앞쪽 팀색 테이프
     g.strokeStyle = css(C, 0.9); g.lineWidth = 1.6; g.lineCap = 'round';
     g.beginPath(); g.moveTo(80, -30); g.quadraticCurveTo(86, -10, 86.5, 0); g.quadraticCurveTo(86, 10, 80, 30); g.stroke();
@@ -231,79 +236,34 @@
     g.beginPath(); g.moveTo(101, -30); g.lineTo(101, 30); g.stroke();
   }
 
-  function player(g, C, num) {
-    const skin = '#c99a76', skinD = '#a5795a';
-    const J = C, JL = tint(C, 0.22), JD = shade(C, 0.35);
-    // 무릎·허벅지 (바지 + 다리 끈)
-    for (const s of [-1, 1]) {
-      const lg = g.createLinearGradient(0, s * 4, 0, s * 22);
-      lg.addColorStop(0, '#6b7686'); lg.addColorStop(0.6, '#4a5361'); lg.addColorStop(1, '#2f3640');
-      g.fillStyle = lg;
-      g.beginPath(); g.roundRect ? g.roundRect(4, s > 0 ? 3 : -21, 40, 18, 9) : g.rect(4, s > 0 ? 3 : -21, 40, 18); g.fill();
-    }
-    g.fillStyle = '#111418'; g.fillRect(24, -21, 4, 42);
-    g.fillStyle = css(J, 0.85); g.fillRect(25, -21, 1.4, 42);
-    // 등받이·방석
-    g.fillStyle = '#1b1f25'; g.beginPath(); g.roundRect ? g.roundRect(-36, -30, 12, 60, 5) : g.rect(-36, -30, 12, 60); g.fill();
-    // 팔 (어깨 → 팔꿈치 → 핸드림 위 손)
-    const arm = (s) => {
-      const sh = [-12, s * 27], el = [-2, s * 38], hd = [16, s * 47];
-      g.lineCap = 'round'; g.lineJoin = 'round';
-      g.strokeStyle = 'rgba(0,0,0,.25)'; g.lineWidth = 11;
-      g.beginPath(); g.moveTo(sh[0] + 1, sh[1] + 1.5); g.lineTo(el[0] + 1, el[1] + 1.5); g.lineTo(hd[0] + 1, hd[1] + 1.5); g.stroke();
-      g.strokeStyle = skinD; g.lineWidth = 9.5;
-      g.beginPath(); g.moveTo(sh[0], sh[1]); g.lineTo(el[0], el[1]); g.lineTo(hd[0], hd[1]); g.stroke();
-      g.strokeStyle = skin; g.lineWidth = 7;
-      g.beginPath(); g.moveTo(sh[0], sh[1]); g.lineTo(el[0], el[1]); g.lineTo(hd[0], hd[1]); g.stroke();
-      // 팔꿈치~손목 테이핑
-      g.strokeStyle = '#eef0f2'; g.lineWidth = 6.6;
-      g.beginPath(); g.moveTo(el[0] + (hd[0] - el[0]) * 0.55, el[1] + (hd[1] - el[1]) * 0.55); g.lineTo(el[0] + (hd[0] - el[0]) * 0.8, el[1] + (hd[1] - el[1]) * 0.8); g.stroke();
-      // 소매
-      g.strokeStyle = css(JD); g.lineWidth = 11;
-      g.beginPath(); g.moveTo(sh[0], sh[1]); g.lineTo(sh[0] + (el[0] - sh[0]) * 0.4, sh[1] + (el[1] - sh[1]) * 0.4); g.stroke();
-      // 장갑
-      g.fillStyle = '#14171c'; g.beginPath(); g.ellipse(hd[0], hd[1], 6.4, 4.6, 0.5 * s, 0, Math.PI * 2); g.fill();
-      g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.ellipse(hd[0] - 1.5, hd[1] - s * 1.2, 2.6, 1.4, 0.5 * s, 0, Math.PI * 2); g.fill();
-    };
-    arm(-1); arm(1);
-    // 몸통 (어깨 위에서 본 저지)
-    g.save();
-    g.shadowColor = 'rgba(0,0,0,.35)'; g.shadowBlur = 5 * RES; g.shadowOffsetX = 1.5 * RES; g.shadowOffsetY = 2 * RES;
-    const bg = g.createRadialGradient(-12, -8, 4, -14, 0, 34);
-    bg.addColorStop(0, css(JL)); bg.addColorStop(0.65, css(J)); bg.addColorStop(1, css(JD));
-    g.beginPath();
-    g.moveTo(2, -20);
-    g.bezierCurveTo(2, -30, -8, -33, -16, -32);
-    g.bezierCurveTo(-28, -30, -32, -18, -32, 0);
-    g.bezierCurveTo(-32, 18, -28, 30, -16, 32);
-    g.bezierCurveTo(-8, 33, 2, 30, 2, 20);
-    g.bezierCurveTo(5, 10, 5, -10, 2, -20);
-    g.closePath(); g.fillStyle = bg; g.fill();
-    g.restore();
-    // 저지 옆선
-    g.strokeStyle = css(tint(C, 0.55), 0.5); g.lineWidth = 1.1;
-    g.beginPath(); g.moveTo(-16, -31); g.bezierCurveTo(-26, -26, -30, -14, -30.5, 0); g.stroke();
-    // 등번호 (등이 뒤쪽 → 위에서 보면 머리 뒤. 글자 위쪽이 앞을 봄)
+  // 좌석 (선수 그림 대신): 방석·등받이 + 방석 위 큰 등번호
+  function seat(g, C, num) {
+    // 등받이 (뒤쪽, 세로 박음질)
+    const bk = g.createLinearGradient(-46, 0, -32, 0);
+    bk.addColorStop(0, '#0f1216'); bk.addColorStop(1, '#2a2f37');
+    g.fillStyle = bk; g.beginPath(); g.roundRect ? g.roundRect(-46, -32, 14, 64, 5) : g.rect(-46, -32, 14, 64); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,.10)'; g.lineWidth = 0.8;
+    g.beginPath(); g.moveTo(-46, -11); g.lineTo(-32, -11); g.moveTo(-46, 11); g.lineTo(-32, 11); g.stroke();
+    g.fillStyle = css(C, 0.9); g.fillRect(-46.5, -30, 2.2, 60);       // 등받이 위 팀색 테두리
+    // 방석
+    const cg = g.createRadialGradient(-12, -6, 4, -12, 0, 36);
+    cg.addColorStop(0, css(tint(C, 0.12))); cg.addColorStop(0.7, css(C)); cg.addColorStop(1, css(shade(C, 0.35)));   // 방석 = 팀색
+    g.fillStyle = cg; g.beginPath(); g.roundRect ? g.roundRect(-33, -31, 44, 62, 8) : g.rect(-33, -31, 44, 62); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,.22)'; g.lineWidth = 0.7;
+    g.beginPath(); g.roundRect ? g.roundRect(-30, -28, 38, 56, 6) : g.rect(-30, -28, 38, 56); g.stroke();
+    // 엉덩이 끈
+    g.fillStyle = '#0c0e11'; g.fillRect(-4, -31, 4, 62);
+    g.fillStyle = '#8b939c'; g.fillRect(-4.5, -3, 5, 6);
+    // 등번호 (글자 위쪽이 앞을 봄)
     if (num !== undefined && num !== null && num !== '') {
       const t = String(num);
-      g.save(); g.translate(-21, 0); g.rotate(Math.PI / 2);
-      g.font = `900 ${t.length > 1 ? 17 : 20}px ${FONT}`;
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.lineWidth = 3; g.strokeStyle = css(shade(C, 0.55), 0.9); g.lineJoin = 'round';
-      g.strokeText(t, 0, 0.5);
-      g.fillStyle = '#ffffff'; g.fillText(t, 0, 0.5);
+      g.save(); g.translate(-16, 0); g.rotate(Math.PI / 2);
+      g.font = `900 ${t.length > 1 ? 24 : 30}px ${FONT}`;
+      g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+      g.lineWidth = 5; g.strokeStyle = css(shade(C, 0.6)); g.strokeText(t, 0, 1);
+      g.fillStyle = '#ffffff'; g.fillText(t, 0, 1);
       g.restore();
     }
-    // 머리 (위에서 본 머리카락)
-    g.save();
-    g.shadowColor = 'rgba(0,0,0,.4)'; g.shadowBlur = 4 * RES; g.shadowOffsetX = 1.2 * RES; g.shadowOffsetY = 1.8 * RES;
-    g.fillStyle = skin; g.beginPath(); g.ellipse(-4, 0, 9.6, 10.6, 0, 0, Math.PI * 2); g.fill();
-    g.restore();
-    const hg = g.createRadialGradient(-7, -3, 1, -6, 0, 11);
-    hg.addColorStop(0, '#4a3a2e'); hg.addColorStop(1, '#1d1714');
-    g.fillStyle = hg; g.beginPath(); g.ellipse(-6, 0, 9.4, 10.2, 0, 0, Math.PI * 2); g.fill();
-    g.fillStyle = skinD; g.beginPath(); g.ellipse(-3, -10, 2, 1.3, 0, 0, Math.PI * 2); g.ellipse(-3, 10, 2, 1.3, 0, 0, Math.PI * 2); g.fill();
-    g.fillStyle = 'rgba(255,255,255,.12)'; g.beginPath(); g.ellipse(-9, -3, 4, 2.6, -0.4, 0, Math.PI * 2); g.fill();
   }
 
   function paint(g, o, phase) {
@@ -317,7 +277,7 @@
     else { chassis(g, o.type, C); caster(g, 72, -24); caster(g, 72, 24); }
     if (o.type === 'D') bumperD(g, C); else bumperA(g, C);
     g.restore();
-    player(g, C, o.num);
+    seat(g, C, o.num);
   }
 
   // 그림자용 실루엣 (흐리게)

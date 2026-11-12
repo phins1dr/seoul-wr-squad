@@ -111,7 +111,7 @@
     ballG.addChild(ballSh, ball);
 
     function makeActor(a) {
-      const look = root.RugbyChairs.look({ type: a.chair || (a.team === 'B' ? 'D' : 'A'), color: TEAMCOL[a.team] || TEAMCOL.A, num: a.num !== undefined ? a.num : a.id });
+      const look = root.RugbyChairs.look({ type: a.chair || (a.team === 'B' ? 'D' : 'A'), color: TEAMCOL[a.team] || TEAMCOL.A, num: a.num !== undefined ? a.num : String(a.id).replace(/\D/g, '') });
       const shadow = new PIXI.Sprite(look.shadowTex());
       shadow.anchor.set(look.ax, look.ay); shadow.width = look.W; shadow.height = look.H; shadow.alpha = 0.8;
       under.addChild(shadow);
