@@ -100,7 +100,9 @@
     const ui = new PIXI.Container();
     app.stage.addChild(ui);
 
-    let S = 12, ox = PAD * S, oy = PAD * S;
+    // 보이는 영역 = 장면에 나오는 선수·볼·표시만 감싸도록 확대한다 (아래엔 설명 띠 자리를 둔다)
+    const ASPECT = 1.6, BAND = 2.6, MINW = 13;
+    let S = 12, ox = PAD * S, oy = PAD * S, view = { x: -PAD, y: -PAD, w: CW, h: CH };
     const w2s = (x, y) => ({ sx: ox + x * S, sy: oy + y * S });
 
     const actors = new Map();
@@ -166,7 +168,8 @@
       cur.ball.y = cur.pos[data.ball.holder][1];
     }
     for (const s of steps) {
-      const st = { pos: {}, face: {}, ball: cur.ball ? { ...cur.ball } : null, caption: s.caption || '' };
+      // 설명이 없는 단계는 앞 설명을 이어 보여준다
+      const st = { pos: {}, face: {}, ball: cur.ball ? { ...cur.ball } : null, caption: s.caption !== undefined ? s.caption : (cur.caption || '') };
       for (const id in cur.pos) st.pos[id] = cur.pos[id].slice();
       for (const id in cur.face) st.face[id] = cur.face[id];
       if (s.move) for (const id in s.move) if (st.pos[id]) st.pos[id] = s.move[id].slice();
@@ -183,6 +186,61 @@
       cur = st;
     }
     const dur = data.duration || (keys.length ? keys[keys.length - 1].at + 2 : 4);
+
+    // 장면 범위 계산
+    (function fitView() {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      const add = (x, y, rx, ry) => {
+        x0 = Math.min(x0, x - rx); x1 = Math.max(x1, x + rx);
+        y0 = Math.min(y0, y - ry); y1 = Math.max(y1, y + ry);
+      };
+      for (const k of keys) {
+        for (const id in k.pos) add(k.pos[id][0], k.pos[id][1], 1.7, 1.9); // 휠체어 + 위 번호표
+        if (k.ball && !k.ball.holder) add(k.ball.x, k.ball.y, 0.6, 0.6);
+      }
+      for (const m of data.markers || []) {
+        if (m.type === 'tag') add(m.x, m.y, Math.max(1.5, (m.text || '').length * 0.33), 0.7);
+        else add(m.x, m.y, 0.8, 1.2);
+      }
+      for (const h of data.highlight || []) {
+        if (h.type === 'circle') add(h.x, h.y, (h.r || 1) + 0.4, (h.r || 1) + 0.4);
+        else if (h.type === 'line' && Math.hypot(h.x2 - h.x1, h.y2 - h.y1) <= 9) { add(h.x1, h.y1, 0.5, 0.5); add(h.x2, h.y2, 0.5, 0.5); } // 센터라인처럼 긴 선은 범위에서 뺀다
+        else if (h.type === 'key') { const kx = h.side === 'left' ? 1.15 : W - 1.15; add(kx, 7.5, 1.6, 5.2); }
+      }
+      if (!isFinite(x0)) return;
+      x0 -= 1; x1 += 1; y0 -= 0.6;
+      y1 += BAND; // 설명 띠
+      let w = Math.max(MINW, x1 - x0, (y1 - y0) * ASPECT);
+      w = Math.min(w, CW);
+      const h = w / ASPECT;
+      let vx = (x0 + x1) / 2 - w / 2, vy = (y0 + y1) / 2 - h / 2;
+      // 코트 테두리 안으로 맞추되, 장면 내용(띠 포함)이 잘리면 내용을 우선한다
+      vx = Math.max(-PAD, Math.min(W + PAD - w, vx));
+      if (h <= CH) vy = Math.max(-PAD, Math.min(H + PAD - h, vy));
+      if (vx > x0) vx = x0;
+      if (vx + w < x1) vx = x1 - w;
+      if (vy + h < y1) vy = y1 - h;
+      if (vy > y0) vy = y0;
+      view = { x: vx, y: vy, w, h };
+    })();
+
+    // 코트 안 설명 띠
+    const capBg = new PIXI.Graphics();
+    const capT = new PIXI.Text('', new PIXI.TextStyle({ fontFamily: FONT, fontWeight: '700', fontSize: 14.5, fill: '#f4f7fb', lineHeight: 20, wordWrap: true, breakWords: true, wordWrapWidth: 300 }));
+    capT.resolution = Math.min(root.devicePixelRatio || 1, 2) * 2;
+    ui.addChild(capBg, capT);
+    let capW = 0, capH = 0;
+    function layoutCaption(text) {
+      if (capT.text !== text) capT.text = text || '';
+      const pad = 10, side = 8;
+      capT.style.wordWrapWidth = Math.max(120, capW - side * 2 - pad * 2);
+      capBg.clear();
+      if (!capT.text) return;
+      const bh = capT.height + 12;
+      const by = capH - bh - 8;
+      capBg.beginFill(0x10151c, 0.84).drawRoundedRect(side, by, capW - side * 2, bh, 9).endFill();
+      capT.position.set(side + pad, by + 6);
+    }
 
     // 보간된 상태
     function stateAt(t) {
@@ -207,13 +265,15 @@
     function resize() {
       const rect = host.getBoundingClientRect();
       const w = Math.max(200, Math.round(rect.width));
-      const h = Math.round((w * CH) / CW);
+      const h = Math.round(w / ASPECT);
       app.renderer.resize(w, h);
-      S = w / CW;
-      ox = PAD * S; oy = PAD * S;
-      world.position.set(0, 0);
+      S = w / view.w;
+      ox = -view.x * S; oy = -view.y * S;
+      world.position.set(ox, oy);
       world.scale.set(S, S);
       canvas.style.height = h + 'px';
+      capW = w; capH = h;
+      layoutCaption(caption);
     }
 
     let t = 0, playing = true, last = performance.now();
@@ -250,7 +310,7 @@
         if (t > dur + 1.3) t = 0;
       }
       const st = stateAt(t);
-      caption = st.caption;
+      if (st.caption !== caption) { caption = st.caption; layoutCaption(caption); }
       for (const [id, v] of actors) {
         const p = st.pos[id] || [v.x, v.y];
         const a = st.face[id] || 0;
@@ -292,6 +352,7 @@
       replay() { t = 0; playing = true; last = performance.now(); },
       pause() { playing = false; },
       play() { playing = true; last = performance.now(); },
+      seek(sec) { t = Math.max(0, sec); playing = false; last = performance.now(); frame(); app.render(); },
       destroy() {
         try { ro.disconnect(); } catch (e) {}
         app.ticker.remove(frame);

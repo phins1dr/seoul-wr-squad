@@ -435,25 +435,17 @@
     $('qChapter').textContent = chapterById(c.chapter).title;
     const en = caseLang === 'en';
     $('qText').textContent = en ? (c.questionEn || c.question) : c.question;
-    const qEn = $('qTextEn');
-    if (qEn) {
-      if (!en && c.questionEn) { qEn.hidden = false; qEn.textContent = c.questionEn; }
-      else { qEn.hidden = true; qEn.textContent = ''; }
-    }
     const lb = $('btnQuizLang');
     if (lb) lb.textContent = en ? 'KO' : 'EN';
 
     const sceneBox = $('sceneBox'), textBox = $('textOnlyBox');
     if (c.scene && window.QuizScene) {
       sceneBox.hidden = false; textBox.hidden = true;
-      $('sceneCaption').textContent = '';
       const wrap = $('sceneWrap');
       wrap.innerHTML = '<canvas id="sceneCanvas"></canvas>';
       const canvas = $('sceneCanvas');
       requestAnimationFrame(() => {
-        sceneCtl = window.QuizScene.create(wrap, canvas, c.scene, {
-          onCaption: (t) => { const el = $('sceneCaption'); if (el.textContent !== t) el.textContent = t; }
-        });
+        sceneCtl = window.QuizScene.create(wrap, canvas, c.scene, {});
       });
     } else {
       sceneBox.hidden = true; textBox.hidden = false;
@@ -486,6 +478,7 @@
 
     $('feedback').hidden = true;
     $('feedback').innerHTML = '';
+    if ($('origBox')) { $('origBox').hidden = true; $('origBox').innerHTML = ''; }
     $('btnNext').hidden = true;
     if (prev) {
       markChoices(c, box, prev.pick);
@@ -538,26 +531,43 @@
     const rel = (c.relatedArticles || []).filter((n) => ARTBY.get(Number(n)));
     const en = caseLang === 'en';
     const why = en && c.explanationEn ? c.explanationEn : c.explanation;
-    const whyOther = !en && c.explanationEn ? `<p class="ex-src-en">${esc(c.explanationEn)}</p>` : '';
+    // 다른 언어(국문 화면이면 영문 원문, 영문 화면이면 국문)는 해설 아래 한 덩어리로 모은다
+    const oq = en ? c.question : c.questionEn;
+    const oc = en ? c.choices : c.choicesEn;
+    const ox = en ? c.explanation : c.explanationEn;
+    const other = (oq || ox) ? `
+      <div class="orig">
+        <div class="orig-head">${en ? '국문' : '영문 원문'}</div>
+        ${oq ? `<p class="orig-label">${en ? '문제' : 'Question'}</p><p>${esc(oq)}</p>` : ''}
+        ${oc && oc.length ? `<ol type="A">${oc.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : ''}
+        ${ox ? `<p class="orig-label">${en ? '해설' : 'Answer'}</p><p>${esc(ox)}</p>` : ''}
+      </div>` : '';
+    const T = en
+      ? { ok: 'Correct', bad: 'Incorrect', pick: 'Your answer', ans: 'Answer', head: 'Explanation', src: `Casebook ${esc(c.caseNo)} · p.${esc(c.page)}`, sw: '국문으로 보기' }
+      : { ok: '정답입니다', bad: '오답입니다', pick: '내가 고른 답', ans: '정답', head: '해설', src: `케이스북 ${esc(c.caseNo)} · ${esc(c.page)}쪽`, sw: '영문으로 보기' };
     fb.hidden = false;
     fb.innerHTML = `
       <div class="verdict ${ok ? 'ok' : 'bad'}">
         <span class="vicon">${ok ? '✓' : '✕'}</span>
-        <span class="vtext">${ok ? '정답입니다' : '오답입니다'}</span>
-        ${ok ? '' : `<span class="vpick">내가 고른 답: ${LETTERS[picked]} · 정답: ${LETTERS[c.answer]}</span>`}
+        <span class="vtext">${ok ? T.ok : T.bad}</span>
+        ${ok ? '' : `<span class="vpick">${T.pick}: ${LETTERS[picked]} · ${T.ans}: ${LETTERS[c.answer]}</span>`}
       </div>
       <div class="explain">
-        <div class="ex-head">해설</div>
+        <div class="ex-head">${T.head}</div>
         <p class="ex-answer">${esc(why)}</p>
-        ${whyOther}
         ${c.rule ? `<p class="ex-rule">${esc(c.rule)}</p>` : ''}
-        <p class="ex-src">케이스북 ${esc(c.caseNo)} · ${esc(c.page)}쪽 ${c.changed2026 ? '<span class="badge-2026">2026 개정</span>' : ''}</p>
-        <div class="btn-row"><button class="btn ghost sm" id="btnFbLang" type="button">${en ? '국문으로 보기' : '영문 원문 보기'}</button></div>
+        <p class="ex-src">${T.src} ${c.changed2026 ? '<span class="badge-2026">2026 개정</span>' : ''}</p>
         ${rel.length ? `<div class="ex-links">${rel.map((n) => {
           const a = ARTBY.get(Number(n));
           return `<button class="art-link inline" data-art="${a.no}" type="button"><span class="no">${a.no}조</span><span class="ti">${esc(a.titleKo)}</span></button>`;
         }).join('')}</div>` : ''}
       </div>`;
+    // 다른 언어 원문은 '다음 문제' 버튼 아래에 따로 둔다
+    const ob = $('origBox');
+    if (ob) {
+      ob.hidden = false;
+      ob.innerHTML = `${other}<div class="btn-row"><button class="btn ghost sm" id="btnFbLang" type="button">${T.sw}</button></div>`;
+    }
     const lb = document.getElementById('btnFbLang');
     if (lb) lb.addEventListener('click', () => { caseLang = caseLang === 'en' ? 'ko' : 'en'; renderQuiz(); });
     fb.querySelectorAll('[data-art]').forEach((b) => {

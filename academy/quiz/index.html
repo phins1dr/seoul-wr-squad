@@ -209,10 +209,7 @@
 
       <div id="sceneBox" class="scene-card">
         <div id="sceneWrap" class="scene-wrap"><canvas id="sceneCanvas"></canvas></div>
-        <div class="scene-foot">
-          <p id="sceneCaption">　</p>
-          <button class="replay" id="sceneReplay" type="button" aria-label="장면 다시 재생">↻ 다시</button>
-        </div>
+        <button class="replay" id="sceneReplay" type="button" aria-label="장면 다시 재생">↻ 다시</button>
       </div>
       <div id="textOnlyBox" class="text-only" hidden>
         <span class="text-only-label">글 문제</span>
@@ -220,7 +217,6 @@
       </div>
 
       <h2 class="q-text" id="qText"></h2>
-      <p class="q-text-en" id="qTextEn" hidden></p>
       <div class="choices" id="choices"></div>
       <div id="feedback" class="feedback" hidden></div>
     </div>
@@ -229,6 +225,7 @@
       <button class="btn primary big" id="btnCheck" type="button" disabled>정답 확인</button>
       <button class="btn primary big" id="btnNext" type="button" hidden>다음 문제</button>
     </div>
+    <div id="origBox" class="orig-box" hidden></div>
   </section>
 
   <!-- ================= 결과 ================= -->
