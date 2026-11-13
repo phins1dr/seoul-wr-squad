@@ -30,13 +30,42 @@
   #btns button{background:rgba(10,13,18,.8);color:#e6edf3;border:1px solid #30363d;border-radius:9px;padding:7px 12px;font-size:13px;cursor:pointer}
   #btns button.on{background:#1f6feb;border-color:#1f6feb}
   #load{position:fixed;inset:0;display:grid;place-items:center;font-size:14px;opacity:.7}
-  @media (max-width:700px){#bug{top:auto;bottom:18px;left:12px;transform:scale(.9);transform-origin:left bottom}#msg{bottom:auto;top:62px}#joy{width:96px;height:96px}#btns{max-width:none;left:12px;right:12px;justify-content:flex-start}}
+  /* 플레이 모드 */
+  body.play #joyWrap{display:none}
+  #pj{position:fixed;left:calc(16px + env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:128px;height:128px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25);touch-action:none;display:none;user-select:none}
+  #pj i{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px;border-radius:50%;background:rgba(255,255,255,.55);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  #pb{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:none;align-items:flex-end;gap:10px;user-select:none;touch-action:manipulation}
+  #pb button{border-radius:50%;padding:0;white-space:nowrap;border:2px solid rgba(255,255,255,.3);color:#fff;font-weight:800;font-family:inherit;cursor:pointer}
+  #pb button.dim{opacity:.35}
+  #bPassP{width:84px;height:84px;font-size:19px;background:#1f6feb}
+  #bBnc{width:58px;height:58px;font-size:13px;background:rgba(16,22,34,.85)}
+  #bSw{width:52px;height:52px;font-size:12.5px;background:rgba(16,22,34,.85);margin-bottom:70px}
+  body.play #pj{display:block} body.play #pb{display:flex}
+  #side{position:fixed;left:16px;top:66px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(10,13,18,.8);display:none}
+  body.play #side{display:block} #side.att{color:#79c0ff} #side.def{color:#ffa198}
+  #keysHint{position:fixed;left:50%;bottom:62px;transform:translateX(-50%);font-size:12px;opacity:.7;white-space:nowrap;display:none}
+  .ov{position:fixed;inset:0;display:grid;place-items:center;background:rgba(4,6,10,.62);backdrop-filter:blur(3px);z-index:10;padding:16px}
+  .ov[hidden]{display:none}
+  .ov .card{background:#0f1520;border:1px solid #263041;border-radius:16px;padding:22px 22px 18px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .ov h2{margin:0 0 6px;font-size:20px} .ov p{margin:0 0 14px;font-size:13.5px;line-height:1.5;opacity:.8}
+  .ov .lab{font-size:12px;opacity:.6;margin:10px 0 6px}
+  .row{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{background:#18202d;border:1px solid #30363d;color:#e6edf3;border-radius:10px;padding:8px 12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+  .chip small{display:block;font-size:10.5px;font-weight:500;opacity:.6}
+  .chip.on{background:#1f6feb;border-color:#1f6feb}
+  .gBtn{margin-top:16px;width:100%;background:#2ea043;border:0;color:#fff;font-size:16px;font-weight:800;border-radius:12px;padding:12px;cursor:pointer;font-family:inherit}
+  .fs{font-size:26px;font-weight:800;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+  .kh{font-size:12px;opacity:.6;margin-top:12px;line-height:1.6}
+  @media (pointer:fine){#pj,#pb,body.play #pj,body.play #pb{display:none}body.play #keysHint{display:block}.kh.t{display:none}}
+  @media (pointer:coarse){.kh.k{display:none}}
+  @media (max-width:700px){body.play #bug{top:auto;bottom:auto;top:96px;left:12px;transform:scale(.85);transform-origin:left top}body.play #side{top:150px;left:12px}body.play #msg{top:auto;bottom:160px}#bug{top:auto;bottom:18px;left:12px;transform:scale(.9);transform-origin:left bottom}#msg{bottom:auto;top:62px}#joy{width:96px;height:96px}#btns{max-width:none;left:12px;right:12px;justify-content:flex-start}}
 </style>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
 <script src="../engine/rugby-brain.js"></script>
 <script src="../engine/rugby-court.js"></script>
+<script src="../engine/rugby-chairs.js"></script>
 </head>
 <body>
 <div id="load">경기장 불 켜는 중…</div>
@@ -52,12 +81,31 @@
   <div id="joy" title="끌어서 화면 돌리기"><div id="knob"></div></div>
 </div>
 <div id="btns">
+  <button data-mode="watch">관전</button>
+  <button data-mode="play">플레이</button>
   <button data-cam="wide" class="on">중계</button>
   <button data-cam="ball">볼 따라가기</button>
   <button data-cam="player">휠체어 클로즈업</button>
   <button id="bSpeed">1x</button>
   <button id="bPause">멈춤</button>
 </div>
+<div id="side"></div>
+<div id="keysHint">이동 WASD·방향키 · 패스 Space · 1~4 그 번호에게 패스/바꾸기 · B 드리블 · Tab 선수 바꾸기</div>
+<div id="pj"><i></i></div>
+<div id="pb"><button id="bSw">바꾸기</button><button id="bBnc">드리블</button><button id="bPassP">패스</button></div>
+<div class="ov" id="start" hidden><div class="card">
+  <h2>3D 플레이</h2>
+  <p>우리팀(파랑) 한 명을 직접 움직여요. 나머지 7명과 규정·점수는 럭비두뇌가 맡아요.</p>
+  <div class="lab">내 선수</div><div class="row" id="cSeat"></div>
+  <div class="lab">피리어드 길이 (4피리어드)</div><div class="row" id="cLen"></div>
+  <div class="kh k">이동 WASD·방향키 / 패스 Space(누르는 방향 쪽 동료) / 1~4 그 번호에게 패스·조종 바꾸기 / B 드리블 / Tab 선수 바꾸기 / 마우스 끌기 = 화면 돌리기</div>
+  <div class="kh t">왼쪽 조이스틱 = 이동 / 패스(조이스틱 방향 쪽 동료) · 드리블 · 바꾸기 버튼 / 화면 끌기 = 돌리기</div>
+  <button class="gBtn" id="bGo">시작</button>
+</div></div>
+<div class="ov" id="end" hidden><div class="card" style="text-align:center">
+  <h2 id="eTitle">경기 끝</h2><div class="fs" id="eScore"></div>
+  <button class="gBtn" id="eRe">다시 하기</button>
+</div></div>
 <script type="module" src="./main.js"></script>
 </body>
 </html>

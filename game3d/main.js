@@ -2,7 +2,9 @@
    좌표: 엔진 x 0→28(공격 방향), y 0→15  →  3D x = x-14, z = y-7.5, 높이 y.
    엔진 각도 a(0=공격 방향, xy평면) → 3D rotation.y = -a.
    휠체어 생김새는 engine/rugby-chairs.js(2D)의 디자인을 실제 크기로 옮긴 것.
-   A1(3.0)만 선수 몸 샘플: 손이 핸드림에 붙어서(IK) 바퀴 회전에 맞춰 밀고·놓고·돌아옴. */
+   A1(3.0)만 선수 몸 샘플: 손이 핸드림에 붙어서(IK) 바퀴 회전에 맞춰 밀고·놓고·돌아옴.
+   모드 (?mode=): 관전(기본) / play = 우리팀 한 명을 사람이 조종 — 2D 게임(rugby-game)과 같은 RugbyBrain.match() 사용,
+   나머지 7명·규정·점수는 엔진이 함. 플레이에선 공수·전후반에 따라 코트를 뒤집어 그림(FL). */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -13,7 +15,9 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const RB = window.RugbyBrain;
 const CS = window.RugbyCourt.SPEC;              // 코트 규격: 엔진 공용 부품 (engine/rugby-court.js)
 const CL = CS.L, CW = CS.W, KD = CS.key.d, KW = CS.key.w, CR = CS.circleR, GW = CS.goalW;                         // 코트
-const toW = (x, y, h = 0) => new THREE.Vector3(x - CL / 2, h, y - CW / 2);
+const MODE = new URLSearchParams(location.search).get('mode') === 'play' ? 'play' : 'watch', PLAY = MODE === 'play';
+let FL = 1;                                      // 플레이: 1 = 엔진 공격 방향이 화면 오른쪽, -1 = 왼쪽 (M.flip)
+const toW = (x, y, h = 0) => new THREE.Vector3(FL * (x - CL / 2), h, FL * (y - CW / 2));
 const BLUE = 0x2f81f7, RED = 0xf04a42;
 
 /* ---------- 렌더러 ---------- */
@@ -258,7 +262,8 @@ const SB = (() => {
 })();
 
 /* ---------- 휠체어 (engine/rugby-chairs.js 디자인 → 3D, 실제 크기) ---------- */
-const u = 0.325 / 39, SY = 0.84, RW = 0.325, CAMBER = 18 * Math.PI / 180, SEAT = 0.46, HALF_TRACK = 0.42;
+// 크기는 의자 부품(engine/rugby-chairs.js)의 그림 단위 U를 그대로 씀: 뒷바퀴 지름 78단위 = 25" → 반지름 39단위
+const u = window.RugbyChairs.U, SY = 0.84, RW = 39 * u, CAMBER = 18 * Math.PI / 180, SEAT = 0.46, HALF_TRACK = 63 * u * SY;
 const P = (x, y, h, lat = SY) => new THREE.Vector3(x * u, h, y * u * lat);
 const metal = (c, r = .5) => new THREE.MeshStandardMaterial({ color: c, metalness: .95, roughness: r, roughnessMap: T.brushed, envMapIntensity: 1.2 });
 const MAT = {
@@ -535,21 +540,50 @@ function updateAthlete(A, dt, st) {             // st: {v, acc, turn, ballLocal,
 const hud = { play: document.getElementById('hPlay'), time: document.getElementById('hTime'), try: document.getElementById('hTry'), to: document.getElementById('hTo'), msg: document.getElementById('msg') };
 let msgT = 0;
 const score = { try: 0, to: 0, plays: 1 };
-const b = RB.create({
-  cfg: { trans: false, mode: 'watch', autoNext: true },
-  msg: (t, ms) => { hud.msg.textContent = t || ''; msgT = (ms || 2500) / 1000; },
-  event: (k) => { if (k === 'newGame') { score.plays++; hud.play.textContent = score.plays; } },
-});
-b.newGame(); score.plays = 1; hud.play.textContent = '1';
-const chairs = {};
-function chairFor(p) {
-  if (!chairs[p.id]) {
-    const ch = makeChair(p.team === 'A' ? BLUE : RED, p.num, p.chair || 'A');
-    ch.prev = null; chairs[p.id] = ch;
-    if (SHOW_ATHLETE && p.id === 'A1') makeAthlete(ch);
-  }
-  return chairs[p.id];
+const say = (t, ms) => { hud.msg.textContent = t || ''; msgT = ms === 0 ? 1e9 : (ms || 2500) / 1000; };
+const NAMES = { B: '우리팀', R: '상대팀' };
+const PS = { me: 1, len: 3 };                    // 플레이 설정 (내 번호, 피리어드 분)
+try { Object.assign(PS, JSON.parse(localStorage.getItem('wr3d.play') || '{}')); } catch (e) { }
+let M = null, b, cur = PS.me, lastPoss = -1, lastHolder = null, started = !PLAY;
+
+/* 조종 입력: 화면 기준(오른쪽 +x, 아래 +y) → 카메라가 보는 방향 기준 바닥(x,z) → match가 FL로 엔진 좌표로 바꿈 */
+const keys = {}, pj = { x: 0, y: 0 }, _f = new THREE.Vector3();
+function playInput() {
+  let x = pj.x, y = pj.y;
+  const kx = (keys.arrowright || keys.d ? 1 : 0) - (keys.arrowleft || keys.a ? 1 : 0), ky = (keys.arrowdown || keys.s ? 1 : 0) - (keys.arrowup || keys.w ? 1 : 0);
+  if (kx || ky) { x = kx; y = ky; }
+  if (!x && !y) return { x: 0, y: 0 };
+  camera.getWorldDirection(_f); _f.y = 0; _f.normalize();
+  return { x: -_f.z * x - _f.x * y, y: _f.x * x - _f.z * y };
 }
+if (PLAY) {
+  M = RB.match({ plen: PS.len * 60, names: NAMES, human: { team: 'B', num: cur }, cfg: { autoNext: false }, msg: say, input: playInput,
+    event: (k) => { if (k === 'final') showEnd(); } });
+  b = M.brain; M.start(); say('');
+} else {
+  b = RB.create({
+    cfg: { trans: false, mode: 'watch', autoNext: true },
+    msg: say,
+    event: (k) => { if (k === 'newGame') { score.plays++; hud.play.textContent = score.plays; } },
+  });
+  b.newGame(); score.plays = 1; hud.play.textContent = '1';
+}
+const chairs = {};
+const teamOf = p => (PLAY ? M.team(p.id) : (p.team === 'A' ? 'B' : 'R'));
+const keyOf = p => (PLAY ? teamOf(p) + p.num + (p.chair || 'A') : p.id);
+function chairFor(p) {
+  const k = keyOf(p);
+  if (!chairs[k]) {
+    const ch = makeChair(teamOf(p) === 'B' ? BLUE : RED, p.num, p.chair || 'A');
+    ch.prev = null; chairs[k] = ch;
+    if (SHOW_ATHLETE && !PLAY && p.id === 'A1') makeAthlete(ch);
+  }
+  return chairs[k];
+}
+const humanChair = () => { if (!PLAY) return chairs.A1; const id = M.humanId(), p = id && b.P(id); return p ? chairFor(p) : null; };
+// 내 선수 표시(노란 고리)·패스 받을 동료 표시(흰 고리)
+const ringMesh = (r, c, o) => { const m = new THREE.Mesh(new THREE.RingGeometry(r - 0.07, r, 48), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: o, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.y = 0.012; m.visible = false; scene.add(m); return m; };
+const meRing = ringMesh(0.95, 0xffd33d, 0.95), aimRing = ringMesh(0.85, 0xffffff, 0.7);
 // 벤치 쪽 예비 휠체어 (정지)
 {
   [[-7, BLUE, 'A', 8], [-5.6, BLUE, 'D', 10], [5.6, RED, 'A', 6], [7, RED, 'D', 14]].forEach(([x, c, t, n]) => {
@@ -568,6 +602,11 @@ const DT = 1 / 60;
 let readyT = 0, acc = 0, speed = 1, paused = false, lastPhase = b.G.phase, prevFly = null, sbT = 0;
 function stepEngine(dt) {
   acc += dt * speed; let n = 0;
+  if (PLAY) {
+    while (acc >= DT && n < 8) { M.step(DT); acc -= DT; n++; }
+    if (n === 8) acc = 0;
+    return n * DT;
+  }
   while (acc >= DT && n < 8) {
     if (b.G.phase === 'ready') { readyT += DT; if (readyT > 1.2) { readyT = 0; b.whistle(); } }   // 관전 모드: 1.2초 뒤 휘슬
     b.tick(DT); acc -= DT; n++;
@@ -584,8 +623,9 @@ function syncChairs(simDt, frameDt) {
   const f = G.ball.fly;
   if (f && f !== prevFly && f.from === 'A1') passTo = toW(f.tx, f.ty, 0);
   prevFly = f;
+  if (PLAY && (M.flip ? -1 : 1) !== FL) { FL = -FL; for (const k in chairs) chairs[k].prev = null; setCam(camMode); }   // 코트 방향이 바뀌면 카메라도 반대편으로
   for (const p of G.ps) {
-    const ch = chairFor(p), pos = toW(p.x, p.y), head = -(p.a || 0);
+    const ch = chairFor(p), pos = toW(p.x, p.y), head = -(p.a || 0) + (FL < 0 ? Math.PI : 0);
     let d = 0, dth = 0;
     if (ch.prev && ch.prev.pos.distanceTo(pos) < 1.5) {
       d = (pos.x - ch.prev.pos.x) * Math.cos(head) - (pos.z - ch.prev.pos.z) * Math.sin(head);
@@ -611,7 +651,7 @@ function syncChairs(simDt, frameDt) {
   // 공
   const bb = G.ball;
   if (bb.holder) {
-    const ch = chairs[bb.holder];
+    const hp = b.P(bb.holder), ch = hp && chairFor(hp);
     if (ch) { ch.root.updateMatrixWorld(); ball.position.copy(ch.root.localToWorld(ch.athlete ? new THREE.Vector3(0.12, 0.74, 0) : new THREE.Vector3(-0.02, 0.64, 0))); }
   } else if (bb.fly) {
     const k = THREE.MathUtils.clamp(bb.fly.t / bb.fly.dur, 0, 1), dist = Math.hypot(bb.fly.tx - bb.fly.sx, bb.fly.ty - bb.fly.sy);
@@ -623,10 +663,20 @@ function syncChairs(simDt, frameDt) {
 
 /* ---------- 카메라 ---------- */
 let camMode = 'wide';
+const PORTRAIT = () => PLAY && camera.aspect < 0.9;
+const fitFov = () => { camera.fov = PORTRAIT() ? 62 : 38; camera.updateProjectionMatrix(); };
+fitFov();
 const CAM = {
-  wide: { get off() { const k = Math.max(1, 1.45 / camera.aspect); return new THREE.Vector3(0, 13 * k, 17.5 * k); }, tgt: () => new THREE.Vector3(THREE.MathUtils.clamp(ball.position.x * 0.7, -6, 6), 0, 1.2) },
+  wide: {
+    get off() {
+      if (PORTRAIT()) return new THREE.Vector3(-FL * 15, 14, 0);          // 플레이·세로 화면: 공격 방향 뒤에서 (코트가 위로 뻗게)
+      const k = Math.max(1, 1.45 / camera.aspect); return new THREE.Vector3(0, 13 * k, 17.5 * k);
+    },
+    tgt: () => PORTRAIT() ? new THREE.Vector3(THREE.MathUtils.clamp(ball.position.x, -9, 9) + FL * 3, 0, 0)
+      : new THREE.Vector3(THREE.MathUtils.clamp(ball.position.x * 0.7, -6, 6), 0, 1.2),
+  },
   ball: { off: new THREE.Vector3(-4.2, 3.2, 5.2), tgt: () => ball.position.clone().setY(0.4) },
-  player: { off: new THREE.Vector3(-1.7, 1.25, 1.9), tgt: () => (chairs.A1 ? chairs.A1.root.position.clone().setY(0.7) : new THREE.Vector3()) },
+  player: { get off() { return PLAY ? new THREE.Vector3(-FL * 5.2, 4.2, 3.4) : new THREE.Vector3(-1.7, 1.25, 1.9); }, tgt: () => { const c = humanChair(); return c ? c.root.position.clone().setY(0.7) : new THREE.Vector3(); } },
 };
 function setCam(m) {
   camMode = m;
@@ -636,7 +686,7 @@ function setCam(m) {
 document.querySelectorAll('[data-cam]').forEach(e => e.onclick = () => setCam(e.dataset.cam));
 const bSpeed = document.getElementById('bSpeed'), bPause = document.getElementById('bPause');
 bSpeed.onclick = () => { speed = speed === 1 ? 0.5 : speed === 0.5 ? 2 : 1; bSpeed.textContent = speed + 'x'; };
-bPause.onclick = () => { paused = !paused; bPause.textContent = paused ? '재생' : '멈춤'; bPause.classList.toggle('on', paused); };
+bPause.onclick = () => { if (PLAY && !started) return; paused = !paused; bPause.textContent = paused ? '재생' : '멈춤'; bPause.classList.toggle('on', paused); };
 
 /* ---------- 조이스틱: 좌우=빙 돌기, 위아래=높이(내려다보기) / ＋－=줌 ---------- */
 const joy = { x: 0, y: 0, on: false };
@@ -667,6 +717,100 @@ function applyJoy(dt) {
   camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(_sph));
 }
 
+/* ---------- 모드 버튼 ---------- */
+document.querySelectorAll('[data-mode]').forEach(e => {
+  e.classList.toggle('on', e.dataset.mode === MODE);
+  e.onclick = () => { if (e.dataset.mode !== MODE) location.search = e.dataset.mode === 'watch' ? '' : '?mode=' + e.dataset.mode; };
+});
+
+/* ---------- 플레이: 조종 (2D 게임 rugby-game과 같은 키·규칙) ---------- */
+const $ = id => document.getElementById(id);
+const ourPre = () => (M.att === 'B' ? 'A' : 'D');
+function setSeat(n) { cur = n; M.setHuman({ team: 'B', num: n }); }
+const swap = () => { if (started) setSeat(cur % 4 + 1); };
+const doPass = id => { if (started && !paused) M.pass(id); };
+const doBounce = () => { if (started && !paused) M.bounce(); };
+function showEnd() {
+  const a = M.score.B, r = M.score.R;
+  $('eTitle').textContent = a > r ? '승리!' : a < r ? '패배' : '무승부';
+  $('eScore').textContent = `우리 ${a} : ${r} 상대`; $('end').hidden = false;
+}
+if (PLAY) {
+  document.body.classList.add('play');
+  paused = true;
+  const LU = ['3.0', '2.0', '1.5', '0.5'];
+  const chipRow = (el, items, curV, on) => {
+    el.innerHTML = '';
+    for (const [v, label] of items) {
+      const bt = document.createElement('button'); bt.className = 'chip' + (v === curV ? ' on' : ''); bt.innerHTML = label;
+      bt.onclick = () => { on(v); try { localStorage.setItem('wr3d.play', JSON.stringify(PS)); } catch (e) { } renderStart(); };
+      el.appendChild(bt);
+    }
+  };
+  const renderStart = () => {
+    chipRow($('cSeat'), [1, 2, 3, 4].map(n => [n, `${n}번 <small>${LU[n - 1]}${n === 3 ? ' 인바' : ''}</small>`]), PS.me, v => PS.me = v);
+    chipRow($('cLen'), [2, 3, 5].map(n => [n, n + '분']), PS.len, v => PS.len = v);
+  };
+  renderStart(); $('start').hidden = false;
+  const go = () => {
+    M.plen = PS.len * 60; M.start(); cur = PS.me; setSeat(cur); lastPoss = -1; lastHolder = null;
+    started = true; paused = false; $('start').hidden = true; $('end').hidden = true; setCam('wide');
+  };
+  $('bGo').onclick = go; $('eRe').onclick = go;
+  $('bPassP').onclick = () => doPass(); $('bBnc').onclick = doBounce; $('bSw').onclick = swap;
+  // 왼쪽 조이스틱 (휴대폰)
+  const j = $('pj'), k = j.querySelector('i'); let pid = null;
+  const set = e => { const r = j.getBoundingClientRect(); let dx = (e.clientX - r.left - r.width / 2) / (r.width / 2), dy = (e.clientY - r.top - r.height / 2) / (r.height / 2); const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } pj.x = dx; pj.y = dy; k.style.transform = `translate(${dx * 36}px,${dy * 36}px)`; };
+  j.addEventListener('pointerdown', e => { pid = e.pointerId; j.setPointerCapture(pid); set(e); e.preventDefault(); });
+  j.addEventListener('pointermove', e => { if (e.pointerId === pid) set(e); });
+  const end = () => { pid = null; pj.x = pj.y = 0; k.style.transform = ''; };
+  j.addEventListener('pointerup', end); j.addEventListener('pointercancel', end);
+  addEventListener('keydown', e => {
+    const kk = e.key.toLowerCase();
+    if (kk.startsWith('arrow') || kk === ' ' || kk === 'tab') e.preventDefault();
+    keys[kk] = true; if (!started) return;
+    if (kk === ' ') doPass();
+    else if (kk === 'b') doBounce();
+    else if (kk === 'tab') swap();
+    else if ('1234'.includes(kk) && kk.length === 1) {   // 공 가진 공격 중이면 그 번호에게 패스, 아니면 그 번호로 바꾸기
+      const t = b.P(ourPre() + kk), hid = M.humanId();
+      if (t && b.G.ball.holder === hid && ourPre() === 'A') doPass(t.id); else setSeat(+kk);
+    }
+  });
+  addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+  addEventListener('blur', () => { for (const kk in keys) keys[kk] = false; });
+  // 스코어 바: 우리 : 상대 · 피리어드·경기 시계 · 샷클락
+  document.querySelector('#bug .a i').textContent = '우리';
+  document.querySelector('#bug .d i').textContent = '상대';
+}
+const mmss = t => { t = Math.max(0, Math.ceil(t)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+function playFrame() {
+  const G = b.G;
+  if (M.poss !== lastPoss) { lastPoss = M.poss; setSeat(PS.me); lastHolder = null; }
+  if (M.att === 'B' && G.inbounded) {                // 우리 공격 중 공이 동료에게 가면 그 선수로 자동 전환 (2D 게임과 같음)
+    const h = G.ball.holder || (G.ball.fly && G.ball.fly.to) || null;
+    if (h && h !== lastHolder) { lastHolder = h; if (h[0] === 'A' && +h[1] !== cur) setSeat(+h[1]); }
+  }
+  const hc = humanChair();
+  meRing.visible = !!hc; if (hc) meRing.position.set(hc.root.position.x, 0.012, hc.root.position.z);
+  const at = M.aimTarget(), ac = at && chairFor(at);
+  aimRing.visible = !!ac; if (ac) aimRing.position.set(ac.root.position.x, 0.013, ac.root.position.z);
+  const hold = M.att === 'B' && G.ball.holder === M.humanId();
+  $('bPassP').classList.toggle('dim', !hold); $('bBnc').classList.toggle('dim', !hold);
+}
+function playHud() {
+  const G = b.G;
+  hud.try.textContent = M.score.B; hud.to.textContent = M.score.R;
+  let shot;
+  if (G.phase === 'trans') shot = '데드'; else if (G.phase === 'over') shot = '끝';
+  else if (!G.inbounded) shot = '인바 ' + Math.ceil(Math.max(0, 8 - G.inboundT));
+  else shot = '샷 ' + Math.ceil(Math.max(0, 40 - G.shotT));
+  hud.time.textContent = mmss(M.gc);
+  hud.time.nextElementSibling.textContent = `${M.per}P · ${shot}`;
+  $('side').textContent = (M.att === 'B' ? '우리 공격' : '우리 수비') + ` · 나 ${cur}번`;
+  $('side').className = M.att === 'B' ? 'att' : 'def';
+}
+
 /* ---------- 후처리 (가능하면 AO) ---------- */
 let composer = null;
 async function setupPost() {
@@ -694,8 +838,10 @@ function frame() {
   syncChairs(simDt, paused ? 0 : dt);
   rotateAds(clock.elapsedTime);
   msgT -= dt; if (msgT <= 0 && hud.msg.textContent && b.G.phase === 'live') hud.msg.textContent = '';
+  if (PLAY) playFrame();
   sbT -= dt;
-  if (sbT <= 0) {
+  if (sbT <= 0 && PLAY) { sbT = 0.2; playHud(); }
+  else if (sbT <= 0) {
     sbT = 0.2; const tm = (b.G.t || 0).toFixed(1) + '초';
     hud.time.textContent = tm; hud.try.textContent = score.try; hud.to.textContent = score.to;
   }
@@ -709,7 +855,9 @@ function frame() {
 }
 frame();
 addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  camera.aspect = innerWidth / innerHeight; fitFov(); if (PLAY) setCam(camMode);
   renderer.setSize(innerWidth, innerHeight); if (composer) composer.setSize(innerWidth, innerHeight);
 });
-window.__g = { b, chairs, scene, camera, setCam };
+// 시험용: 화면이 숨겨져 RAF가 멈춰도 한 프레임씩 돌려볼 수 있게
+const testTick = (dt = 1 / 60) => { const sd = stepEngine(dt); syncChairs(sd, dt); if (PLAY) { playFrame(); playHud(); } };
+window.__g = { b, M, chairs, scene, camera, setCam, keys, pj, testTick, render: () => renderer.render(scene, camera) };
