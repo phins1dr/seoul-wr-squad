@@ -1,0 +1,10 @@
+{
+  "설명": "엔진 부품의 복사본 목록. claude.ai 아티팩트는 GitHub 파일을 불러올 수 없어서 복사본을 올려 쓴다. 원본(source)을 고치면 python tools/check_copies.py 로 뒤처진 복사본을 확인하고, 아티팩트에 다시 올린 뒤 hash와 synced를 고칠 것. hash = 줄바꿈을 LF로 맞춘 sha256 앞 16자리.",
+  "copies": [
+    {"where": "럭비두뇌 인터뷰 (대장 WR-08)", "url": "https://claude.ai/artifact/NJLUWwnNEx8db3AGure7uc", "file": "rugby-brain.js", "source": "engine/rugby-brain.js", "kind": "same", "hash": "4ff1c76a37399b53", "synced": "2026-11-14"},
+    {"where": "럭비두뇌 인터뷰 (대장 WR-08)", "url": "https://claude.ai/artifact/NJLUWwnNEx8db3AGure7uc", "file": "rugby-chairs.js", "source": "engine/rugby-chairs.js", "kind": "same", "hash": "1e8e32e4d5a7d54e", "synced": "2026-11-14"},
+    {"where": "럭비두뇌 인터뷰 (대장 WR-08)", "url": "https://claude.ai/artifact/NJLUWwnNEx8db3AGure7uc", "file": "rugby-court.js", "source": "engine/rugby-court.js", "kind": "same", "hash": "e77ed126316155da", "synced": "2026-11-14"},
+    {"where": "럭비두뇌 인터뷰 (대장 WR-08)", "url": "https://claude.ai/artifact/NJLUWwnNEx8db3AGure7uc", "file": "game3d.js", "source": "game3d/main.js", "kind": "adapted", "hash": "5bdac086e0aa95cd", "synced": "2026-11-14", "note": "오버레이·질문 설정용으로 고친 사본. 원본이 바뀌면 바뀐 부분만 손으로 옮길 것. 11-14 검토: 원본 변경(코트 규격을 RugbyCourt에서 읽기)은 값이 같아 그대로 둠"},
+    {"where": "휠체어럭비 아카데미 (대장 WR-06)", "url": "https://claude.ai/artifact/CFLSg2d4uSn9CVtMrvcDiQ", "file": "index.html 안에 통째로", "source": "engine/rugby-brain.js", "kind": "old-embedded", "hash": "", "synced": "", "note": "옛 AI럭비랩 코드가 페이지 안에 박혀 있음. 지금 엔진 복사본으로 바꾸는 작업 예정"}
+  ]
+}
