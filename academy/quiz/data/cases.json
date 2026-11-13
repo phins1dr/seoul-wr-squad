@@ -1706,7 +1706,99 @@
    "answer": 0,
    "explanation": "케이스북 8.63.5의 답: 옳다. 선수가 코트에 완전히 들어오지 않았으므로 다른 지점에서 들어와도 된다.",
    "explanationEn": "Correct. As the player did not fully enter the court, they may enter from a different position.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 7.4,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 29.3,
+      "y": 10.5,
+      "a": -1.5708
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 25.0,
+      "y": 5.9,
+      "a": -0.5
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "득점한 A1이 반대편으로 들어가려고 엔드라인 뒤로 돌아간다",
+      "captionEn": "After scoring, A1 goes around behind the end line to come in on the other side"
+     },
+     {
+      "at": 1.4,
+      "caption": "A1이 엔드라인 밖에서 코트로 들어서려 한다",
+      "move": {
+       "A1": [
+        29.3,
+        4.7
+       ]
+      },
+      "captionEn": "A1 tries to come onto the court from outside the end line"
+     },
+     {
+      "at": 2.6,
+      "caption": "앞 캐스터가 코트에 들어서는 순간 B1이 막아선다",
+      "move": {
+       "A1": [
+        28.55,
+        4.7
+       ],
+       "B1": [
+        27.0,
+        4.7
+       ]
+      },
+      "face": {
+       "A1": 3.1416,
+       "B1": 0
+      },
+      "captionEn": "As the front casters come onto the court, B1 blocks"
+     },
+     {
+      "at": 3.9,
+      "caption": "A1이 다시 밖으로 물러나 다른 지점에서 들어간다",
+      "move": {
+       "A1": [
+        29.3,
+        2.1
+       ]
+      },
+      "captionEn": "A1 backs out again and enters at another spot"
+     },
+     {
+      "at": 5.2,
+      "move": {
+       "A1": [
+        26.2,
+        2.1
+       ]
+      }
+     },
+     {
+      "at": 6.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "8.64.1",
@@ -1777,7 +1869,101 @@
    "answer": 1,
    "explanation": "케이스북 8.65.1의 답: 옳지 않다. 볼을 바퀴에 끼워 고정한 것은 소유권을 얻은 것이다.",
    "explanationEn": "Incorrect. Trapping the ball against the wheel established possession. 8.66 Playing the Ball",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 6.4,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 21.8,
+      "y": 8.0,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "x": 23.8,
+     "y": 8.0
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 26.4,
+      "y": 10.1,
+      "text": "볼이 바퀴에 끼임",
+      "showAt": 2.6,
+      "textEn": "Ball trapped by wheel"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "볼이 A1이 공격하는 트라이 라인 쪽으로 굴러간다",
+      "captionEn": "The ball rolls toward A1's attacking goal line"
+     },
+     {
+      "at": 1.3,
+      "caption": "A1이 따라붙는다",
+      "move": {
+       "A1": [
+        24.8,
+        8.0
+       ]
+      },
+      "ball": [
+       25.9,
+       8.4
+      ],
+      "captionEn": "A1 chases it"
+     },
+     {
+      "at": 2.6,
+      "caption": "라인 직전에 볼을 바퀴에 끼워 고정한다",
+      "move": {
+       "A1": [
+        26.1,
+        8.0
+       ]
+      },
+      "ball": [
+       26.25,
+       8.45
+      ],
+      "captionEn": "Just before the line, A1 traps the ball against a wheel"
+     },
+     {
+      "at": 3.9,
+      "caption": "그대로 트라이 라인을 넘는다",
+      "move": {
+       "A1": [
+        29.0,
+        8.0
+       ]
+      },
+      "ball": [
+       29.15,
+       8.45
+      ],
+      "captionEn": "A1 crosses the goal line like that"
+     },
+     {
+      "at": 5.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "8.66.1",
@@ -2063,7 +2249,82 @@
    "answer": 0,
    "explanation": "케이스북 8.69.1의 답: 옳다. 트라이 뒤 스로인 위치는 엔드라인에서 인바운더가 고를 수 있다.",
    "explanationEn": "Correct.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.4,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "B3",
+      "team": "B",
+      "x": 29.3,
+      "y": 5.0,
+      "a": 3.1416
+     },
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 28.6,
+      "y": 8.5,
+      "a": 3.1416
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 23.0,
+      "y": 7.5,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "B3"
+    },
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1의 트라이 뒤 B3가 엔드라인 밖에서 스로인 볼을 받는다",
+      "captionEn": "After A1's goal, B3 receives the throw-in ball outside the end line"
+     },
+     {
+      "at": 1.4,
+      "caption": "B3가 엔드라인을 따라 다른 지점으로 옮긴다",
+      "move": {
+       "B3": [
+        29.3,
+        10.9
+       ],
+       "A1": [
+        26.0,
+        6.0
+       ]
+      },
+      "captionEn": "B3 moves to another spot along the end line"
+     },
+     {
+      "at": 2.8,
+      "caption": "그 자리에서 B1에게 스로인한다",
+      "ball": {
+       "holder": "B1"
+      },
+      "captionEn": "B3 throws in to B1 from there"
+     },
+     {
+      "at": 4.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "8.69.2",
@@ -2089,7 +2350,98 @@
    "answer": 0,
    "explanation": "케이스북 8.69.2의 답: 바이얼레이션이 발생한 위치에서 가장 가까운 사이드라인에서 스로인한다.",
    "explanationEn": "On the sideline closest to the location of the ball where the violation was committed.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.0,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 0,
+      "x2": 0,
+      "y2": 15.0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": -1.3,
+      "y": 9.5,
+      "a": 0
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 4.5,
+      "y": 6.0,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 3.0,
+      "y": 9.5,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": -0.2,
+      "y": 11.5,
+      "text": "8초 카운트",
+      "showAt": 0.6,
+      "hideAt": 2.4,
+      "textEn": "8-second count"
+     },
+     {
+      "type": "tag",
+      "x": -0.2,
+      "y": 11.5,
+      "text": "8초 초과",
+      "showAt": 2.4,
+      "textEn": "Over 8 seconds"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 엔드라인 밖에서 스로인을 준비한다",
+      "captionEn": "A1 prepares a throw-in outside the end line"
+     },
+     {
+      "at": 1.2,
+      "caption": "A2는 B1에게 막혀 빠져나오지 못한다",
+      "move": {
+       "A2": [
+        3.6,
+        7.1
+       ],
+       "B1": [
+        2.0,
+        9.0
+       ]
+      },
+      "captionEn": "A2 is held up by B1 and cannot get free"
+     },
+     {
+      "at": 2.4,
+      "caption": "A1이 8초 안에 스로인하지 못한다",
+      "captionEn": "A1 does not throw in within 8 seconds"
+     },
+     {
+      "at": 3.8,
+      "caption": "B팀은 어디서 스로인하는가?",
+      "captionEn": "Where does Team B throw in?"
+     }
+    ]
+   }
   },
   {
    "id": "8.69.3",
@@ -2386,7 +2738,101 @@
    "answer": 0,
    "explanation": "케이스북 8.69.9의 답: 트라이 뒤 엔드라인이라면 콜하지 않는다(이점이 없다). 사이드라인이라면 레퍼리는 어드밴티지를 알려야 한다.",
    "explanationEn": "a) No call. No advantage is gained. b) The referee should indicate Advantage.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 7.2,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 3.5,
+      "x2": 0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 3.0,
+      "y": 6.5,
+      "a": 3.1416
+     },
+     {
+      "id": "A3",
+      "team": "A",
+      "x": 7.0,
+      "y": 3.0,
+      "a": -1.5708
+     }
+    ],
+    "ball": {
+     "x": -0.9,
+     "y": 7.5
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": -0.2,
+      "y": 9.8,
+      "text": "8초 카운트",
+      "showAt": 0.4,
+      "hideAt": 3.0,
+      "textEn": "8-second count"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A팀이 오지 않아 레퍼리가 트라이 뒤 엔드라인 밖에 볼을 놓고 8초 카운트를 시작한다",
+      "captionEn": "No A player comes, so the referee puts the ball down outside the end line after the goal and starts the 8-second count"
+     },
+     {
+      "at": 1.5,
+      "caption": "A2가 엔드라인 밖으로 나가 볼을 집는다",
+      "move": {
+       "A2": [
+        -1.1,
+        7.2
+       ]
+      },
+      "ball": {
+       "holder": "A2"
+      },
+      "captionEn": "A2 goes out over the end line and picks up the ball"
+     },
+     {
+      "at": 3.0,
+      "caption": "같은 일이 사이드라인 스로인에서 생긴다면?",
+      "ball": [
+       7.0,
+       -0.9
+      ],
+      "captionEn": "What if the same happens on a sideline throw-in?"
+     },
+     {
+      "at": 4.5,
+      "caption": "A3가 사이드라인 밖으로 나가 볼을 집는다",
+      "move": {
+       "A3": [
+        7.0,
+        -1.1
+       ]
+      },
+      "ball": {
+       "holder": "A3"
+      },
+      "captionEn": "A3 goes out over the sideline and picks up the ball"
+     },
+     {
+      "at": 6.0,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "8.69.10",
@@ -2889,7 +3335,93 @@
    "answer": 0,
    "explanation": "케이스북 9.73.2의 답: 둘 다 바이얼레이션이다. 볼이 바닥에 닿는 위치가 선수의 위치를 결정한다(9조).",
    "explanationEn": "Violation for both a and b ( see Art. 9).",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 6.6,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 14.0,
+      "y1": 0,
+      "x2": 14.0,
+      "y2": 15.0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 13.6,
+      "y": 7.5,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "dot",
+      "x": 15.2,
+      "y": 9.7,
+      "label": "프론트코트에 튕김",
+      "showAt": 1.3,
+      "labelEn": "Bounce in frontcourt"
+     },
+     {
+      "type": "dot",
+      "x": 12.4,
+      "y": 11.1,
+      "label": "백코트에 튕김",
+      "showAt": 3.6,
+      "labelEn": "Bounce in backcourt"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 센터라인에 걸쳐 멈춰 있다 (앞바퀴 프론트코트, 뒷바퀴 백코트)",
+      "captionEn": "A1 is stopped straddling the centre line (front wheels in the frontcourt, rear wheels in the backcourt)"
+     },
+     {
+      "at": 1.3,
+      "caption": "A1이 볼을 프론트코트 바닥에 튕긴다",
+      "ball": [
+       15.2,
+       9.7
+      ],
+      "captionEn": "A1 bounces the ball in the frontcourt"
+     },
+     {
+      "at": 2.4,
+      "ball": {
+       "holder": "A1"
+      }
+     },
+     {
+      "at": 3.6,
+      "caption": "이번에는 백코트 바닥에 튕긴다",
+      "ball": [
+       12.4,
+       11.1
+      ],
+      "captionEn": "This time A1 bounces it in the backcourt"
+     },
+     {
+      "at": 4.7,
+      "ball": {
+       "holder": "A1"
+      }
+     },
+     {
+      "at": 5.4,
+      "caption": "두 경우를 각각 판정한다",
+      "captionEn": "Rule on each case"
+     }
+    ]
+   }
   },
   {
    "id": "9.73.3",
@@ -2912,7 +3444,108 @@
    "answer": 1,
    "explanation": "케이스북 9.73.3의 답: 두 경우 모두 바이얼레이션이 아니다. A1이 볼을 프론트코트로 전진시키는 중이기 때문이다.",
    "explanationEn": "No. There is no violation in either scenario , as A1 is advancing the ball to the frontcourt .",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 7.6,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 14.0,
+      "y1": 0,
+      "x2": 14.0,
+      "y2": 15.0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 11.4,
+      "y": 7.5,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 볼을 몰고 백코트에서 올라간다",
+      "captionEn": "A1 dribbles up from the backcourt"
+     },
+     {
+      "at": 1.3,
+      "caption": "센터라인을 넘는 순간 볼을 프론트코트에 튕긴다",
+      "move": {
+       "A1": [
+        13.6,
+        7.5
+       ]
+      },
+      "ball": [
+       14.9,
+       7.5
+      ],
+      "captionEn": "Crossing the centre line, A1 bounces the ball in the frontcourt"
+     },
+     {
+      "at": 2.3,
+      "move": {
+       "A1": [
+        15.6,
+        7.5
+       ]
+      },
+      "ball": {
+       "holder": "A1"
+      }
+     },
+     {
+      "at": 3.3,
+      "caption": "같은 장면에서 이번에는 백코트에 튕긴다면?",
+      "move": {
+       "A1": [
+        11.4,
+        7.5
+       ]
+      },
+      "captionEn": "Same play, but this time the bounce is in the backcourt?"
+     },
+     {
+      "at": 4.6,
+      "move": {
+       "A1": [
+        13.6,
+        7.5
+       ]
+      },
+      "ball": [
+       12.7,
+       7.5
+      ]
+     },
+     {
+      "at": 5.6,
+      "move": {
+       "A1": [
+        15.6,
+        7.5
+       ]
+      },
+      "ball": {
+       "holder": "A1"
+      }
+     },
+     {
+      "at": 6.4,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.73.4",
@@ -3089,7 +3722,90 @@
    "answer": 1,
    "explanation": "케이스북 9.73.7의 답: 옳지 않다. 선수의 일부가 코트의 다른 구역에 닿으면 그 구역에 있는 것으로 보므로 백코트 바이얼레이션을 선언해야 한다.",
    "explanationEn": "Incorrect. When any part of a player contacts a new part of the court, he is said to be in that new part of the court and a backcourt violation should have been called.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.4,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 14.0,
+      "y1": 0,
+      "x2": 14.0,
+      "y2": 15.0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 13.6,
+      "y": 7.5,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 17.4,
+      "y": 5.9,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 12.4,
+      "y": 5.1,
+      "text": "바퀴 하나가 백코트로",
+      "showAt": 2.6,
+      "textEn": "One wheel into backcourt"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 센터라인에 두 바퀴씩 걸쳐 있다",
+      "captionEn": "A1 straddles the centre line, two wheels on each side"
+     },
+     {
+      "at": 1.3,
+      "caption": "B1이 다가와 압박한다",
+      "move": {
+       "B1": [
+        15.7,
+        6.5
+       ]
+      },
+      "face": {
+       "B1": 2.8
+      },
+      "captionEn": "B1 closes in and applies pressure"
+     },
+     {
+      "at": 2.6,
+      "caption": "볼을 지키려 몸을 틀다 프론트코트 바퀴 하나가 백코트로 굴러 들어간다",
+      "move": {
+       "A1": [
+        13.25,
+        7.7
+       ]
+      },
+      "face": {
+       "A1": 0.7
+      },
+      "captionEn": "Turning to protect the ball, one frontcourt wheel rolls into the backcourt"
+     },
+     {
+      "at": 4.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.73.8",
@@ -3112,7 +3828,95 @@
    "answer": 0,
    "explanation": "케이스북 9.73.8의 답: 옳다. A1이 프론트코트를 떠나지 않았으므로 바이얼레이션이 없다.",
    "explanationEn": "Correct. A1 has not left the frontcourt so no violation has occurred.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.2,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 14.0,
+      "y1": 0,
+      "x2": 14.0,
+      "y2": 15.0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 13.6,
+      "y": 7.5,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 17.4,
+      "y": 6.1,
+      "a": 3.1416
+     },
+     {
+      "id": "B2",
+      "team": "B",
+      "x": 17.4,
+      "y": 8.9,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 15.9,
+      "y": 10.8,
+      "text": "캐스터는 센터라인에 닿지 않음",
+      "showAt": 2.6,
+      "textEn": "Casters not on the centre line"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 센터라인에 두 바퀴씩 걸쳐 있다",
+      "captionEn": "A1 straddles the centre line, two wheels on each side"
+     },
+     {
+      "at": 1.3,
+      "caption": "B1·B2가 압박한다",
+      "move": {
+       "B1": [
+        15.6,
+        6.6
+       ],
+       "B2": [
+        15.6,
+        8.4
+       ]
+      },
+      "captionEn": "B1 and B2 apply pressure"
+     },
+     {
+      "at": 2.6,
+      "caption": "볼을 지키려다 휠체어가 뒤로 조금 밀린다",
+      "move": {
+       "A1": [
+        13.4,
+        7.5
+       ]
+      },
+      "captionEn": "Protecting the ball, the chair drifts back a little"
+     },
+     {
+      "at": 4.0,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.73.9",
@@ -3137,7 +3941,82 @@
    "answer": 0,
    "explanation": "케이스북 9.73.9의 답: 백코트 바이얼레이션이다. 앞바퀴가 프론트코트에서 떨어진 순간 A1은 백코트로 돌아간 것이 된다.",
    "explanationEn": "Backcourt violation. As soon as A1 loses contact with the frontcourt , he has returned to the backcourt and is penalized accordingly.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.2,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 14.0,
+      "y1": 0,
+      "x2": 14.0,
+      "y2": 15.0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 13.6,
+      "y": 7.5,
+      "a": 0
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 18.5,
+      "y": 4.9,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 16.6,
+      "y": 8.7,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 13.8,
+      "y": 5.4,
+      "text": "앞바퀴를 듦 (안티팁에 기댐)",
+      "showAt": 1.3,
+      "textEn": "Front wheels up (on anti-tip)"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 센터라인에 걸쳐 있다 (앞바퀴 프론트코트, 뒷바퀴 백코트)",
+      "captionEn": "A1 straddles the centre line (front wheels in the frontcourt, rear wheels in the backcourt)"
+     },
+     {
+      "at": 1.3,
+      "caption": "A1이 안티팁에 기대 앞바퀴를 들어 올린다",
+      "captionEn": "A1 leans on the anti-tip and lifts the front wheels"
+     },
+     {
+      "at": 2.6,
+      "caption": "A1이 프론트코트의 A2에게 패스한다",
+      "ball": {
+       "holder": "A2"
+      },
+      "captionEn": "A1 passes to A2 in the frontcourt"
+     },
+     {
+      "at": 4.0,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.73.10",
@@ -3329,7 +4208,89 @@
    "answer": 0,
    "explanation": "케이스북 9.77.1의 답: 아웃 앤드 인 바이얼레이션이다. 휠체어가 바닥과의 접촉을 끊었기 때문이다.",
    "explanationEn": "A1 is guilty of out and in because his chair broke contact with the floor.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.2,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 25.6,
+      "y": 7.5,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 27.4,
+      "y": 5.5,
+      "text": "앞바퀴 하나만 라인 너머",
+      "showAt": 1.3,
+      "hideAt": 2.6,
+      "textEn": "One front wheel over"
+     },
+     {
+      "type": "tag",
+      "x": 27.4,
+      "y": 5.5,
+      "text": "앞바퀴를 들었다 놓으며 민다",
+      "showAt": 2.6,
+      "textEn": "Lifts the front wheel and pushes"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 트라이 라인으로 다가간다",
+      "captionEn": "A1 approaches the goal line"
+     },
+     {
+      "at": 1.3,
+      "caption": "앞바퀴 하나를 라인 너머에 두고 멈춘다",
+      "move": {
+       "A1": [
+        27.45,
+        7.4
+       ]
+      },
+      "face": {
+       "A1": -0.45
+      },
+      "captionEn": "A1 stops with one front wheel over the line"
+     },
+     {
+      "at": 2.6,
+      "caption": "두 번째 바퀴가 닿기 전에 앞바퀴를 위아래로 들어 올리며 계속 민다",
+      "move": {
+       "A1": [
+        27.7,
+        7.4
+       ]
+      },
+      "captionEn": "Before a second wheel touches, A1 keeps pushing while lifting the front wheel up and down"
+     },
+     {
+      "at": 4.0,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.77.2",
@@ -3354,7 +4315,107 @@
    "answer": 0,
    "explanation": "케이스북 9.77.2의 답: 아무 콜도 하지 않는다. 바닥에 아웃오브바운드로 닿은 것이 아니므로 바이얼레이션도, 트라이도 아니다. A1은 여전히 경기 구역 안에서 득점 기회를 갖는다.",
    "explanationEn": "a) A try is awarded to A1. b) No action is taken as A1 still has the opportunity to score. c) This is a no call situation. There is no violation and no try since the floor was not contacted out of bounds. A1 is still in the playing area and has the opportunity to score.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 6.5,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 25.0,
+      "y": 7.5,
+      "a": 0
+     },
+     {
+      "id": "B3",
+      "team": "B",
+      "x": 27.1,
+      "y": 6.1,
+      "a": 3.1416
+     },
+     {
+      "id": "B4",
+      "team": "B",
+      "x": 27.1,
+      "y": 8.9,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 25.4,
+      "y": 10.7,
+      "text": "앞 캐스터가 공중에 뜬 채",
+      "showAt": 1.3,
+      "hideAt": 3.9,
+      "textEn": "Front casters in the air"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "B3·B4가 라인 앞을 지키고 A1이 득점을 노린다",
+      "captionEn": "B3 and B4 guard the line as A1 tries to score"
+     },
+     {
+      "at": 1.3,
+      "caption": "앞 캐스터가 바닥에서 떨어진 채 트라이 라인을 넘는다",
+      "move": {
+       "A1": [
+        27.65,
+        7.5
+       ]
+      },
+      "captionEn": "The front casters cross the goal line off the floor"
+     },
+     {
+      "at": 2.6,
+      "caption": "캐스터가 다시 닿기 전에 B3·B4가 A1을 가둔다",
+      "move": {
+       "B3": [
+        27.65,
+        6.35
+       ],
+       "B4": [
+        27.65,
+        8.65
+       ]
+      },
+      "captionEn": "Before the casters come down, B3 and B4 trap A1"
+     },
+     {
+      "at": 3.9,
+      "caption": "버티다 두 캐스터가 코트 안쪽으로 돌아와 바닥에 닿는다",
+      "move": {
+       "A1": [
+        27.0,
+        7.5
+       ]
+      },
+      "captionEn": "Holding on, both casters come back inside the court and touch the floor"
+     },
+     {
+      "at": 5.3,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.78.1",
@@ -3425,7 +4486,93 @@
    "answer": 1,
    "explanation": "케이스북 9.80.2의 답: 안티팁이 바닥에 닿든 닿지 않든 바이얼레이션이 아니다. 안티팁은 안전 장치로 휠체어의 일부로 보지 않는다.",
    "explanationEn": "No violation on either situation. The anti-tip devices are safety devices and are ignored as a part of the chair.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.4,
+    "highlight": [
+     {
+      "type": "key",
+      "side": "right"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 24.05,
+      "y": 7.5,
+      "a": 3.1416
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 22.65,
+      "y": 7.5,
+      "a": 0
+     },
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 19.75,
+      "y": 3.5,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 23.65,
+      "y": 9.4,
+      "text": "안티팁만 키 안",
+      "showAt": 1.4,
+      "textEn": "Only the anti-tip in the key"
+     },
+     {
+      "type": "tag",
+      "x": 22.65,
+      "y": 5.0,
+      "text": "9초 동안 묶임",
+      "showAt": 2.8,
+      "textEn": "Stuck for 9 seconds"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A팀이 볼을 갖고 있고, A2가 공격 키 쪽으로 뒤로 물러난다",
+      "captionEn": "Team A has the ball, and A2 backs toward the attacking key"
+     },
+     {
+      "at": 1.4,
+      "caption": "A2의 안티팁이 키 안으로 들어간다",
+      "move": {
+       "A2": [
+        25.65,
+        7.5
+       ],
+       "B1": [
+        24.25,
+        7.5
+       ]
+      },
+      "captionEn": "A2's anti-tip goes into the key"
+     },
+     {
+      "at": 2.8,
+      "caption": "B1에게 막혀 A2가 그 자리에 9초 동안 묶여 있다",
+      "captionEn": "Blocked by B1, A2 is stuck there for 9 seconds"
+     },
+     {
+      "at": 4.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.80.3",
@@ -3708,7 +4855,82 @@
    "answer": 1,
    "explanation": "케이스북 9.81.5의 답: 옳지 않다. 규칙은 1m 반경 안으로 들어오는 것을 허용한다.",
    "explanationEn": "Incorrect. The rule allows him to enter within the one-metre radius.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.2,
+    "highlight": [
+     {
+      "type": "circle",
+      "x": 10.0,
+      "y": 0,
+      "r": 1
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 10.0,
+      "y": -1.5,
+      "a": 1.5708
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 13.0,
+      "y": 3.2,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 7.6,
+      "y": 2.0,
+      "text": "1m 반경",
+      "showAt": 0.5,
+      "textEn": "1 m radius"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 사이드라인 밖에서 스로인을 준비한다",
+      "captionEn": "A1 prepares a throw-in outside the sideline"
+     },
+     {
+      "at": 1.3,
+      "caption": "A1이 A2에게 스로인한다",
+      "ball": {
+       "holder": "A2"
+      },
+      "captionEn": "A1 throws in to A2"
+     },
+     {
+      "at": 2.6,
+      "caption": "A1이 45도 각도로 1m 반경 안으로 코트에 들어온다",
+      "move": {
+       "A1": [
+        10.6,
+        0.6
+       ]
+      },
+      "face": {
+       "A1": 0.785
+      },
+      "captionEn": "A1 enters the court at 45° within the 1 m radius"
+     },
+     {
+      "at": 4.0,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.81.6",
@@ -3732,7 +4954,81 @@
    "answer": 0,
    "explanation": "케이스북 9.81.6의 답: 옳다. A1은 라인에 닿았을 뿐 넘어서지 않았다. 사이드라인은 아웃오브바운드의 일부다.",
    "explanationEn": "Correct. A1 touched but did not cross over the line. The sideline is part of the out-of-bounds.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.0,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 6.5,
+      "y1": 0,
+      "x2": 13.5,
+      "y2": 0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 10.0,
+      "y": -1.4,
+      "a": 1.5708
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 12.6,
+      "y": 3.4,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 7.4,
+      "y": 1.7,
+      "text": "앞 캐스터가 사이드라인에 닿음",
+      "showAt": 1.3,
+      "textEn": "Front caster on the sideline"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 사이드라인 밖에서 스로인을 준비한다",
+      "captionEn": "A1 prepares a throw-in outside the sideline"
+     },
+     {
+      "at": 1.3,
+      "caption": "몸을 움직이다 앞 캐스터가 사이드라인에 닿는다",
+      "move": {
+       "A1": [
+        10.0,
+        -0.72
+       ]
+      },
+      "captionEn": "Moving, a front caster touches the sideline"
+     },
+     {
+      "at": 2.4,
+      "caption": "바로 그때 A1이 볼을 떠나보낸다",
+      "ball": {
+       "holder": "A2"
+      },
+      "captionEn": "Right then A1 releases the ball"
+     },
+     {
+      "at": 3.8,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.81.7",
@@ -3756,7 +5052,111 @@
    "answer": 1,
    "explanation": "케이스북 9.81.7의 답: 옳지 않다. A1에게 어드밴티지를 주어야 한다. 인바운더는 볼을 떠나보낸 지점에서 1m 반경 안으로 코트에 들어와야 한다.",
    "explanationEn": "Incorrect, A1 should be charged with taking an Advantage. The in-bounder must enter the court within a one-metre radius of the point where the ball was released.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 6.5,
+    "highlight": [
+     {
+      "type": "circle",
+      "x": 10.0,
+      "y": 0,
+      "r": 1
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 10.0,
+      "y": -1.5,
+      "a": 1.5708
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 13.4,
+      "y": 4.4,
+      "a": 3.1416
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 10.6,
+      "y": 2.0,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 7.6,
+      "y": 2.0,
+      "text": "1m 반경",
+      "showAt": 0.5,
+      "textEn": "1 m radius"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 스로인을 준비하고 B1이 기다린다",
+      "captionEn": "A1 prepares the throw-in and B1 waits"
+     },
+     {
+      "at": 1.3,
+      "caption": "A1이 A2에게 스로인한다",
+      "ball": {
+       "holder": "A2"
+      },
+      "captionEn": "A1 throws in to A2"
+     },
+     {
+      "at": 2.6,
+      "caption": "A1이 비스듬히 돌아 코트 밖 사이드라인을 따라 달린다",
+      "move": {
+       "A1": [
+        12.3,
+        -0.9
+       ],
+       "B1": [
+        12.0,
+        1.9
+       ]
+      },
+      "face": {
+       "A1": 0
+      },
+      "captionEn": "A1 turns and runs along outside the sideline"
+     },
+     {
+      "at": 3.9,
+      "caption": "1m 구역 밖에서 들어와 B1을 제친다",
+      "move": {
+       "A1": [
+        14.2,
+        0.9
+       ],
+       "B1": [
+        13.0,
+        2.0
+       ]
+      },
+      "face": {
+       "A1": 0.5
+      },
+      "captionEn": "A1 comes in outside the 1 m zone and beats B1"
+     },
+     {
+      "at": 5.3,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "9.81.8",
@@ -4350,7 +5750,87 @@
    "answer": 1,
    "explanation": "케이스북 11.88.1의 답: A1이 멈췄으므로 즉시 득점 의도가 없었다고 보아 페널티 트라이는 줄 수 없다. B1에게 코트 이탈 파울을 주고 A팀에 사이드라인 스로인을 준다.",
    "explanationEn": "Since A1 stopped, we must conclude that his immediate intent was not to score, and therefore a penalty try cannot be awarded. B1 is charged with a leaving the court foul and Team A is awarded a throw-in on the sideline.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.6,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 20.0,
+      "y": 9.1,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 23.4,
+      "y": 4.1,
+      "a": 0.3
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 27.4,
+      "y": 2.3,
+      "text": "포스트 사이",
+      "showAt": 3.0,
+      "textEn": "Between the posts"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 수비 없이 트라이 라인 쪽으로 간다",
+      "captionEn": "A1 heads to the goal line unguarded"
+     },
+     {
+      "at": 1.5,
+      "caption": "A1이 라인 앞에서 일부러 멈춘다",
+      "move": {
+       "A1": [
+        24.4,
+        8.5
+       ]
+      },
+      "captionEn": "A1 stops on purpose in front of the line"
+     },
+     {
+      "at": 3.0,
+      "caption": "B1이 A1을 무시하고 포스트 사이로 코트를 벗어난다",
+      "move": {
+       "B1": [
+        29.2,
+        5.3
+       ]
+      },
+      "face": {
+       "B1": 0.2
+      },
+      "captionEn": "B1 ignores A1 and leaves the court between the posts"
+     },
+     {
+      "at": 4.4,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.88.2",
@@ -4909,7 +6389,107 @@
    "answer": 1,
    "explanation": "케이스북 11.91.3의 답: 옳지 않다. 선수의 위치는 바닥과 닿은 지점으로 정한다.",
    "explanationEn": "Incorrect. The fourth player’s location on the floor is determined by the point of contact between that person and the floor. Rules for the Sport of Wheelchair Rugby 11.92 Holding foul",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.4,
+    "highlight": [
+     {
+      "type": "key",
+      "side": "right"
+     }
+    ],
+    "actors": [
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 27.2,
+      "y": 4.8,
+      "a": 3.1416
+     },
+     {
+      "id": "B3",
+      "team": "B",
+      "x": 27.2,
+      "y": 7.5,
+      "a": 3.1416
+     },
+     {
+      "id": "B4",
+      "team": "B",
+      "x": 27.2,
+      "y": 10.2,
+      "a": 3.1416
+     },
+     {
+      "id": "B2",
+      "team": "B",
+      "x": 25.25,
+      "y": 5.9,
+      "a": -1.5708
+     },
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 20.65,
+      "y": 9.9,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 25.85,
+      "y": 2.5,
+      "text": "앞 캐스터를 들고 키 위로",
+      "showAt": 1.4,
+      "textEn": "Casters lifted over the key"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "B팀 셋이 키 안에, B2는 키 바로 위에 있다",
+      "captionEn": "Three B players are in the key, B2 just above it"
+     },
+     {
+      "at": 1.4,
+      "caption": "B2가 방향을 돌리며 앞 캐스터를 들어 키 위로 넘긴다",
+      "move": {
+       "B2": [
+        25.55,
+        6.5
+       ]
+      },
+      "face": {
+       "B2": 0
+      },
+      "captionEn": "B2 turns, lifting the front casters over the key"
+     },
+     {
+      "at": 2.8,
+      "caption": "캐스터가 키 바닥에 닿지 않은 채 B2가 지나간다",
+      "move": {
+       "B2": [
+        25.35,
+        8.9
+       ]
+      },
+      "face": {
+       "B2": 1.5708
+      },
+      "captionEn": "B2 goes past without the casters touching the key floor"
+     },
+     {
+      "at": 4.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.92.1",
@@ -5003,7 +6583,100 @@
    "answer": 1,
    "explanation": "케이스북 11.93.1의 답: 안 된다. 코트 밖에서 이득(어드밴티지)을 본 A2에게 코트 이탈 파울을 준다. 선수는 코트를 벗어난 지점에서 가장 가까운 곳으로 다시 들어와야 한다.",
    "explanationEn": "No. A2 should be charged with taking an Advantage. A player must return onto the court at a point nearest to where he exited. (the referee may use their voice in an attempt to preve nt A2’s advantage)",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 6.6,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 7,
+      "y1": 0,
+      "x2": 16,
+      "y2": 0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 7.0,
+      "y": 1.0,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 7.8,
+      "y": 2.3,
+      "a": -0.3
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A2가 사이드라인을 따라 B1을 앞지르려 한다",
+      "captionEn": "A2 tries to get past B1 along the sideline"
+     },
+     {
+      "at": 1.4,
+      "caption": "B1이 A2를 코트 밖으로 밀어낸다",
+      "move": {
+       "A2": [
+        10.0,
+        -0.75
+       ],
+       "B1": [
+        10.0,
+        0.9
+       ]
+      },
+      "face": {
+       "B1": 0
+      },
+      "captionEn": "B1 pushes A2 out of bounds"
+     },
+     {
+      "at": 2.8,
+      "caption": "A2가 코트 밖으로 계속 달린다",
+      "move": {
+       "A2": [
+        14.4,
+        -0.85
+       ],
+       "B1": [
+        12.6,
+        0.95
+       ]
+      },
+      "captionEn": "A2 keeps driving outside the court"
+     },
+     {
+      "at": 4.0,
+      "caption": "A2가 B1 앞에서 코트로 들어온다",
+      "move": {
+       "A2": [
+        15.6,
+        1.0
+       ],
+       "B1": [
+        13.6,
+        1.0
+       ]
+      },
+      "face": {
+       "A2": 0.5
+      },
+      "captionEn": "A2 comes back onto the court ahead of B1"
+     },
+     {
+      "at": 5.4,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.93.2",
@@ -5144,7 +6817,88 @@
    "answer": 1,
    "explanation": "케이스북 11.93.3의 답: 옳지 않다. A1은 볼을 갖고 있지 않았고 포스트 사이에서 코트를 벗어난 것도 아니므로 콜하지 않는다.",
    "explanationEn": "No. Player A1 does not have the ball and does not leave the court between the posts , therefore no call.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.4,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 26.6,
+      "y": 2.8,
+      "a": 3.1416
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 25.1,
+      "y": 3.9,
+      "a": -0.4
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 22.0,
+      "y": 9.1,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 27.0,
+      "y": 5.1,
+      "text": "포스트",
+      "showAt": 2.8,
+      "textEn": "Post"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 트라이 라인 근처, 키 밖에서 B1의 압박을 받는다",
+      "captionEn": "Near the goal line, outside the key, A1 is under pressure from B1"
+     },
+     {
+      "at": 1.4,
+      "caption": "A1이 A2에게 패스한다",
+      "ball": {
+       "holder": "A2"
+      },
+      "captionEn": "A1 passes to A2"
+     },
+     {
+      "at": 2.8,
+      "caption": "A1이 뒤로 물러나다 포스트에 닿는다",
+      "move": {
+       "A1": [
+        27.3,
+        2.9
+       ]
+      },
+      "captionEn": "Backing up, A1 touches the post"
+     },
+     {
+      "at": 4.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.93.4",
@@ -5167,7 +6921,89 @@
    "answer": 1,
    "explanation": "케이스북 11.93.4의 답: 옳지 않다. B3와 B4에게 선수를 다시 들여보내라고 지시해야 한다. 다만 A2는 재입장으로 이점을 얻을 수 없다.",
    "explanationEn": "Incorrect. B3 and B4 should be instructed to allow the player back on court, however, A2 cannot gain any advantage by his re-entry onto court.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.4,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 10,
+      "y1": 0,
+      "x2": 18,
+      "y2": 0,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 14.0,
+      "y": 1.3,
+      "a": -0.4
+     },
+     {
+      "id": "B3",
+      "team": "B",
+      "x": 12.8,
+      "y": 2.5,
+      "a": -0.6
+     },
+     {
+      "id": "B4",
+      "team": "B",
+      "x": 15.3,
+      "y": 2.6,
+      "a": -2.4
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A2가 사이드라인 근처에서 B3·B4에게 막혀 있다",
+      "captionEn": "A2 is boxed in by B3 and B4 near the sideline"
+     },
+     {
+      "at": 1.4,
+      "caption": "벗어나려던 A2가 코트를 벗어난다",
+      "move": {
+       "A2": [
+        14.2,
+        -1.0
+       ]
+      },
+      "face": {
+       "A2": -1.5708
+      },
+      "captionEn": "Trying to escape, A2 leaves the court"
+     },
+     {
+      "at": 2.8,
+      "caption": "B3·B4가 다가가 A2가 코트로 다시 못 들어오게 막는다",
+      "move": {
+       "B3": [
+        13.4,
+        0.7
+       ],
+       "B4": [
+        15.0,
+        0.7
+       ]
+      },
+      "face": {
+       "B3": -0.3,
+       "B4": -2.8
+      },
+      "captionEn": "B3 and B4 move in to stop A2 from coming back on"
+     },
+     {
+      "at": 4.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.93.7",
@@ -5191,7 +7027,102 @@
    "answer": 1,
    "explanation": "케이스북 11.93.7의 답: 옳지 않다. B1이 트라이 라인으로 가는 길 전체를 막아 A1에게 득점 기회가 없었다. A1이 적법한 자리의 B1을 불법한 자리로 밀어낸 것이므로 B1에게 코트 이탈 페널티를 주고, 볼은 A팀에 코너에서 준다.",
    "explanationEn": "Incorrect. B1 covered the full path to the try line. There was no opportunity to score. A1 moved B1 from a legal position to an illegal position. The referee should award the ball to Team A in the corner and issue a Leaving the Court penalty to B1. 11.9 4 Pushing foul",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 6.6,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 23.4,
+      "y": 4.4,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 25.4,
+      "y": 7.5,
+      "a": -1.2
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 24.8,
+      "y": 6.1,
+      "text": "포스트와 범퍼 사이 몇 cm",
+      "showAt": 1.4,
+      "textEn": "A few cm between post and bumper"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 포스트 근처로 득점을 노린다",
+      "captionEn": "A1 goes for a goal near the post"
+     },
+     {
+      "at": 1.4,
+      "caption": "B1이 먼저 라인 쪽으로 내려와 길을 막는다",
+      "move": {
+       "B1": [
+        27.45,
+        4.35
+       ]
+      },
+      "face": {
+       "B1": -1.5708
+      },
+      "captionEn": "B1 gets down to the line first and blocks the path"
+     },
+     {
+      "at": 2.8,
+      "caption": "A1이 B1과 접촉한다",
+      "move": {
+       "A1": [
+        26.05,
+        4.4
+       ]
+      },
+      "captionEn": "A1 makes contact with B1"
+     },
+     {
+      "at": 4.0,
+      "caption": "A1이 계속 밀어 B1을 트라이 라인 너머로 밀어낸다",
+      "move": {
+       "A1": [
+        26.8,
+        4.4
+       ],
+       "B1": [
+        28.6,
+        4.45
+       ]
+      },
+      "captionEn": "A1 keeps pushing and drives B1 over the goal line"
+     },
+     {
+      "at": 5.4,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.94.1",
@@ -5342,7 +7273,100 @@
    "answer": 0,
    "explanation": "케이스북 11.94.3의 답: 옳다. 한 번 들이받는 것(범프)은 1차 접촉으로 보아 허용된다.",
    "explanationEn": "Correct. A bump is considered initial contact and is permitted.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.2,
+    "highlight": [
+     {
+      "type": "line",
+      "x1": 28.0,
+      "y1": 3.5,
+      "x2": 28.0,
+      "y2": 11.5,
+      "color": "focus"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 25.4,
+      "y": 7.5,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 27.25,
+      "y": 6.55,
+      "a": 3.1416
+     },
+     {
+      "id": "B2",
+      "team": "B",
+      "x": 27.25,
+      "y": 8.45,
+      "a": 3.1416
+     },
+     {
+      "id": "A4",
+      "team": "A",
+      "x": 21.6,
+      "y": 7.5,
+      "a": 0
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "steps": [
+     {
+      "at": 0,
+      "caption": "B1·B2가 A1의 길을 일부 막고 있다",
+      "captionEn": "B1 and B2 partly block A1's path"
+     },
+     {
+      "at": 1.4,
+      "caption": "A4가 뒤에서 A1을 한 번 들이받는다",
+      "move": {
+       "A4": [
+        24.0,
+        7.5
+       ]
+      },
+      "captionEn": "A4 bumps A1 once from behind"
+     },
+     {
+      "at": 2.6,
+      "caption": "A1이 밀려 트라이 라인을 넘는다",
+      "move": {
+       "A1": [
+        28.9,
+        7.5
+       ],
+       "A4": [
+        24.6,
+        7.5
+       ],
+       "B1": [
+        27.25,
+        6.2
+       ],
+       "B2": [
+        27.25,
+        8.8
+       ]
+      },
+      "captionEn": "A1 is pushed over the goal line"
+     },
+     {
+      "at": 4.0,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.94.4",
@@ -5366,7 +7390,85 @@
    "answer": 1,
    "explanation": "케이스북 11.94.4의 답: 아니다. 1차 접촉(적법한 충돌) 뒤에 계속 밀어 상대를 불법한 위치로 몰면 미는 쪽에 푸싱 파울을 준다. A3에게 푸싱 파울이다.",
    "explanationEn": "No. After the initial contact (legal hit), a player cannot continue to push another player into an illegal position. A3 should be charged with a pushing foul .",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.2,
+    "highlight": [
+     {
+      "type": "key",
+      "side": "right"
+     }
+    ],
+    "actors": [
+     {
+      "id": "A3",
+      "team": "A",
+      "x": 22.4,
+      "y": 7.5,
+      "a": 0
+     },
+     {
+      "id": "B2",
+      "team": "B",
+      "x": 27.2,
+      "y": 7.5,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A3"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 24.6,
+      "y": 9.7,
+      "text": "1차 접촉",
+      "showAt": 1.3,
+      "hideAt": 2.6,
+      "textEn": "First contact"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A3가 키로 들어간다. B2가 트라이 라인 앞을 지킨다",
+      "captionEn": "A3 enters the key. B2 guards the goal line"
+     },
+     {
+      "at": 1.3,
+      "caption": "A3가 B2와 부딪힌다",
+      "move": {
+       "A3": [
+        25.85,
+        7.5
+       ]
+      },
+      "captionEn": "A3 hits B2"
+     },
+     {
+      "at": 2.6,
+      "caption": "A3가 멈추지 않고 계속 밀어 B2를 트라이 라인 밖으로 밀어낸다",
+      "move": {
+       "A3": [
+        27.4,
+        7.5
+       ],
+       "B2": [
+        28.75,
+        7.5
+       ]
+      },
+      "captionEn": "A3 does not stop and pushes B2 out over the goal line"
+     },
+     {
+      "at": 4.0,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.94.5",
@@ -5705,7 +7807,100 @@
    "answer": 0,
    "explanation": "케이스북 11.97.2 a)의 답: A3의 1m 파울이다. 같은 케이스 b)에서 A1이 트라이 라인에 아주 가까이 있는 A2의 무릎에 바로 볼을 얹었다면 A2의 1m 파울이다. c)처럼 A1이 3m 떨어진 A4에게 패스한 뒤 B1을 비켜 달라고 요청해도, 선수들은 볼이 인바운더에게 주어지기 전 적법하게 1m 반경 밖에 있었으므로 경기는 그대로 계속되고 B1은 자리를 지킨다. A1은 45도 각도 안으로 코트에 들어와야 하며, 조금 더 큰 각도만 가능하면 플레이 반대쪽으로 B1을 돌아 들어올 수 있다.",
    "explanationEn": "s: a) One-metr e foul for A3. b) One-metre foul for A2. c) Players were legally outside the one-metre radius before the ball was placed at the disposal of the in-bounder. Play should be allowed to continue with B1 maintaining his position on the court. A1 should enter the court within the 45◦ angle. When only a slightly greater angle is available, A1 may enter the court around B1 but away from the play/playing direction.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 5.4,
+    "highlight": [
+     {
+      "type": "circle",
+      "x": 0,
+      "y": 7.5,
+      "r": 1
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": -1.3,
+      "y": 10.5,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 0.9,
+      "y": 7.5,
+      "a": 0
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 1.0,
+      "y": 6.35,
+      "a": 3.1416
+     },
+     {
+      "id": "A3",
+      "team": "A",
+      "x": 1.0,
+      "y": 8.65,
+      "a": 3.1416
+     },
+     {
+      "id": "A4",
+      "team": "A",
+      "x": 4.5,
+      "y": 10.5,
+      "a": 3.1416
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 3.6,
+      "y": 4.3,
+      "text": "1m 제한 구역",
+      "showAt": 1.4,
+      "textEn": "1 m zone"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "트라이 뒤 A1이 엔드라인에서 인바운드한다. A2·A3가 B1을 가두고 있다",
+      "captionEn": "After a goal, A1 inbounds from the end line. A2 and A3 are trapping B1"
+     },
+     {
+      "at": 1.4,
+      "caption": "A1이 엔드라인을 따라 B1 쪽으로 옮긴다. 세 선수 모두 1m 안이다",
+      "move": {
+       "A1": [
+        -1.3,
+        7.5
+       ]
+      },
+      "captionEn": "A1 moves along the end line toward B1. All three players are within 1 m"
+     },
+     {
+      "at": 2.8,
+      "caption": "A1이 A3에게 패스한다",
+      "ball": {
+       "holder": "A3"
+      },
+      "captionEn": "A1 passes to A3"
+     },
+     {
+      "at": 4.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "11.97.3",
@@ -5964,7 +8159,94 @@
    "answer": 1,
    "explanation": "케이스북 12.99.7의 답: 아니다. A1은 B1과 접촉하지 않고도 코트에 완전히 들어올 수 있다. A1이 일부러 B1에게 테크니컬 파울을 유도할 수는 없다.",
    "explanationEn": "No. A1 has the possibility to completely enter onto the court by entering without contacting B1, no technical foul should be charged. A1 cannot force a technical foul on B1.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 6.4,
+    "highlight": [
+     {
+      "type": "circle",
+      "x": 10.0,
+      "y": 0,
+      "r": 1
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 10.0,
+      "y": -1.5,
+      "a": 1.5708
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 13.4,
+      "y": 4.4,
+      "a": 3.1416
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 11.7,
+      "y": 1.75,
+      "a": -1.5708
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 13.9,
+      "y": 1.4,
+      "text": "B1은 1m 구역 밖",
+      "showAt": 0.5,
+      "textEn": "B1 outside the 1 m zone"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 스로인을 준비한다. B1은 1m 구역 밖에 있다",
+      "captionEn": "A1 prepares the throw-in. B1 is outside the 1 m zone"
+     },
+     {
+      "at": 1.3,
+      "caption": "A1이 A2에게 스로인한다",
+      "ball": {
+       "holder": "A2"
+      },
+      "captionEn": "A1 throws in to A2"
+     },
+     {
+      "at": 2.6,
+      "caption": "A1이 B1 쪽으로 비스듬히 들어온다",
+      "move": {
+       "A1": [
+        10.9,
+        0.25
+       ]
+      },
+      "face": {
+       "A1": 0.9
+      },
+      "captionEn": "A1 comes in at an angle toward B1"
+     },
+     {
+      "at": 3.9,
+      "caption": "B1과 부딪히지 않고는 완전히 들어올 수 없게 된다",
+      "captionEn": "Now A1 cannot get fully onto the court without hitting B1"
+     },
+     {
+      "at": 5.2,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "12.99.8",
@@ -6014,7 +8296,119 @@
    "answer": 0,
    "explanation": "케이스북 12.99.9의 답: A1의 비신사적 행동이다. 동료가 코트 밖으로 나가지 않게 도와줄 수 없으므로 A1에게 테크니컬 파울을 주되 A팀은 볼 소유권을 유지한다.",
    "explanationEn": "A1 is guilty of unsportsmanlike behaviour and is not entitled to assist a team-mate from out of court. A1 is issued with a technical foul, but Team A retains possession.",
-   "rule": ""
+   "rule": "",
+   "scene": {
+    "court": "full",
+    "duration": 6.5,
+    "highlight": [
+     {
+      "type": "circle",
+      "x": 10.0,
+      "y": 0,
+      "r": 1
+     }
+    ],
+    "actors": [
+     {
+      "id": "A1",
+      "team": "A",
+      "x": 10.0,
+      "y": -1.5,
+      "a": 1.5708
+     },
+     {
+      "id": "A2",
+      "team": "A",
+      "x": 13.0,
+      "y": 2.0,
+      "a": 0
+     },
+     {
+      "id": "B1",
+      "team": "B",
+      "x": 14.4,
+      "y": 3.4,
+      "a": -2.3
+     },
+     {
+      "id": "B2",
+      "team": "B",
+      "x": 12.0,
+      "y": 3.6,
+      "a": -0.8
+     }
+    ],
+    "ball": {
+     "holder": "A1"
+    },
+    "markers": [
+     {
+      "type": "tag",
+      "x": 9.0,
+      "y": 2.8,
+      "text": "A1이 A2를 받쳐 준다",
+      "showAt": 3.9,
+      "textEn": "A1 holds A2 in"
+     }
+    ],
+    "steps": [
+     {
+      "at": 0,
+      "caption": "A1이 1m 밖, 사이드라인 가까이에 있는 A2를 본다",
+      "captionEn": "A1 looks to A2, outside the 1 m zone and close to the sideline"
+     },
+     {
+      "at": 1.3,
+      "caption": "A1이 A2에게 인바운드한다",
+      "ball": {
+       "holder": "A2"
+      },
+      "captionEn": "A1 inbounds to A2"
+     },
+     {
+      "at": 2.6,
+      "caption": "B1·B2가 A2를 사이드라인 쪽으로 밀어붙인다",
+      "move": {
+       "A2": [
+        13.2,
+        1.45
+       ],
+       "B1": [
+        14.2,
+        2.6
+       ],
+       "B2": [
+        12.3,
+        2.7
+       ],
+       "A1": [
+        11.2,
+        0.4
+       ]
+      },
+      "face": {
+       "A1": 0
+      },
+      "captionEn": "B1 and B2 push A2 toward the sideline"
+     },
+     {
+      "at": 3.9,
+      "caption": "코트에 들어온 A1이 A2와 접촉해 A2가 밖으로 나가지 않게 막는다",
+      "move": {
+       "A1": [
+        12.7,
+        0.5
+       ]
+      },
+      "captionEn": "A1, now on court, contacts A2 to keep A2 from going out"
+     },
+     {
+      "at": 5.3,
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
+     }
+    ]
+   }
   },
   {
    "id": "12.99.10",
