@@ -79,7 +79,7 @@
     <div class="mini-row">
       <button class="mini-card" id="btnHomeBadges" type="button">
         <span class="mini-label">배지</span>
-        <span class="mini-value" id="homeBadgeCount">0 / 15</span>
+        <span class="mini-value" id="homeBadgeCount">0 / 18</span>
         <span class="mini-sub" id="homeBadgeStrip">아직 없음</span>
       </button>
       <div class="mini-card static">
@@ -309,7 +309,8 @@
     </ol>
     <p class="foot-note">실제 WWR 심판 경로(국내 급수 → Candidate → Provisional → Zone → World)를 따랐습니다. 월드 기준은 WWR 평가 규정(최근 5회 중 3회 90점 이상, 평균 90점대)을 퀴즈에 맞게 줄인 것입니다. 시험은 단계마다 하루 한 번입니다.</p>
 
-    <h2 class="sec-title">배지</h2>
+    <h2 class="sec-title">배지 <span class="sec-count" id="badgeCount"></span></h2>
+    <div id="badgeShowcase" class="showcase"></div>
     <div id="badgeGrid" class="badge-grid"></div>
 
     <h2 class="sec-title">공유 랭킹</h2>
@@ -335,6 +336,7 @@
 
   <div id="popup" class="popup" hidden>
     <div class="popup-card">
+      <div class="popup-art" id="popupArt" hidden></div>
       <p class="popup-kicker" id="popupKicker">LEVEL UP</p>
       <p class="popup-title" id="popupTitle"></p>
       <p class="popup-text" id="popupText"></p>
@@ -352,6 +354,7 @@
 <script src="../../engine/pixi.min.js"></script>
 <script src="../../engine/rugby-chairs.js"></script>
 <script src="scene.js"></script>
+<script src="badge-art.js"></script>
 <script src="firebase-config.js"></script>
 <script src="rank-online.js"></script>
 <script src="app.js"></script>

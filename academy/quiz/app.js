@@ -157,11 +157,10 @@
     renderRankCard('home');
 
     /* ---- 배지·최근 기록 ---- */
-    const list = badgeList();
-    const got = list.filter((b) => game.badges[b.id]);
-    if ($('homeBadgeCount')) $('homeBadgeCount').textContent = `${got.length} / ${list.length}`;
+    const got = BADGES.filter((b) => game.badges[b.id]).sort((a, b) => String(game.badges[b.id]).localeCompare(String(game.badges[a.id])));
+    if ($('homeBadgeCount')) $('homeBadgeCount').textContent = `${got.length} / ${BADGES.length}`;
     if ($('homeBadgeStrip')) {
-      $('homeBadgeStrip').textContent = got.length ? got.slice(-3).map((b) => b.icon).join(' ') : '아직 없음';
+      $('homeBadgeStrip').innerHTML = got.length ? got.slice(0, 4).map((b) => `<span class="mini-badge-art">${badgeArt(b, true, 'h')}</span>`).join('') : '아직 없음';
     }
     const answered = Object.keys(progress);
     const last = answered.map((k) => ({ k, at: (progress[k] && progress[k].at) || 0 })).sort((a, b) => b.at - a.at)[0];
@@ -290,13 +289,13 @@
     addXp(50);
     if (ex.idx === WORLD) {
       L.g = WORLD;
-      if (ex.lang === 'en') { L.world.en = true; L.world.ko = true; giveBadge('worldEn', '월드 레퍼리 · English'); giveBadge('world', '월드 레퍼리'); }
-      else { L.world.ko = true; giveBadge('world', '월드 레퍼리'); }
+      if (ex.lang === 'en') { L.world.en = true; L.world.ko = true; giveBadge('worldEn'); giveBadge('world'); }
+      else { L.world.ko = true; giveBadge('world'); }
       enterHall(ex.lang);
       msg = ex.lang === 'en' ? '영어로 월드 레퍼리가 되었습니다. 최고 배지 👑와 함께 명예의 전당에 올랐습니다.' : '월드 레퍼리가 되었습니다. 명예의 전당에 올랐습니다. 영어로도 도전해 최고 배지 👑를 노려보세요.';
     } else {
       L.g = ex.idx;
-      giveBadge(r.id, r.name + ' 승급');
+      giveBadge(r.id);
       msg = `${r.name}(으)로 승급했습니다. 경험치 +50`;
     }
     saveGame();
@@ -383,7 +382,7 @@
         }
         box.appendChild(row);
       });
-      if (tab === 'week' && rows[0] && rows[0].me && rows[0].score > 0) giveBadge('weekTop', '이번 주 1등');
+      if (tab === 'week' && rows[0] && rows[0].me && rows[0].score > 0) giveBadge('weekTop');
       if (tab !== 'hall' && nick && !rows.some((r) => r.me)) {
         const tail = document.createElement('p');
         tail.className = 'empty sm';
@@ -601,7 +600,7 @@
       el.className = 'chap' + (n ? '' : ' todo');
       el.innerHTML = `<span class="chap-main"><span class="chap-title">${esc(ch.title)}</span>
         <span class="chap-en">${esc(ch.en || '')}${ch.pages ? ' · ' + esc(ch.pages) : ''}</span></span>
-        <span class="chap-meta">${n ? answeredCount(casesOf(ch.id).map((c) => c.id)) + '/' + n : '준비 중'}${game.badges['ch' + ch.id] ? ' ★' : ''}</span>`;
+        <span class="chap-meta">${n ? answeredCount(casesOf(ch.id).map((c) => c.id)) + '/' + n : '준비 중'}${BADGES.some((b) => b.ch && b.ch.indexOf(String(ch.id)) >= 0 && game.badges[b.id]) ? ' ★' : ''}</span>`;
       if (n) el.addEventListener('click', () => openChapter(ch.id));
       list.appendChild(el);
     }
@@ -886,25 +885,46 @@
         game.streak.last = key;
         if (game.streak.days > game.streak.best) game.streak.best = game.streak.days;
       }
-      if (game.streak.days >= 7) giveBadge('streak7', '7일 연속 도전');
+      if (game.streak.days >= 7) giveBadge('streak7');
     }
-    if (total >= 10 && right === total) giveBadge('perfect10', '10문제 연속 정답');
-    for (const ch of CH) {
-      const items = casesOf(ch.id);
-      if (items.length && items.every((c) => progress[c.id])) giveBadge('ch' + ch.id, ch.title + ' 완주');
-    }
-    if (CASES.length && CASES.every((c) => progress[c.id])) giveBadge('allq', '전체 문항 완주');
+    if (total >= 10 && right === total) giveBadge('perfect10');
+    checkMasteryBadges(false);
     saveGame();
     syncRank();
   }
 
-  function giveBadge(id, label) {
+  function giveBadge(id, silent) {
     if (game.badges[id]) return;
+    const b = BADGES.find((x) => x.id === id);
+    if (!b) return;
     game.badges[id] = todayKey();
     saveGame();
-    const b = badgeList().find((x) => x.id === id);
-    popup('BADGE', (b ? b.icon + ' ' : '') + label, '새 배지를 받았습니다.');
+    if (!silent) popup('NEW BADGE', b.name, b.ko + ' — 배지를 손에 넣었습니다!', null, { art: badgeArt(b, true, 'pop'), cls: 'pop-badge' });
   }
+  /* 장 마스터·전체 마스터: 그 범위 문항을 전부 한 번 이상 맞혀야 받는다 */
+  function okCount(ids) { return ids.filter((id) => progress[id] && (progress[id].ok || progress[id].best)).length; }
+  function badgeScope(b) {
+    if (b.ch) return CASES.filter((c) => b.ch.indexOf(String(c.chapter)) >= 0).map((c) => c.id);
+    if (b.id === 'allq') return CASES.map((c) => c.id);
+    return null;
+  }
+  function checkMasteryBadges(silent) {
+    for (const b of BADGES) {
+      const ids = badgeScope(b);
+      if (ids && ids.length && okCount(ids) === ids.length) giveBadge(b.id, silent);
+    }
+  }
+  /* 아직 못 받은 배지의 진행 정도 */
+  function badgeProgress(b) {
+    const ids = badgeScope(b);
+    if (ids) return { have: okCount(ids), need: ids.length };
+    if (b.id === 'streak7') return { have: Math.min(7, game.streak.days || 0), need: 7 };
+    const gi = LADDER.findIndex((r) => r.id === b.id);
+    if (gi > 0) return { text: LADDER[gi].name + ' 승급 시험 합격' };
+    if (b.id === 'worldEn') return { text: '영어로 월드 시험 합격' };
+    return { text: '' };
+  }
+  function badgeArt(b, got, key) { return window.BadgeArt ? window.BadgeArt.svg(b, got, b.id + (key || '')) : ''; }
 
   function celebrate() {
     if (reduced()) return;
@@ -917,8 +937,8 @@
 
   /* 팝업: 여러 개가 겹치면 차례로 보여준다. actions = [{label, primary, fn}] */
   const popQ = [];
-  function popup(kicker, title, text, actions) {
-    popQ.push({ kicker, title, text, actions });
+  function popup(kicker, title, text, actions, opt) {
+    popQ.push({ kicker, title, text, actions, opt: opt || {} });
     if (popQ.length === 1) showPop();
   }
   function showPop() {
@@ -928,6 +948,9 @@
     $('popupKicker').textContent = it.kicker;
     $('popupTitle').textContent = it.title;
     $('popupText').textContent = it.text;
+    const art = $('popupArt');
+    if (art) { art.innerHTML = it.opt.art || ''; art.hidden = !it.opt.art; }
+    p.querySelector('.popup-card').className = 'popup-card ' + (it.opt.cls || '');
     const box = $('popupActions');
     box.innerHTML = '';
     const acts = it.actions && it.actions.length ? it.actions : [{ label: '확인', primary: true }];
@@ -947,19 +970,96 @@
     p.hidden = false;
   }
 
-  function badgeList() {
-    const out = [];
-    for (let i = 1; i < LADDER.length; i++) {
-      const r = LADDER[i];
-      out.push({ id: r.id, label: r.name + (i === WORLD ? '' : ' 승급'), icon: i === WORLD ? '🌏' : r.tier === '국제' ? '🎖️' : '🟢' });
+  /* 배지 목록 — 이름은 영어(진짜 배지 느낌), 뜻은 작은 한글 */
+  const BADGES = [
+    { id: 'court2', sec: 'grade', name: 'COURT REFEREE II', ko: '코트심 2급 승급', shape: 'medal', c: ['#5eead4', '#0f766e'], glyph: 'stars1', label: 'II' },
+    { id: 'court1', sec: 'grade', name: 'COURT REFEREE I', ko: '코트심 1급 승급', shape: 'medal', c: ['#34d399', '#065f46'], glyph: 'stars2', label: 'I' },
+    { id: 'cand', sec: 'grade', name: 'WWR CANDIDATE', ko: '캔디데이트 승급', shape: 'medal', c: ['#7dd3fc', '#1d4ed8'], glyph: 'globe', label: 'CAND' },
+    { id: 'prov', sec: 'grade', name: 'WWR PROVISIONAL', ko: '프로비저널 승급', shape: 'medal', c: ['#a5b4fc', '#4338ca'], glyph: 'globe', label: 'PROV' },
+    { id: 'zone', sec: 'grade', name: 'ZONE REFEREE', ko: '존 레퍼리 승급', shape: 'medal', c: ['#d8b4fe', '#7e22ce'], glyph: 'globe', label: 'ZONE' },
+    { id: 'world', sec: 'grade', name: 'WORLD REFEREE', ko: '월드 레퍼리 · 명예의 전당', shape: 'star', c: ['#fde68a', '#b45309'], glyph: 'laurel', label: 'WORLD' },
+    { id: 'worldEn', sec: 'grade', name: 'WORLD LEGEND', ko: '영어로 월드 레퍼리 · 최고 배지', shape: 'star', c: ['#fef08a', '#ca8a04'], glyph: 'crown', label: 'LEGEND', top: true },
+    { id: 'm_setup', sec: 'chapter', name: 'SETUP MASTER', ko: '장비·휠체어·팀·경기임원 전부 맞히기', shape: 'hex', ch: ['3', '4', '5', '6'], c: ['#cbd5e1', '#334155'], glyph: 'wheel' },
+    { id: 'm_timing', sec: 'chapter', name: 'TIMING MASTER', ko: '시간 규정 전부 맞히기', shape: 'hex', ch: ['7'], c: ['#7dd3fc', '#0369a1'], glyph: 'clock' },
+    { id: 'm_play', sec: 'chapter', name: 'PLAY MASTER', ko: '경기 규정 전부 맞히기', shape: 'hex', ch: ['8'], c: ['#86efac', '#15803d'], glyph: 'ball' },
+    { id: 'm_viol', sec: 'chapter', name: 'VIOLATION MASTER', ko: '바이얼레이션 전부 맞히기', shape: 'hex', ch: ['9'], c: ['#fdba74', '#c2410c'], glyph: 'eight' },
+    { id: 'm_foul', sec: 'chapter', name: 'FOUL MASTER', ko: '일반 파울 전부 맞히기', shape: 'hex', ch: ['11'], c: ['#fca5a5', '#b91c1c'], glyph: 'whistle' },
+    { id: 'm_tech', sec: 'chapter', name: 'TECHNICAL MASTER', ko: '테크니컬·플래그런트·퇴장 파울 전부 맞히기', shape: 'hex', ch: ['12'], c: ['#f9a8d4', '#be185d'], glyph: 'T' },
+    { id: 'm_pen', sec: 'chapter', name: 'PENALTY MASTER', ko: '접촉의 원칙·페널티 전부 맞히기', shape: 'hex', ch: ['10', '13'], c: ['#c4b5fd', '#6d28d9'], glyph: 'hourglass' },
+    { id: 'weekTop', sec: 'special', name: 'WEEKLY CHAMPION', ko: '이번 주 순위 1등', shape: 'shield', c: ['#fcd34d', '#b45309'], glyph: 'trophy' },
+    { id: 'streak7', sec: 'special', name: 'ON FIRE', ko: '7일 연속 오늘의 10문제', shape: 'shield', c: ['#fda4af', '#be123c'], glyph: 'flame' },
+    { id: 'perfect10', sec: 'special', name: 'PERFECT 10', ko: '한 판 10문제 전부 정답', shape: 'shield', c: ['#67e8f9', '#0e7490'], glyph: 'target' },
+    { id: 'allq', sec: 'special', name: 'CASEBOOK MASTER', ko: '케이스북 전체 문항 전부 맞히기', shape: 'shield', c: ['#e2e8f0', '#475569'], glyph: 'book' },
+  ];
+  const BADGE_SECS = [['grade', 'REFEREE GRADE', '등급'], ['chapter', 'RULE MASTER', '장 마스터'], ['special', 'SPECIAL', '스페셜']];
+
+  /* 예전 배지(장 '다 풀기' ch3~ch13 등)는 없애고, 새 기준(다 맞히기)으로 조용히 다시 계산 */
+  function migrateBadges() {
+    let changed = false;
+    Object.keys(game.badges).forEach((k) => {
+      if (!BADGES.some((b) => b.id === k)) { delete game.badges[k]; changed = true; }
+    });
+    const all = badgeScope({ id: 'allq' });
+    if (game.badges.allq && okCount(all) < all.length) { delete game.badges.allq; changed = true; }
+    if (changed) saveGame();
+    checkMasteryBadges(true);
+  }
+
+  function leadBadge(got) {
+    const top = got.find((b) => b.top);
+    if (top) return top;
+    const grades = got.filter((b) => b.sec === 'grade');
+    if (grades.length) return grades[grades.length - 1];
+    return got.slice().sort((a, b) => String(game.badges[b.id]).localeCompare(String(game.badges[a.id])))[0];
+  }
+
+  function renderBadges() {
+    const grid = $('badgeGrid');
+    if (!grid) return;
+    const got = BADGES.filter((b) => game.badges[b.id]);
+    if ($('badgeCount')) $('badgeCount').textContent = `${got.length} / ${BADGES.length}`;
+    const show = $('badgeShowcase');
+    if (show) {
+      const lead = leadBadge(got);
+      show.style.setProperty('--glow', lead ? lead.c[1] : '#94a3b8');
+      show.className = 'showcase' + (lead ? ' got' : '');
+      show.innerHTML = lead
+        ? `<div class="showcase-art">${badgeArt(lead, true, 'show')}</div><div class="showcase-txt"><p class="showcase-k">MY BADGE</p><p class="showcase-name">${esc(lead.name)}</p><p class="showcase-ko">${esc(lead.ko)}</p><p class="showcase-meta">${esc(game.badges[lead.id])} 획득 · 모은 배지 ${got.length} / ${BADGES.length}</p></div>`
+        : `<div class="showcase-art">${badgeArt(BADGES[0], false, 'show')}</div><div class="showcase-txt"><p class="showcase-k">FIRST BADGE</p><p class="showcase-name">COURT REFEREE II</p><p class="showcase-ko">코트심 2급 승급 시험에 합격하면 첫 배지를 받습니다.</p><p class="showcase-meta">모은 배지 0 / ${BADGES.length}</p></div>`;
     }
-    out.push({ id: 'worldEn', label: '월드 레퍼리 · English', icon: '👑', top: true });
-    out.push({ id: 'weekTop', label: '이번 주 1등', icon: '🥇' });
-    out.push({ id: 'streak7', label: '7일 연속 도전', icon: '🔥' });
-    out.push({ id: 'perfect10', label: '10문제 연속 정답', icon: '🎯' });
-    for (const ch of CH) if (casesOf(ch.id).length) out.push({ id: 'ch' + ch.id, label: ch.title + ' 완주', icon: '🏅' });
-    out.push({ id: 'allq', label: '전체 문항 완주', icon: '🏆' });
-    return out;
+    grid.innerHTML = '';
+    for (const [sec, en, ko] of BADGE_SECS) {
+      const items = BADGES.filter((b) => b.sec === sec);
+      const n = items.filter((b) => game.badges[b.id]).length;
+      const h = document.createElement('p');
+      h.className = 'badge-sec';
+      h.innerHTML = `<span>${en}</span><small>${ko} · ${n} / ${items.length}</small>`;
+      grid.appendChild(h);
+      const row = document.createElement('div');
+      row.className = 'badge-row';
+      // 가진 배지를 앞으로
+      items.slice().sort((a, b) => (game.badges[b.id] ? 1 : 0) - (game.badges[a.id] ? 1 : 0)).forEach((b) => {
+        const have = !!game.badges[b.id];
+        const pr = have ? null : badgeProgress(b);
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = 'badge' + (have ? ' got' : '') + (b.top ? ' top' : '');
+        el.style.setProperty('--glow', b.c[1]);
+        const sub = have ? `<span class="badge-date">${esc(game.badges[b.id])}</span>`
+          : pr.need ? `<span class="badge-prog"><i style="width:${Math.round((pr.have / pr.need) * 100)}%"></i></span><span class="badge-date">${pr.have} / ${pr.need}</span>`
+            : '<span class="badge-date">LOCKED</span>';
+        el.innerHTML = `<span class="badge-art">${badgeArt(b, have, 'g')}</span><span class="badge-name">${esc(b.name)}</span>${sub}`;
+        el.setAttribute('aria-label', `${b.name}, ${b.ko}, ${have ? '획득' : '미획득'}`);
+        el.addEventListener('click', () => {
+          const p2 = have ? null : badgeProgress(b);
+          popup(have ? 'BADGE' : 'LOCKED', b.name,
+            have ? `${b.ko} · ${game.badges[b.id]} 획득` : `${b.ko}${p2 && p2.need ? ` — 지금 ${p2.have} / ${p2.need}` : p2 && p2.text ? ` — ${p2.text}` : ''}`,
+            null, { art: badgeArt(b, have, 'pop'), cls: have ? 'pop-badge' : 'pop-badge locked' });
+        });
+        row.appendChild(el);
+      });
+      grid.appendChild(row);
+    }
   }
 
   function renderMe() {
@@ -972,16 +1072,7 @@
     }
     const s = game.streak;
     $('meStreak').textContent = s.days ? `연속 도전 ${s.days}일 · 최고 ${s.best}일` : '아직 연속 도전 기록이 없습니다';
-    const grid = $('badgeGrid');
-    grid.innerHTML = '';
-    for (const b of badgeList()) {
-      const got = !!game.badges[b.id];
-      const el = document.createElement('div');
-      el.className = 'badge' + (got ? ' got' : '') + (b.top ? ' top' : '');
-      el.innerHTML = `<span class="badge-icon">${got ? b.icon : '·'}</span><span class="badge-name">${esc(b.label)}</span>
-        <span class="badge-date">${got ? esc(game.badges[b.id]) : '미획득'}</span>`;
-      grid.appendChild(el);
-    }
+    renderBadges();
     renderRankCard('me');
     show('me');
   }
@@ -1141,6 +1232,7 @@
     BYID = new Map(CASES.map((c) => [c.id, c]));
     buildSearchIndex();
     xpState();
+    migrateBadges();
     renderHome();
     syncRank();
   }).catch((err) => {

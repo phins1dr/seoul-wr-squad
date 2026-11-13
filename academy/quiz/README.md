@@ -151,7 +151,12 @@ academy/quiz/
   이번 주 점수는 월요일(기기 날짜)에 0부터. 예전 기록은 '맞힌 문항 × 10점'으로 옮겨 시작합니다.
 - **공유 랭킹**: 이번 주 / 역대 / 명예의 전당(월드 도달 순서, 1호·2호…). 닉네임을 넣으면 판이 끝날 때마다 올라갑니다.
   Firestore 구조: `players/{uid}`(누적), `weeks/{YYYY-Www}/players/{uid}`(주간), `hall/{uid_lang}`(한 번 쓰면 못 고침). 예전 '랭킹 코드' 방식은 없앴습니다.
-- **배지 정리**: 30일 연속 도전을 빼고 등급 승급 6종 + 월드 English 👑 + 이번 주 1등을 넣었습니다.
+- **배지 18종 (SVG로 직접 그린 메달, `badge-art.js`)**: 이름은 영어, 뜻은 작은 한글.
+  등급 7(COURT REFEREE II·I, WWR CANDIDATE·PROVISIONAL, ZONE REFEREE, WORLD REFEREE, WORLD LEGEND=영어 월드) ·
+  장 마스터 7(SETUP=3~6장, TIMING=7, PLAY=8, VIOLATION=9, FOUL=11, TECHNICAL=12, PENALTY=10·13장, **그 장 문항을 전부 맞혀야** 받음) ·
+  스페셜 4(WEEKLY CHAMPION, ON FIRE=7일 연속, PERFECT 10, CASEBOOK MASTER=전체 전부 맞히기).
+  가진 배지는 색·빛·반짝임, 못 가진 배지는 회색+자물쇠+진행 막대. 내 기록 맨 위 '대표 배지', 홈에 최근 배지 4개, 배지를 누르면 크게 보기.
+  예전 장 '완주' 배지(ch3~ch13, 다 풀기 기준)와 30일 연속은 없애고 새 기준으로 조용히 다시 계산합니다.
 - 확인: `?mock=1`로 승급 시험 합격(경험치 +170·+50) → 국제심판 English 선택(영어만 출제) → 월드 English 합격 → 배지·명예의 전당 2호까지 브라우저에서 돌려봤습니다.
   Firebase 프로젝트 `wr-quiz-fceaa`(Firestore 서울 asia-northeast3, 익명 로그인, 규칙 게시)에 연결했고, 쓰기·읽기·남의 문서·범위 초과 쓰기 차단을 실제 서버로 확인했습니다(테스트 기록은 지움).
   아직 없는 것: 강등(월드 90 미만 3연속 → 존). 점수 조작은 보안 규칙의 범위 제한까지만 막습니다.
