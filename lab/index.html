@@ -164,6 +164,7 @@ footer{margin-top:16px;font-size:11.5px;color:var(--dim)}
 
 <script src="../engine/rugby-brain.js"></script>
 <script src="../engine/rugby-chairs.js"></script>
+<script src="../engine/rugby-court.js"></script>
 <script>
 'use strict';
 const RB=RugbyBrain,ALIGN=RB.ALIGN;
@@ -238,15 +239,11 @@ function draw(){if(!b||!b.G)return;const g=cx,G=b.G;g.setTransform(1,0,0,1,0,0);
   // 바닥
   {const F=RugbyChairs.floor({x0:X0,y0:Y0,x1:X1,y1:Y1,px:Math.min(110,S)});g.drawImage(F.canvas,F.x0,F.y0,F.w,F.h);}
   // 키·센터
-  const K={d:1.75,w:8};g.fillStyle='rgba(27,34,48,.10)';g.fillRect(0,7.5-K.w/2,K.d,K.w);g.fillRect(28-K.d,7.5-K.w/2,K.d,K.w);
-  g.beginPath();g.arc(14,7.5,1.75,0,7);g.fill();
+  RugbyCourt.shade2d(g);
   // 공간
   const L=spaceLayer();if(L){g.imageSmoothingEnabled=false;g.drawImage(L,0,0,28,15);}
   // 라인
-  g.strokeStyle='#2a2f36';g.lineWidth=0.08;g.strokeRect(0,0,28,15);g.beginPath();g.moveTo(14,0);g.lineTo(14,15);g.stroke();
-  g.beginPath();g.arc(14,7.5,1.75,0,7);g.stroke();g.strokeRect(0,7.5-K.w/2,K.d,K.w);g.strokeRect(28-K.d,7.5-K.w/2,K.d,K.w);
-  g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=0.14;g.beginPath();g.moveTo(28,7.5-K.w/2);g.lineTo(28,7.5+K.w/2);g.moveTo(0,7.5-K.w/2);g.lineTo(0,7.5+K.w/2);g.stroke();
-  for(const gx of [0,28])for(const gy of [7.5-K.w/2,7.5+K.w/2]){g.fillStyle='#ff6a1a';g.beginPath();g.arc(gx,gy,0.26,0,7);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(gx,gy,0.1,0,7);g.fill();}
+  RugbyCourt.lines2d(g);
   // 글씨: 방향·장면 이름 (캡처해도 어떤 장면인지 보이게)
   g.fillStyle='rgba(255,255,255,.85)';g.font=`800 0.62px "Gothic A1",sans-serif`;g.textBaseline='middle';g.textAlign='left';
   g.fillText('▶ 공격 방향   '+(scene?scene.name:'')+(dirty?' (수정함)':''),0,-0.72);

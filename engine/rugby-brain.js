@@ -9,6 +9,7 @@
 (function(root){
 'use strict';
 const VERSION='1.4.0';
+const KEY={d:1.75,w:8}; // 키 에어리어 실제 규격 (판정용, WWR). 화면 그림은 engine/rugby-court.js — 숫자가 같아야 함
 function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*c,turn:2.0+0.9*c,pass:6+3.2*c};} // 로우는 출발·방향전환이 더 느림
 
 /* ---------- 공간 (누가 먼저 닿는 자리인가) ----------
@@ -140,8 +141,7 @@ const noop=()=>{};
 const hooks={msg:opts.msg||noop,log:opts.log||noop,event:opts.event||noop,end:opts.end||noop,input:opts.input||(()=>({x:0,y:0})),control:opts.control||(()=>null),aim:opts.aim||null,beforeNew:opts.beforeNew||noop};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const hyp=Math.hypot;
-const KEY={d:1.75,w:8}; // 실제 규격 (판정용)
-const KEYDRAW={d:2.3,w:9.6,r:2.2};
+const KEYDRAW={d:1.75,w:8,r:1.75}; // 옛 그림용(예전엔 2.3×9.6으로 키워 그렸음). 화면은 engine/rugby-court.js를 쓸 것
 const R=0.62; // 휠체어 충돌 반지름(m)
 const NEED={40:5,30:7,20:10,10:13.5}; // 인바운드 거리별 필요한 패스 거리(m)
 let G=null,passSel=null,flash=0;
@@ -708,7 +708,7 @@ function match(opts){opts=opts||{};
   M.brain=b;M.names=names;
   return M;}
 
-const API={VERSION,create,match,speedOf,space,readAlign,ALIGN,SCENES};
+const API={VERSION,create,match,speedOf,space,readAlign,ALIGN,SCENES,KEY};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.RugbyBrain=API;
 })(typeof window!=='undefined'?window:globalThis);

@@ -17,8 +17,9 @@
 | 경로 | 내용 |
 |---|---|
 | `index.html` + `snapshot.json` + `img/` | 선수단 공유 화면(출석부·체력테스트·휠체어 현황). `tools/build_snapshot.py`로 매월 갱신 |
-| `engine/rugby-brain.js` | **럭비두뇌** (v1.4.0) — 선수 움직임 AI, 휠체어 물리, 규정(8초·12초·40초 등), 4피리어드 경기 진행, **공간 계산 `space()`**, **공격 얼라이먼트 `ALIGN`·`readAlign()`**, **노션 장면 `SCENES`·자리 세우기 `b.setup()`**. 화면 없이 Node(또는 bun)에서도 돌아감 |
-| `engine/rugby-chairs.js` | **휠체어·코트 그림 (2026-11-13 코드 그리기로 교체)** — `look({type,color,num})`(팀색·등번호, 바퀴 회전 12컷 `frame(roll)`/`tex(roll)`, 그림자 `shadow`), `draw(ctx,L,x,y,a,roll)`, `roll()`(굴러간 거리), `floor({x0,y0,x1,y1,px})`(나무 바닥). 공격형 A=실물 멜로스 Rhino 사진 기준 D자 알루미늄 범퍼 링·검정 디스크·색 타이어, 수비형 D=튀어나온 범퍼+갈고리. 비율은 멜로스 사양서(바퀴 24~26", 캠버 16~20°). 퀴즈·게임·랩 모두 이걸 씀. 미리보기 `engine/chairs-preview.html?z=2.6&x=4.5&y=2` |
+| `engine/rugby-brain.js` | **럭비두뇌** (v1.4.0) — 선수 움직임 AI, 휠체어 물리, 규정(8초·12초·40초 등), 4피리어드 경기 진행, **공간 계산 `space()`**, **공격 얼라이먼트 `ALIGN`·`readAlign()`**, **노션 장면 `SCENES`·자리 세우기 `b.setup()`**. 화면 없이 Node(또는 bun)에서도 돌아감. **감독용 설명서 `engine/README.md`** (칸별 "아는 것/모르는 것", 2026-11-13) — 두뇌를 고치면 이 설명서도 같이 고칠 것 |
+| `engine/rugby-chairs.js` | **휠체어·코트 그림 (2026-11-13 코드 그리기로 교체)** — `look({type,color,num})`(팀색·등번호, 바퀴 회전 12컷 `frame(roll)`/`tex(roll)`, 그림자 `shadow`), `draw(ctx,L,x,y,a,roll)`, `roll()`(굴러간 거리), `floor({x0,y0,x1,y1,px})`(나무 바닥). 공격형 A=실물 멜로스 Rhino 사진 기준 D자 알루미늄 범퍼 링·검정 디스크·색 타이어, 수비형 D=튀어나온 범퍼+갈고리. 비율은 멜로스 사양서(바퀴 24~26", 캠버 16~20°). **2026-11-13부터 실제 크기**(뒷바퀴 25", 길이 약 1.33m — 예전엔 1.6배 크게 그렸음). 퀴즈·게임·랩 모두 이걸 씀. 미리보기 `engine/chairs-preview.html?z=2.6&x=4.5&y=2` |
+| `engine/rugby-court.js` | **코트 부품 (2026-11-13)** — 코트 규격 숫자 `RugbyCourt.SPEC`(28×15, 키 1.75×8, 골라인 8m=콘은 키 바깥 모서리, 센터서클 r1.75·라인 굵기는 ⚠확인 필요) + 그리기 `draw2d(ctx)`/`shade2d`/`lines2d`(캔버스 2D), `drawPixi(g)`(PixiJS), `keyRect(side)`, `inKey`, `cones()`. 랩·게임·퀴즈가 이걸로 그리고, 3D는 숫자만 씀. 두뇌 판정용 `RugbyBrain.KEY`와 숫자가 다르면 콘솔 경고. 예전 게임·퀴즈의 키운 키(2.3×9.6, `KEYDRAW`)는 없앰 |
 | `engine/pixi.min.js` | 화면 그리기용 PixiJS (외부 CDN 의존 없이 내장) |
 | `rugby-game/` | 휠체어럭비 게임. **`engine/rugby-brain.js`를 이미 사용 중** |
 | `game3d/` | **3D 관전 시제품 (2026-11-13)** — Three.js(CDN). `engine/rugby-brain.js`가 움직이고(관전 모드, 1.2초 뒤 자동 휘슬, 끝나면 자동 다음 공격) 화면은 그리기만 함. 휠체어는 `rugby-chairs.js` 2D 디자인을 실제 크기 3D로 옮김(26" 바퀴=39단위). 선수 몸 샘플(마네킹, 손이 핸드림에 IK로 붙어 밀고·놓고·복귀)은 감독 판정으로 꺼둠(`SHOW_ATHLETE=false`, 코드는 남김). 경기장(관중석·LED 광고판·전광판·벤치·천장 조명)·마루 반사·AO 후처리. 열기: `/game3d/` |
@@ -43,6 +44,7 @@
 | 공간 계산 `RugbyBrain.space(ps, opts)` / 게임 안에서 `b.space()` (2026-11-10 추가) | 있음 | 아직 화면에 안 씀 | 사용 중 (범퍼 앞 초록 공간 `view`, 막힘 `stuck`, 선수별 ㎡) | 나중에 추적 위치로 쓸 예정 |
 | 공격 얼라이먼트 `cfg.align` / `RugbyBrain.readAlign(ps)` (2026-11-10 추가) | 있음 | AI는 씀(cfg.align 줄 때만), 설정 화면엔 아직 없음 | 사용 중 (대형 바꿔 비교, 판단·why 패널) | 나중에 인바운드 직전 장면 판단에 쓸 예정 |
 | 장면 `RugbyBrain.SCENES` / 자리 세우기 `b.setup(pos,{auto})` (v1.4.0) | 있음 | 안 씀 | 사용 중 (노션 장면 8개, 끌어 옮기기) | – |
+| 코트 부품 `RugbyCourt` (`engine/rugby-court.js`, 2026-11-13) | 판정용 `KEY`는 두뇌에 따로(같은 숫자) | 사용 중 (`drawPixi`) | 사용 중 (`shade2d`·`lines2d`) | – (퀴즈 `drawPixi`·`keyRect`, 3D `SPEC` 숫자) |
 
 - **공간 계산(`space`)**: 코트를 0.25m 칸으로 나눠 칸마다 "가장 먼저 닿는 선수"를 정한다.
   도착 시간 = 방향 전환 + 등급별 가속(`speedOf`). 다른 휠체어는 넘어갈 수 없어서 돌아가고, 코트 밖은 벽.

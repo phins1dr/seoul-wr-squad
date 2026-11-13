@@ -102,6 +102,7 @@ button{font:inherit;color:inherit}
 <script src="../engine/pixi.min.js"></script>
 <script src="../engine/rugby-brain.js"></script>
 <script src="../engine/rugby-chairs.js"></script>
+<script src="../engine/rugby-court.js"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
@@ -187,11 +188,7 @@ const ui=new PIXI.Container();root.addChild(ui);                    // 화면 �
 const uiG=new PIXI.Graphics();ui.addChild(uiG);
 const top=new PIXI.Container();app.stage.addChild(top);             // 흔들리지 않는 연출 (득점 글자·꽃가루)
 const topG=new PIXI.Graphics();top.addChild(topG);
-function drawCourt(){const K={d:2.3,w:9.6,r:2.2},KEYW=8;const g=court;g.clear();
-  g.lineStyle(0);g.beginFill(0x1b2230,0.10).drawRect(0,7.5-K.w/2,K.d,K.w).drawRect(28-K.d,7.5-K.w/2,K.d,K.w).drawCircle(14,7.5,K.r).endFill();
-  g.lineStyle(0.08,0x2a2f36,1).drawRect(0,0,28,15).moveTo(14,0).lineTo(14,15).drawCircle(14,7.5,K.r).drawRect(0,7.5-K.w/2,K.d,K.w).drawRect(28-K.d,7.5-K.w/2,K.d,K.w);
-  g.lineStyle(0.14,0xffffff,0.55).moveTo(0,7.5-KEYW/2).lineTo(0,7.5+KEYW/2).moveTo(28,7.5-KEYW/2).lineTo(28,7.5+KEYW/2);
-  g.lineStyle(0);for(const gx of [0,28])for(const gy of [7.5-K.w/2,7.5+K.w/2]){g.beginFill(0xff6a1a).drawCircle(gx,gy,0.26).endFill();g.beginFill(0xffffff).drawCircle(gx,gy,0.1).endFill();}}
+function drawCourt(){court.clear();RugbyCourt.drawPixi(court);} // 코트 라인: 엔진 공용 부품 (engine/rugby-court.js)
 drawCourt();
 // 나무 코트 바닥 (엔진 공용 그림)
 {const FL=RugbyChairs.floor({x0:-3,y0:-3,x1:31,y1:18,px:72});const fs=new PIXI.Sprite(PIXI.Texture.from(FL.canvas));fs.position.set(FL.x0,FL.y0);fs.width=FL.w;fs.height=FL.h;world.addChildAt(fs,0);}

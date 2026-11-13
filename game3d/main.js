@@ -11,7 +11,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const RB = window.RugbyBrain;
-const CL = 28, CW = 15;                         // 코트
+const CS = window.RugbyCourt.SPEC;              // 코트 규격: 엔진 공용 부품 (engine/rugby-court.js)
+const CL = CS.L, CW = CS.W, KD = CS.key.d, KW = CS.key.w, CR = CS.circleR, GW = CS.goalW;                         // 코트
 const toW = (x, y, h = 0) => new THREE.Vector3(x - CL / 2, h, y - CW / 2);
 const BLUE = 0x2f81f7, RED = 0xf04a42;
 
@@ -56,14 +57,15 @@ function woodCourt() {                          // 메이플 마루 + 코트 라
     g.fillStyle = 'rgba(70,40,15,.22)'; g.fillRect(0, y, c.width, 1);
   }
   g.fillStyle = 'rgba(25,70,150,.62)';         // 키 에어리어
-  g.fillRect(0, (CW / 2 - 4) * s, 1.75 * s, 8 * s); g.fillRect((CL - 1.75) * s, (CW / 2 - 4) * s, 1.75 * s, 8 * s);
-  g.strokeStyle = '#f8f8f4'; g.lineWidth = 0.05 * s;
+  const ky = (CW / 2 - KW / 2) * s;
+  g.fillRect(0, ky, KD * s, KW * s); g.fillRect((CL - KD) * s, ky, KD * s, KW * s);
+  g.strokeStyle = '#f8f8f4'; g.lineWidth = CS.lineW * s;
   g.strokeRect(2, 2, c.width - 4, c.height - 4);
   g.beginPath(); g.moveTo(CL / 2 * s, 0); g.lineTo(CL / 2 * s, c.height); g.stroke();
-  g.beginPath(); g.arc(CL / 2 * s, CW / 2 * s, 1.75 * s, 0, Math.PI * 2); g.stroke();
-  g.strokeRect(0, (CW / 2 - 4) * s, 1.75 * s, 8 * s); g.strokeRect((CL - 1.75) * s, (CW / 2 - 4) * s, 1.75 * s, 8 * s);
-  g.strokeStyle = '#ffd33d'; g.lineWidth = 0.08 * s;
-  [0, CL * s].forEach(x => { g.beginPath(); g.moveTo(x, (CW / 2 - 4) * s); g.lineTo(x, (CW / 2 + 4) * s); g.stroke(); });
+  g.beginPath(); g.arc(CL / 2 * s, CW / 2 * s, CR * s, 0, Math.PI * 2); g.stroke();
+  g.strokeRect(0, ky, KD * s, KW * s); g.strokeRect((CL - KD) * s, ky, KD * s, KW * s);
+  g.strokeStyle = '#ffd33d'; g.lineWidth = 0.08 * s;  // 골라인 (콘 사이)
+  [0, CL * s].forEach(x => { g.beginPath(); g.moveTo(x, (CW / 2 - GW / 2) * s); g.lineTo(x, (CW / 2 + GW / 2) * s); g.stroke(); });
   g.save(); g.globalAlpha = .18; g.fillStyle = '#ffffff'; g.font = `900 ${1.1 * s}px "Malgun Gothic",system-ui`; // 센터 로고
   g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('SEOUL WR', CL / 2 * s, CW / 2 * s); g.restore();
   return tex(c);
@@ -119,7 +121,7 @@ const runoff = new THREE.Mesh(new THREE.PlaneGeometry(CL + 7, CW + 6), new THREE
 runoff.rotation.x = -Math.PI / 2; runoff.position.y = -0.004; runoff.receiveShadow = true; scene.add(runoff);
 const hallFloor = new THREE.Mesh(new THREE.PlaneGeometry(90, 70), new THREE.MeshStandardMaterial({ color: 0x14181f, roughness: .85 }));
 hallFloor.rotation.x = -Math.PI / 2; hallFloor.position.y = -0.01; hallFloor.receiveShadow = true; scene.add(hallFloor);
-[1, -1].forEach(sd => [4, -4].forEach(z => {                // 골 콘
+[1, -1].forEach(sd => [GW / 2, -GW / 2].forEach(z => {      // 골 콘 (키 바깥 모서리)
   const cone = new THREE.Mesh(new THREE.ConeGeometry(0.17, 0.48, 24), new THREE.MeshStandardMaterial({ color: 0xff7b00, roughness: .5 }));
   cone.position.set(sd * CL / 2, 0.24, z); cone.castShadow = true; scene.add(cone);
 }));

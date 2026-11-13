@@ -1,5 +1,5 @@
 /* 퀴즈 케이스 장면 재생기 — PixiJS
-   엔진(rugby-brain.js)은 건드리지 않고, 게임과 같은 코트 색·라인·휠체어 그림·비율만 그대로 가져왔다.
+   엔진(rugby-brain.js)은 안 쓰고, 코트는 engine/rugby-court.js, 휠체어는 engine/rugby-chairs.js 공용 부품을 쓴다.
    장면 데이터(JSON)의 좌표계는 게임과 같다: x 0→28(공격 방향), y 0→15, 단위 m. */
 (function (root) {
   'use strict';
@@ -19,29 +19,8 @@
 
   function drawCourt(g) {
     // 바닥 나무는 RugbyChairs.floor 스프라이트가 깐다 (create 안에서)
-    // 키 에어리어·센터서클 음영
-    g.lineStyle(0);
-    g.beginFill(0x1b2230, 0.10)
-      .drawRect(0, 7.5 - 4.8, 2.3, 9.6)
-      .drawRect(W - 2.3, 7.5 - 4.8, 2.3, 9.6)
-      .drawCircle(14, 7.5, 2.2).endFill();
-    // 라인
-    g.lineStyle(0.08, 0x2a2f36, 1)
-      .drawRect(0, 0, W, H)
-      .moveTo(14, 0).lineTo(14, H)
-      .drawCircle(14, 7.5, 2.2)
-      .drawRect(0, 7.5 - 4.8, 2.3, 9.6)
-      .drawRect(W - 2.3, 7.5 - 4.8, 2.3, 9.6);
-    // 트라이 라인 (포스트 사이)
-    g.lineStyle(0.14, 0xffffff, 0.55)
-      .moveTo(0, 7.5 - 4).lineTo(0, 7.5 + 4)
-      .moveTo(W, 7.5 - 4).lineTo(W, 7.5 + 4);
-    // 포스트
-    g.lineStyle(0);
-    for (const gx of [0, W]) for (const gy of [7.5 - 4.8, 7.5 + 4.8]) {
-      g.beginFill(0xff6a1a).drawCircle(gx, gy, 0.26).endFill();
-      g.beginFill(0xffffff).drawCircle(gx, gy, 0.1).endFill();
-    }
+    // 키 에어리어·센터서클·라인·골라인·콘: 엔진 공용 코트 부품 (engine/rugby-court.js, WWR 규격)
+    root.RugbyCourt.drawPixi(g);
   }
 
   function dashedCircle(g, cx, cy, r, color, width, alpha) {
@@ -58,9 +37,9 @@
     for (const h of list) {
       const col = h.color === 'focus' ? 0xff6a1a : 0xffffff;
       if (h.type === 'key') {
-        const x = h.side === 'left' ? 0 : W - 2.3;
-        g.lineStyle(0).beginFill(col, 0.16).drawRect(x, 7.5 - 4.8, 2.3, 9.6).endFill();
-        g.lineStyle(0.09, col, 0.75).drawRect(x, 7.5 - 4.8, 2.3, 9.6);
+        const k = root.RugbyCourt.keyRect(h.side === 'left' ? 'left' : 'right');
+        g.lineStyle(0).beginFill(col, 0.16).drawRect(k.x, k.y, k.w, k.h).endFill();
+        g.lineStyle(0.09, col, 0.75).drawRect(k.x, k.y, k.w, k.h);
       } else if (h.type === 'circle') {
         dashedCircle(g, h.x, h.y, h.r || 1, col, 0.075, 0.85);
       } else if (h.type === 'line') {
