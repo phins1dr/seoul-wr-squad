@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>공격턴 컷 보기</title>
+<link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --ink:#eef0f4; --muted:#8b92a1; --faint:#5b6170; --line:#262b35;
+  --our:#4f8cff; --our-bg:rgba(79,140,255,.16); --opp:#ff7a59; --opp-bg:rgba(255,122,89,.16);
+  --warn:#ffb020; --accent:#ffffff; --accent-ink:#0f1115; --cur:rgba(255,255,255,.06);
+  --r:12px;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f3f4f7; --panel:#ffffff; --panel2:#f6f7fa; --ink:#14171d; --muted:#667085; --faint:#98a2b3; --line:#e4e7ec;
+    --our:#2f6fe8; --our-bg:rgba(47,111,232,.10); --opp:#e8603c; --opp-bg:rgba(232,96,60,.10);
+    --warn:#b54708; --accent:#14171d; --accent-ink:#ffffff; --cur:rgba(20,23,29,.05);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:14px/1.5 Pretendard,system-ui,-apple-system,"Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased}
+button,select,input{font:inherit;color:inherit}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* 상단 바 */
+.top{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{font-weight:700;font-size:16px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.brand i{width:10px;height:10px;border-radius:3px;background:linear-gradient(135deg,var(--our),var(--opp))}
+.match{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.ghost{background:transparent;border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer;color:var(--ink)}
+.ghost:hover{background:var(--cur)}
+
+/* 설정 패널 */
+.settings{display:none;gap:16px;flex-wrap:wrap;align-items:end;padding:16px 24px;background:var(--panel2);border-bottom:1px solid var(--line)}
+.settings.open{display:flex}
+.field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
+.field input,.field select{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px;min-width:120px}
+.field .inline{display:flex;gap:6px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:1px}
+
+/* 본문 */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:20px;padding:20px 24px;max-width:1600px;margin:0 auto}
+@media (max-width:1080px){.main{grid-template-columns:1fr;padding:16px}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+
+.player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--r) var(--r) 0 0;overflow:hidden}
+#yt{position:absolute;inset:0;width:100%;height:100%}
+
+/* 지금 보는 턴 */
+.now{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.now .no{font-size:28px;font-weight:700;letter-spacing:-.02em;min-width:56px}
+.now .no small{font-size:13px;color:var(--muted);font-weight:500}
+.now .info{flex:1;min-width:0}
+.now .who{display:flex;align-items:center;gap:8px;font-weight:600}
+.prog{height:6px;border-radius:99px;background:var(--line);margin-top:8px;overflow:hidden}
+.prog b{display:block;height:100%;width:0;border-radius:99px;background:var(--ink);transition:width .25s linear}
+.now .time{color:var(--muted);font-size:13px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px}
+.chip.our{background:var(--our-bg);color:var(--our)}
+.chip.opp{background:var(--opp-bg);color:var(--opp)}
+.dir{color:var(--faint);font-size:12px;font-weight:500}
+
+/* 조작 */
+.ctrl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px 14px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--faint)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:7px;padding:6px 12px;cursor:pointer;color:var(--muted);font-weight:500}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.toggle{display:inline-flex;align-items:center;gap:8px;color:var(--muted);cursor:pointer;user-select:none;font-size:13px}
+.toggle input{appearance:none;width:34px;height:20px;border-radius:99px;background:var(--line);position:relative;cursor:pointer;margin:0;transition:.2s}
+.toggle input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.toggle input:checked{background:var(--our)}
+.toggle input:checked::after{left:16px}
+.spacer{flex:1}
+kbd{font:11px ui-monospace,Consolas,monospace;color:var(--muted);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--panel)}
+.btn.primary kbd{color:var(--accent-ink);background:transparent;border-color:currentColor;opacity:.6}
+
+/* 타임라인 */
+.tl{padding:6px 16px 14px}
+.tl-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);margin:4px 0 8px}
+.legend span{white-space:nowrap}
+.legend{display:flex;gap:14px}
+#chart{width:100%;height:96px;display:block;cursor:pointer;border-radius:8px}
+
+/* 편집 도구 */
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 16px;border-top:1px solid var(--line);background:var(--panel2);border-radius:0 0 var(--r) var(--r)}
+.tools .lbl{font-size:12px;color:var(--muted);margin-right:4px}
+.tool{display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;background:transparent;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;color:var(--ink)}
+.tool:hover{background:var(--cur);border-color:var(--line)}
+.saved{font-size:12px;color:var(--faint)}
+
+/* 오른쪽 목록 */
+.side{display:flex;flex-direction:column;min-height:0;max-height:calc(100vh - 110px);position:sticky;top:20px}
+@media (max-width:1080px){.side{max-height:none;position:static}}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line);border-radius:var(--r) var(--r) 0 0;overflow:hidden}
+.sum div{background:var(--panel);padding:14px 16px}
+.sum span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sum b{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.ratio{display:flex;height:4px}
+.ratio i{display:block}
+.list-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 6px;font-size:12px;color:var(--muted)}
+#list{overflow:auto;padding:4px 8px 12px;flex:1}
+.turn{display:grid;grid-template-columns:4px 30px 1fr auto;gap:10px;align-items:center;padding:10px 10px 10px 0;border-radius:10px;cursor:pointer;margin-bottom:2px}
+.turn:hover{background:var(--cur)}
+.turn.cur{background:var(--cur);box-shadow:inset 0 0 0 1px var(--line)}
+.turn.off{opacity:.35}
+.turn .bar{height:100%;min-height:34px;border-radius:0 3px 3px 0}
+.turn .n{color:var(--faint);font-size:12px;text-align:right}
+.turn .t1{display:flex;align-items:center;gap:8px;font-weight:600}
+.turn .t2{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:12px;color:var(--muted)}
+.len{height:4px;width:60px;border-radius:99px;background:var(--line);overflow:hidden}
+.len i{display:block;height:100%;background:var(--faint)}
+.warn{color:var(--warn);font-size:12px}
+.res{appearance:none;background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:12px;color:var(--muted);cursor:pointer;max-width:120px}
+.res.set{color:var(--ink);border-color:var(--faint)}
+.empty{padding:40px 16px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand"><i></i>공격턴 컷 보기</div>
+  <div class="match" id="match"></div>
+  <button class="ghost" id="toggleSettings">경기 설정</button>
+</div>
+
+<div class="settings" id="settings">
+  <label class="field">우리 팀<input id="ourName" value="서울"></label>
+  <label class="field">상대 팀<input id="oppName" value="상대"></label>
+  <label class="field">전반에 우리가 공격하는 쪽
+    <select id="ourFirst"><option value="far">먼 쪽 (화면 오른쪽 위)</option><option value="near">가까운 쪽 (화면 왼쪽 아래)</option></select>
+  </label>
+  <div class="field">하프타임 (진영 교대)
+    <div class="inline"><input id="half" placeholder="예: 45:30" style="min-width:100px"><button class="ghost" id="setHalf">지금 위치</button></div>
+  </div>
+</div>
+
+<div class="main">
+  <section class="panel">
+    <div class="player"><div id="yt"></div></div>
+
+    <div class="now">
+      <div class="no tnum" id="nowNo">–</div>
+      <div class="info">
+        <div class="who" id="nowWho"><span class="muted">턴을 고르면 여기에 표시돼요</span></div>
+        <div class="prog"><b id="nowProg"></b></div>
+      </div>
+      <div class="time tnum" id="nowTime"></div>
+    </div>
+
+    <div class="ctrl">
+      <button class="btn" id="prev">◀ 이전 <kbd>J</kbd></button>
+      <button class="btn primary" id="next">다음 턴 ▶ <kbd>K</kbd></button>
+      <div class="seg" id="filter">
+        <button data-f="all" class="on">전체</button>
+        <button data-f="our" id="fOur">우리 공격</button>
+        <button data-f="opp" id="fOpp">우리 수비</button>
+      </div>
+      <span class="spacer"></span>
+      <label class="toggle"><input type="checkbox" id="cut" checked> 컷 이어보기</label>
+    </div>
+
+    <div class="tl">
+      <div class="tl-head">
+        <span>경기 흐름 · 선 = 선수 무리 위치 (위: 먼 쪽 골라인)</span>
+        <span class="legend"><span><i class="dot" style="background:var(--our)"></i><span id="lgOur">우리</span> 공격</span><span><i class="dot" style="background:var(--opp)"></i><span id="lgOpp">상대</span> 공격</span></span>
+      </div>
+      <canvas id="chart"></canvas>
+    </div>
+
+    <div class="tools">
+      <span class="lbl">수정</span>
+      <button class="tool" id="split">여기서 새 턴 <kbd>S</kbd></button>
+      <button class="tool" id="merge">앞 턴과 합치기 <kbd>M</kbd></button>
+      <button class="tool" id="flip">공격팀 바꾸기 <kbd>F</kbd></button>
+      <span class="spacer"></span>
+      <span class="saved" id="saved"></span>
+      <button class="tool" id="exportCsv">CSV 내보내기</button>
+      <button class="tool" id="exportJson">JSON</button>
+      <button class="tool" id="reset">초기화</button>
+    </div>
+  </section>
+
+  <aside class="panel side">
+    <div class="sum">
+      <div><span>전체 턴</span><b class="tnum" id="sAll">0</b></div>
+      <div><span id="sOurL">우리 공격</span><b class="tnum" id="sOur" style="color:var(--our)">0</b></div>
+      <div><span id="sOppL">상대 공격</span><b class="tnum" id="sOpp" style="color:var(--opp)">0</b></div>
+    </div>
+    <div class="ratio"><i id="rOur" style="background:var(--our)"></i><i id="rOpp" style="background:var(--opp)"></i></div>
+    <div class="list-head"><span>턴 목록</span><span>시작 · 길이 · 결과</span></div>
+    <div id="list"></div>
+  </aside>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const DATA = params.get("data") || "turns.json";
+let data, turns, player, curIdx = -1, filter = "all";
+const $ = s => document.querySelector(s);
+const fmt = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
+  return (h ? h + ":" + String(m).padStart(2,"0") : m) + ":" + String(x).padStart(2,"0"); };
+const parseT = v => { if (!v) return null; const p = v.trim().split(":").map(Number); if (p.some(isNaN)) return null;
+  return p.reduce((a,b) => a*60+b, 0); };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const KEY = () => "wr-turns:" + data.video;
+const RESULTS = ["", "득점", "턴오버", "바이올레이션", "아웃(공격권 유지)", "휴식·제외"];
+const our = () => $("#ourName").value || "우리", opp = () => $("#oppName").value || "상대";
+
+function settings(){ return {our:$("#ourName").value, opp:$("#oppName").value, ourFirst:$("#ourFirst").value, half:$("#half").value}; }
+function applySettings(s){ if (s.our) $("#ourName").value = s.our; if (s.opp) $("#oppName").value = s.opp;
+  if (s.ourFirst) $("#ourFirst").value = s.ourFirst; if (s.half != null) $("#half").value = s.half; }
+function load(){
+  try { const s = JSON.parse(localStorage.getItem(KEY()) || "null");
+    if (s && s.turns) { turns = s.turns; applySettings(s.settings || {}); return; } } catch(e){}
+  turns = data.turns.map(t => ({start:t.start, dir:t.dir, check:t.check, result:""}));
+}
+function save(){ try { localStorage.setItem(KEY(), JSON.stringify({turns, settings: settings()})); $("#saved").textContent = "자동 저장됨"; } catch(e){} }
+
+const total = () => data.series.at(-1)?.[0] || 1;
+const t0 = () => data.series[0]?.[0] || 0;
+function endOf(i){ return i+1 < turns.length ? turns[i+1].start : total(); }
+function isOurs(t){
+  const half = parseT($("#half").value);
+  let d = $("#ourFirst").value; if (half != null && t.start >= half) d = d === "far" ? "near" : "far";
+  return t.dir === d;
+}
+const counted = t => t.result !== "휴식·제외";
+function visible(t){ return counted(t) && (filter === "all" || (filter === "our") === isOurs(t)); }
+
+function render(){
+  const O = esc(our()), P = esc(opp());
+  $("#fOur").textContent = `${our()} 공격`; $("#fOpp").textContent = `${our()} 수비`;
+  $("#lgOur").textContent = our(); $("#lgOpp").textContent = opp();
+  $("#sOurL").textContent = `${our()} 공격`; $("#sOppL").textContent = `${opp()} 공격`;
+  const a = turns.filter(t => counted(t) && isOurs(t)).length, b = turns.filter(t => counted(t) && !isOurs(t)).length;
+  $("#sAll").textContent = a + b; $("#sOur").textContent = a; $("#sOpp").textContent = b;
+  $("#rOur").style.width = (a+b ? a/(a+b)*100 : 50) + "%"; $("#rOpp").style.width = (a+b ? b/(a+b)*100 : 50) + "%";
+  $("#list").innerHTML = turns.length ? turns.map((t,i) => {
+    const mine = isOurs(t), len = endOf(i) - t.start;
+    return `<div class="turn ${i===curIdx?"cur":""} ${visible(t)?"":"off"}" data-i="${i}">
+      <div class="bar" style="background:var(${mine?"--our":"--opp"})"></div>
+      <div class="n tnum">${i+1}</div>
+      <div>
+        <div class="t1">${mine?O:P} 공격 <span class="dir">${t.dir==="far"?"↗ 먼 쪽":"↙ 가까운 쪽"}</span></div>
+        <div class="t2 tnum">${fmt(t.start)} <span class="len"><i style="width:${Math.min(100,len/60*100)}%"></i></span> ${Math.round(len)}초
+          ${t.check || len > 75 ? '<span class="warn">· 휴식 섞였는지 확인</span>' : ""}</div>
+      </div>
+      <select class="res ${t.result?"set":""}" data-r="${i}">${RESULTS.map(r=>`<option ${r===t.result?"selected":""} value="${r}">${r||"결과"}</option>`).join("")}</select>
+    </div>`; }).join("") : '<div class="empty">아직 턴이 없어요</div>';
+  renderNow(); drawChart();
+}
+
+function renderNow(){
+  const now = player?.getCurrentTime?.() || 0, t = turns[curIdx];
+  if (!t){ $("#nowNo").textContent = "–"; $("#nowTime").textContent = ""; $("#nowProg").style.width = "0"; return; }
+  const mine = isOurs(t), len = endOf(curIdx) - t.start, el = Math.min(len, Math.max(0, now - t.start));
+  $("#nowNo").innerHTML = `${curIdx+1}<small> / ${turns.length}</small>`;
+  $("#nowWho").innerHTML = `<span class="chip ${mine?"our":"opp"}">${esc(mine?our():opp())} 공격</span><span class="dir">${t.dir==="far"?"↗ 먼 쪽으로":"↙ 가까운 쪽으로"}</span>${t.result?`<span class="dir">· ${esc(t.result)}</span>`:""}`;
+  $("#nowProg").style.width = (len ? el/len*100 : 0) + "%";
+  $("#nowProg").style.background = `var(${mine?"--our":"--opp"})`;
+  $("#nowTime").textContent = `${fmt(el)} / ${fmt(len)}`;
+}
+
+function drawChart(){
+  const c = $("#chart"), dpr = devicePixelRatio || 1, W = c.clientWidth, H = c.clientHeight;
+  if (!W) return;
+  c.width = W*dpr; c.height = H*dpr; const g = c.getContext("2d"); g.scale(dpr,dpr);
+  const cs = getComputedStyle(document.documentElement), col = n => cs.getPropertyValue(n).trim();
+  const T0 = t0(), T = total(), AX = 16, X = t => (t-T0)/(T-T0)*W, Y = x => 6 + (1 - x/28)*(H-AX-12);
+  g.fillStyle = col("--panel2"); g.fillRect(0,0,W,H-AX);
+  turns.forEach((t,i) => { const mine = isOurs(t);
+    g.globalAlpha = !counted(t) ? .08 : visible(t) ? (i===curIdx ? .55 : .3) : .12;
+    g.fillStyle = col(mine?"--our":"--opp");
+    g.fillRect(X(t.start)+.5, 0, Math.max(1, X(endOf(i))-X(t.start)-1), H-AX); });
+  g.globalAlpha = 1;
+  g.strokeStyle = col("--ink"); g.globalAlpha = .75; g.lineWidth = 1.25; g.lineJoin = "round"; g.beginPath();
+  data.series.forEach(([t,x],k) => k ? g.lineTo(X(t),Y(x)) : g.moveTo(X(t),Y(x))); g.stroke(); g.globalAlpha = 1;
+  // 시간 눈금
+  const span = T - T0, stepMin = span > 3600 ? 10 : span > 900 ? 5 : 1;
+  g.fillStyle = col("--faint"); g.font = "11px Pretendard, system-ui"; g.textBaseline = "bottom";
+  for (let s = Math.ceil(T0/(stepMin*60))*stepMin*60; s <= T; s += stepMin*60){ g.fillRect(X(s), H-AX, 1, 4); g.fillText(fmt(s), Math.min(X(s)+3, W-30), H); }
+  const half = parseT($("#half").value);
+  if (half != null){ g.strokeStyle = col("--warn"); g.setLineDash([3,3]); g.beginPath(); g.moveTo(X(half),0); g.lineTo(X(half),H-AX); g.stroke(); g.setLineDash([]);
+    g.fillStyle = col("--warn"); g.textBaseline = "top"; g.fillText("하프타임", X(half)+4, 4); }
+  const now = player?.getCurrentTime?.() || 0;
+  g.fillStyle = col("--accent"); g.fillRect(X(now)-1, 0, 2, H-AX);
+  g.beginPath(); g.arc(X(now), 3, 4, 0, 7); g.fill();
+}
+
+function idxAt(t){ let k = -1; for (let i=0;i<turns.length;i++) if (turns[i].start <= t + 0.05) k = i; return k; }
+function go(i){ if (i<0 || i>=turns.length) return; curIdx = i; player.seekTo(turns[i].start, true); player.playVideo(); render();
+  document.querySelector(`.turn[data-i="${i}"]`)?.scrollIntoView({block:"nearest"}); }
+function step(d){ const now = player.getCurrentTime(); let i = idxAt(now);
+  if (d<0 && i>=0 && now - turns[i].start > 2 && visible(turns[i])) return go(i);
+  for (let k=i+d; k>=0 && k<turns.length; k+=d) if (visible(turns[k])) return go(k); }
+
+function tick(){
+  if (!player?.getCurrentTime) return;
+  const now = player.getCurrentTime(), i = idxAt(now);
+  if ($("#cut").checked && player.getPlayerState() === 1 && i >= 0 && !visible(turns[i])){
+    for (let k=i+1;k<turns.length;k++) if (visible(turns[k])) return go(k);
+    player.pauseVideo();
+  }
+  if (i !== curIdx){ curIdx = i; render(); document.querySelector(`.turn[data-i="${i}"]`)?.scrollIntoView({block:"nearest"}); }
+  else { renderNow(); drawChart(); }
+}
+
+function edit(fn){ fn(); turns.sort((a,b)=>a.start-b.start); save(); render(); }
+$("#split").onclick = () => edit(() => { const now = +player.getCurrentTime().toFixed(1), p = turns[idxAt(now)];
+  turns.push({start:now, dir: p ? (p.dir==="far"?"near":"far") : "far", check:false, result:""}); });
+$("#merge").onclick = () => edit(() => { const i = idxAt(player.getCurrentTime()); if (i > 0) turns.splice(i,1); });
+$("#flip").onclick = () => edit(() => { const t = turns[idxAt(player.getCurrentTime())]; if (t) t.dir = t.dir==="far"?"near":"far"; });
+$("#prev").onclick = () => step(-1); $("#next").onclick = () => step(1);
+$("#reset").onclick = () => { if (confirm("수정한 내용을 지우고 자동 분석 결과로 돌아갈까요?")) { try{localStorage.removeItem(KEY());}catch(e){} load(); render(); } };
+$("#setHalf").onclick = () => { $("#half").value = fmt(player.getCurrentTime()); save(); render(); };
+$("#toggleSettings").onclick = () => $("#settings").classList.toggle("open");
+["#ourName","#oppName","#ourFirst","#half"].forEach(s => $(s).addEventListener("change", () => { save(); render(); }));
+$("#filter").onclick = e => { const b = e.target.closest("button"); if (!b) return; filter = b.dataset.f;
+  document.querySelectorAll("#filter button").forEach(x => x.classList.toggle("on", x===b)); render(); };
+$("#list").onclick = e => { if (e.target.tagName === "SELECT") return; const r = e.target.closest(".turn"); if (r) go(+r.dataset.i); };
+$("#list").onchange = e => { const i = e.target.dataset.r; if (i != null) edit(() => { turns[i].result = e.target.value; }); };
+$("#chart").onclick = e => { const r = e.target.getBoundingClientRect(); player.seekTo(t0() + (e.clientX-r.left)/r.width * (total()-t0()), true); };
+document.addEventListener("keydown", e => { if (["INPUT","SELECT"].includes(e.target.tagName)) return;
+  const k = e.key.toLowerCase();
+  if (k==="j") step(-1); else if (k==="k") step(1); else if (k==="s") $("#split").click();
+  else if (k==="m") $("#merge").click(); else if (k==="f") $("#flip").click();
+  else if (k===" ") { e.preventDefault(); player.getPlayerState()===1 ? player.pauseVideo() : player.playVideo(); } });
+
+function download(name, text, type){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text],{type})); a.download = name; a.click(); }
+$("#exportCsv").onclick = () => {
+  const rows = [["번호","공격팀","우리 기준","시작","끝","길이(초)","결과","방향","유튜브 링크"]];
+  let n = 0; turns.forEach((t,i) => { if (!counted(t)) return; n++; const mine = isOurs(t);
+    rows.push([n, mine?our():opp(), mine?"공격":"수비", fmt(t.start), fmt(endOf(i)), Math.round(endOf(i)-t.start), t.result, t.dir==="far"?"먼 쪽":"가까운 쪽",
+      `https://youtu.be/${data.video}?t=${Math.floor(t.start)}`]); });
+  download(`공격턴_${data.video}.csv`, "﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n"), "text/csv"); };
+$("#exportJson").onclick = () => download(`공격턴_${data.video}.json`, JSON.stringify({video:data.video, settings:settings(), turns}, null, 1), "application/json");
+
+window.onYouTubeIframeAPIReady = () => {
+  player = new YT.Player("yt", { videoId: data.video, playerVars: {rel:0, modestbranding:1},
+    events: { onReady: () => { render(); setInterval(tick, 250); } } });
+};
+fetch(DATA).then(r => r.json()).then(d => {
+  data = d; $("#match").textContent = d.title || `유튜브 ${d.video}`; load(); render();
+  const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; document.head.appendChild(s);
+}).catch(() => { $("#list").innerHTML = `<div class="empty">데이터 파일을 읽지 못했어요: ${esc(DATA)}</div>`; });
+addEventListener("resize", drawChart);
+</script>
+</body>
+</html>
