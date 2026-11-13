@@ -495,3 +495,24 @@ a{color:var(--accent-deep)}
 @media (prefers-reduced-motion:reduce){
   .badge.got::after,.showcase.got .showcase-art,.pop-badge .popup-art{animation:none}
 }
+
+/* ================= 홈 인사 줄 (2026-11-13) ================= */
+.home-title-sm{margin:0 0 8px;font:400 15px/1.3 var(--f-display);color:var(--ink2);letter-spacing:0}
+.home-title-sm span{color:var(--accent)}
+.home-title-sm b{margin-left:4px;font:600 10.5px var(--f-mono);letter-spacing:.06em;color:#fff;background:var(--accent);border-radius:5px;padding:2px 6px;vertical-align:2px}
+.hello{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:16px;text-align:left;
+  background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.hello:active{transform:scale(.99)}
+.hello:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hello-art{flex:0 0 46px;width:46px;height:46px}
+.hello-art svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 3px 5px rgba(16,21,28,.18))}
+.hello-art.none{opacity:.55;filter:saturate(.2)}
+.hello-txt{flex:1;min-width:0;display:grid;gap:1px}
+.hello-name{font:400 19px/1.25 var(--f-display);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hello-meta{font-size:13px;line-height:1.4;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hello-rank{flex:0 0 auto;display:grid;justify-items:center;min-width:56px;padding:5px 8px;border-radius:12px;background:var(--accent-soft);border:1px solid #cfe6e2}
+.hello-rank small{font-size:10.5px;color:var(--accent-deep);line-height:1.2}
+.hello-rank b{font:400 21px/1.15 var(--f-display);color:var(--accent-deep)}
+.hello-rank.first{background:linear-gradient(165deg,#fffaf0,#fdecc0);border-color:#e9c766}
+.hello-rank.first b,.hello-rank.first small{color:#8a5a00}
+.hello-join{margin-top:8px}

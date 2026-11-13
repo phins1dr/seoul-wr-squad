@@ -151,6 +151,7 @@ academy/quiz/
   이번 주 점수는 월요일(기기 날짜)에 0부터. 예전 기록은 '맞힌 문항 × 10점'으로 옮겨 시작합니다.
 - **공유 랭킹**: 이번 주 / 역대 / 명예의 전당(월드 도달 순서, 1호·2호…). 닉네임을 넣으면 판이 끝날 때마다 올라갑니다.
   Firestore 구조: `players/{uid}`(누적), `weeks/{YYYY-Www}/players/{uid}`(주간), `hall/{uid_lang}`(한 번 쓰면 못 고침). 예전 '랭킹 코드' 방식은 없앴습니다.
+- **홈 맨 위 인사 줄**: "닉네임님, 반가워요" + 대표 배지 + 등급·이번 주 점수·연속일 + 이번 주 순위(상위 50명 안). 닉네임이 없으면 그 자리에 "랭킹 참가" 칸. 큰 제목은 한 줄로 줄였습니다.
 - **배지 18종 (SVG로 직접 그린 메달, `badge-art.js`)**: 이름은 영어, 뜻은 작은 한글.
   등급 7(COURT REFEREE II·I, WWR CANDIDATE·PROVISIONAL, ZONE REFEREE, WORLD REFEREE, WORLD LEGEND=영어 월드) ·
   장 마스터 7(SETUP=3~6장, TIMING=7, PLAY=8, VIOLATION=9, FOUL=11, TECHNICAL=12, PENALTY=10·13장, **그 장 문항을 전부 맞혀야** 받음) ·

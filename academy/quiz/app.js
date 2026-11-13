@@ -155,6 +155,7 @@
     /* ---- 심판 사다리 · 랭킹 ---- */
     renderLadder('home');
     renderRankCard('home');
+    renderHello();
 
     /* ---- 배지·최근 기록 ---- */
     const got = BADGES.filter((b) => game.badges[b.id]).sort((a, b) => String(game.badges[b.id]).localeCompare(String(game.badges[a.id])));
@@ -328,7 +329,7 @@
     }, 300);
   }
   function refreshBoards() {
-    if (!$('view-home').hidden) renderRankCard('home');
+    if (!$('view-home').hidden) { renderRankCard('home'); renderHello(); }
     if (!$('view-me').hidden) renderRankCard('me');
   }
 
@@ -359,7 +360,7 @@
     const n = where === 'me' ? 20 : 5;
     const tab = rankTab[where];
     box.innerHTML = '<p class="empty sm">불러오는 중…</p>';
-    const p = tab === 'hall' ? RANK.hall() : RANK.top(tab, x.wk, n);
+    const p = tab === 'hall' ? RANK.hall() : RANK.top(tab, x.wk, 50);
     p.then((rows) => {
       if (rankTab[where] !== tab) return;
       if (rows == null) { box.innerHTML = `<p class="empty sm">순위를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.${RANK.error ? ' (' + esc(RANK.error) + ')' : ''}</p>`; return; }
@@ -383,10 +384,16 @@
         box.appendChild(row);
       });
       if (tab === 'week' && rows[0] && rows[0].me && rows[0].score > 0) giveBadge('weekTop');
-      if (tab !== 'hall' && nick && !rows.some((r) => r.me)) {
+      const myIdx = rows.findIndex((r) => r.me);
+      if (tab !== 'hall' && nick && myIdx >= n) {
         const tail = document.createElement('p');
         tail.className = 'empty sm';
-        tail.textContent = `나는 ${n}위 밖입니다. (${tab === 'week' ? '이번 주' : '누적'} ${Number(tab === 'week' ? x.week : x.total).toLocaleString()}점)`;
+        tail.textContent = `나는 ${myIdx + 1}위 (${Number(rows[myIdx].score).toLocaleString()}점)`;
+        box.appendChild(tail);
+      } else if (tab !== 'hall' && nick && myIdx < 0) {
+        const tail = document.createElement('p');
+        tail.className = 'empty sm';
+        tail.textContent = `나는 50위 밖입니다. (${tab === 'week' ? '이번 주' : '누적'} ${Number(tab === 'week' ? x.week : x.total).toLocaleString()}점)`;
         box.appendChild(tail);
       }
     });
@@ -400,7 +407,31 @@
     saveGame();
     syncRank();
     renderRankCard(where);
-    if (where === 'home') renderRankCard('home');
+    renderHello();
+  }
+
+  /* 홈 맨 위 인사 줄: 이름 · 대표 배지 · 등급 · 이번 주 순위 · 점수 · 연속 */
+  function renderHello() {
+    const bar = $('helloBar');
+    if (!bar) return;
+    const nick = (game.rank.nick || '').trim();
+    const x = xpState();
+    const got = BADGES.filter((b) => game.badges[b.id]);
+    const lead = leadBadge(got);
+    $('helloArt').innerHTML = lead ? badgeArt(lead, true, 'hello') : badgeArt(BADGES[0], false, 'hello');
+    $('helloArt').classList.toggle('none', !lead);
+    $('helloName').textContent = nick ? `${nick}님, 반가워요 👋` : '처음 오셨네요 👋';
+    const st = game.streak.days ? ` · 🔥${game.streak.days}일` : '';
+    $('helloMeta').textContent = `${gradeName()} · ${x.week.toLocaleString()}점${st}`;
+    const rk = $('helloRank');
+    if (!nick || RANK.mode === 'off') { rk.hidden = true; return; }
+    RANK.top('week', x.wk, 50).then((rows) => {
+      if (!rows) { rk.hidden = true; return; }
+      const i = rows.findIndex((r) => r.me);
+      rk.hidden = false;
+      rk.classList.toggle('first', i === 0);
+      rk.innerHTML = i >= 0 ? `<small>이번 주</small><b>${i + 1}위</b>` : `<small>이번 주</small><b>${x.week > 0 ? '50+' : '—'}</b>`;
+    });
   }
 
   /* ================= 규정 목록 ================= */
@@ -1173,6 +1204,7 @@
   });
   $('btnListRandom') && $('btnListRandom').addEventListener('click', () => startRandom('quizhome'));
   $('btnHomeRank') && $('btnHomeRank').addEventListener('click', openMeRank);
+  $('helloBar') && $('helloBar').addEventListener('click', renderMe);
   $('btnHomeLadder') && $('btnHomeLadder').addEventListener('click', renderMe);
   ['home', 'me'].forEach((P) => {
     $(P + 'BtnExam') && $(P + 'BtnExam').addEventListener('click', onExamButton);

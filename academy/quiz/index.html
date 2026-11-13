@@ -19,9 +19,19 @@
   <!-- ================= 홈 (게임 우선) ================= -->
   <section class="view" id="view-home">
     <header class="home-head">
-      <p class="eyebrow">WHEELCHAIR RUGBY · 2026</p>
-      <h1 class="home-title">휠체어럭비 <span>규정 &amp; 케이스북</span></h1>
-      <p class="edition-badge"><b>2026</b> WWR 국제 경기규정 · 케이스북 기준</p>
+      <h1 class="home-title-sm">휠체어럭비 <span>규정 &amp; 케이스북</span> <b>2026 WWR</b></h1>
+      <button class="hello" id="helloBar" type="button" aria-label="내 기록 보기">
+        <span class="hello-art" id="helloArt"></span>
+        <span class="hello-txt">
+          <b class="hello-name" id="helloName">처음 오셨네요 👋</b>
+          <span class="hello-meta" id="helloMeta">기록심 · 0점</span>
+        </span>
+        <span class="hello-rank" id="helloRank" hidden><small>이번 주</small><b>—</b></span>
+      </button>
+      <div class="nick-row hello-join" id="homeNickRow">
+        <input id="homeNick" class="rank-input" type="text" maxlength="14" placeholder="닉네임 (예: 블리츠 감독)" autocomplete="off" aria-label="닉네임">
+        <button class="btn primary" id="homeNickSave" type="button">랭킹 참가</button>
+      </div>
     </header>
 
     <!-- 게임: 첫 화면의 주인공 -->
@@ -60,17 +70,12 @@
         <p class="game-kicker">RANKING</p>
         <button class="text-link" id="btnHomeRank" type="button">전체 순위 →</button>
       </div>
-      <p class="rank-meta">이번 주 내 경험치 <b id="homeMyWeek">0</b> · 누적 <b id="homeMyTotal">0</b></p>
       <div class="rank-tabs" id="homeRankTabs" role="tablist">
         <button type="button" role="tab" data-tab="week">이번 주</button>
         <button type="button" role="tab" data-tab="all">역대</button>
         <button type="button" role="tab" data-tab="hall">명예의 전당</button>
       </div>
       <div class="rank-mini" id="homeRankBoard"></div>
-      <div class="nick-row" id="homeNickRow">
-        <input id="homeNick" class="rank-input" type="text" maxlength="14" placeholder="닉네임 (예: 블리츠 감독)" autocomplete="off" aria-label="닉네임">
-        <button class="btn" id="homeNickSave" type="button">순위 참가</button>
-      </div>
       <p class="rank-note" id="homeRankStatus"></p>
       <p class="rank-calc">경험치 = 정답 10점 + 연속 정답 보너스(최대 +10) + 승급 시험 합격 50점. 같은 문항은 하루 한 번만 점수가 붙고, 이번 주 순위는 월요일에 새로 시작합니다.</p>
     </section>
