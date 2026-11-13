@@ -35,6 +35,9 @@ def mp(i):
     need.add(i); return ''
 for p in data['players'].values():
     if p.get('photo'): p['photo'] = mp(p['photo'])
+    # 공개 저장소라 생년월일(일까지)은 빼고 출생연도만 남겨요 (개인정보)
+    b = p.pop('birth', None)
+    if b and not p.get('birthYear'): p['birthYear'] = int(b[:4])
 for c in data['chairs'].values():
     if c.get('photo'): c['photo'] = mp(c['photo'])
     if isinstance(c.get('photos'), dict):
