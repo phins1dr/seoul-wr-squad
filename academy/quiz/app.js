@@ -21,7 +21,23 @@
   let currentChapter = null;
   let currentArticle = null;
   let openChapters = new Set();
-  let caseLang = 'ko';
+  /* 화면 언어: 저장값 → 없으면 기기 언어(한국어면 ko, 아니면 en) */
+  let LANG = (function () {
+    try { const v = localStorage.getItem('wracad.lang'); if (v === 'ko' || v === 'en') return v; } catch (e) {}
+    try { return /^ko/i.test(navigator.language || '') ? 'ko' : 'en'; } catch (e) { return 'ko'; }
+  })();
+  const DICT = window.I18N_EN || {};
+  function T(ko, v) {
+    let out = LANG === 'en' && DICT[ko] != null ? DICT[ko] : ko;
+    if (v) out = out.replace(/\{(\w+)\}/g, (m, k) => (v[k] != null ? v[k] : m));
+    return out;
+  }
+  const EN_UI = () => LANG === 'en';
+  function titleCase(x) { return String(x || '').toLowerCase().replace(/(^|[\s,(/-])([a-z])/g, (m, a, b) => a + b.toUpperCase()).replace(/\b(And|Of|The|For|In)\b/g, (w) => w.toLowerCase()).replace(/^./, (c) => c.toUpperCase()); }
+  function chTitle(ch) { return EN_UI() && ch && ch.en ? titleCase(ch.en) : (ch ? ch.title : ''); }
+  function artTitle(a) { return EN_UI() ? (a.titleEn || a.titleKo) : (a.titleKo || a.titleEn); }
+  function qText(c) { return EN_UI() ? (c.questionEn || c.question) : c.question; }
+  let caseLang = LANG;
 
   function load(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v || d; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -29,8 +45,8 @@
     return String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
   }
   function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-  function chapterById(id) { return CH.find((c) => c.id === String(id)) || { id, title: id + '장' }; }
-  function ruleChapterById(id) { return RCH.find((c) => String(c.id) === String(id)) || { id, title: id + '장' }; }
+  function chapterById(id) { return CH.find((c) => c.id === String(id)) || { id, title: T('{n}장', { n: id }) }; }
+  function ruleChapterById(id) { return RCH.find((c) => String(c.id) === String(id)) || { id, title: T('{n}장', { n: id }) }; }
   function casesOf(chId) { return CASES.filter((c) => String(c.chapter) === String(chId)); }
   function reduced() {
     try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; }
@@ -75,8 +91,8 @@
   function needOf(r) { return Math.ceil((r.need || 0) * CASES.length); }
   function gradeName() {
     const L = game.lad;
-    if (L.world.en) return '월드 레퍼리 👑';
-    return LADDER[L.g].name;
+    if (L.world.en) return T('월드 레퍼리 👑');
+    return T(LADDER[L.g].name);
   }
   /* 지금 도전할 다음 단계: {r, lang, idx, kind:'exam'|'track'|'done', key} */
   function nextStep() {
@@ -109,7 +125,9 @@
   }
 
   const VIEWS = ['home', 'rules', 'article', 'quizhome', 'chapter', 'quiz', 'result', 'changes', 'me'];
+  let curView = 'home';
   function show(v) {
+    curView = v;
     VIEWS.forEach((x) => { $('view-' + x).hidden = x !== v; });
     if (v !== 'quiz') { if (sceneCtl) { sceneCtl.destroy(); sceneCtl = null; } }
     window.scrollTo(0, 0);
@@ -132,24 +150,24 @@
     const done = !!(game.daily && game.daily.date === todayKey() && game.daily.done);
     const st = game.streak;
     const dbtn = $('btnDaily');
-    if (dbtn) dbtn.textContent = done ? '오늘의 10문제 다시 풀기' : '오늘의 10문제 도전';
+    if (dbtn) dbtn.textContent = done ? T('오늘의 10문제 다시 풀기') : T('오늘의 10문제 도전');
     if ($('homeDailyState')) {
       $('homeDailyState').textContent = done
-        ? `오늘 도전 완료 · 연속 ${st.days || 1}일`
-        : `오늘의 10문제 · ${ids.length}문항`;
+        ? T('오늘 도전 완료 · 연속 {d}일', { d: st.days || 1 })
+        : T('오늘의 10문제 · {n}문항', { n: ids.length });
     }
     if ($('dailyNote')) {
       $('dailyNote').textContent = done
-        ? `오늘 몫은 끝냈습니다. 내일 또 새 10문제가 나옵니다. (최고 ${st.best || st.days || 1}일)`
-        : (st.days ? `연속 ${st.days}일째 도전 중 · 최고 ${st.best}일` : '아직 연속 도전 기록이 없습니다.');
+        ? T('오늘 몫은 끝냈습니다. 내일 또 새 10문제가 나옵니다. (최고 {b}일)', { b: st.best || st.days || 1 })
+        : (st.days ? T('연속 {d}일째 도전 중 · 최고 {b}일', { d: st.days, b: st.best }) : T('아직 연속 도전 기록이 없습니다.'));
     }
     const resume = $('btnResume');
     const saved = savedSession();
     if (resume) {
       if (saved) {
         resume.hidden = false;
-        resume.textContent = `이어풀기 (${saved.i + 1}/${saved.ids.length})`;
-      } else { resume.hidden = true; resume.textContent = '이어풀기'; }
+        resume.textContent = T('이어풀기 ({i}/{n})', { i: saved.i + 1, n: saved.ids.length });
+      } else { resume.hidden = true; resume.textContent = T('이어풀기'); }
     }
 
     /* ---- 심판 사다리 · 랭킹 ---- */
@@ -161,21 +179,21 @@
     const got = BADGES.filter((b) => game.badges[b.id]).sort((a, b) => String(game.badges[b.id]).localeCompare(String(game.badges[a.id])));
     if ($('homeBadgeCount')) $('homeBadgeCount').textContent = `${got.length} / ${BADGES.length}`;
     if ($('homeBadgeStrip')) {
-      $('homeBadgeStrip').innerHTML = got.length ? got.slice(0, 4).map((b) => `<span class="mini-badge-art">${badgeArt(b, true, 'h')}</span>`).join('') : '아직 없음';
+      $('homeBadgeStrip').innerHTML = got.length ? got.slice(0, 4).map((b) => `<span class="mini-badge-art">${badgeArt(b, true, 'h')}</span>`).join('') : T('아직 없음');
     }
     const answered = Object.keys(progress);
     const last = answered.map((k) => ({ k, at: (progress[k] && progress[k].at) || 0 })).sort((a, b) => b.at - a.at)[0];
     const lc = last ? BYID.get(last.k) : null;
     if ($('homeRecent')) {
       $('homeRecent').textContent = lc
-        ? `케이스 ${lc.caseNo} · ${progress[lc.id].ok ? '맞힘 ✓' : '틀림 ✕'}`
-        : '아직 기록 없음';
+        ? T('케이스 {no} · {r}', { no: lc.caseNo, r: progress[lc.id].ok ? T('맞힘 ✓') : T('틀림 ✕') })
+        : T('아직 기록 없음');
     }
-    if ($('homeSolved')) $('homeSolved').textContent = `푼 문항 ${answered.length} / ${CASES.length}`;
+    if ($('homeSolved')) $('homeSolved').textContent = T('푼 문항 {a} / {n}', { a: answered.length, n: CASES.length });
 
     const m = RULES ? RULES.meta : {};
-    if ($('metaSource')) $('metaSource').textContent = '2026 WWR 국제 경기규정 전문(111조·14장) · 2026 케이스북 · 2026 개정 요약';
-    if ($('metaEdition')) $('metaEdition').textContent = (m.edition || '') + (m.editionKo ? ' · ' + m.editionKo : '');
+    if ($('metaSource')) $('metaSource').textContent = T('2026 WWR 국제 경기규정 전문(111조·14장) · 2026 케이스북 · 2026 개정 요약');
+    if ($('metaEdition')) $('metaEdition').textContent = (m.edition || '') + (m.editionKo && !EN_UI() ? ' · ' + m.editionKo : '');
     show('home');
   }
 
@@ -188,14 +206,14 @@
     const set = (id, v) => { const el = $(P + id); if (el) el.textContent = v; };
     set('LadTitle', gradeName());
     const cur = LADDER[L.g];
-    set('LadTier', `${cur.tier} · ${L.g + 1} / ${LADDER.length}단계${L.track ? ' · 국제 시험 ' + (L.track === 'en' ? 'English' : '한국어') : ''}`);
+    set('LadTier', T('{tier} · {g} / {n}단계', { tier: T(cur.tier), g: L.g + 1, n: LADDER.length }) + (L.track ? T(' · 국제 시험 {l}', { l: L.track === 'en' ? 'English' : T('한국어') }) : ''));
 
     const steps = $(P + 'LadSteps');
     if (steps) {
       steps.innerHTML = LADDER.map((r, i) => {
         const cls = i < L.g ? 'done' : i === L.g ? 'now' : '';
         const crown = i === WORLD && L.world.en ? '👑' : '';
-        return `<li class="lad-step ${cls} ${r.tier === '국제' ? 'intl' : ''}"><span class="lad-dot">${i < L.g || (i === WORLD && L.g === WORLD) ? '✓' : i + 1}</span><span class="lad-lab">${esc(r.short)}${crown}</span></li>`;
+        return `<li class="lad-step ${cls} ${r.tier === '국제' ? 'intl' : ''}"><span class="lad-dot">${i < L.g || (i === WORLD && L.g === WORLD) ? '✓' : i + 1}</span><span class="lad-lab">${esc(T(r.short))}${crown}</span></li>`;
       }).join('');
     }
 
@@ -203,30 +221,30 @@
     const bar = $(P + 'LadBar');
     let next = '', count = '', label = '', enabled = false, pct = 100;
     if (ns.kind === 'done') {
-      next = L.world.en ? '영어로 월드 레퍼리까지 올랐습니다. 최고 단계입니다. 명예의 전당에 이름이 올라 있습니다.' : '최고 단계입니다.';
-      count = `맞힌 문항 ${m} / ${CASES.length}`;
-      label = '최고 단계 달성';
+      next = L.world.en ? T('영어로 월드 레퍼리까지 올랐습니다. 최고 단계입니다. 명예의 전당에 이름이 올라 있습니다.') : T('최고 단계입니다.');
+      count = T('맞힌 문항 {m} / {n}', { m, n: CASES.length });
+      label = T('최고 단계 달성');
     } else if (ns.kind === 'track') {
-      next = '국내 1급 다음은 국제심판(WWR) 길입니다. 시험 언어를 고르고 도전하세요. 영어로 월드까지 가면 최고 배지 👑';
-      count = `맞힌 문항 ${m} / ${CASES.length}`;
-      label = '도전! 국제심판';
+      next = T('국내 1급 다음은 국제심판(WWR) 길입니다. 시험 언어를 고르고 도전하세요. 영어로 월드까지 가면 최고 배지 👑');
+      count = T('맞힌 문항 {m} / {n}', { m, n: CASES.length });
+      label = T('도전! 국제심판');
       enabled = true;
     } else {
       const r = ns.r, need = needOf(r);
       pct = pctBar(m, need);
       const langTxt = ns.lang === 'en' ? ' · English' : '';
       if (ns.enRetry) {
-        next = `한국어로 월드 레퍼리 달성! 이제 같은 시험을 영어로 통과하면 최고 배지 👑 (30문항, 최근 5회 중 3회 90점 이상 + 평균 90점)`;
+        next = T('한국어로 월드 레퍼리 달성! 이제 같은 시험을 영어로 통과하면 최고 배지 👑 (30문항, 최근 5회 중 3회 90점 이상 + 평균 90점)');
       } else if (r.five) {
-        next = `다음: ${r.name}${langTxt} — 월드 시험 ${r.n}문항, 최근 5회 중 3회 90점 이상 + 5회 평균 90점 이상이면 승급`;
+        next = T('다음: {name}{l} — 월드 시험 {n}문항, 최근 5회 중 3회 90점 이상 + 5회 평균 90점 이상이면 승급', { name: T(r.name), l: langTxt, n: r.n });
       } else {
-        next = `다음: ${r.name}${langTxt} — 서로 다른 문항 ${need}개를 맞히면 승급 시험(${r.n}문항, ${Math.round(r.pass * 100)}점 이상)`;
+        next = T('다음: {name}{l} — 서로 다른 문항 {need}개를 맞히면 승급 시험({n}문항, {p}점 이상)', { name: T(r.name), l: langTxt, need, n: r.n, p: Math.round(r.pass * 100) });
       }
       const h = (game.lad.hist[ns.lang] || []).slice(-5);
-      count = `맞힌 문항 ${m} / ${need}` + (r.five && h.length ? ` · 최근 시험 ${h.join(' · ')}` : '');
-      if (m < need) { label = `승급 시험까지 ${need - m}문항`; }
-      else if (examTakenToday(ns.key)) { label = '오늘 시험 완료 · 내일 다시'; }
-      else { label = r.five ? '월드 시험 보기' : '승급 시험 보기'; enabled = true; }
+      count = T('맞힌 문항 {m} / {n}', { m, n: need }) + (r.five && h.length ? T(' · 최근 시험 {h}', { h: h.join(' · ') }) : '');
+      if (m < need) { label = T('승급 시험까지 {n}문항', { n: need - m }); }
+      else if (examTakenToday(ns.key)) { label = T('오늘 시험 완료 · 내일 다시'); }
+      else { label = r.five ? T('월드 시험 보기') : T('승급 시험 보기'); enabled = true; }
     }
     set('LadNext', next);
     set('LadCount', count);
@@ -240,15 +258,17 @@
     if (ns.kind !== 'exam') return;
     if (masteryOf() < needOf(ns.r) || examTakenToday(ns.key)) return;
     const r = ns.r;
-    popup('EXAM', `${r.name}${ns.lang === 'en' ? ' · English' : ''} 시험`,
-      `전체 케이스에서 ${r.n}문항이 섞여 나옵니다. ${r.five ? '90점 이상이 최근 5회 중 3번, 평균 90점 이상이면 승급합니다.' : Math.round(r.pass * 100) + '점 이상이면 승급합니다.'} 시험은 하루 한 번이고, 시작하면 오늘 기회를 씁니다.${ns.lang === 'en' ? ' 문제는 영어로만 나옵니다.' : ''}`,
-      [{ label: '시작', primary: true, fn: () => startExam(ns) }, { label: '나중에' }]);
+    popup('EXAM', T('{name}{l} 시험', { name: T(r.name), l: ns.lang === 'en' ? ' · English' : '' }),
+      T('전체 케이스에서 {n}문항이 섞여 나옵니다. {rule} 시험은 하루 한 번이고, 시작하면 오늘 기회를 씁니다.{en}', {
+        n: r.n, rule: r.five ? T('90점 이상이 최근 5회 중 3번, 평균 90점 이상이면 승급합니다.') : T('{p}점 이상이면 승급합니다.', { p: Math.round(r.pass * 100) }),
+        en: ns.lang === 'en' ? T(' 문제는 영어로만 나옵니다.') : '' }),
+      [{ label: T('시작'), primary: true, fn: () => startExam(ns) }, { label: T('나중에') }]);
   }
 
   function chooseTrack() {
-    popup('도전! 국제심판', '시험 언어를 고르세요',
-      'WWR 국제심판 길(캔디데이트 → 프로비저널 → 존 → 월드)을 어떤 언어로 볼지 정합니다. 한국어로도 월드까지 갈 수 있고, 영어로 월드까지 가면 최고 배지 👑를 받습니다. 나중에 내 기록 화면에서 바꿀 수 있습니다.',
-      [{ label: '한국어로', primary: true, fn: () => setTrack('ko') }, { label: 'English', primary: true, fn: () => setTrack('en') }, { label: '나중에' }]);
+    popup(T('도전! 국제심판'), T('시험 언어를 고르세요'),
+      T('WWR 국제심판 길(캔디데이트 → 프로비저널 → 존 → 월드)을 어떤 언어로 볼지 정합니다. 한국어로도 월드까지 갈 수 있고, 영어로 월드까지 가면 최고 배지 👑를 받습니다. 나중에 내 기록 화면에서 바꿀 수 있습니다.'),
+      [{ label: T('한국어로'), primary: true, fn: () => setTrack('ko') }, { label: 'English', primary: true, fn: () => setTrack('en') }, { label: T('나중에') }]);
   }
   function setTrack(t) {
     game.lad.track = t;
@@ -263,7 +283,7 @@
     const ids = shuffle(CASES.map((c) => c.id)).slice(0, Math.min(r.n, CASES.length));
     const prevLang = caseLang;
     caseLang = ns.lang === 'en' ? 'en' : caseLang;
-    session = { ids, i: 0, answers: [], mode: 'exam', label: `승급 시험 · ${r.name}${ns.lang === 'en' ? ' (EN)' : ''}`, from: 'home', startedAt: Date.now(),
+    session = { ids, i: 0, answers: [], mode: 'exam', label: T('승급 시험 · {name}{l}', { name: T(r.name), l: ns.lang === 'en' ? ' (EN)' : '' }), from: 'home', startedAt: Date.now(),
       exam: { idx: ns.idx, lang: ns.lang, key: ns.key, n: ids.length, pass: r.pass, five: !!r.five, enRetry: !!ns.enRetry, prevLang } };
     save(KEY_SESSION, session);
     renderQuiz();
@@ -281,10 +301,10 @@
       const over = last.filter((x) => x >= 90).length;
       const avg = last.reduce((a, b) => a + b, 0) / last.length;
       passed = over >= 3 && avg >= 90;
-      msg = passed ? '' : `최근 ${last.length}회: ${last.join(' · ')} — 90점 이상 ${over}/3회, 평균 ${avg.toFixed(1)}점 (90점 필요). 내일 다시 도전하세요.`;
+      msg = passed ? '' : T('최근 {n}회: {h} — 90점 이상 {o}/3회, 평균 {a}점 (90점 필요). 내일 다시 도전하세요.', { n: last.length, h: last.join(' · '), o: over, a: avg.toFixed(1) });
     } else {
       passed = pct >= Math.round(ex.pass * 100);
-      msg = passed ? '' : `${pct}점 — ${Math.round(ex.pass * 100)}점 이상이면 합격입니다. 내일 다시 도전하세요.`;
+      msg = passed ? '' : T('{s}점 — {p}점 이상이면 합격입니다. 내일 다시 도전하세요.', { s: pct, p: Math.round(ex.pass * 100) });
     }
     if (!passed) { saveGame(); return { passed, pct, msg }; }
     addXp(50);
@@ -293,11 +313,11 @@
       if (ex.lang === 'en') { L.world.en = true; L.world.ko = true; giveBadge('worldEn'); giveBadge('world'); }
       else { L.world.ko = true; giveBadge('world'); }
       enterHall(ex.lang);
-      msg = ex.lang === 'en' ? '영어로 월드 레퍼리가 되었습니다. 최고 배지 👑와 함께 명예의 전당에 올랐습니다.' : '월드 레퍼리가 되었습니다. 명예의 전당에 올랐습니다. 영어로도 도전해 최고 배지 👑를 노려보세요.';
+      msg = ex.lang === 'en' ? T('영어로 월드 레퍼리가 되었습니다. 최고 배지 👑와 함께 명예의 전당에 올랐습니다.') : T('월드 레퍼리가 되었습니다. 명예의 전당에 올랐습니다. 영어로도 도전해 최고 배지 👑를 노려보세요.');
     } else {
       L.g = ex.idx;
       giveBadge(r.id);
-      msg = `${r.name}(으)로 승급했습니다. 경험치 +50`;
+      msg = T('{name}(으)로 승급했습니다. 경험치 +50', { name: T(r.name) });
     }
     saveGame();
     return { passed, pct, msg };
@@ -352,20 +372,20 @@
     const box = $(P + 'RankBoard');
     if (!box) return;
     if (RANK.mode === 'off') {
-      box.innerHTML = '<p class="empty sm">공유 랭킹은 준비 중입니다. 관리자가 서버(Firebase)를 연결하면 이번 주 1등 · 역대 1등 · 명예의 전당이 열립니다. 경험치는 지금부터 쌓입니다.</p>';
+      box.innerHTML = `<p class="empty sm">${T('공유 랭킹은 준비 중입니다. 관리자가 서버(Firebase)를 연결하면 이번 주 1등 · 역대 1등 · 명예의 전당이 열립니다. 경험치는 지금부터 쌓입니다.')}</p>`;
       if (st) st.textContent = '';
       return;
     }
-    if (st) st.textContent = nick ? `${nick} 이름으로 순위에 올라갑니다.` : '닉네임을 정하면 순위에 올라갑니다.';
+    if (st) st.textContent = nick ? T('{nick} 이름으로 순위에 올라갑니다.', { nick }) : T('닉네임을 정하면 순위에 올라갑니다.');
     const n = where === 'me' ? 20 : 5;
     const tab = rankTab[where];
-    box.innerHTML = '<p class="empty sm">불러오는 중…</p>';
+    box.innerHTML = `<p class="empty sm">${T('불러오는 중…')}</p>`;
     const p = tab === 'hall' ? RANK.hall() : RANK.top(tab, x.wk, 50);
     p.then((rows) => {
       if (rankTab[where] !== tab) return;
-      if (rows == null) { box.innerHTML = `<p class="empty sm">순위를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.${RANK.error ? ' (' + esc(RANK.error) + ')' : ''}</p>`; return; }
+      if (rows == null) { box.innerHTML = `<p class="empty sm">${T('순위를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.')}${RANK.error ? ' (' + esc(RANK.error) + ')' : ''}</p>`; return; }
       if (!rows.length) {
-        box.innerHTML = `<p class="empty sm">${tab === 'hall' ? '아직 월드 레퍼리에 오른 사람이 없습니다. 첫 번째 주인공이 되어 보세요.' : tab === 'week' ? '이번 주 기록이 아직 없습니다. 첫 문제를 풀면 1등입니다.' : '아직 기록이 없습니다.'}</p>`;
+        box.innerHTML = `<p class="empty sm">${tab === 'hall' ? T('아직 월드 레퍼리에 오른 사람이 없습니다. 첫 번째 주인공이 되어 보세요.') : tab === 'week' ? T('이번 주 기록이 아직 없습니다. 첫 문제를 풀면 1등입니다.') : T('아직 기록이 없습니다.')}</p>`;
         return;
       }
       box.innerHTML = '';
@@ -374,12 +394,12 @@
         row.className = 'rank-row' + (e.me ? ' me' : '') + (i === 0 ? ' first' : '');
         if (tab === 'hall') {
           const d = e.at ? todayKey(new Date(e.at)) : '';
-          row.innerHTML = `<span class="rank-no">${i + 1}호</span><span class="rank-nick">${esc(e.nick)}${e.me ? ' (나)' : ''}</span>
-            <span class="rank-lv">${e.lang === 'en' ? '👑 English' : '🌏 한국어'}</span><span class="rank-x">${esc(d)}</span>`;
+          row.innerHTML = `<span class="rank-no">${T('{n}호', { n: i + 1 })}</span><span class="rank-nick">${esc(e.nick)}${e.me ? T(' (나)') : ''}</span>
+            <span class="rank-lv">${e.lang === 'en' ? '👑 English' : T('🌏 한국어')}</span><span class="rank-x">${esc(d)}</span>`;
         } else {
           const g = LADDER[Math.max(0, Math.min(WORLD, e.grade | 0))];
-          row.innerHTML = `<span class="rank-no">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span><span class="rank-nick">${esc(e.nick)}${e.me ? ' (나)' : ''}</span>
-            <span class="rank-lv">${esc(g.short)}${e.en && e.grade >= WORLD ? '👑' : ''}</span><span class="rank-x">${Number(e.score).toLocaleString()}</span>`;
+          row.innerHTML = `<span class="rank-no">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span><span class="rank-nick">${esc(e.nick)}${e.me ? T(' (나)') : ''}</span>
+            <span class="rank-lv">${esc(T(g.short))}${e.en && e.grade >= WORLD ? '👑' : ''}</span><span class="rank-x">${Number(e.score).toLocaleString()}</span>`;
         }
         box.appendChild(row);
       });
@@ -388,12 +408,12 @@
       if (tab !== 'hall' && nick && myIdx >= n) {
         const tail = document.createElement('p');
         tail.className = 'empty sm';
-        tail.textContent = `나는 ${myIdx + 1}위 (${Number(rows[myIdx].score).toLocaleString()}점)`;
+        tail.textContent = T('나는 {r}위 ({s}점)', { r: myIdx + 1, s: Number(rows[myIdx].score).toLocaleString() });
         box.appendChild(tail);
       } else if (tab !== 'hall' && nick && myIdx < 0) {
         const tail = document.createElement('p');
         tail.className = 'empty sm';
-        tail.textContent = `나는 50위 밖입니다. (${tab === 'week' ? '이번 주' : '누적'} ${Number(tab === 'week' ? x.week : x.total).toLocaleString()}점)`;
+        tail.textContent = T('나는 50위 밖입니다. ({k} {s}점)', { k: tab === 'week' ? T('이번 주') : T('누적'), s: Number(tab === 'week' ? x.week : x.total).toLocaleString() });
         box.appendChild(tail);
       }
     });
@@ -402,7 +422,7 @@
   function saveNick(where) {
     const P = where === 'me' ? 'me' : 'home';
     const v = (($(P + 'Nick') && $(P + 'Nick').value) || '').trim().slice(0, 14);
-    if (!v) { popup('RANKING', '닉네임을 넣어 주세요', '1~14글자. 순위표와 명예의 전당에 이 이름이 나옵니다.'); return; }
+    if (!v) { popup('RANKING', T('닉네임을 넣어 주세요'), T('1~14글자. 순위표와 명예의 전당에 이 이름이 나옵니다.')); return; }
     game.rank.nick = v;
     saveGame();
     syncRank();
@@ -420,9 +440,9 @@
     const lead = leadBadge(got);
     $('helloArt').innerHTML = lead ? badgeArt(lead, true, 'hello') : badgeArt(BADGES[0], false, 'hello');
     $('helloArt').classList.toggle('none', !lead);
-    $('helloName').textContent = nick ? `${nick}님, 반가워요 👋` : '처음 오셨네요 👋';
-    const st = game.streak.days ? ` · 🔥${game.streak.days}일` : '';
-    $('helloMeta').textContent = `${gradeName()} · ${x.week.toLocaleString()}점${st}`;
+    $('helloName').textContent = nick ? T('{nick}님, 반가워요 👋', { nick }) : T('처음 오셨네요 👋');
+    const st = game.streak.days ? T(' · 🔥{d}일', { d: game.streak.days }) : '';
+    $('helloMeta').textContent = T('{g} · {w}점{s}', { g: gradeName(), w: x.week.toLocaleString(), s: st });
     const rk = $('helloRank');
     if (!nick || RANK.mode === 'off') { rk.hidden = true; return; }
     RANK.top('week', x.wk, 50).then((rows) => {
@@ -430,7 +450,7 @@
       const i = rows.findIndex((r) => r.me);
       rk.hidden = false;
       rk.classList.toggle('first', i === 0);
-      rk.innerHTML = i >= 0 ? `<small>이번 주</small><b>${i + 1}위</b>` : `<small>이번 주</small><b>${x.week > 0 ? '50+' : '—'}</b>`;
+      rk.innerHTML = i >= 0 ? `<small>${T('이번 주')}</small><b>${T('{r}위', { r: i + 1 })}</b>` : `<small>${T('이번 주')}</small><b>${x.week > 0 ? '50+' : '—'}</b>`;
     });
   }
 
@@ -447,9 +467,9 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'chap';
-      btn.innerHTML = `<span class="chap-main"><span class="chap-title">${esc(ch.title)}</span>
-        <span class="chap-en">${esc(ch.en || '')}</span></span>
-        <span class="chap-meta">${ch.articles.length}조 ${openChapters.has(String(ch.id)) ? '▾' : '▸'}</span>`;
+      btn.innerHTML = `<span class="chap-main"><span class="chap-title">${esc(chTitle(ch))}</span>
+        <span class="chap-en">${EN_UI() ? '' : esc(ch.en || '')}</span></span>
+        <span class="chap-meta">${T('{n}조', { n: ch.articles.length })} ${openChapters.has(String(ch.id)) ? '▾' : '▸'}</span>`;
       wrap.appendChild(btn);
       const list = document.createElement('div');
       list.className = 'chap-list';
@@ -460,7 +480,7 @@
         const link = document.createElement('button');
         link.type = 'button';
         link.className = 'art-link';
-        link.innerHTML = `<span class="no">${a.no}조</span><span class="ti">${esc(a.titleKo)}</span><span class="pg">${a.changed2026 ? '<b class="mini-badge">2026</b>' : ''}${a.page || ''}p</span>`;
+        link.innerHTML = `<span class="no">${T('{n}조', { n: a.no })}</span><span class="ti">${esc(artTitle(a))}</span><span class="pg">${a.changed2026 ? '<b class="mini-badge">2026</b>' : ''}${a.page || ''}p</span>`;
         link.addEventListener('click', () => openArticle(a.no, 'rules'));
         list.appendChild(link);
       }
@@ -492,9 +512,10 @@
   }
 
   function snippet(a, q) {
-    const hay = a.bodyKo.join(' ');
+    const hay = (EN_UI() ? a.bodyEn : a.bodyKo).join(' ');
     const i = hay.toLowerCase().indexOf(q);
-    if (i < 0) return (a.bodyKo[0] || '').slice(0, 78) + (a.bodyKo[0] && a.bodyKo[0].length > 78 ? '…' : '');
+    const b0 = (EN_UI() ? a.bodyEn : a.bodyKo)[0] || '';
+    if (i < 0) return b0.slice(0, 78) + (b0.length > 78 ? '…' : '');
     const s = Math.max(0, i - 24);
     return (s > 0 ? '…' : '') + hay.slice(s, s + 84) + (hay.length > s + 84 ? '…' : '');
   }
@@ -518,15 +539,15 @@
     if (numOnly !== null) {
       hits.sort((x, y) => (x.a.no === numOnly ? -1 : 0) - (y.a.no === numOnly ? -1 : 0) || x.a.no - y.a.no);
     }
-    $('searchSummary').textContent = hits.length ? `${hits.length}개 조항` : '찾는 조항이 없습니다. 다른 낱말로 해보세요.';
+    $('searchSummary').textContent = hits.length ? T('{n}개 조항', { n: hits.length }) : T('찾는 조항이 없습니다. 다른 낱말로 해보세요.');
     const box = $('searchResults');
     box.innerHTML = '';
     hits.slice(0, 40).forEach((r) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'case-row';
-      b.innerHTML = `<span class="case-no">${r.a.no}조 · ${esc(ruleChapterById(r.a.chapter).title)}</span>
-        <span class="case-q"><b>${esc(r.a.titleKo)}</b>${r.a.changed2026 ? ' <span class="mini-badge">2026</span>' : ''}<br>${esc(snippet(r.a, tokens[0]))}</span>`;
+      b.innerHTML = `<span class="case-no">${T('{n}조', { n: r.a.no })} · ${esc(chTitle(ruleChapterById(r.a.chapter)))}</span>
+        <span class="case-q"><b>${esc(artTitle(r.a))}</b>${r.a.changed2026 ? ' <span class="mini-badge">2026</span>' : ''}<br>${esc(snippet(r.a, tokens[0]))}</span>`;
       b.addEventListener('click', () => openArticle(r.a.no, 'rules'));
       box.appendChild(b);
     });
@@ -538,24 +559,24 @@
     if (!a) return;
     articleReturn = from || 'rules';
     currentArticle = a;
-    $('artNo').textContent = a.no + '조';
-    $('artChapter').textContent = ruleChapterById(a.chapter).title;
-    $('artTitleKo').textContent = a.titleKo || a.titleEn;
-    $('artTitleEn').textContent = a.titleEn || '';
+    $('artNo').textContent = T('{n}조', { n: a.no });
+    $('artChapter').textContent = chTitle(ruleChapterById(a.chapter));
+    $('artTitleKo').textContent = artTitle(a);
+    $('artTitleEn').textContent = EN_UI() ? '' : (a.titleEn || '');
     const badge = $('art2026');
     if (badge) {
       if (a.changed2026 || a.changeNote) {
         badge.hidden = false;
-        badge.innerHTML = `<span class="badge-2026">2026 개정</span>
-          <span class="badge-text">${esc(a.changeNote || '2026년 1월 1일 개정 사항이 반영된 조항입니다.')}</span>`;
+        badge.innerHTML = `<span class="badge-2026">${T('2026 개정')}</span>
+          <span class="badge-text">${esc(EN_UI() ? T('2026년 1월 1일 개정 사항이 반영된 조항입니다.') : (a.changeNote || '2026년 1월 1일 개정 사항이 반영된 조항입니다.'))}</span>`;
       } else { badge.hidden = true; badge.innerHTML = ''; }
     }
-    $('artBodyKo').innerHTML = a.bodyKo.map((p) => `<p>${esc(p)}</p>`).join('') || '<p class="muted">국문 본문이 없습니다.</p>';
-    $('artBodyEn').innerHTML = a.bodyEn.map((p) => `<p>${esc(p)}</p>`).join('') || '<p class="muted">영문 본문이 없습니다.</p>';
-    $('artBodyEn').hidden = true;
-    $('artBodyKo').hidden = false;
-    $('btnLang').textContent = 'EN';
-    $('artSrc').textContent = `2026 International Rules ${a.page || ''}쪽 · ${a.koNew ? '국문 새 번역' : '국문은 2021년 협회 번역'}`;
+    $('artBodyKo').innerHTML = a.bodyKo.map((p) => `<p>${esc(p)}</p>`).join('') || `<p class="muted">${T('국문 본문이 없습니다.')}</p>`;
+    $('artBodyEn').innerHTML = a.bodyEn.map((p) => `<p>${esc(p)}</p>`).join('') || `<p class="muted">${T('영문 본문이 없습니다.')}</p>`;
+    $('artBodyEn').hidden = !EN_UI();
+    $('artBodyKo').hidden = EN_UI();
+    $('btnLang').textContent = EN_UI() ? 'KO' : 'EN';
+    $('artSrc').textContent = T('2026 International Rules {p}쪽 · {t}', { p: a.page || '', t: a.koNew ? T('국문 새 번역') : T('국문은 2021년 협회 번역') });
 
     const related = CASES.filter((c) => (c.relatedArticles || []).map(String).includes(String(a.no)));
     const rel = $('artRelated');
@@ -568,11 +589,11 @@
         b.type = 'button';
         b.className = 'case-row';
         const p = progress[c.id];
-        b.innerHTML = `<span class="case-no">케이스 ${esc(c.caseNo)} · ${esc(c.page)}쪽</span>
-          <span class="case-q">${esc(c.question)}</span>
-          <span class="case-tags">${c.scene ? '<span class="tag scene">장면</span>' : '<span class="tag text">글</span>'}
-          ${p ? (p.ok ? '<span class="tag ok">✓ 맞힘</span>' : '<span class="tag bad">✕ 틀림</span>') : ''}</span>`;
-        b.addEventListener('click', () => startSession([c.id], 'case', '케이스 ' + c.caseNo, 'article'));
+        b.innerHTML = `<span class="case-no">${T('케이스 {no} · {p}쪽', { no: esc(c.caseNo), p: esc(c.page) })}</span>
+          <span class="case-q">${esc(qText(c))}</span>
+          <span class="case-tags">${c.scene ? `<span class="tag scene">${T('장면')}</span>` : `<span class="tag text">${T('글')}</span>`}
+          ${p ? (p.ok ? `<span class="tag ok">${T('✓ 맞힘')}</span>` : `<span class="tag bad">${T('✕ 틀림')}</span>`) : ''}</span>`;
+        b.addEventListener('click', () => startSession([c.id], 'case', T('케이스 {no}', { no: c.caseNo }), 'article'));
         list.appendChild(b);
       }
     }
@@ -585,7 +606,7 @@
     if (backBtn) {
       const target = articleReturn === 'quiz' ? 'quiz' : articleReturn === 'chapter' ? 'chapter' : 'rules';
       backBtn.setAttribute('data-back', target);
-      backBtn.setAttribute('aria-label', target === 'quiz' ? '문제로 돌아가기' : target === 'chapter' ? '케이스 목록으로' : '규정 목록으로');
+      backBtn.setAttribute('aria-label', target === 'quiz' ? T('문제로 돌아가기') : target === 'chapter' ? T('케이스 목록으로') : T('규정 목록으로'));
     }
     show('article');
   }
@@ -617,9 +638,9 @@
   function renderQuizHome() {
     const total = CASES.length;
     const sceneN = CASES.filter((c) => c.scene).length;
-    if ($('homeStats')) $('homeStats').textContent = `전체 ${total}문항 · 코트 장면 ${sceneN} · 글 문제 ${total - sceneN}`;
+    if ($('homeStats')) $('homeStats').textContent = T('전체 {t}문항 · 코트 장면 {s} · 글 문제 {x}', { t: total, s: sceneN, x: total - sceneN });
     const answered = Object.keys(progress).length;
-    if ($('homeProgress')) $('homeProgress').textContent = answered ? `지금까지 ${answered}문항을 풀었습니다` : '아직 푼 문제가 없습니다';
+    if ($('homeProgress')) $('homeProgress').textContent = answered ? T('지금까지 {n}문항을 풀었습니다', { n: answered }) : T('아직 푼 문제가 없습니다');
     const list = $('chapterList');
     list.innerHTML = '';
     const counts = {};
@@ -629,9 +650,9 @@
       const el = document.createElement('button');
       el.type = 'button';
       el.className = 'chap' + (n ? '' : ' todo');
-      el.innerHTML = `<span class="chap-main"><span class="chap-title">${esc(ch.title)}</span>
-        <span class="chap-en">${esc(ch.en || '')}${ch.pages ? ' · ' + esc(ch.pages) : ''}</span></span>
-        <span class="chap-meta">${n ? answeredCount(casesOf(ch.id).map((c) => c.id)) + '/' + n : '준비 중'}${BADGES.some((b) => b.ch && b.ch.indexOf(String(ch.id)) >= 0 && game.badges[b.id]) ? ' ★' : ''}</span>`;
+      el.innerHTML = `<span class="chap-main"><span class="chap-title">${esc(chTitle(ch))}</span>
+        <span class="chap-en">${EN_UI() ? '' : esc(ch.en || '')}${ch.pages && !EN_UI() ? ' · ' + esc(ch.pages) : ''}</span></span>
+        <span class="chap-meta">${n ? answeredCount(casesOf(ch.id).map((c) => c.id)) + '/' + n : T('준비 중')}${BADGES.some((b) => b.ch && b.ch.indexOf(String(ch.id)) >= 0 && game.badges[b.id]) ? ' ★' : ''}</span>`;
       if (n) el.addEventListener('click', () => openChapter(ch.id));
       list.appendChild(el);
     }
@@ -642,8 +663,8 @@
     currentChapter = id;
     const ch = chapterById(id);
     const items = casesOf(id);
-    $('chapterTitle').textContent = ch.title;
-    $('chapterSub').textContent = `${ch.en || ''}${ch.pages ? ' · ' + ch.pages : ''} · ${items.length}문항`;
+    $('chapterTitle').textContent = chTitle(ch);
+    $('chapterSub').textContent = T('{en}{pg} · {n}문항', { en: EN_UI() ? '' : (ch.en || ''), pg: ch.pages && !EN_UI() ? ' · ' + ch.pages : '', n: items.length }).replace(/^ · /, '');
     const list = $('caseList');
     list.innerHTML = '';
     items.forEach((c) => {
@@ -651,17 +672,17 @@
       const el = document.createElement('button');
       el.type = 'button';
       el.className = 'case-row' + (p ? (p.ok ? ' ok' : ' bad') : '');
-      el.innerHTML = `<span class="case-no">케이스 ${esc(c.caseNo)} · ${esc(c.page)}쪽</span>
-        <span class="case-q">${esc(c.question)}</span>
+      el.innerHTML = `<span class="case-no">${T('케이스 {no} · {p}쪽', { no: esc(c.caseNo), p: esc(c.page) })}</span>
+        <span class="case-q">${esc(qText(c))}</span>
         <span class="case-tags">
-          ${c.scene ? '<span class="tag scene">장면</span>' : '<span class="tag text">글</span>'}
-          ${p ? (p.ok ? '<span class="tag ok">✓ 맞힘</span>' : '<span class="tag bad">✕ 틀림</span>') : ''}
+          ${c.scene ? `<span class="tag scene">${T('장면')}</span>` : `<span class="tag text">${T('글')}</span>`}
+          ${p ? (p.ok ? `<span class="tag ok">${T('✓ 맞힘')}</span>` : `<span class="tag bad">${T('✕ 틀림')}</span>`) : ''}
         </span>`;
-      el.addEventListener('click', () => startSession([c.id], 'case', '케이스 ' + c.caseNo, 'chapter'));
+      el.addEventListener('click', () => startSession([c.id], 'case', T('케이스 {no}', { no: c.caseNo }), 'chapter'));
       list.appendChild(el);
     });
-    $('btnChapterAll').textContent = `이 장 ${items.length}문항 풀기`;
-    $('btnChapterAll').onclick = () => startSession(items.map((c) => c.id), 'chapter', ch.title, 'chapter');
+    $('btnChapterAll').textContent = T('이 장 {n}문항 풀기', { n: items.length });
+    $('btnChapterAll').onclick = () => startSession(items.map((c) => c.id), 'chapter', chTitle(ch), 'chapter');
     show('chapter');
   }
 
@@ -674,7 +695,7 @@
   /* 14장 전체에서 섞어 10문항 (같은 판 안에서 문제 중복 없음) */
   function startRandom(from) {
     const ids = shuffle(CASES.map((c) => c.id)).slice(0, Math.min(10, CASES.length));
-    startSession(ids, 'random', '전체 랜덤 10문제', from || 'home');
+    startSession(ids, 'random', T('전체 랜덤 10문제'), from || 'home');
   }
   function currentCase() { return session ? BYID.get(session.ids[session.i]) : null; }
 
@@ -686,7 +707,7 @@
     const from = session.from || 'quizhome';
 
     $('quizStep').textContent = `${session.i + 1} / ${session.ids.length}`;
-    $('quizScore').textContent = `${session.answers.filter((a) => a.ok).length}점`;
+    $('quizScore').textContent = T('{n}점', { n: session.answers.filter((a) => a.ok).length });
     $('quizMode').textContent = session.label || '';
     $('btnQuizBack').onclick = () => {
       if (from === 'chapter' && (session.mode === 'chapter' || session.mode === 'case')) openChapter(currentChapter || c.chapter);
@@ -694,8 +715,8 @@
       else renderQuizHome();
     };
 
-    $('qNo').textContent = `케이스 ${c.caseNo}`;
-    $('qChapter').textContent = chapterById(c.chapter).title;
+    $('qNo').textContent = T('케이스 {no}', { no: c.caseNo });
+    $('qChapter').textContent = chTitle(chapterById(c.chapter));
     const en = caseLang === 'en';
     $('qText').textContent = en ? (c.questionEn || c.question) : c.question;
     const lb = $('btnQuizLang');
@@ -708,7 +729,7 @@
       wrap.innerHTML = '<canvas id="sceneCanvas"></canvas>';
       const canvas = $('sceneCanvas');
       requestAnimationFrame(() => {
-        sceneCtl = window.QuizScene.create(wrap, canvas, c.scene, {});
+        sceneCtl = window.QuizScene.create(wrap, canvas, c.scene, { lang: caseLang });
       });
     } else {
       sceneBox.hidden = true; textBox.hidden = false;
@@ -736,7 +757,7 @@
     });
     $('btnCheck').disabled = true;
     $('btnCheck').hidden = false;
-    $('btnCheck').textContent = '정답 확인';
+    $('btnCheck').textContent = T('정답 확인');
     $('btnCheck').onclick = () => checkAnswer(c, box, picked);
 
     $('feedback').hidden = true;
@@ -747,7 +768,7 @@
       markChoices(c, box, prev.pick);
       renderFeedback(c, prev.pick, prev.ok);
       $('btnNext').hidden = false;
-      $('btnNext').textContent = session.i + 1 < session.ids.length ? '다음 문제' : '결과 보기';
+      $('btnNext').textContent = session.i + 1 < session.ids.length ? T('다음 문제') : T('결과 보기');
       $('btnNext').onclick = next;
     }
     show('quiz');
@@ -791,10 +812,10 @@
     session.xp = (session.xp || 0) + gain;
     save(KEY_PROGRESS, progress);
     save(KEY_SESSION, session);
-    $('quizScore').textContent = `${session.answers.filter((a) => a.ok).length}점`;
+    $('quizScore').textContent = T('{n}점', { n: session.answers.filter((a) => a.ok).length });
     renderFeedback(c, picked, ok);
     $('btnNext').hidden = false;
-    $('btnNext').textContent = session.i + 1 < session.ids.length ? '다음 문제' : '결과 보기';
+    $('btnNext').textContent = session.i + 1 < session.ids.length ? T('다음 문제') : T('결과 보기');
     $('btnNext').onclick = next;
     if (ok) celebrate();
     if ($('feedback') && $('feedback').scrollIntoView) setTimeout(() => $('feedback').scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 70);
@@ -823,31 +844,32 @@
         ${oc && oc.length ? `<ol type="A">${oc.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : ''}
         ${ox ? `<p class="orig-label">${en ? '해설' : 'Answer'}</p><p>${esc(ox)}</p>` : ''}
       </div>` : '';
-    const T = en
+    const TX = en
       ? { ok: 'Correct', bad: 'Incorrect', pick: 'Your answer', ans: 'Answer', head: 'Explanation', src: `Casebook ${esc(c.caseNo)} · p.${esc(c.page)}`, sw: '국문으로 보기' }
       : { ok: '정답입니다', bad: '오답입니다', pick: '내가 고른 답', ans: '정답', head: '해설', src: `케이스북 ${esc(c.caseNo)} · ${esc(c.page)}쪽`, sw: '영문으로 보기' };
     fb.hidden = false;
     fb.innerHTML = `
       <div class="verdict ${ok ? 'ok' : 'bad'}">
         <span class="vicon">${ok ? '✓' : '✕'}</span>
-        <span class="vtext">${ok ? T.ok : T.bad}</span>
-        ${ok ? '' : `<span class="vpick">${T.pick}: ${LETTERS[picked]} · ${T.ans}: ${LETTERS[c.answer]}</span>`}
+        <span class="vtext">${ok ? TX.ok : TX.bad}</span>
+        ${ok ? '' : `<span class="vpick">${TX.pick}: ${LETTERS[picked]} · ${TX.ans}: ${LETTERS[c.answer]}</span>`}
       </div>
       <div class="explain">
-        <div class="ex-head">${T.head}</div>
+        <div class="ex-head">${TX.head}</div>
         <p class="ex-answer">${esc(why)}</p>
-        ${c.rule ? `<p class="ex-rule">${esc(c.rule)}</p>` : ''}
-        <p class="ex-src">${T.src} ${c.changed2026 ? '<span class="badge-2026">2026 개정</span>' : ''}</p>
+        ${c.rule && !en ? `<p class="ex-rule">${esc(c.rule)}</p>` : ''}
+        <p class="ex-src">${TX.src} ${c.changed2026 ? `<span class="badge-2026">${T('2026 개정')}</span>` : ''}</p>
         ${rel.length ? `<div class="ex-links">${rel.map((n) => {
           const a = ARTBY.get(Number(n));
-          return `<button class="art-link inline" data-art="${a.no}" type="button"><span class="no">${a.no}조</span><span class="ti">${esc(a.titleKo)}</span></button>`;
+          return `<button class="art-link inline" data-art="${a.no}" type="button"><span class="no">${T('{n}조', { n: a.no })}</span><span class="ti">${esc(artTitle(a))}</span></button>`;
         }).join('')}</div>` : ''}
       </div>`;
     // 다른 언어 원문은 '다음 문제' 버튼 아래에 따로 둔다
     const ob = $('origBox');
     if (ob) {
       ob.hidden = false;
-      ob.innerHTML = `${other}<div class="btn-row"><button class="btn ghost sm" id="btnFbLang" type="button">${T.sw}</button></div>`;
+      ob.innerHTML = `${other}<div class="btn-row"><button class="btn ghost sm" id="btnFbLang" type="button">${TX.sw}</button></div>`;
+      if (EN_UI() && en) ob.hidden = true; // 영어 화면에서는 한국어 원문 덩어리를 숨긴다
     }
     const lb = document.getElementById('btnFbLang');
     if (lb) { lb.hidden = enLocked(); lb.addEventListener('click', () => { caseLang = caseLang === 'en' ? 'ko' : 'en'; renderQuiz(); }); }
@@ -865,7 +887,7 @@
     const pct = total ? Math.round((right / total) * 100) : 0;
     $('resScore').textContent = `${right} / ${total}`;
     $('resPct').textContent = `${pct}%`;
-    $('resMsg').textContent = pct === 100 ? '전부 맞혔습니다. 케이스북 마스터!' : pct >= 70 ? '좋습니다. 틀린 케이스만 다시 보면 됩니다.' : '틀린 케이스의 해설을 다시 읽어보세요.';
+    $('resMsg').textContent = pct === 100 ? T('전부 맞혔습니다. 케이스북 마스터!') : pct >= 70 ? T('좋습니다. 틀린 케이스만 다시 보면 됩니다.') : T('틀린 케이스의 해설을 다시 읽어보세요.');
     const exBox = $('resExam');
     if (exBox) { exBox.hidden = true; exBox.className = 'res-exam'; }
     if (session.mode === 'exam' && session.exam && !session.exam.judged) {
@@ -877,25 +899,25 @@
       const j = session.exam.judged, r = LADDER[session.exam.idx];
       exBox.hidden = false;
       exBox.className = 'res-exam ' + (j.passed ? 'pass' : 'fail');
-      exBox.innerHTML = `<p class="res-exam-k">${j.passed ? '합격' : '불합격'} · ${esc(r.name)}${session.exam.lang === 'en' ? ' (EN)' : ''}</p><p>${esc(j.msg)}</p>`;
+      exBox.innerHTML = `<p class="res-exam-k">${j.passed ? T('합격') : T('불합격')} · ${esc(T(r.name))}${session.exam.lang === 'en' ? ' (EN)' : ''}</p><p>${esc(j.msg)}</p>`;
     }
-    if ($('resXp')) $('resXp').textContent = `이번 판 경험치 +${session.xp || 0} · 이번 주 ${xpState().week.toLocaleString()}점`;
+    if ($('resXp')) $('resXp').textContent = T('이번 판 경험치 +{x} · 이번 주 {w}점', { x: session.xp || 0, w: xpState().week.toLocaleString() });
     const wrong = answers.filter((a) => !a.ok);
     const list = $('resWrong');
     list.innerHTML = '';
-    if (!wrong.length) list.innerHTML = '<p class="empty">틀린 문제가 없습니다.</p>';
+    if (!wrong.length) list.innerHTML = `<p class="empty">${T('틀린 문제가 없습니다.')}</p>`;
     for (const a of wrong) {
       const c = BYID.get(a.id);
       if (!c) continue;
       const el = document.createElement('button');
       el.type = 'button';
       el.className = 'wrong-row';
-      el.innerHTML = `<span class="case-no">케이스 ${esc(c.caseNo)} · ${esc(c.page)}쪽</span><span class="case-q">${esc(c.question)}</span><span class="chev">다시 보기</span>`;
-      el.addEventListener('click', () => startSession([c.id], 'case', '틀린 문제', 'quizhome'));
+      el.innerHTML = `<span class="case-no">${T('케이스 {no} · {p}쪽', { no: esc(c.caseNo), p: esc(c.page) })}</span><span class="case-q">${esc(qText(c))}</span><span class="chev">${T('다시 보기')}</span>`;
+      el.addEventListener('click', () => startSession([c.id], 'case', T('틀린 문제'), 'quizhome'));
       list.appendChild(el);
     }
     $('btnWrongAgain').hidden = !wrong.length;
-    $('btnWrongAgain').onclick = () => startSession(wrong.map((a) => a.id), 'review', '틀린 문제 다시', 'quizhome');
+    $('btnWrongAgain').onclick = () => startSession(wrong.map((a) => a.id), 'review', T('틀린 문제 다시'), 'quizhome');
     const again = $('btnAgain');
     if (again) again.onclick = () => startRandom('home');
     finishSession(answers, right, total);
@@ -930,7 +952,7 @@
     if (!b) return;
     game.badges[id] = todayKey();
     saveGame();
-    if (!silent) popup('NEW BADGE', b.name, b.ko + ' — 배지를 손에 넣었습니다!', null, { art: badgeArt(b, true, 'pop'), cls: 'pop-badge' });
+    if (!silent) popup('NEW BADGE', b.name, T('{d} — 배지를 손에 넣었습니다!', { d: T(b.ko) }), null, { art: badgeArt(b, true, 'pop'), cls: 'pop-badge' });
   }
   /* 장 마스터·전체 마스터: 그 범위 문항을 전부 한 번 이상 맞혀야 받는다 */
   function okCount(ids) { return ids.filter((id) => progress[id] && (progress[id].ok || progress[id].best)).length; }
@@ -951,8 +973,8 @@
     if (ids) return { have: okCount(ids), need: ids.length };
     if (b.id === 'streak7') return { have: Math.min(7, game.streak.days || 0), need: 7 };
     const gi = LADDER.findIndex((r) => r.id === b.id);
-    if (gi > 0) return { text: LADDER[gi].name + ' 승급 시험 합격' };
-    if (b.id === 'worldEn') return { text: '영어로 월드 시험 합격' };
+    if (gi > 0) return { text: T('{name} 승급 시험 합격', { name: T(LADDER[gi].name) }) };
+    if (b.id === 'worldEn') return { text: T('영어로 월드 시험 합격') };
     return { text: '' };
   }
   function badgeArt(b, got, key) { return window.BadgeArt ? window.BadgeArt.svg(b, got, b.id + (key || '')) : ''; }
@@ -984,7 +1006,7 @@
     p.querySelector('.popup-card').className = 'popup-card ' + (it.opt.cls || '');
     const box = $('popupActions');
     box.innerHTML = '';
-    const acts = it.actions && it.actions.length ? it.actions : [{ label: '확인', primary: true }];
+    const acts = it.actions && it.actions.length ? it.actions : [{ label: T('확인'), primary: true }];
     acts.forEach((a) => {
       const b = document.createElement('button');
       b.type = 'button';
@@ -1055,8 +1077,8 @@
       show.style.setProperty('--glow', lead ? lead.c[1] : '#94a3b8');
       show.className = 'showcase' + (lead ? ' got' : '');
       show.innerHTML = lead
-        ? `<div class="showcase-art">${badgeArt(lead, true, 'show')}</div><div class="showcase-txt"><p class="showcase-k">MY BADGE</p><p class="showcase-name">${esc(lead.name)}</p><p class="showcase-ko">${esc(lead.ko)}</p><p class="showcase-meta">${esc(game.badges[lead.id])} 획득 · 모은 배지 ${got.length} / ${BADGES.length}</p></div>`
-        : `<div class="showcase-art">${badgeArt(BADGES[0], false, 'show')}</div><div class="showcase-txt"><p class="showcase-k">FIRST BADGE</p><p class="showcase-name">COURT REFEREE II</p><p class="showcase-ko">코트심 2급 승급 시험에 합격하면 첫 배지를 받습니다.</p><p class="showcase-meta">모은 배지 0 / ${BADGES.length}</p></div>`;
+        ? `<div class="showcase-art">${badgeArt(lead, true, 'show')}</div><div class="showcase-txt"><p class="showcase-k">MY BADGE</p><p class="showcase-name">${esc(lead.name)}</p><p class="showcase-ko">${esc(T(lead.ko))}</p><p class="showcase-meta">${T('{d} 획득 · 모은 배지 {g} / {n}', { d: esc(game.badges[lead.id]), g: got.length, n: BADGES.length })}</p></div>`
+        : `<div class="showcase-art">${badgeArt(BADGES[0], false, 'show')}</div><div class="showcase-txt"><p class="showcase-k">FIRST BADGE</p><p class="showcase-name">COURT REFEREE II</p><p class="showcase-ko">${T('코트심 2급 승급 시험에 합격하면 첫 배지를 받습니다.')}</p><p class="showcase-meta">${T('모은 배지 0 / {n}', { n: BADGES.length })}</p></div>`;
     }
     grid.innerHTML = '';
     for (const [sec, en, ko] of BADGE_SECS) {
@@ -1064,7 +1086,7 @@
       const n = items.filter((b) => game.badges[b.id]).length;
       const h = document.createElement('p');
       h.className = 'badge-sec';
-      h.innerHTML = `<span>${en}</span><small>${ko} · ${n} / ${items.length}</small>`;
+      h.innerHTML = `<span>${en}</span><small>${T(ko)} · ${n} / ${items.length}</small>`;
       grid.appendChild(h);
       const row = document.createElement('div');
       row.className = 'badge-row';
@@ -1080,11 +1102,11 @@
           : pr.need ? `<span class="badge-prog"><i style="width:${Math.round((pr.have / pr.need) * 100)}%"></i></span><span class="badge-date">${pr.have} / ${pr.need}</span>`
             : '<span class="badge-date">LOCKED</span>';
         el.innerHTML = `<span class="badge-art">${badgeArt(b, have, 'g')}</span><span class="badge-name">${esc(b.name)}</span>${sub}`;
-        el.setAttribute('aria-label', `${b.name}, ${b.ko}, ${have ? '획득' : '미획득'}`);
+        el.setAttribute('aria-label', `${b.name}, ${T(b.ko)}, ${have ? T('획득') : T('미획득')}`);
         el.addEventListener('click', () => {
           const p2 = have ? null : badgeProgress(b);
           popup(have ? 'BADGE' : 'LOCKED', b.name,
-            have ? `${b.ko} · ${game.badges[b.id]} 획득` : `${b.ko}${p2 && p2.need ? ` — 지금 ${p2.have} / ${p2.need}` : p2 && p2.text ? ` — ${p2.text}` : ''}`,
+            have ? T('{d} · {date} 획득', { d: T(b.ko), date: game.badges[b.id] }) : `${T(b.ko)}${p2 && p2.need ? T(' — 지금 {h} / {n}', { h: p2.have, n: p2.need }) : p2 && p2.text ? ` — ${p2.text}` : ''}`,
             null, { art: badgeArt(b, have, 'pop'), cls: have ? 'pop-badge' : 'pop-badge locked' });
         });
         row.appendChild(el);
@@ -1102,7 +1124,7 @@
       tr.querySelectorAll('[data-track]').forEach((b) => b.classList.toggle('on', b.getAttribute('data-track') === t));
     }
     const s = game.streak;
-    $('meStreak').textContent = s.days ? `연속 도전 ${s.days}일 · 최고 ${s.best}일` : '아직 연속 도전 기록이 없습니다';
+    $('meStreak').textContent = s.days ? T('연속 도전 {d}일 · 최고 {b}일', { d: s.days, b: s.best }) : T('아직 연속 도전 기록이 없습니다');
     renderBadges();
     renderRankCard('me');
     show('me');
@@ -1118,8 +1140,8 @@
   }
 
   function resetAll() {
-    popup('RESET', '기록을 모두 지울까요?', '푼 문제, 등급, 경험치, 배지를 이 브라우저에서 지웁니다. 이미 올라간 공유 순위·명예의 전당은 남습니다.', [
-      { label: '지우기', primary: true, fn: doReset }, { label: '취소' }]);
+    popup('RESET', T('기록을 모두 지울까요?'), T('푼 문제, 등급, 경험치, 배지를 이 브라우저에서 지웁니다. 이미 올라간 공유 순위·명예의 전당은 남습니다.'), [
+      { label: T('지우기'), primary: true, fn: doReset }, { label: T('취소') }]);
   }
   function doReset() {
     try {
@@ -1133,7 +1155,7 @@
       lad: { g: 0, track: null, exam: {}, hist: { ko: [], en: [] }, world: { ko: false, en: false }, hallPending: [] },
       xp: { total: 0, week: 0, wk: '' }, xpDay: { date: '', ids: [] } };
     saveGame();
-    popup('RESET', '기록을 지웠습니다', '기록심부터 다시 시작합니다.');
+    popup('RESET', T('기록을 지웠습니다'), T('기록심부터 다시 시작합니다.'));
     renderMe();
   }
 
@@ -1142,41 +1164,44 @@
     const box = $('changesBody');
     box.innerHTML = '';
     if (!CHANGES || !CHANGES.ratified) {
-      box.innerHTML = '<p class="muted">개정 요약 데이터를 불러오지 못했습니다.</p>';
+      box.innerHTML = `<p class="muted">${T('개정 요약 데이터를 불러오지 못했습니다.')}</p>`;
       show('changes');
       return;
     }
     const head = document.createElement('div');
     head.className = 'changes-head';
-    head.innerHTML = `<h2>${esc(CHANGES.meta.title)}</h2>
+    head.innerHTML = EN_UI()
+      ? `<h2>${esc(CHANGES.meta.titleEn)}</h2><p class="src-label">${esc(CHANGES.meta.source.replace(/, 6쪽$/, ', 6 pages'))}</p><p>${esc(CHANGES.meta.noteEn)}</p>`
+      : `<h2>${esc(CHANGES.meta.title)}</h2>
       <p class="muted">${esc(CHANGES.meta.titleEn)}</p>
       <p class="src-label">${esc(CHANGES.meta.source)}</p>
       <p>${esc(CHANGES.meta.note)}</p>
       <p class="muted">${esc(CHANGES.meta.noteEn)}</p>`;
     box.appendChild(head);
 
-    box.appendChild(secTitle('확정된 개정'));
+    box.appendChild(secTitle(T('확정된 개정')));
     for (const it of CHANGES.ratified) box.appendChild(pairRow(it));
 
     if (CHANGES.additional && CHANGES.additional.length) {
-      box.appendChild(secTitle('추가 변경·계속 지켜보는 규정'));
+      box.appendChild(secTitle(T('추가 변경·계속 지켜보는 규정')));
       for (const it of CHANGES.additional) box.appendChild(pairRow(it));
     }
     if (CHANGES.table && CHANGES.table.length) {
-      box.appendChild(secTitle('조항별 변경'));
+      box.appendChild(secTitle(T('조항별 변경')));
       for (const it of CHANGES.table) {
         const row = document.createElement('div');
         row.className = 'change-row';
-        row.innerHTML = `<p class="change-article"><b>${it.article}조 ${esc(it.titleKo)}</b>${it.note ? ` <span class="change-note">${esc(it.note)}</span>` : ''}</p>
-          <div class="pair"><p class="pair-en">${esc(it.en)}</p><p class="pair-ko">${esc(it.ko)}</p></div>
-          <div class="btn-row"><button class="art-link inline" data-art="${it.article}" type="button"><span class="no">${it.article}조</span><span class="ti">조문 보기</span></button></div>`;
+        const ta = ARTBY.get(Number(it.article));
+        row.innerHTML = `<p class="change-article"><b>${T('{n}조', { n: it.article })} ${esc(EN_UI() && ta ? ta.titleEn : it.titleKo)}</b>${it.note && !EN_UI() ? ` <span class="change-note">${esc(it.note)}</span>` : ''}</p>
+          <div class="pair"><p class="pair-en">${esc(it.en)}</p>${EN_UI() ? '' : `<p class="pair-ko">${esc(it.ko)}</p>`}</div>
+          <div class="btn-row"><button class="art-link inline" data-art="${it.article}" type="button"><span class="no">${T('{n}조', { n: it.article })}</span><span class="ti">${T('조문 보기')}</span></button></div>`;
         row.querySelectorAll('[data-art]').forEach((b) => {
           b.addEventListener('click', () => openArticle(Number(b.getAttribute('data-art')), 'rules'));
         });
         box.appendChild(row);
       }
     }
-    box.appendChild(footNote(CHANGES.meta.sourceNote));
+    box.appendChild(footNote(EN_UI() ? CHANGES.meta.sourceNote.replace(/^출처: /, 'Source: ') : CHANGES.meta.sourceNote));
     show('changes');
   }
   function secTitle(t) { const h = document.createElement('h2'); h.className = 'sec-title'; h.textContent = t; return h; }
@@ -1184,7 +1209,9 @@
   function pairRow(it) {
     const row = document.createElement('div');
     row.className = 'change-row';
-    row.innerHTML = `<p class="change-article"><b>${it.no}. </b>${esc(it.ko)}</p>
+    row.innerHTML = EN_UI()
+      ? `<p class="change-article"><b>${it.no}. </b>${esc(it.en)}</p>`
+      : `<p class="change-article"><b>${it.no}. </b>${esc(it.ko)}</p>
       <div class="pair"><p class="pair-en">${esc(it.en)}</p></div>`;
     return row;
   }
@@ -1195,7 +1222,7 @@
   $('entryChanges') && $('entryChanges').addEventListener('click', renderChanges);
   $('entryMe') && $('entryMe').addEventListener('click', renderMe);
   $('btnRandom').addEventListener('click', () => startRandom('home'));
-  $('btnDaily') && $('btnDaily').addEventListener('click', () => startSession(todayIds(), 'daily', '오늘의 10문제', 'home'));
+  $('btnDaily') && $('btnDaily').addEventListener('click', () => startSession(todayIds(), 'daily', T('오늘의 10문제'), 'home'));
   $('btnResume').addEventListener('click', () => {
     const saved = savedSession();
     if (!saved) return renderHome();
@@ -1245,6 +1272,61 @@
   $('searchClear').addEventListener('click', () => { search.value = ''; runSearch(''); search.focus(); });
   $('sceneReplay') && $('sceneReplay').addEventListener('click', () => sceneCtl && sceneCtl.replay());
 
+  /* ================= 언어 전환 ================= */
+  /* index.html의 고정 글씨(텍스트 조각·placeholder·aria-label)를 처음 한 번 기억해 두고, 언어에 맞춰 바꾼다 */
+  const STATIC = [];
+  (function collectStatic() {
+    const root = document.body;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    let n;
+    while ((n = walker.nextNode())) {
+      if (n.parentNode && /^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName)) continue;
+      const raw = n.nodeValue, key = raw.replace(/\s+/g, ' ').trim();
+      if (key && /[가-힣]/.test(key)) STATIC.push({ n, raw, key });
+    }
+    root.querySelectorAll('[placeholder],[aria-label]').forEach((el) => {
+      ['placeholder', 'aria-label'].forEach((at) => {
+        const v = el.getAttribute(at);
+        if (v && /[가-힣]/.test(v)) STATIC.push({ el, at, key: v });
+      });
+    });
+  })();
+  function applyStatic() {
+    for (const s of STATIC) {
+      if (s.el) { s.el.setAttribute(s.at, T(s.key)); continue; }
+      const tr = T(s.key);
+      const lead = s.raw.match(/^\s*/)[0], tail = s.raw.match(/\s*$/)[0];
+      s.n.nodeValue = tr === s.key ? s.raw : lead + tr + tail;
+    }
+    document.documentElement.lang = LANG;
+    document.title = T('휠체어럭비 퀴즈 챔피언십');
+    document.querySelectorAll('.lang-switch [data-lang]').forEach((b) => {
+      const on = b.getAttribute('data-lang') === LANG;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  function setLang(l) {
+    if (l !== 'ko' && l !== 'en') return;
+    LANG = l;
+    caseLang = l;
+    try { localStorage.setItem('wracad.lang', l); } catch (e) {}
+    applyStatic();
+    if (!CASES.length) return;
+    const v = curView;
+    if (v === 'home') renderHome();
+    else if (v === 'rules') renderRules();
+    else if (v === 'article' && currentArticle) openArticle(currentArticle.no, articleReturn);
+    else if (v === 'quizhome') renderQuizHome();
+    else if (v === 'chapter') openChapter(currentChapter);
+    else if (v === 'quiz') renderQuiz();
+    else if (v === 'changes') renderChanges();
+    else if (v === 'me') renderMe();
+    else renderHome();
+  }
+  document.querySelectorAll('.lang-switch [data-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.getAttribute('data-lang'))));
+  applyStatic();
+
   /* ================= 시작 ================= */
   Promise.all([
     fetch('data/rules.json', { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error('rules.json HTTP ' + r.status); return r.json(); }),
@@ -1259,7 +1341,7 @@
     CHANGES = changes && changes.ratified ? changes : null;
     const listed = (cases.chapters || []).map((c) => ({ ...c, id: String(c.id) }));
     const extraIds = [...new Set(CASES.map((c) => String(c.chapter)))].filter((id) => !listed.some((c) => c.id === id));
-    CH = listed.concat(extraIds.map((id) => ({ id, title: id + '장', en: '', pages: '' })))
+    CH = listed.concat(extraIds.map((id) => ({ id, title: T('{n}장', { n: id }), en: '', pages: '' })))
       .sort((a, b) => Number(a.id) - Number(b.id));
     BYID = new Map(CASES.map((c) => [c.id, c]));
     buildSearchIndex();
@@ -1269,6 +1351,6 @@
     syncRank();
   }).catch((err) => {
     $('loadError').hidden = false;
-    $('loadError').textContent = '데이터를 불러오지 못했습니다. 웹 주소(http)로 열어 주세요. (' + err.message + ')';
+    $('loadError').textContent = T('데이터를 불러오지 못했습니다. 웹 주소(http)로 열어 주세요.') + ' (' + err.message + ')';
   });
 })();

@@ -134,9 +134,10 @@
     }
     (data.actors || []).forEach(makeActor);
 
+    const EN = !!(opts && opts.lang === 'en');
     // 장면 안 태그(설명 라벨) — 화면 좌표로 그려 작아져도 읽히게
     const tags = (data.markers || []).filter((m) => m.type === 'tag').map((m) => {
-      const t = new PIXI.Text(m.text, new PIXI.TextStyle({ fontFamily: FONT, fontWeight: '700', fontSize: 12.5, fill: '#fff2e6', lineHeight: 16 }));
+      const t = new PIXI.Text((EN && m.textEn) || m.text, new PIXI.TextStyle({ fontFamily: FONT, fontWeight: '700', fontSize: 12.5, fill: '#fff2e6', lineHeight: 16 }));
       t.resolution = Math.min(root.devicePixelRatio || 1, 2) * 2;
       t.anchor.set(0.5);
       const bg = new PIXI.Graphics();
@@ -147,7 +148,7 @@
       const g = new PIXI.Graphics().lineStyle(0.05, 0x10151c, 1).beginFill(0xffd84a).drawCircle(0, 0, 0.2).endFill();
       g.position.set(m.x, m.y);
       world.addChild(g);
-      const t = new PIXI.Text(m.label || '', new PIXI.TextStyle({ fontFamily: FONT, fontWeight: '800', fontSize: 12.5, fill: '#ffe9a8' }));
+      const t = new PIXI.Text((EN && m.labelEn) || m.label || '', new PIXI.TextStyle({ fontFamily: FONT, fontWeight: '800', fontSize: 12.5, fill: '#ffe9a8' }));
       t.resolution = Math.min(root.devicePixelRatio || 1, 2) * 2;
       t.anchor.set(0.5, 1);
       const bg = new PIXI.Graphics();
@@ -169,7 +170,7 @@
     }
     for (const s of steps) {
       // 설명이 없는 단계는 앞 설명을 이어 보여준다
-      const st = { pos: {}, face: {}, ball: cur.ball ? { ...cur.ball } : null, caption: s.caption !== undefined ? s.caption : (cur.caption || '') };
+      const st = { pos: {}, face: {}, ball: cur.ball ? { ...cur.ball } : null, caption: s.caption !== undefined ? ((EN && s.captionEn) || s.caption) : (cur.caption || '') };
       for (const id in cur.pos) st.pos[id] = cur.pos[id].slice();
       for (const id in cur.face) st.face[id] = cur.face[id];
       if (s.move) for (const id in s.move) if (st.pos[id]) st.pos[id] = s.move[id].slice();

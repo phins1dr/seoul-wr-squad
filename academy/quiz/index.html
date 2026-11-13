@@ -2,10 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>휠체어럭비 규정 &amp; 케이스북</title>
+<title>휠체어럭비 퀴즈 챔피언십</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f6f7f9">
-<meta name="description" content="휠체어럭비 경기규정 전문과 케이스북 퀴즈. 상황을 코트 위 움직이는 장면으로 보고 판정을 맞혀보세요.">
+<meta name="description" content="Wheelchair Rugby Quiz Championship — call the 2026 WWR casebook situations, climb the referee path, and top the weekly ranking. 휠체어럭비 판정 퀴즈.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gothic+A1:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -19,7 +19,10 @@
   <!-- ================= 홈 (게임 우선) ================= -->
   <section class="view" id="view-home">
     <header class="home-head">
-      <h1 class="home-title-sm">휠체어럭비 <span>규정 &amp; 케이스북</span> <b>2026 WWR</b></h1>
+      <div class="home-top">
+        <h1 class="home-title-sm">휠체어럭비 <span>퀴즈 챔피언십</span> <b>2026 WWR</b></h1>
+        <div class="lang-switch" role="group" aria-label="Language"><button type="button" data-lang="ko">한</button><button type="button" data-lang="en">EN</button></div>
+      </div>
       <button class="hello" id="helloBar" type="button" aria-label="내 기록 보기">
         <span class="hello-art" id="helloArt"></span>
         <span class="hello-txt">
@@ -150,7 +153,7 @@
     </div>
 
     <div id="chapterAccordion" class="accordion"></div>
-    <p class="foot-note">조항 번호는 규정집 목차를 기준으로 했습니다. 원문 조판상 66조 머리글이 빠지고 69조가 두 번 인쇄되어 있어 바로잡았습니다.</p>
+    <p class="foot-note">조항 번호와 장 구성은 2026 WWR 국제 경기규정 원문 목차를 따릅니다.</p>
   </section>
 
   <!-- ================= 조문 ================= -->
@@ -360,6 +363,7 @@
 <script src="../../engine/rugby-chairs.js"></script>
 <script src="scene.js"></script>
 <script src="badge-art.js"></script>
+<script src="i18n.js"></script>
 <script src="firebase-config.js"></script>
 <script src="rank-online.js"></script>
 <script src="app.js"></script>

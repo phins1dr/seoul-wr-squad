@@ -1408,7 +1408,8 @@
       "ball": [
        11.5,
        1.4
-      ]
+      ],
+      "captionEn": "A2 chases the ball rolling toward the sideline"
      },
      {
       "at": 1.3,
@@ -1422,7 +1423,8 @@
       "ball": [
        11.5,
        1.9
-      ]
+      ],
+      "captionEn": "Before it reaches the line, A2 taps it back toward the middle"
      },
      {
       "at": 2.4,
@@ -1436,11 +1438,13 @@
       "ball": [
        11.5,
        2.5
-      ]
+      ],
+      "captionEn": "A2's momentum carries the chair out of bounds"
      },
      {
       "at": 4.0,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -1530,13 +1534,15 @@
       "y": 5.2,
       "text": "앞 캐스터가 라인에 닿음",
       "showAt": 1.5,
-      "hideAt": 3.4
+      "hideAt": 3.4,
+      "textEn": "Front caster on the line"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A1이 볼을 갖고 백코트에서 올라간다"
+      "caption": "A1이 볼을 갖고 백코트에서 올라간다",
+      "captionEn": "A1 brings the ball up from the backcourt"
      },
      {
       "at": 1.5,
@@ -1546,7 +1552,8 @@
         13.4,
         7.5
        ]
-      }
+      },
+      "captionEn": "A front caster touches the centre line"
      },
      {
       "at": 3.0,
@@ -1559,7 +1566,8 @@
      },
      {
       "at": 3.4,
-      "caption": "A1이 다시 백코트로 물러난다"
+      "caption": "A1이 다시 백코트로 물러난다",
+      "captionEn": "A1 backs into the backcourt again"
      },
      {
       "at": 4.4,
@@ -1572,7 +1580,8 @@
      },
      {
       "at": 4.8,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -1625,7 +1634,8 @@
       "x": 28.45,
       "y": 7.5,
       "label": "A1의 손",
-      "showAt": 1.6
+      "showAt": 1.6,
+      "labelEn": "A1's hand"
      }
     ],
     "steps": [
@@ -1637,7 +1647,8 @@
         26.6,
         7.5
        ]
-      }
+      },
+      "captionEn": "A1 is dribbling in the key area"
      },
      {
       "at": 1.2,
@@ -1647,11 +1658,13 @@
         27.5,
         7.5
        ]
-      }
+      },
+      "captionEn": "A1 loses balance and tips toward the goal line"
      },
      {
       "at": 1.6,
-      "caption": "손이 포스트 사이 트라이라인 밖으로 나간다"
+      "caption": "손이 포스트 사이 트라이라인 밖으로 나간다",
+      "captionEn": "A hand goes past the goal line between the posts"
      },
      {
       "at": 2.8,
@@ -1661,11 +1674,13 @@
         26.9,
         7.5
        ]
-      }
+      },
+      "captionEn": "A1 quickly recovers and comes back onto the court"
      },
      {
       "at": 4.0,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -1981,7 +1996,8 @@
       "x": 24.6,
       "y": 10.9,
       "text": "뒷바퀴 + 안티팁이 라인을 넘음",
-      "showAt": 1.8
+      "showAt": 1.8,
+      "textEn": "Rear wheel + anti-tip over"
      }
     ],
     "steps": [
@@ -1996,7 +2012,8 @@
       },
       "face": {
        "A1": -1.1
-      }
+      },
+      "captionEn": "A1 moves to the goal line with the ball"
      },
      {
       "at": 1.4,
@@ -2009,15 +2026,18 @@
       },
       "face": {
        "A1": -2.35
-      }
+      },
+      "captionEn": "Turning, one rear wheel and one anti-tip cross the line"
      },
      {
       "at": 1.8,
-      "caption": "두 바퀴가 라인 너머에 닿았다"
+      "caption": "두 바퀴가 라인 너머에 닿았다",
+      "captionEn": "Two wheels are touching beyond the line"
      },
      {
       "at": 3.4,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -2145,13 +2165,15 @@
       "y": 11.2,
       "text": "페널티 박스 앞 트랩",
       "showAt": 0.3,
-      "hideAt": 2.4
+      "hideAt": 2.4,
+      "textEn": "Trap at the penalty box"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A2·A4가 페널티 박스에서 나올 B3를 가두고 있다"
+      "caption": "A2·A4가 페널티 박스에서 나올 B3를 가두고 있다",
+      "captionEn": "A2 and A4 trap B3, who is about to leave the penalty box"
      },
      {
       "at": 1.2,
@@ -2161,14 +2183,16 @@
         28.7,
         8.4
        ]
-      }
+      },
+      "captionEn": "A1 scores a goal"
      },
      {
       "at": 1.9,
       "caption": "B3가 인바운더라고 알리고 사이드라인 밖을 따라 내려간다",
       "face": {
        "B3": 0
-      }
+      },
+      "captionEn": "B3 says they will inbound and travels down outside the sideline"
      },
      {
       "at": 3.2,
@@ -2202,7 +2226,8 @@
         29.5,
         12.0
        ]
-      }
+      },
+      "captionEn": "B3 arrives at the end line"
      },
      {
       "at": 5.9,
@@ -2212,7 +2237,8 @@
      },
      {
       "at": 6.4,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -2808,28 +2834,33 @@
       "x": 9.6,
       "y": 2.4,
       "text": "센터라인에 걸친 두 선수",
-      "showAt": 0.4
+      "showAt": 0.4,
+      "textEn": "Both straddling the line"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A1은 앞바퀴는 프론트코트, 뒷바퀴는 백코트에 걸쳐 있다"
+      "caption": "A1은 앞바퀴는 프론트코트, 뒷바퀴는 백코트에 걸쳐 있다",
+      "captionEn": "A1 has front wheels in the frontcourt and rear wheels in the backcourt"
      },
      {
       "at": 1.3,
-      "caption": "A3도 똑같이 센터라인에 걸쳐 있다"
+      "caption": "A3도 똑같이 센터라인에 걸쳐 있다",
+      "captionEn": "A3 is straddling the centre line the same way"
      },
      {
       "at": 2.4,
       "caption": "A1이 A3에게 패스한다",
       "ball": {
        "holder": "A3"
-      }
+      },
+      "captionEn": "A1 passes to A3"
      },
      {
       "at": 3.8,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -3002,7 +3033,8 @@
     "steps": [
      {
       "at": 0,
-      "caption": "A1이 센터라인에 두 바퀴씩 걸쳐 있다"
+      "caption": "A1이 센터라인에 두 바퀴씩 걸쳐 있다",
+      "captionEn": "A1 straddles the centre line, two wheels on each side"
      },
      {
       "at": 1.3,
@@ -3016,18 +3048,21 @@
         16.0,
         9.0
        ]
-      }
+      },
+      "captionEn": "B1 and B2 close in and pressure A1"
      },
      {
       "at": 2.6,
       "caption": "A1이 백코트의 A4에게 패스한다",
       "ball": {
        "holder": "A4"
-      }
+      },
+      "captionEn": "A1 passes to A4 in the backcourt"
      },
      {
       "at": 4.0,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -3475,7 +3510,8 @@
       "x": 23.0,
       "y": 10.9,
       "text": "8초 카운트 시작",
-      "showAt": 1.4
+      "showAt": 1.4,
+      "textEn": "8-second count starts"
      },
      {
       "type": "tag",
@@ -3483,7 +3519,8 @@
       "y": 3.0,
       "text": "카운트 중단",
       "showAt": 3.6,
-      "hideAt": 99
+      "hideAt": 99,
+      "textEn": "Count stops"
      }
     ],
     "steps": [
@@ -3495,7 +3532,8 @@
         24.9,
         7.5
        ]
-      }
+      },
+      "captionEn": "A3 holds the ball outside the key area"
      },
      {
       "at": 1.4,
@@ -3505,7 +3543,8 @@
         25.95,
         7.5
        ]
-      }
+      },
+      "captionEn": "A wheel touches the floor of the key area"
      },
      {
       "at": 3.6,
@@ -3515,11 +3554,13 @@
         24.8,
         7.5
        ]
-      }
+      },
+      "captionEn": "A3 leaves the key area completely"
      },
      {
       "at": 4.8,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -3817,13 +3858,15 @@
       "x": 10.0,
       "y": 0,
       "text": "사이드라인",
-      "showAt": 0
+      "showAt": 0,
+      "textEn": "Sideline"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A1이 백코트 사이드라인 밖에서 인바운드를 준비한다"
+      "caption": "A1이 백코트 사이드라인 밖에서 인바운드를 준비한다",
+      "captionEn": "A1 prepares to inbound from outside the backcourt sideline"
      },
      {
       "at": 1.6,
@@ -3831,7 +3874,8 @@
       "ball": [
        10.0,
        -0.35
-      ]
+      ],
+      "captionEn": "A1 puts the ball on the floor"
      },
      {
       "at": 3.0,
@@ -3839,11 +3883,13 @@
       "ball": [
        10.0,
        1.2
-      ]
+      ],
+      "captionEn": "The ball rolls across the floor outside and onto the court"
      },
      {
       "at": 4.4,
-      "caption": "볼이 코트에 들어왔지만 코트 밖 바닥에 먼저 닿았다"
+      "caption": "볼이 코트에 들어왔지만 코트 밖 바닥에 먼저 닿았다",
+      "captionEn": "The ball came onto the court, but touched the floor outside first"
      }
     ]
    }
@@ -3915,20 +3961,23 @@
       "y": 1.6,
       "text": "1m 제한 구역",
       "showAt": 0.4,
-      "hideAt": 2.4
+      "hideAt": 2.4,
+      "textEn": "1 m zone"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A1이 사이드라인 1m 안쪽에서 스로인을 준비한다. B2는 1m 구역 바로 밖"
+      "caption": "A1이 사이드라인 1m 안쪽에서 스로인을 준비한다. B2는 1m 구역 바로 밖",
+      "captionEn": "A1 prepares a throw-in within 1 m of the sideline. B2 is just outside the 1 m zone"
      },
      {
       "at": 1.3,
       "caption": "A1이 A2에게 스로인한다",
       "ball": {
        "holder": "A2"
-      }
+      },
+      "captionEn": "A1 throws in to A2"
      },
      {
       "at": 2.4,
@@ -3938,14 +3987,16 @@
         12.0,
         -0.7
        ]
-      }
+      },
+      "captionEn": "A1 pushes up to the sideline"
      },
      {
       "at": 2.9,
       "caption": "라인 직전에 45도로 꺾어 B2를 살짝 돌아 들어온다",
       "face": {
        "A1": 0.785
-      }
+      },
+      "captionEn": "Just before the line A1 cuts in at 45° and slips around B2"
      },
      {
       "at": 3.5,
@@ -3973,7 +4024,8 @@
      },
      {
       "at": 4.6,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -4385,13 +4437,15 @@
       "x": 23.8,
       "y": 13.6,
       "text": "B1이 먼저 라인을 넘음",
-      "showAt": 2.8
+      "showAt": 2.8,
+      "textEn": "B1 crosses first"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A1이 트라이 라인으로 달리고, B1이 옆에서 따라간다"
+      "caption": "A1이 트라이 라인으로 달리고, B1이 옆에서 따라간다",
+      "captionEn": "A1 drives to the goal line with B1 alongside"
      },
      {
       "at": 1.5,
@@ -4408,7 +4462,8 @@
       },
       "face": {
        "B1": -0.12
-      }
+      },
+      "captionEn": "B1 cuts off the path and makes contact with A1"
      },
      {
       "at": 2.8,
@@ -4425,11 +4480,13 @@
       },
       "face": {
        "B1": 0
-      }
+      },
+      "captionEn": "B1 crosses the goal line before A1"
      },
      {
       "at": 4.2,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -4651,13 +4708,15 @@
       "x": 22.0,
       "y": 11.2,
       "text": "네 번째 수비수",
-      "showAt": 2.0
+      "showAt": 2.0,
+      "textEn": "4th defender"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "B팀 셋이 키 안에 있고, B3는 키 위쪽에서 수비한다. A2가 달려온다"
+      "caption": "B팀 셋이 키 안에 있고, B3는 키 위쪽에서 수비한다. A2가 달려온다",
+      "captionEn": "Three B players are in the key, B3 defends just above it. A2 drives in"
      },
      {
       "at": 1.2,
@@ -4667,7 +4726,8 @@
         22.12,
         7.5
        ]
-      }
+      },
+      "captionEn": "A2 makes a legal hit"
      },
      {
       "at": 2.4,
@@ -4681,11 +4741,13 @@
         26.2,
         7.5
        ]
-      }
+      },
+      "captionEn": "B3 is pushed into the key"
      },
      {
       "at": 3.8,
-      "caption": "B3는 이제 키 안의 네 번째 수비수다"
+      "caption": "B3는 이제 키 안의 네 번째 수비수다",
+      "captionEn": "B3 is now the fourth defender in the key"
      }
     ]
    }
@@ -4768,13 +4830,15 @@
       "y": 6.4,
       "text": "키 안 수비수 4명",
       "showAt": 1.6,
-      "hideAt": 2.8
+      "hideAt": 2.8,
+      "textEn": "4 defenders in the key"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "B팀 셋이 키 안에, B2는 키 위쪽에 있다. A1이 트라이 라인을 노린다"
+      "caption": "B팀 셋이 키 안에, B2는 키 위쪽에 있다. A1이 트라이 라인을 노린다",
+      "captionEn": "Three B players are in the key, B2 is above it. A1 attacks the goal line"
      },
      {
       "at": 1.6,
@@ -4788,7 +4852,8 @@
         21.7,
         9.93
        ]
-      }
+      },
+      "captionEn": "B2 heads for the post, passing through the key"
      },
      {
       "at": 2.8,
@@ -4805,7 +4870,8 @@
       },
       "face": {
        "B2": 1.6
-      }
+      },
+      "captionEn": "B2 comes out of the key and blocks A1"
      },
      {
       "at": 3.5,
@@ -4815,7 +4881,8 @@
      },
      {
       "at": 4.6,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -5011,17 +5078,20 @@
       "x": 25.4,
       "y": 6.6,
       "text": "포스트 사이",
-      "showAt": 3.0
+      "showAt": 3.0,
+      "textEn": "Between the posts"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "호각 전: A2가 트라이 라인을 보고 키 자리, B1은 A2 옆(인바운더 쪽), B3는 A2 바로 뒤"
+      "caption": "호각 전: A2가 트라이 라인을 보고 키 자리, B1은 A2 옆(인바운더 쪽), B3는 A2 바로 뒤",
+      "captionEn": "Before the whistle: A2 faces the goal line in the key, B1 beside A2 (inbounder side), B3 right behind A2"
      },
      {
       "at": 1.4,
-      "caption": "호각이 울려 경기가 시작된다"
+      "caption": "호각이 울려 경기가 시작된다",
+      "captionEn": "The whistle blows and play starts"
      },
      {
       "at": 2.2,
@@ -5031,7 +5101,8 @@
         24.2,
         10.4
        ]
-      }
+      },
+      "captionEn": "B3 hits A2 once"
      },
      {
       "at": 3.0,
@@ -5041,11 +5112,13 @@
         28.9,
         10.4
        ]
-      }
+      },
+      "captionEn": "A2 rolls out between the posts"
      },
      {
       "at": 4.4,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -5181,13 +5254,15 @@
       "x": 13.2,
       "y": 3.2,
       "text": "뒷바퀴가 라인에 닿음",
-      "showAt": 2.5
+      "showAt": 2.5,
+      "textEn": "Rear wheel on the line"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A1이 프론트코트 센터라인 근처에 멈춰 있다"
+      "caption": "A1이 프론트코트 센터라인 근처에 멈춰 있다",
+      "captionEn": "A1 is stopped in the frontcourt near the centre line"
      },
      {
       "at": 1.4,
@@ -5197,7 +5272,8 @@
         17.88,
         7.5
        ]
-      }
+      },
+      "captionEn": "B4 drives in and hits A1's bumper"
      },
      {
       "at": 2.6,
@@ -5211,11 +5287,13 @@
         17.08,
         7.5
        ]
-      }
+      },
+      "captionEn": "The hit pushes A1 back and a rear wheel touches the centre line"
      },
      {
       "at": 4.0,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -5560,13 +5638,15 @@
       "x": 11.4,
       "y": 2.4,
       "text": "1m 제한 구역",
-      "showAt": 0.6
+      "showAt": 0.6,
+      "textEn": "1 m zone"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A1이 사이드라인에서 스로인을 준비한다"
+      "caption": "A1이 사이드라인에서 스로인을 준비한다",
+      "captionEn": "A1 prepares a throw-in at the sideline"
      },
      {
       "at": 1.4,
@@ -5576,7 +5656,8 @@
         14,
         0.6
        ]
-      }
+      },
+      "captionEn": "A2 passes in front of A1 inside the 1 m zone"
      },
      {
       "at": 2.6,
@@ -5589,11 +5670,13 @@
       },
       "ball": {
        "holder": "A2"
-      }
+      },
+      "captionEn": "A2 receives the ball on the other side of the zone"
      },
      {
       "at": 4.2,
-      "caption": "1m 제한선은 양 팀 모두 침범할 수 없다"
+      "caption": "1m 제한선은 양 팀 모두 침범할 수 없다",
+      "captionEn": "Neither team may enter the 1 m restricted zone"
      }
     ]
    }
@@ -5690,13 +5773,15 @@
       "x": 5.0,
       "y": 12.8,
       "text": "1m 제한 구역",
-      "showAt": 0.4
+      "showAt": 0.4,
+      "textEn": "1 m zone"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "트라이 뒤 A1이 엔드라인에서 스로인을 준비한다"
+      "caption": "트라이 뒤 A1이 엔드라인에서 스로인을 준비한다",
+      "captionEn": "After a goal, A1 prepares a throw-in at the end line"
      },
      {
       "at": 1.5,
@@ -5706,11 +5791,13 @@
         1.8,
         9.5
        ]
-      }
+      },
+      "captionEn": "B2 enters the 1 m zone"
      },
      {
       "at": 3.4,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
@@ -6398,13 +6485,15 @@
       "x": 22.0,
       "y": 3.4,
       "text": "축 선상 접촉 (범퍼 절반씩)",
-      "showAt": 2.8
+      "showAt": 2.8,
+      "textEn": "Contact on the axle (half bumper each)"
      }
     ],
     "steps": [
      {
       "at": 0,
-      "caption": "A1이 키 위쪽에서 트라이 라인을 공격하고 B2가 쫓는다"
+      "caption": "A1이 키 위쪽에서 트라이 라인을 공격하고 B2가 쫓는다",
+      "captionEn": "A1 attacks the goal line from above the key, B2 chasing"
      },
      {
       "at": 1.5,
@@ -6418,7 +6507,8 @@
         23.9,
         10.2
        ]
-      }
+      },
+      "captionEn": "B2 catches up and gets slightly ahead of A1"
      },
      {
       "at": 2.2,
@@ -6447,15 +6537,18 @@
       },
       "face": {
        "B2": -1.5708
-      }
+      },
+      "captionEn": "B2 turns and hits A1 in the middle of the rear axle"
      },
      {
       "at": 4.0,
-      "caption": "A1이 볼을 가진 채 앞으로 넘어진다"
+      "caption": "A1이 볼을 가진 채 앞으로 넘어진다",
+      "captionEn": "A1 falls forward holding the ball"
      },
      {
       "at": 4.6,
-      "caption": "여기까지의 상황이다"
+      "caption": "여기까지의 상황이다",
+      "captionEn": "That's the situation."
      }
     ]
    }
