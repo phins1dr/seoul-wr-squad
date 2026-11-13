@@ -1,7 +1,8 @@
 /* 휠체어럭비 규정 & 케이스북 — 2026 WWR 원문 기준
    데이터: data/rules.json (2026 International Rules 111조), data/cases.json (2026 Casebook),
            data/changes.json (2026 개정 요약)
-   게임 요소: 연속 도전·레벨·배지·팀 랭킹 코드. 모두 localStorage에만 저장한다. */
+   게임 요소: 연속 도전·심판 사다리(승급 시험)·배지·경험치는 localStorage,
+             공유 랭킹·명예의 전당은 rank-online.js(Firebase). */
 (function () {
   'use strict';
 
@@ -50,23 +51,61 @@
   if (!game.daily) game.daily = null;
   if (!game.badges || typeof game.badges !== 'object') game.badges = {};
   if (!game.streak) game.streak = { last: '', days: 0, best: 0 };
-  if (!game.rank) game.rank = { nick: '', board: [] };
+  if (!game.rank) game.rank = { nick: '' };
   if (!game.seen) game.seen = {};
+  if (!game.lad) game.lad = { g: 0, track: null, exam: {}, hist: { ko: [], en: [] }, world: { ko: false, en: false }, hallPending: [] };
+  if (!game.xp) game.xp = { total: null, week: 0, wk: '' };
+  if (!game.xpDay) game.xpDay = { date: '', ids: [] };
   function saveGame() { save(KEY_GAME, game); }
+  const RANK = window.QuizRank || { mode: 'off', ready: () => Promise.resolve(false), weekKey: () => '' };
 
-  const LEVELS = [
-    { xp: 0, name: '새내기 심판' },
-    { xp: 30, name: '지역 심판' },
-    { xp: 80, name: '국가대표 심판' },
-    { xp: 160, name: '국제 심판' },
+  /* ---------- 심판 사다리 (실제 경로: 국내 기록심 → 코트심 2급 → 1급 → WWR Candidate → Provisional → Zone → World) ----------
+     need = 맞힌 '서로 다른 문항' 비율(전체 문항 수에 비례). 넘으면 승급 시험(하루 1번)을 볼 수 있다. */
+  const LADDER = [
+    { id: 'table', name: '기록심', short: '기록', tier: '국내', desc: '테이블에서 시간·점수·파울을 기록하며 시작합니다.' },
+    { id: 'court2', name: '코트심 2급', short: '2급', tier: '국내', need: 0.15, n: 10, pass: 0.8 },
+    { id: 'court1', name: '코트심 1급', short: '1급', tier: '국내', need: 0.35, n: 20, pass: 0.8 },
+    { id: 'cand', name: 'WWR 캔디데이트', short: 'CAND', en: 'Candidate', tier: '국제', need: 0.5, n: 20, pass: 0.8 },
+    { id: 'prov', name: 'WWR 프로비저널', short: 'PROV', en: 'Provisional', tier: '국제', need: 0.65, n: 20, pass: 0.85 },
+    { id: 'zone', name: '존 레퍼리', short: 'ZONE', en: 'Zone Referee', tier: '국제', need: 0.8, n: 30, pass: 0.85 },
+    { id: 'world', name: '월드 레퍼리', short: 'WORLD', en: 'World Referee', tier: '국제', need: 0.9, n: 30, pass: 0.9, five: true },
   ];
-  function xpOf() { return Object.keys(progress).filter((k) => progress[k] && progress[k].ok).length; }
-  function levelOf() {
-    const xp = xpOf();
-    let i = 0;
-    for (let k = 0; k < LEVELS.length; k++) if (xp >= LEVELS[k].xp) i = k;
-    const next = LEVELS[i + 1] || null;
-    return { i, xp, name: LEVELS[i].name, next, need: next ? next.xp - xp : 0 };
+  const WORLD = LADDER.length - 1;
+  function masteryOf() { return Object.keys(progress).filter((k) => progress[k] && (progress[k].ok || progress[k].best)).length; }
+  function needOf(r) { return Math.ceil((r.need || 0) * CASES.length); }
+  function gradeName() {
+    const L = game.lad;
+    if (L.world.en) return '월드 레퍼리 👑';
+    return LADDER[L.g].name;
+  }
+  /* 지금 도전할 다음 단계: {r, lang, idx, kind:'exam'|'track'|'done', key} */
+  function nextStep() {
+    const L = game.lad;
+    if (L.g >= WORLD) {
+      if (L.world.en) return { kind: 'done' };
+      if (L.world.ko) return { kind: 'exam', r: LADDER[WORLD], idx: WORLD, lang: 'en', key: 'world_en', enRetry: true };
+      return { kind: 'done' };
+    }
+    const idx = L.g + 1, r = LADDER[idx];
+    if (r.tier === '국제' && !L.track) return { kind: 'track', r, idx };
+    const lang = r.tier === '국제' ? L.track : 'ko';
+    return { kind: 'exam', r, idx, lang, key: r.id + '_' + lang };
+  }
+  function examTakenToday(key) { return game.lad.exam[key] === todayKey(); }
+
+  /* ---------- 경험치 (랭킹 점수) ----------
+     정답 10점 + 연속 정답 보너스(2점씩, 최대 +10) · 승급 시험 합격 +50.
+     같은 문항은 하루에 한 번만 경험치가 붙는다. 이번 주 점수는 월요일에 0부터. */
+  function xpState() {
+    if (game.xp.total == null) game.xp.total = masteryOf() * 10;  // 예전 기록 옮기기
+    const wk = RANK.weekKey ? RANK.weekKey() : '';
+    if (game.xp.wk !== wk) { game.xp.wk = wk; game.xp.week = 0; }
+    return game.xp;
+  }
+  function addXp(n) {
+    const x = xpState();
+    x.total += n; x.week += n;
+    saveGame();
   }
 
   const VIEWS = ['home', 'rules', 'article', 'quizhome', 'chapter', 'quiz', 'result', 'changes', 'me'];
@@ -77,11 +116,6 @@
   }
 
   /* ================= 홈 (게임 우선) ================= */
-  function levelPct(lv) {
-    if (!lv.next) return 100;
-    const base = LEVELS[lv.i].xp, top = lv.next.xp;
-    return Math.max(4, Math.min(100, Math.round(((lv.xp - base) / (top - base)) * 100)));
-  }
   function savedSession() {
     const s = load(KEY_SESSION, null);
     return (s && s.ids && s.ids.length && s.i < s.ids.length) ? s : null;
@@ -118,17 +152,9 @@
       } else { resume.hidden = true; resume.textContent = '이어풀기'; }
     }
 
-    /* ---- 랭킹 ---- */
-    const lv = levelOf();
-    if ($('homeLevel')) $('homeLevel').textContent = lv.name;
-    if ($('homeLevelBar')) $('homeLevelBar').style.width = levelPct(lv) + '%';
-    if ($('homeLevelNext')) {
-      $('homeLevelNext').textContent = lv.next
-        ? `다음 '${lv.next.name}'까지 ${lv.need}문항 · 누적 ${lv.xp}문항 정답`
-        : `최고 레벨입니다 · 누적 ${lv.xp}문항 정답`;
-    }
-    if ($('homeStreak')) $('homeStreak').textContent = st.days || 0;
-    renderHomeRankBoard();
+    /* ---- 심판 사다리 · 랭킹 ---- */
+    renderLadder('home');
+    renderRankCard('home');
 
     /* ---- 배지·최근 기록 ---- */
     const list = badgeList();
@@ -153,22 +179,229 @@
     show('home');
   }
 
-  function renderHomeRankBoard() {
-    const box = $('homeRankBoard');
-    if (!box) return;
-    const board = (game.rank.board || []).slice().sort((a, b) => b.x - a.x).slice(0, 3);
-    box.innerHTML = '';
-    if (!board.length) {
-      box.innerHTML = '<p class="empty sm">아직 붙여넣은 코드가 없습니다. 내 코드를 보내고 친구 코드를 받으면 여기에 순위가 나옵니다.</p>';
+  /* ================= 심판 사다리 화면 ================= */
+  function pctBar(have, need) { return need ? Math.max(3, Math.min(100, Math.round((have / need) * 100))) : 100; }
+
+  function renderLadder(where) {
+    const P = where === 'me' ? 'me' : 'home';
+    const L = game.lad, m = masteryOf(), ns = nextStep();
+    const set = (id, v) => { const el = $(P + id); if (el) el.textContent = v; };
+    set('LadTitle', gradeName());
+    const cur = LADDER[L.g];
+    set('LadTier', `${cur.tier} · ${L.g + 1} / ${LADDER.length}단계${L.track ? ' · 국제 시험 ' + (L.track === 'en' ? 'English' : '한국어') : ''}`);
+
+    const steps = $(P + 'LadSteps');
+    if (steps) {
+      steps.innerHTML = LADDER.map((r, i) => {
+        const cls = i < L.g ? 'done' : i === L.g ? 'now' : '';
+        const crown = i === WORLD && L.world.en ? '👑' : '';
+        return `<li class="lad-step ${cls} ${r.tier === '국제' ? 'intl' : ''}"><span class="lad-dot">${i < L.g || (i === WORLD && L.g === WORLD) ? '✓' : i + 1}</span><span class="lad-lab">${esc(r.short)}${crown}</span></li>`;
+      }).join('');
+    }
+
+    const btn = $(P + 'BtnExam');
+    const bar = $(P + 'LadBar');
+    let next = '', count = '', label = '', enabled = false, pct = 100;
+    if (ns.kind === 'done') {
+      next = L.world.en ? '영어로 월드 레퍼리까지 올랐습니다. 최고 단계입니다. 명예의 전당에 이름이 올라 있습니다.' : '최고 단계입니다.';
+      count = `맞힌 문항 ${m} / ${CASES.length}`;
+      label = '최고 단계 달성';
+    } else if (ns.kind === 'track') {
+      next = '국내 1급 다음은 국제심판(WWR) 길입니다. 시험 언어를 고르고 도전하세요. 영어로 월드까지 가면 최고 배지 👑';
+      count = `맞힌 문항 ${m} / ${CASES.length}`;
+      label = '도전! 국제심판';
+      enabled = true;
+    } else {
+      const r = ns.r, need = needOf(r);
+      pct = pctBar(m, need);
+      const langTxt = ns.lang === 'en' ? ' · English' : '';
+      if (ns.enRetry) {
+        next = `한국어로 월드 레퍼리 달성! 이제 같은 시험을 영어로 통과하면 최고 배지 👑 (30문항, 최근 5회 중 3회 90점 이상 + 평균 90점)`;
+      } else if (r.five) {
+        next = `다음: ${r.name}${langTxt} — 월드 시험 ${r.n}문항, 최근 5회 중 3회 90점 이상 + 5회 평균 90점 이상이면 승급`;
+      } else {
+        next = `다음: ${r.name}${langTxt} — 서로 다른 문항 ${need}개를 맞히면 승급 시험(${r.n}문항, ${Math.round(r.pass * 100)}점 이상)`;
+      }
+      const h = (game.lad.hist[ns.lang] || []).slice(-5);
+      count = `맞힌 문항 ${m} / ${need}` + (r.five && h.length ? ` · 최근 시험 ${h.join(' · ')}` : '');
+      if (m < need) { label = `승급 시험까지 ${need - m}문항`; }
+      else if (examTakenToday(ns.key)) { label = '오늘 시험 완료 · 내일 다시'; }
+      else { label = r.five ? '월드 시험 보기' : '승급 시험 보기'; enabled = true; }
+    }
+    set('LadNext', next);
+    set('LadCount', count);
+    if (bar) bar.style.width = pct + '%';
+    if (btn) { btn.textContent = label; btn.disabled = !enabled; }
+  }
+
+  function onExamButton() {
+    const ns = nextStep();
+    if (ns.kind === 'track') return chooseTrack();
+    if (ns.kind !== 'exam') return;
+    if (masteryOf() < needOf(ns.r) || examTakenToday(ns.key)) return;
+    const r = ns.r;
+    popup('EXAM', `${r.name}${ns.lang === 'en' ? ' · English' : ''} 시험`,
+      `전체 케이스에서 ${r.n}문항이 섞여 나옵니다. ${r.five ? '90점 이상이 최근 5회 중 3번, 평균 90점 이상이면 승급합니다.' : Math.round(r.pass * 100) + '점 이상이면 승급합니다.'} 시험은 하루 한 번이고, 시작하면 오늘 기회를 씁니다.${ns.lang === 'en' ? ' 문제는 영어로만 나옵니다.' : ''}`,
+      [{ label: '시작', primary: true, fn: () => startExam(ns) }, { label: '나중에' }]);
+  }
+
+  function chooseTrack() {
+    popup('도전! 국제심판', '시험 언어를 고르세요',
+      'WWR 국제심판 길(캔디데이트 → 프로비저널 → 존 → 월드)을 어떤 언어로 볼지 정합니다. 한국어로도 월드까지 갈 수 있고, 영어로 월드까지 가면 최고 배지 👑를 받습니다. 나중에 내 기록 화면에서 바꿀 수 있습니다.',
+      [{ label: '한국어로', primary: true, fn: () => setTrack('ko') }, { label: 'English', primary: true, fn: () => setTrack('en') }, { label: '나중에' }]);
+  }
+  function setTrack(t) {
+    game.lad.track = t;
+    saveGame();
+    renderLadder('home'); renderLadder('me');
+  }
+
+  function startExam(ns) {
+    const r = ns.r;
+    game.lad.exam[ns.key] = todayKey();
+    saveGame();
+    const ids = shuffle(CASES.map((c) => c.id)).slice(0, Math.min(r.n, CASES.length));
+    const prevLang = caseLang;
+    caseLang = ns.lang === 'en' ? 'en' : caseLang;
+    session = { ids, i: 0, answers: [], mode: 'exam', label: `승급 시험 · ${r.name}${ns.lang === 'en' ? ' (EN)' : ''}`, from: 'home', startedAt: Date.now(),
+      exam: { idx: ns.idx, lang: ns.lang, key: ns.key, n: ids.length, pass: r.pass, five: !!r.five, enRetry: !!ns.enRetry, prevLang } };
+    save(KEY_SESSION, session);
+    renderQuiz();
+  }
+
+  /* 시험이 끝나면 승급 판정 */
+  function judgeExam(right, total) {
+    const ex = session.exam, L = game.lad;
+    const pct = total ? Math.round((right / total) * 100) : 0;
+    const r = LADDER[ex.idx];
+    let passed = false, msg = '';
+    if (ex.five) {
+      const h = L.hist[ex.lang] = (L.hist[ex.lang] || []).concat(pct).slice(-10);
+      const last = h.slice(-5);
+      const over = last.filter((x) => x >= 90).length;
+      const avg = last.reduce((a, b) => a + b, 0) / last.length;
+      passed = over >= 3 && avg >= 90;
+      msg = passed ? '' : `최근 ${last.length}회: ${last.join(' · ')} — 90점 이상 ${over}/3회, 평균 ${avg.toFixed(1)}점 (90점 필요). 내일 다시 도전하세요.`;
+    } else {
+      passed = pct >= Math.round(ex.pass * 100);
+      msg = passed ? '' : `${pct}점 — ${Math.round(ex.pass * 100)}점 이상이면 합격입니다. 내일 다시 도전하세요.`;
+    }
+    if (!passed) { saveGame(); return { passed, pct, msg }; }
+    addXp(50);
+    if (ex.idx === WORLD) {
+      L.g = WORLD;
+      if (ex.lang === 'en') { L.world.en = true; L.world.ko = true; giveBadge('worldEn', '월드 레퍼리 · English'); giveBadge('world', '월드 레퍼리'); }
+      else { L.world.ko = true; giveBadge('world', '월드 레퍼리'); }
+      enterHall(ex.lang);
+      msg = ex.lang === 'en' ? '영어로 월드 레퍼리가 되었습니다. 최고 배지 👑와 함께 명예의 전당에 올랐습니다.' : '월드 레퍼리가 되었습니다. 명예의 전당에 올랐습니다. 영어로도 도전해 최고 배지 👑를 노려보세요.';
+    } else {
+      L.g = ex.idx;
+      giveBadge(r.id, r.name + ' 승급');
+      msg = `${r.name}(으)로 승급했습니다. 경험치 +50`;
+    }
+    saveGame();
+    return { passed, pct, msg };
+  }
+
+  function enterHall(lang) {
+    const nick = (game.rank.nick || '').trim();
+    if (!nick) {
+      if (game.lad.hallPending.indexOf(lang) < 0) game.lad.hallPending.push(lang);
+      saveGame();
       return;
     }
-    board.forEach((e, i) => {
-      const row = document.createElement('div');
-      row.className = 'rank-row';
-      row.innerHTML = `<span class="rank-no">${i + 1}</span><span class="rank-nick">${esc(e.n)}</span>
-        <span class="rank-lv">${esc(e.l)}</span><span class="rank-x">${e.x}문항</span>`;
-      box.appendChild(row);
+    RANK.ready().then((ok) => { if (ok && RANK.enterHall) RANK.enterHall(nick, lang); });
+  }
+
+  /* ================= 공유 랭킹 ================= */
+  const rankTab = { home: 'week', me: 'week' };
+  let syncTimer = null;
+  function syncRank() {
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => {
+      const nick = (game.rank.nick || '').trim();
+      if (!nick || RANK.mode === 'off') return;
+      const x = xpState();
+      RANK.push({ nick, total: x.total, week: x.week, wk: x.wk, grade: game.lad.g, en: !!game.lad.world.en })
+        .then(() => { refreshBoards(); });
+      const pend = game.lad.hallPending.splice(0);
+      if (pend.length) { saveGame(); pend.forEach(enterHall); }
+    }, 300);
+  }
+  function refreshBoards() {
+    if (!$('view-home').hidden) renderRankCard('home');
+    if (!$('view-me').hidden) renderRankCard('me');
+  }
+
+  function renderRankCard(where) {
+    const P = where === 'me' ? 'me' : 'home';
+    const x = xpState();
+    if ($(P + 'MyWeek')) $(P + 'MyWeek').textContent = x.week.toLocaleString();
+    if ($(P + 'MyTotal')) $(P + 'MyTotal').textContent = x.total.toLocaleString();
+    const nick = (game.rank.nick || '').trim();
+    const nickRow = $(P + 'NickRow');
+    if (nickRow) nickRow.hidden = where === 'home' && !!nick;
+    const nin = $(P + 'Nick');
+    if (nin && document.activeElement !== nin) nin.value = nick;
+    document.querySelectorAll(`#${P}RankTabs [data-tab]`).forEach((b) => {
+      const on = b.getAttribute('data-tab') === rankTab[where];
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
+    const st = $(P + 'RankStatus');
+    const box = $(P + 'RankBoard');
+    if (!box) return;
+    if (RANK.mode === 'off') {
+      box.innerHTML = '<p class="empty sm">공유 랭킹은 준비 중입니다. 관리자가 서버(Firebase)를 연결하면 이번 주 1등 · 역대 1등 · 명예의 전당이 열립니다. 경험치는 지금부터 쌓입니다.</p>';
+      if (st) st.textContent = '';
+      return;
+    }
+    if (st) st.textContent = nick ? `${nick} 이름으로 순위에 올라갑니다.` : '닉네임을 정하면 순위에 올라갑니다.';
+    const n = where === 'me' ? 20 : 5;
+    const tab = rankTab[where];
+    box.innerHTML = '<p class="empty sm">불러오는 중…</p>';
+    const p = tab === 'hall' ? RANK.hall() : RANK.top(tab, x.wk, n);
+    p.then((rows) => {
+      if (rankTab[where] !== tab) return;
+      if (rows == null) { box.innerHTML = `<p class="empty sm">순위를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.${RANK.error ? ' (' + esc(RANK.error) + ')' : ''}</p>`; return; }
+      if (!rows.length) {
+        box.innerHTML = `<p class="empty sm">${tab === 'hall' ? '아직 월드 레퍼리에 오른 사람이 없습니다. 첫 번째 주인공이 되어 보세요.' : tab === 'week' ? '이번 주 기록이 아직 없습니다. 첫 문제를 풀면 1등입니다.' : '아직 기록이 없습니다.'}</p>`;
+        return;
+      }
+      box.innerHTML = '';
+      rows.slice(0, tab === 'hall' ? (where === 'me' ? 100 : 5) : n).forEach((e, i) => {
+        const row = document.createElement('div');
+        row.className = 'rank-row' + (e.me ? ' me' : '') + (i === 0 ? ' first' : '');
+        if (tab === 'hall') {
+          const d = e.at ? todayKey(new Date(e.at)) : '';
+          row.innerHTML = `<span class="rank-no">${i + 1}호</span><span class="rank-nick">${esc(e.nick)}${e.me ? ' (나)' : ''}</span>
+            <span class="rank-lv">${e.lang === 'en' ? '👑 English' : '🌏 한국어'}</span><span class="rank-x">${esc(d)}</span>`;
+        } else {
+          const g = LADDER[Math.max(0, Math.min(WORLD, e.grade | 0))];
+          row.innerHTML = `<span class="rank-no">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span><span class="rank-nick">${esc(e.nick)}${e.me ? ' (나)' : ''}</span>
+            <span class="rank-lv">${esc(g.short)}${e.en && e.grade >= WORLD ? '👑' : ''}</span><span class="rank-x">${Number(e.score).toLocaleString()}</span>`;
+        }
+        box.appendChild(row);
+      });
+      if (tab === 'week' && rows[0] && rows[0].me && rows[0].score > 0) giveBadge('weekTop', '이번 주 1등');
+      if (tab !== 'hall' && nick && !rows.some((r) => r.me)) {
+        const tail = document.createElement('p');
+        tail.className = 'empty sm';
+        tail.textContent = `나는 ${n}위 밖입니다. (${tab === 'week' ? '이번 주' : '누적'} ${Number(tab === 'week' ? x.week : x.total).toLocaleString()}점)`;
+        box.appendChild(tail);
+      }
+    });
+  }
+
+  function saveNick(where) {
+    const P = where === 'me' ? 'me' : 'home';
+    const v = (($(P + 'Nick') && $(P + 'Nick').value) || '').trim().slice(0, 14);
+    if (!v) { popup('RANKING', '닉네임을 넣어 주세요', '1~14글자. 순위표와 명예의 전당에 이 이름이 나옵니다.'); return; }
+    game.rank.nick = v;
+    saveGame();
+    syncRank();
+    renderRankCard(where);
+    if (where === 'home') renderRankCard('home');
   }
 
   /* ================= 규정 목록 ================= */
@@ -436,7 +669,7 @@
     const en = caseLang === 'en';
     $('qText').textContent = en ? (c.questionEn || c.question) : c.question;
     const lb = $('btnQuizLang');
-    if (lb) lb.textContent = en ? 'KO' : 'EN';
+    if (lb) { lb.textContent = en ? 'KO' : 'EN'; lb.hidden = enLocked(); }
 
     const sceneBox = $('sceneBox'), textBox = $('textOnlyBox');
     if (c.scene && window.QuizScene) {
@@ -502,12 +735,30 @@
     $('btnCheck').hidden = true;
   }
 
+  function enLocked() { return !!(session && session.mode === 'exam' && session.exam && session.exam.lang === 'en'); }
+
+  /* 정답 경험치: 10점 + 연속 정답 보너스(2점씩 최대 +10). 같은 문항은 하루 한 번만. */
+  function xpForAnswer(c, ok) {
+    if (!ok) { session.combo = 0; return 0; }
+    session.combo = (session.combo || 0) + 1;
+    const day = todayKey();
+    if (game.xpDay.date !== day) game.xpDay = { date: day, ids: [] };
+    if (game.xpDay.ids.indexOf(c.id) >= 0) return 0;
+    game.xpDay.ids.push(c.id);
+    const gain = 10 + Math.min(10, 2 * (session.combo - 1));
+    addXp(gain);
+    return gain;
+  }
+
   function checkAnswer(c, box, picked) {
     if (picked === null) return;
     const ok = picked === c.answer;
     markChoices(c, box, picked);
     session.answers.push({ id: c.id, pick: picked, ok });
-    progress[c.id] = { ok, at: Date.now() };
+    const was = progress[c.id];
+    progress[c.id] = { ok, at: Date.now(), best: ok || !!(was && (was.ok || was.best)) };
+    const gain = xpForAnswer(c, ok);
+    session.xp = (session.xp || 0) + gain;
     save(KEY_PROGRESS, progress);
     save(KEY_SESSION, session);
     $('quizScore').textContent = `${session.answers.filter((a) => a.ok).length}점`;
@@ -569,7 +820,7 @@
       ob.innerHTML = `${other}<div class="btn-row"><button class="btn ghost sm" id="btnFbLang" type="button">${T.sw}</button></div>`;
     }
     const lb = document.getElementById('btnFbLang');
-    if (lb) lb.addEventListener('click', () => { caseLang = caseLang === 'en' ? 'ko' : 'en'; renderQuiz(); });
+    if (lb) { lb.hidden = enLocked(); lb.addEventListener('click', () => { caseLang = caseLang === 'en' ? 'ko' : 'en'; renderQuiz(); }); }
     fb.querySelectorAll('[data-art]').forEach((b) => {
       b.addEventListener('click', () => openArticle(Number(b.getAttribute('data-art')), 'quiz'));
     });
@@ -585,6 +836,20 @@
     $('resScore').textContent = `${right} / ${total}`;
     $('resPct').textContent = `${pct}%`;
     $('resMsg').textContent = pct === 100 ? '전부 맞혔습니다. 케이스북 마스터!' : pct >= 70 ? '좋습니다. 틀린 케이스만 다시 보면 됩니다.' : '틀린 케이스의 해설을 다시 읽어보세요.';
+    const exBox = $('resExam');
+    if (exBox) { exBox.hidden = true; exBox.className = 'res-exam'; }
+    if (session.mode === 'exam' && session.exam && !session.exam.judged) {
+      const j = judgeExam(right, total);
+      session.exam.judged = j;
+      if (session.exam.prevLang) caseLang = session.exam.prevLang;
+    }
+    if (session.mode === 'exam' && session.exam && session.exam.judged && exBox) {
+      const j = session.exam.judged, r = LADDER[session.exam.idx];
+      exBox.hidden = false;
+      exBox.className = 'res-exam ' + (j.passed ? 'pass' : 'fail');
+      exBox.innerHTML = `<p class="res-exam-k">${j.passed ? '합격' : '불합격'} · ${esc(r.name)}${session.exam.lang === 'en' ? ' (EN)' : ''}</p><p>${esc(j.msg)}</p>`;
+    }
+    if ($('resXp')) $('resXp').textContent = `이번 판 경험치 +${session.xp || 0} · 이번 주 ${xpState().week.toLocaleString()}점`;
     const wrong = answers.filter((a) => !a.ok);
     const list = $('resWrong');
     list.innerHTML = '';
@@ -610,7 +875,8 @@
 
   /* ================= 게임 요소 ================= */
   function finishSession(answers, right, total) {
-    const before = levelOf();
+    if (session.finished) return;
+    session.finished = true;
     // 오늘의 도전 완료
     if (session.mode === 'daily') {
       if (game.daily) game.daily.done = true;
@@ -621,7 +887,6 @@
         if (game.streak.days > game.streak.best) game.streak.best = game.streak.days;
       }
       if (game.streak.days >= 7) giveBadge('streak7', '7일 연속 도전');
-      if (game.streak.days >= 30) giveBadge('streak30', '30일 연속 도전');
     }
     if (total >= 10 && right === total) giveBadge('perfect10', '10문제 연속 정답');
     for (const ch of CH) {
@@ -630,15 +895,15 @@
     }
     if (CASES.length && CASES.every((c) => progress[c.id])) giveBadge('allq', '전체 문항 완주');
     saveGame();
-    const after = levelOf();
-    if (after.i > before.i) popup('LEVEL UP', after.name, `${after.xp}문항을 맞혀 ${after.name}이 되었습니다.`);
+    syncRank();
   }
 
   function giveBadge(id, label) {
     if (game.badges[id]) return;
     game.badges[id] = todayKey();
     saveGame();
-    popup('BADGE', label, '새 배지를 받았습니다.');
+    const b = badgeList().find((x) => x.id === id);
+    popup('BADGE', (b ? b.icon + ' ' : '') + label, '새 배지를 받았습니다.');
   }
 
   function celebrate() {
@@ -650,35 +915,61 @@
     fb.classList.add('flash');
   }
 
-  function popup(kicker, title, text) {
+  /* 팝업: 여러 개가 겹치면 차례로 보여준다. actions = [{label, primary, fn}] */
+  const popQ = [];
+  function popup(kicker, title, text, actions) {
+    popQ.push({ kicker, title, text, actions });
+    if (popQ.length === 1) showPop();
+  }
+  function showPop() {
     const p = $('popup');
-    if (!p) return;
-    $('popupKicker').textContent = kicker;
-    $('popupTitle').textContent = title;
-    $('popupText').textContent = text;
+    const it = popQ[0];
+    if (!p || !it) { if (p) p.hidden = true; return; }
+    $('popupKicker').textContent = it.kicker;
+    $('popupTitle').textContent = it.title;
+    $('popupText').textContent = it.text;
+    const box = $('popupActions');
+    box.innerHTML = '';
+    const acts = it.actions && it.actions.length ? it.actions : [{ label: '확인', primary: true }];
+    acts.forEach((a) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn' + (a.primary ? ' primary' : ' ghost');
+      b.textContent = a.label;
+      b.addEventListener('click', () => {
+        popQ.shift();
+        p.hidden = true;
+        if (a.fn) a.fn();
+        if (popQ.length) showPop();
+      });
+      box.appendChild(b);
+    });
     p.hidden = false;
   }
 
   function badgeList() {
     const out = [];
-    for (const ch of CH) if (casesOf(ch.id).length) out.push({ id: 'ch' + ch.id, label: ch.title + ' 완주', icon: '🏅' });
+    for (let i = 1; i < LADDER.length; i++) {
+      const r = LADDER[i];
+      out.push({ id: r.id, label: r.name + (i === WORLD ? '' : ' 승급'), icon: i === WORLD ? '🌏' : r.tier === '국제' ? '🎖️' : '🟢' });
+    }
+    out.push({ id: 'worldEn', label: '월드 레퍼리 · English', icon: '👑', top: true });
+    out.push({ id: 'weekTop', label: '이번 주 1등', icon: '🥇' });
     out.push({ id: 'streak7', label: '7일 연속 도전', icon: '🔥' });
-    out.push({ id: 'streak30', label: '30일 연속 도전', icon: '🔥' });
     out.push({ id: 'perfect10', label: '10문제 연속 정답', icon: '🎯' });
+    for (const ch of CH) if (casesOf(ch.id).length) out.push({ id: 'ch' + ch.id, label: ch.title + ' 완주', icon: '🏅' });
     out.push({ id: 'allq', label: '전체 문항 완주', icon: '🏆' });
     return out;
   }
 
   function renderMe() {
-    const lv = levelOf();
-    $('meLevel').textContent = lv.name;
-    const base = LEVELS[lv.i].xp;
-    const top = lv.next ? lv.next.xp : lv.xp || 1;
-    const pct = lv.next ? Math.max(4, Math.min(100, Math.round(((lv.xp - base) / (top - base)) * 100))) : 100;
-    $('meLevelBar').style.width = pct + '%';
-    $('meLevelNext').textContent = lv.next
-      ? `다음 레벨 '${lv.next.name}'까지 ${lv.need}문항 더 맞히면 됩니다 (누적 ${lv.xp}문항 정답)`
-      : `최고 레벨입니다 (누적 ${lv.xp}문항 정답)`;
+    renderLadder('me');
+    const tr = $('meTrack');
+    if (tr) {
+      const t = game.lad.track;
+      tr.hidden = game.lad.g < 2;
+      tr.querySelectorAll('[data-track]').forEach((b) => b.classList.toggle('on', b.getAttribute('data-track') === t));
+    }
     const s = game.streak;
     $('meStreak').textContent = s.days ? `연속 도전 ${s.days}일 · 최고 ${s.best}일` : '아직 연속 도전 기록이 없습니다';
     const grid = $('badgeGrid');
@@ -686,124 +977,41 @@
     for (const b of badgeList()) {
       const got = !!game.badges[b.id];
       const el = document.createElement('div');
-      el.className = 'badge' + (got ? ' got' : '');
+      el.className = 'badge' + (got ? ' got' : '') + (b.top ? ' top' : '');
       el.innerHTML = `<span class="badge-icon">${got ? b.icon : '·'}</span><span class="badge-name">${esc(b.label)}</span>
         <span class="badge-date">${got ? esc(game.badges[b.id]) : '미획득'}</span>`;
       grid.appendChild(el);
     }
-    const nick = $('rankNick');
-    if (nick) nick.value = game.rank.nick || '';
-    renderRankBoard();
+    renderRankCard('me');
     show('me');
   }
 
-  /* -------- 내 기록·랭킹 코드 -------- */
-  function buildCode(nick) {
-    const lv = levelOf();
-    const payload = { n: nick, x: xpOf(), q: Object.keys(progress).length, l: lv.name, d: todayKey() };
-    return 'WR2026.' + encodeURIComponent(JSON.stringify(payload));
-  }
-
-  function makeCode() {
-    const nick = (($('rankNick') && $('rankNick').value) || '').trim() || '이름없음';
-    game.rank.nick = nick;
-    const code = buildCode(nick);
-    saveGame();
-    $('rankCode').value = code;
-    const cp = $('btnRankCopy');
-    if (cp) cp.hidden = false;
-    return code;
-  }
-
-  function copyText(t) {
-    try {
-      if (window.navigator && window.navigator.clipboard && window.navigator.clipboard.writeText) {
-        window.navigator.clipboard.writeText(t);
-        return true;
-      }
-    } catch (e) {}
-    return false;
-  }
-
-  /* 홈에서 바로 코드 복사. 닉네임이 없으면 내 기록 화면으로 보낸다. */
-  function homeCopyCode() {
-    const nick = (game.rank.nick || '').trim();
-    if (!nick) {
-      popup('RANKING', '닉네임을 먼저 정해 주세요', '내 기록 화면의 랭킹 칸에서 닉네임을 넣으면 코드를 만들 수 있습니다.');
-      openMeRank('code');
-      return;
-    }
-    const code = buildCode(nick);
-    saveGame();
-    const copied = copyText(code);
-    popup('RANKING', copied ? '내 코드를 복사했습니다' : '내 코드를 만들었습니다',
-      copied ? '팀원에게 붙여넣어 보내면, 받은 코드끼리 순위표를 만들 수 있습니다. 서버가 없어 실시간 순위는 아닙니다.'
-        : '브라우저가 복사를 막았습니다. 내 기록 화면의 코드 칸에서 직접 복사해 주세요.');
-    if (!copied) {
-      renderMe();
-      const el = $('rankCode');
-      if (el) el.value = code;
-      const cp = $('btnRankCopy');
-      if (cp) cp.hidden = false;
-    }
-  }
-
   /* 내 기록 화면을 열고 랭킹 칸으로 데려간다 */
-  function openMeRank(target) {
+  function openMeRank() {
     renderMe();
     const box = $('rankBox');
     if (box && box.scrollIntoView) {
       setTimeout(() => { try { box.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'start' }); } catch (e) {} }, 60);
     }
-    const el = target === 'paste' ? $('rankPaste') : target === 'nick' ? $('rankNick') : null;
-    if (el && el.focus) setTimeout(() => { try { el.focus(); } catch (e) {} }, 220);
-  }
-
-  /* -------- 랭킹 코드 모으기 -------- */
-  function addCodes() {
-    const raw = ($('rankPaste') && $('rankPaste').value) || '';
-    const lines = raw.split(/\n+/).map((x) => x.trim()).filter(Boolean);
-    let added = 0;
-    for (const line of lines) {
-      const body = line.indexOf('WR2026.') === 0 ? line.slice(7) : line;
-      try {
-        const o = JSON.parse(decodeURIComponent(body));
-        if (!o || !o.n) continue;
-        if (game.rank.board.some((e) => e.n === o.n && e.d === o.d)) continue;
-        game.rank.board.push({ n: String(o.n).slice(0, 14), x: Number(o.x) || 0, q: Number(o.q) || 0, l: String(o.l || ''), d: String(o.d || '') });
-        added++;
-      } catch (e) {}
-    }
-    saveGame();
-    $('rankPaste').value = '';
-    renderRankBoard();
-    if (!added) popup('RANKING', '추가된 코드가 없습니다', '코드 형식이 맞는지 확인해 주세요.');
-  }
-
-  function renderRankBoard() {
-    const box = $('rankBoard');
-    if (!box) return;
-    const board = (game.rank.board || []).slice().sort((a, b) => b.x - a.x).slice(0, 20);
-    box.innerHTML = '';
-    if (!board.length) { box.innerHTML = '<p class="empty">아직 붙여넣은 코드가 없습니다. 실시간 순위가 아니라, 코드를 모아 만드는 순위표입니다.</p>'; return; }
-    board.forEach((e, i) => {
-      const row = document.createElement('div');
-      row.className = 'rank-row';
-      row.innerHTML = `<span class="rank-no">${i + 1}</span><span class="rank-nick">${esc(e.n)}</span>
-        <span class="rank-lv">${esc(e.l)}</span><span class="rank-x">${e.x}문항</span>`;
-      box.appendChild(row);
-    });
   }
 
   function resetAll() {
+    popup('RESET', '기록을 모두 지울까요?', '푼 문제, 등급, 경험치, 배지를 이 브라우저에서 지웁니다. 이미 올라간 공유 순위·명예의 전당은 남습니다.', [
+      { label: '지우기', primary: true, fn: doReset }, { label: '취소' }]);
+  }
+  function doReset() {
     try {
       localStorage.setItem(KEY_PROGRESS, 'null');
       localStorage.setItem(KEY_SESSION, 'null');
       localStorage.setItem(KEY_GAME, 'null');
     } catch (e) {}
+    const nick = game.rank.nick;
     progress = {};
-    game = { daily: null, badges: {}, streak: { last: '', days: 0, best: 0 }, rank: { nick: '', board: [] }, seen: {} };
-    popup('RESET', '기록을 지웠습니다', '푼 문제, 연속 도전, 배지, 랭킹 코드를 모두 지웠습니다.');
+    game = { daily: null, badges: {}, streak: { last: '', days: 0, best: 0 }, rank: { nick }, seen: {},
+      lad: { g: 0, track: null, exam: {}, hist: { ko: [], en: [] }, world: { ko: false, en: false }, hallPending: [] },
+      xp: { total: 0, week: 0, wk: '' }, xpDay: { date: '', ids: [] } };
+    saveGame();
+    popup('RESET', '기록을 지웠습니다', '기록심부터 다시 시작합니다.');
     renderMe();
   }
 
@@ -873,24 +1081,24 @@
     renderQuiz();
   });
   $('btnListRandom') && $('btnListRandom').addEventListener('click', () => startRandom('quizhome'));
-  $('btnHomeRank') && $('btnHomeRank').addEventListener('click', () => openMeRank('code'));
-  $('btnHomeRankAdd') && $('btnHomeRankAdd').addEventListener('click', () => openMeRank('paste'));
-  $('btnHomeCode') && $('btnHomeCode').addEventListener('click', homeCopyCode);
+  $('btnHomeRank') && $('btnHomeRank').addEventListener('click', openMeRank);
+  $('btnHomeLadder') && $('btnHomeLadder').addEventListener('click', renderMe);
+  ['home', 'me'].forEach((P) => {
+    $(P + 'BtnExam') && $(P + 'BtnExam').addEventListener('click', onExamButton);
+    $(P + 'NickSave') && $(P + 'NickSave').addEventListener('click', () => saveNick(P));
+    $(P + 'Nick') && $(P + 'Nick').addEventListener('keydown', (e) => { if (e.key === 'Enter') saveNick(P); });
+    document.querySelectorAll(`#${P}RankTabs [data-tab]`).forEach((b) => b.addEventListener('click', () => {
+      rankTab[P] = b.getAttribute('data-tab');
+      renderRankCard(P);
+    }));
+  });
+  document.querySelectorAll('#meTrack [data-track]').forEach((b) => b.addEventListener('click', () => {
+    setTrack(b.getAttribute('data-track'));
+    renderMe();
+  }));
   $('btnHomeBadges') && $('btnHomeBadges').addEventListener('click', renderMe);
   $('btnHome').addEventListener('click', renderHome);
   $('btnQuizLang') && $('btnQuizLang').addEventListener('click', () => { caseLang = caseLang === 'en' ? 'ko' : 'en'; renderQuiz(); });
-  $('popupClose') && $('popupClose').addEventListener('click', () => { $('popup').hidden = true; });
-  $('btnRankMake') && $('btnRankMake').addEventListener('click', makeCode);
-  $('btnRankCopy') && $('btnRankCopy').addEventListener('click', () => {
-    const el = $('rankCode');
-    if (!el) return;
-    try {
-      if (el.select) el.select();
-      if (window.navigator && window.navigator.clipboard) window.navigator.clipboard.writeText(el.value);
-    } catch (e) {}
-    popup('RANKING', '코드를 복사했습니다', '코드를 팀원에게 보내면 서로 순위표를 맞춰 볼 수 있습니다.');
-  });
-  $('btnRankAdd') && $('btnRankAdd').addEventListener('click', addCodes);
   $('btnReset') && $('btnReset').addEventListener('click', resetAll);
 
   document.addEventListener('click', (e) => {
@@ -932,7 +1140,9 @@
       .sort((a, b) => Number(a.id) - Number(b.id));
     BYID = new Map(CASES.map((c) => [c.id, c]));
     buildSearchIndex();
+    xpState();
     renderHome();
+    syncRank();
   }).catch((err) => {
     $('loadError').hidden = false;
     $('loadError').textContent = '데이터를 불러오지 못했습니다. 웹 주소(http)로 열어 주세요. (' + err.message + ')';

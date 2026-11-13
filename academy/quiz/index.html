@@ -35,26 +35,44 @@
         <button class="btn" id="btnRandom" type="button">전체 랜덤 10문제</button>
         <button class="btn ghost" id="btnResume" type="button" hidden>이어풀기</button>
       </div>
-      <p class="mode-desc">풀 때마다 새로 섞입니다. 연속 도전일수에는 반영되지 않지만, 맞힌 문항은 레벨과 랭킹에 똑같이 쌓입니다.</p>
+      <p class="mode-desc">풀 때마다 새로 섞입니다. 연속 도전일수에는 반영되지 않지만, 맞힌 문항은 등급과 경험치에 똑같이 쌓입니다.</p>
     </section>
 
-    <!-- 랭킹 -->
-    <section class="home-rank">
+    <!-- 심판 사다리 -->
+    <section class="home-rank ladder-card">
+      <div class="home-rank-head">
+        <p class="game-kicker">REFEREE PATH</p>
+        <button class="text-link" id="btnHomeLadder" type="button">사다리 전체 →</button>
+      </div>
+      <p class="rank-level" id="homeLadTitle">기록심</p>
+      <p class="lad-tier" id="homeLadTier"></p>
+      <ol class="lad-steps" id="homeLadSteps" aria-label="심판 등급 단계"></ol>
+      <p class="rank-next" id="homeLadNext"></p>
+      <div class="level-bar"><span id="homeLadBar"></span></div>
+      <p class="lad-count" id="homeLadCount"></p>
+      <button class="btn primary big" id="homeBtnExam" type="button">승급 시험 보기</button>
+      <p class="lad-goal">최종 목표 <b>월드 레퍼리</b> → 명예의 전당. 영어로 월드까지 가면 <b>👑 최고 배지</b></p>
+    </section>
+
+    <!-- 공유 랭킹 -->
+    <section class="home-rank" id="homeRankCard">
       <div class="home-rank-head">
         <p class="game-kicker">RANKING</p>
-        <button class="text-link" id="btnHomeRank" type="button">랭킹 코드 · 내 기록 →</button>
+        <button class="text-link" id="btnHomeRank" type="button">전체 순위 →</button>
       </div>
-      <p class="rank-level" id="homeLevel">새내기 심판</p>
-      <div class="level-bar"><span id="homeLevelBar"></span></div>
-      <p class="rank-next" id="homeLevelNext"></p>
-      <p class="rank-meta">연속 도전 <b id="homeStreak">0</b>일</p>
-      <p class="rank-calc">순위는 맞힌 <b>서로 다른 문항 수</b>로 매깁니다. 같은 문제를 다시 풀어도 늘지 않고, 최대 <b class="rankCalcMax">217</b>문항입니다.</p>
+      <p class="rank-meta">이번 주 내 경험치 <b id="homeMyWeek">0</b> · 누적 <b id="homeMyTotal">0</b></p>
+      <div class="rank-tabs" id="homeRankTabs" role="tablist">
+        <button type="button" role="tab" data-tab="week">이번 주</button>
+        <button type="button" role="tab" data-tab="all">역대</button>
+        <button type="button" role="tab" data-tab="hall">명예의 전당</button>
+      </div>
       <div class="rank-mini" id="homeRankBoard"></div>
-      <div class="rank-mini-actions">
-        <button class="btn ghost sm" id="btnHomeCode" type="button">내 코드 복사</button>
-        <button class="btn ghost sm" id="btnHomeRankAdd" type="button">친구 코드 붙여넣기</button>
+      <div class="nick-row" id="homeNickRow">
+        <input id="homeNick" class="rank-input" type="text" maxlength="14" placeholder="닉네임 (예: 블리츠 감독)" autocomplete="off" aria-label="닉네임">
+        <button class="btn" id="homeNickSave" type="button">순위 참가</button>
       </div>
-      <p class="rank-note">서버가 없는 사이트라 <b>실시간 순위가 아닙니다.</b> 내 기록을 코드로 복사해 서로 붙여넣으면 그 코드들로 순위표를 만듭니다.</p>
+      <p class="rank-note" id="homeRankStatus"></p>
+      <p class="rank-calc">경험치 = 정답 10점 + 연속 정답 보너스(최대 +10) + 승급 시험 합격 50점. 같은 문항은 하루 한 번만 점수가 붙고, 이번 주 순위는 월요일에 새로 시작합니다.</p>
     </section>
 
     <!-- 배지·최근 기록 한 줄 -->
@@ -90,8 +108,8 @@
       </button>
       <button class="aux" id="entryMe" type="button">
         <span class="aux-kicker">Ⅳ. 내 기록</span>
-        <span class="aux-title">레벨 · 배지</span>
-        <span class="aux-sub">팀 랭킹 · 기록 지우기</span>
+        <span class="aux-title">등급 · 배지</span>
+        <span class="aux-sub">전체 순위 · 명예의 전당</span>
       </button>
     </nav>
 
@@ -234,7 +252,9 @@
       <p class="eyebrow">RESULT</p>
       <div class="score-ring"><b id="resScore">0 / 0</b><span id="resPct">0%</span></div>
       <p id="resMsg"></p>
+      <p class="res-xp" id="resXp"></p>
     </div>
+    <div id="resExam" class="res-exam" hidden></div>
     <div class="result-actions">
       <button class="btn primary" id="btnAgain" type="button">한 판 더 (랜덤 10문제)</button>
       <button class="btn" id="btnWrongAgain" type="button" hidden>틀린 문제만 다시 풀기</button>
@@ -257,40 +277,59 @@
   <section class="view" id="view-me" hidden>
     <header class="bar">
       <button class="icon-btn" data-back="home" type="button" aria-label="홈으로">←</button>
-      <div class="bar-title"><b>내 기록</b><small>레벨 · 배지 · 팀 랭킹</small></div>
+      <div class="bar-title"><b>내 기록</b><small>심판 등급 · 배지 · 공유 랭킹</small></div>
     </header>
 
     <div class="me-card">
-      <p class="me-label">현재 레벨</p>
-      <p class="me-level" id="meLevel">새내기 심판</p>
-      <div class="level-bar"><span id="meLevelBar"></span></div>
-      <p class="muted" id="meLevelNext"></p>
+      <p class="me-label">현재 등급</p>
+      <p class="me-level" id="meLadTitle">기록심</p>
+      <p class="lad-tier" id="meLadTier"></p>
+      <ol class="lad-steps" id="meLadSteps" aria-label="심판 등급 단계"></ol>
+      <p class="muted" id="meLadNext"></p>
+      <div class="level-bar"><span id="meLadBar"></span></div>
+      <p class="lad-count" id="meLadCount"></p>
+      <button class="btn primary big" id="meBtnExam" type="button">승급 시험 보기</button>
+      <div class="track-row" id="meTrack" hidden>
+        <span class="rank-label">국제 시험 언어</span>
+        <button class="btn ghost sm" type="button" data-track="ko">한국어</button>
+        <button class="btn ghost sm" type="button" data-track="en">English</button>
+      </div>
       <p class="me-streak" id="meStreak"></p>
-      <p class="me-streak-note">연속 도전은 오늘의 10문제를 풀어야 올라갑니다.</p>
     </div>
+
+    <h2 class="sec-title">심판 사다리</h2>
+    <ol class="lad-table">
+      <li><b>기록심</b><span>테이블에서 시작</span></li>
+      <li><b>코트심 2급</b><span>맞힌 문항 15% → 시험 10문항 80점</span></li>
+      <li><b>코트심 1급</b><span>35% → 시험 20문항 80점</span></li>
+      <li class="intl"><b>WWR 캔디데이트</b><span>도전! 국제심판 · 50% → 필기 20문항 80점</span></li>
+      <li class="intl"><b>WWR 프로비저널</b><span>65% → 20문항 85점</span></li>
+      <li class="intl"><b>존 레퍼리</b><span>80% → 30문항 85점</span></li>
+      <li class="intl"><b>월드 레퍼리</b><span>90% → 30문항, 최근 5회 중 3회 90점↑ + 평균 90점 → 명예의 전당</span></li>
+    </ol>
+    <p class="foot-note">실제 WWR 심판 경로(국내 급수 → Candidate → Provisional → Zone → World)를 따랐습니다. 월드 기준은 WWR 평가 규정(최근 5회 중 3회 90점 이상, 평균 90점대)을 퀴즈에 맞게 줄인 것입니다. 시험은 단계마다 하루 한 번입니다.</p>
 
     <h2 class="sec-title">배지</h2>
     <div id="badgeGrid" class="badge-grid"></div>
 
-    <h2 class="sec-title">팀 랭킹</h2>
+    <h2 class="sec-title">공유 랭킹</h2>
     <div class="rank-box" id="rankBox">
-      <p class="rank-calc">순위는 맞힌 <b>서로 다른 문항 수</b>로 매깁니다. 같은 문제를 다시 풀어도 늘지 않고, 최대 <b class="rankCalcMax">217</b>문항입니다.</p>
-      <p class="muted">서버가 없는 사이트라 <b>실시간 순위가 아닙니다.</b> 내 기록을 코드로 복사해 서로 붙여넣으면 그 코드들로 순위표를 만듭니다.</p>
-      <label class="rank-label" for="rankNick">닉네임</label>
-      <input id="rankNick" class="rank-input" type="text" maxlength="14" placeholder="예: 블리츠 감독" autocomplete="off">
-      <div class="rank-actions">
-        <button class="btn" id="btnRankMake" type="button">내 기록 코드 만들기</button>
-        <button class="btn ghost" id="btnRankCopy" type="button" hidden>코드 복사</button>
+      <p class="rank-meta">이번 주 내 경험치 <b id="meMyWeek">0</b> · 누적 <b id="meMyTotal">0</b></p>
+      <div class="rank-tabs" id="meRankTabs" role="tablist">
+        <button type="button" role="tab" data-tab="week">이번 주</button>
+        <button type="button" role="tab" data-tab="all">역대</button>
+        <button type="button" role="tab" data-tab="hall">명예의 전당</button>
       </div>
-      <textarea id="rankCode" class="rank-code" rows="2" placeholder="내 코드가 여기에 나옵니다"></textarea>
-      <label class="rank-label" for="rankPaste">친구 코드 붙여넣기</label>
-      <textarea id="rankPaste" class="rank-code" rows="3" placeholder="받은 코드를 한 줄에 하나씩 붙여넣고 아래 버튼을 누르세요"></textarea>
-      <button class="btn ghost" id="btnRankAdd" type="button">순위표에 추가</button>
-      <div id="rankBoard" class="rank-board"></div>
+      <div id="meRankBoard" class="rank-board"></div>
+      <div class="nick-row" id="meNickRow">
+        <input id="meNick" class="rank-input" type="text" maxlength="14" placeholder="닉네임 (예: 블리츠 감독)" autocomplete="off" aria-label="닉네임">
+        <button class="btn" id="meNickSave" type="button">저장</button>
+      </div>
+      <p class="rank-note" id="meRankStatus"></p>
     </div>
 
     <h2 class="sec-title">저장 데이터</h2>
-    <p class="muted">푼 문제, 연속 도전, 배지, 랭킹 코드는 이 브라우저에만 저장됩니다.</p>
+    <p class="muted">푼 문제, 등급, 경험치, 배지는 이 브라우저에 저장됩니다. 공유 순위에는 닉네임·경험치·등급만 올라갑니다.</p>
     <button class="btn ghost danger" id="btnReset" type="button">내 기록 모두 지우기</button>
   </section>
 
@@ -299,7 +338,7 @@
       <p class="popup-kicker" id="popupKicker">LEVEL UP</p>
       <p class="popup-title" id="popupTitle"></p>
       <p class="popup-text" id="popupText"></p>
-      <button class="btn primary" id="popupClose" type="button">확인</button>
+      <div class="popup-actions" id="popupActions"></div>
     </div>
   </div>
 
@@ -313,6 +352,8 @@
 <script src="../../engine/pixi.min.js"></script>
 <script src="../../engine/rugby-chairs.js"></script>
 <script src="scene.js"></script>
+<script src="firebase-config.js"></script>
+<script src="rank-online.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
