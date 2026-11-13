@@ -21,6 +21,7 @@
 | `engine/rugby-chairs.js` | **휠체어·코트 그림 (2026-11-13 코드 그리기로 교체)** — `look({type,color,num})`(팀색·등번호, 바퀴 회전 12컷 `frame(roll)`/`tex(roll)`, 그림자 `shadow`), `draw(ctx,L,x,y,a,roll)`, `roll()`(굴러간 거리), `floor({x0,y0,x1,y1,px})`(나무 바닥). 공격형 A=실물 멜로스 Rhino 사진 기준 D자 알루미늄 범퍼 링·검정 디스크·색 타이어, 수비형 D=튀어나온 범퍼+갈고리. 비율은 멜로스 사양서(바퀴 24~26", 캠버 16~20°). 퀴즈·게임·랩 모두 이걸 씀. 미리보기 `engine/chairs-preview.html?z=2.6&x=4.5&y=2` |
 | `engine/pixi.min.js` | 화면 그리기용 PixiJS (외부 CDN 의존 없이 내장) |
 | `rugby-game/` | 휠체어럭비 게임. **`engine/rugby-brain.js`를 이미 사용 중** |
+| `game3d/` | **3D 관전 시제품 (2026-11-13)** — Three.js(CDN). `engine/rugby-brain.js`가 움직이고(관전 모드, 1.2초 뒤 자동 휘슬, 끝나면 자동 다음 공격) 화면은 그리기만 함. 휠체어는 `rugby-chairs.js` 2D 디자인을 실제 크기 3D로 옮김(26" 바퀴=39단위). 선수 몸 샘플(마네킹, 손이 핸드림에 IK로 붙어 밀고·놓고·복귀)은 감독 판정으로 꺼둠(`SHOW_ATHLETE=false`, 코드는 남김). 경기장(관중석·LED 광고판·전광판·벤치·천장 조명)·마루 반사·AO 후처리. 열기: `/game3d/` |
 | `lab/` | **새 AI럭비랩 (크로스체크 채널, 2026-11-10 1단계)**. `engine/`의 두뇌를 불러 쓰는 얇은 화면(캔버스 2D, pixi 안 씀). 판단 로직 없음 |
 | `rugby-lab/` | 옛 AI럭비랩(작전 보드, 900KB). 구버전 두뇌가 통째로 박혀 있어 두뇌를 고쳐도 반영 안 됨 — **참고용으로만 둠, 새 작업은 `lab/`에** |
 

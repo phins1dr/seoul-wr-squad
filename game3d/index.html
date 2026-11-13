@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>휠체어럭비 3D</title>
+<style>
+  html,body{margin:0;height:100%;background:#07090d;overflow:hidden;font-family:system-ui,"Malgun Gothic",sans-serif;color:#e6edf3}
+  canvas{display:block}
+  /* TV 스코어 바 */
+  #bug{position:fixed;left:16px;top:14px;display:flex;align-items:stretch;border-radius:8px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.5);font-variant-numeric:tabular-nums}
+  #bug .brand{background:#0b1220;padding:0 12px;display:flex;align-items:center;gap:3px;font-weight:800;font-size:13px;letter-spacing:.5px;color:#9fb3d1}
+  #bug .brand b{color:#fff;background:#1f6feb;border-radius:4px;padding:1px 5px;margin-left:2px}
+  #bug .cell{background:rgba(16,22,34,.92);padding:6px 14px;display:flex;flex-direction:column;align-items:center;min-width:52px;border-left:1px solid rgba(255,255,255,.07)}
+  #bug .cell b{font-size:18px;line-height:1.1}
+  #bug .cell i{font-style:normal;font-size:10.5px;opacity:.6;margin-top:1px}
+  #bug .a b{color:#58a6ff} #bug .d b{color:#ff7b72}
+  #msg{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:rgba(10,13,18,.82);color:#ffd33d;padding:7px 16px;border-radius:999px;font-size:13.5px;font-weight:600;white-space:nowrap}
+  #msg:empty{display:none}
+  /* 화면 돌리기 조이스틱 */
+  #joyWrap{position:fixed;right:18px;bottom:18px;display:flex;align-items:flex-end;gap:10px;user-select:none;touch-action:none}
+  #joy{width:112px;height:112px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05),rgba(255,255,255,.12));border:1px solid rgba(255,255,255,.18);position:relative;backdrop-filter:blur(4px);cursor:grab;touch-action:none}
+  #joy::before,#joy::after{content:"";position:absolute;background:rgba(255,255,255,.12)}
+  #joy::before{left:50%;top:12px;bottom:12px;width:1px}#joy::after{top:50%;left:12px;right:12px;height:1px}
+  #knob{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:linear-gradient(#3b82f6,#1f6feb);box-shadow:0 4px 14px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s}
+  #joy.on{cursor:grabbing}#joy.on #knob{transition:none}
+  #zoom{display:flex;flex-direction:column;gap:6px}
+  #zoom button{width:40px;height:40px;border-radius:50%;background:rgba(10,13,18,.8);color:#e6edf3;border:1px solid #30363d;font-size:20px;cursor:pointer;line-height:1}
+  #btns{position:fixed;right:16px;top:14px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:60vw}
+  #btns button{background:rgba(10,13,18,.8);color:#e6edf3;border:1px solid #30363d;border-radius:9px;padding:7px 12px;font-size:13px;cursor:pointer}
+  #btns button.on{background:#1f6feb;border-color:#1f6feb}
+  #load{position:fixed;inset:0;display:grid;place-items:center;font-size:14px;opacity:.7}
+  @media (max-width:700px){#bug{top:auto;bottom:18px;left:12px;transform:scale(.9);transform-origin:left bottom}#msg{bottom:auto;top:62px}#joy{width:96px;height:96px}#btns{max-width:none;left:12px;right:12px;justify-content:flex-start}}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script src="../engine/rugby-brain.js"></script>
+</head>
+<body>
+<div id="load">경기장 불 켜는 중…</div>
+<div id="bug">
+  <div class="brand">SEOUL<b>WR</b></div>
+  <div class="cell a"><b id="hTry">0</b><i>트라이</i></div>
+  <div class="cell d"><b id="hTo">0</b><i>턴오버</i></div>
+  <div class="cell"><b id="hTime">0.0초</b><i>공격 <span id="hPlay">1</span></i></div>
+</div>
+<div id="msg"></div>
+<div id="joyWrap">
+  <div id="zoom"><button data-z="0.85" title="가까이">＋</button><button data-z="1.18" title="멀리">－</button></div>
+  <div id="joy" title="끌어서 화면 돌리기"><div id="knob"></div></div>
+</div>
+<div id="btns">
+  <button data-cam="wide" class="on">중계</button>
+  <button data-cam="ball">볼 따라가기</button>
+  <button data-cam="player">휠체어 클로즈업</button>
+  <button id="bSpeed">1x</button>
+  <button id="bPause">멈춤</button>
+</div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
