@@ -125,6 +125,14 @@ footer{margin-top:16px;font-size:11.5px;color:var(--dim)}
 </header>
 <nav class="scenes" id="scenes" aria-label="장면 고르기"></nav>
 <nav class="scenes" id="rollouts" aria-label="롤아웃 장면 다시 보기" hidden></nav>
+<div class="scenes" id="fb" hidden style="align-items:center;gap:8px;flex-wrap:wrap">
+  <span class="grp" id="fbInfo"></span>
+  <button class="btn go" id="fbO" title="실제로도 이렇게 된다">O 맞아</button>
+  <button class="btn" id="fbX" title="실제와 다르다">X 달라</button>
+  <input id="fbMemo" placeholder="한마디 (안 써도 됨) — 예: 여기선 2번이 내려와서 받아" style="flex:1;min-width:220px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:inherit;font:inherit">
+  <a class="btn" id="fb3d" target="_blank" rel="noopener">3D로 보기</a>
+  <button class="btn" id="fbCopy">피드백 복사 (<span id="fbN">0</span>)</button>
+</div>
 <div class="layout">
   <section class="stage">
     <div class="court"><canvas id="cv" aria-label="코트"></canvas><div class="hint">선수 끌기 · 앞 동그라미 돌리기 = 범퍼 방향</div></div>
@@ -200,7 +208,7 @@ function build(){
 function recalc(){sp=b.space();rd=b.readAlign({sp});spT=0;}
 
 /* ---------- 장면 ---------- */
-function loadScene(sc){replay=null;renderRollouts();scene=sc;work=clone(sc.pos);alignSel=sc.cfg.align||'1set';ibLong=!!sc.cfg.ibPass;sel=null;dirty=false;
+function loadScene(sc){replay=null;renderRollouts();renderFb();scene=sc;work=clone(sc.pos);alignSel=sc.cfg.align||'1set';ibLong=!!sc.cfg.ibPass;sel=null;dirty=false;
   ls.set(LAST,{src:sc.src,key:sc.key});build();renderScenes();
   const on=document.querySelector('.chip.on');if(on)on.scrollIntoView({block:'nearest',inline:'nearest'});}
 const presets=RB.SCENES.map(s=>Object.assign({src:'preset'},clone(s)));
@@ -404,7 +412,19 @@ function renderRollouts(){const nav=$('rollouts');if(!rollouts||!rollouts.rows||
   for(const r of rollouts.rows){const head=`${r.offName.split(' (')[0]} · 인바 ${r.dist} · ${r.def==='table'?'표':'기본'} ${r.try}%`;
     for(const k of Object.keys(RO_KIND)){const sm=r.samples[k];if(!sm)continue;const c=document.createElement('button');
       const on=replay&&replay.row===r&&replay.seed===sm.seed;c.className='chip'+(on?' on':'');c.title=`${r.why}\n${RO_KIND[k]} ${r[k]}% · 이 판: ${sm.text} (${sm.t}초, 씨앗 ${sm.seed})`;
-      c.textContent=`${head} ▶${RO_KIND[k]}`;c.onclick=()=>{replay={row:r,cfg:r.cfg,seed:sm.seed};alignSel=r.align;sel=null;build();renderRollouts();toast(`${r.why} · ${sm.text}`);togglePlay();};nav.appendChild(c);}}}
+      c.textContent=`${head} ▶${RO_KIND[k]}`;c.onclick=()=>{replay={row:r,cfg:r.cfg,seed:sm.seed,kind:k,text:sm.text};alignSel=r.align;sel=null;build();renderRollouts();toast(`${r.why} · ${sm.text}`);togglePlay();};nav.appendChild(c);}}
+  renderFb();}
+/* O/X 피드백: 이 브라우저에 쌓아 두고, 「피드백 복사」로 글로 꺼내 Claude에게 붙여 넣음 */
+const FB='rugbyLab.feedback.v1';let fbs=ls.get(FB,[]);if(!Array.isArray(fbs))fbs=[];
+function renderFb(){const el=$('fb');$('fbN').textContent=fbs.length;if(!replay){el.hidden=true;return;}el.hidden=false;const r=replay.row;
+  $('fbInfo').textContent=`${r.offName.split(' (')[0]} · 인바 ${r.dist} · ${r.why} → ${replay.text}`;
+  const q=new URLSearchParams({seed:replay.seed,align:r.cfg.align,ib:r.cfg.ibPass,err:r.cfg.passErr});if(r.cfg.tac)q.set('tac',r.cfg.tac);$('fb3d').href='../game3d/?'+q;
+  const mine=fbs.find(f=>f.id===fbId());$('fbO').classList.toggle('go',!mine||mine.ox==='O');$('fbX').classList.toggle('go',!!mine&&mine.ox==='X');$('fbMemo').value=mine?mine.memo:'';}
+const fbId=()=>replay?[replay.row.off,replay.row.ib,replay.row.def,replay.seed].join('|'):'';
+function saveFb(ox){if(!replay)return;const r=replay.row;fbs=fbs.filter(f=>f.id!==fbId());fbs.push({id:fbId(),ox,memo:$('fbMemo').value.trim(),off:r.offName,dist:r.dist,why:r.why,end:replay.text,seed:replay.seed,brain:RB.VERSION,at:new Date().toISOString().slice(0,10)});ls.set(FB,fbs);renderFb();toast(ox==='O'?'O 저장':'X 저장');}
+$('fbO').onclick=()=>saveFb('O');$('fbX').onclick=()=>saveFb('X');
+$('fbCopy').onclick=()=>{if(!fbs.length){toast('아직 피드백이 없어요');return;}const t='럭비랩 롤아웃 피드백\n'+fbs.map(f=>`[${f.ox}] ${f.off} · 인바 ${f.dist} · ${f.why} → ${f.end} (씨앗 ${f.seed}, 두뇌 v${f.brain})${f.memo?' — '+f.memo:''}`).join('\n');
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('복사했어요. Claude에게 붙여 넣기'),()=>{prompt('복사해서 Claude에게 붙여 넣기',t);});};
 fetch('rollouts.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.brain===RB.VERSION){rollouts=j;renderRollouts();}else if(j)console.warn('rollouts.json은 두뇌 v'+j.brain+'로 만든 것 — 지금 v'+RB.VERSION+'. bun engine/rollout.js 다시 돌리기');}).catch(()=>{});
 
 /* ---------- 시작 ---------- */

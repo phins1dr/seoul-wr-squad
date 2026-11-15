@@ -15,8 +15,8 @@ const REAL = {
   '국내 12경기': { 성공: 64.2, 턴오버: 9.1, 실책: 23.9, 기회: 66.2, 초: 14.5, 범위: '40~81%' },
   '국제 3경기(패럴림픽·AOC)': { 성공: 84.6, 턴오버: 4.0, 실책: 7.4, 기회: 58.3, 초: 16.5, 범위: '83~89%' },
 };
-/* 흐름 기준 (v1.5.0, n=60). 숫자 = 장면별 [득점%, 뺏김%, 바이올레이션%, 수비파울%] */
-const BASE = {"기본":[75,17,8,0],"1셋 · 2번 위":[85,8,7,0],"1셋 · 2번 아래":[77,10,13,0],"인바체크":[80,7,13,0],"2셋":[92,7,2,0],"4갈메기":[87,8,5,0],"프론트 수비 2명":[85,8,7,0],"1번 로우트랩":[78,8,13,0],"2셋 아래":[75,7,18,0]};
+/* 흐름 기준 (v1.7.0 — 속도를 실제 기록에 맞춘 뒤, n=60). 숫자 = 장면별 [득점%, 뺏김%, 바이올레이션%, 수비파울%] */
+const BASE = {"기본":[85,7,8,0],"1셋 · 2번 위":[83,3,13,0],"1셋 · 2번 아래":[83,12,5,0],"인바체크":[83,8,8,0],"2셋":[68,15,17,0],"4갈메기":[77,5,18,0],"프론트 수비 2명":[83,3,13,0],"1번 로우트랩":[82,2,17,0],"2셋 아래":[80,0,20,0]};
 
 let fail = 0;
 const ok = (name, cond, note) => { console.log((cond ? '  ✓ ' : '  ✗ ') + name + (note ? '  — ' + note : '')); if (!cond) fail++; };
@@ -40,7 +40,7 @@ console.log('럭비두뇌 v' + RB.VERSION + ' 회귀 테스트\n\n1) 규정 확�
   ok('3명까지는 괜찮음', !r3.e || r3.e.kind !== 'penalty');
 }
 { // 1m 파울 (97조): 사람이 조종하는 수비가 인바운드 지점 1m 안으로
-  const r = play({ trans: false }, { opts: { control: id => id === 'D4' ? { x: -1, y: 0 } : null }, pos: { D4: { x: 3, y: 7.5, a: Math.PI } }, max: 6 });
+  const r = play({ trans: false }, { opts: { control: id => id === 'D4' ? { x: -1, y: 0 } : null }, pos: { D4: { x: 2.1, y: 7.5, a: Math.PI } }, max: 7.5 });
   ok('수비가 인바운드 전 1m 반경에 들어가면 30초 페널티(득점 아님)', r.e && r.e.kind === 'penalty' && /1m/.test(r.e.text) && r.e.good === false, r.e && r.e.text);
   let foul = 0; for (let i = 0; i < 40; i++) { seed = 500 + i; const q = play({}); if (q.e && /1m/.test(q.e.text)) foul++; }
   ok('컴퓨터 수비는 1m 파울을 안 함 (40판)', foul === 0, foul + '번');
@@ -87,7 +87,10 @@ console.log('\n1-2) 전술 표 (rugby-tactics.js v' + RT.VERSION + ') — 표의
     ok('바닥 = 농구 3점라인 반원', RT.inBadak(5, 7.5) && RT.inBadak(8.2, 7.5) && !RT.inBadak(8.5, 7.5) && !RT.inBadak(6, 0.5) && RT.distOf(8.4) === 20 && RT.distOf(14) === 10 && RT.distOf(1.7) === 40); }
   { // 씨앗: 같은 씨앗이면 같은 경기
     const g = sd => { RB.seed(sd); const q = play({ trans: false, align: '1set', tac: 'auto', passErr: 0.12 }); RB.seed(null); return q.e.kind + '@' + q.b.G.t.toFixed(3); };
-    ok('씨앗이 같으면 같은 경기가 다시 나옴', g(77) === g(77) && [78, 79, 80, 81].some(x => g(x) !== g(77)), g(77)); }
+    ok('씨앗이 같으면 같은 경기가 다시 나옴', g(77) === g(77) && g(5) === g(5) && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].some(x => g(x) !== g(77)), g(77)); }
+  { // 속도: 실제 20m 달리기 기록(선수단 쿼드)과 1초 안쪽으로 맞는가
+    const REAL20 = { '0.5': 11.6, '1.0': 9.2, '1.5': 8.2, '2.0': 7.5, '3.0': 6.9, '3.5': 6.6 }; const t20 = c => { const s = RB.speedOf(c); let v = 0, x = 0, t = 0; while (x < 20) { v = Math.min(s.max, v + s.acc / 600); x += v / 600; t += 1 / 600; } return t; };
+    const diff = Object.keys(REAL20).map(c => +(t20(c) - REAL20[c]).toFixed(1)); ok('속도: 20m 달리기가 실제 기록과 1초 안쪽', diff.every(d => Math.abs(d) <= 1), '차이(초) ' + diff.join(' / ')); }
   for (const t of RT.OFFENSE.filter(t => t.ready)) ok('공격 ' + t.name + ': 두뇌 대형과 연결', !!RB.ALIGN[t.engine.cfg.align], 'align=' + t.engine.cfg.align + ' · 로우 행동 ' + t.low + ' ' + RT.LOW_ACTION[t.low]);
   const nr = RT.DEFENSE.concat(RT.OFFENSE).filter(t => !t.ready); if (nr.length) console.log('  · 아직 두뇌가 못 돌리는 것: ' + nr.map(t => t.name).join(', '));
 }

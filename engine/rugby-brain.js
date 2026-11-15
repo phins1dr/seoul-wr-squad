@@ -8,7 +8,7 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.6.0';
+const VERSION='1.7.0';
 // 난수: 평소엔 Math.random. RugbyBrain.seed(숫자)를 부르면 그 씨앗으로 고정 → 같은 씨앗·같은 설정이면 같은 경기가 다시 나옴(롤아웃 장면 다시 보기). seed(null)이면 해제
 let RNG=()=>Math.random();
 function seed(n){if(n==null){RNG=()=>Math.random();return;}let st=(n>>>0)||1;RNG=()=>{st=(st*1664525+1013904223)>>>0;return st/4294967296;};}
@@ -19,7 +19,11 @@ const KEY={d:1.75,w:8}; // 키 에어리어 실제 규격 (판정용, WWR). 화�
    3명만 뛸 땐 합이 8 미만. list: ['3.0','2.0',...] 또는 [{cls:'2.0',female:true},...] → {sum,limit,ok} */
 function lineup(list){let sum=0,limit=8;for(const it of list||[]){const c=parseFloat(it&&it.cls!=null?it.cls:it);sum+=c;if(it&&it.female)limit+=c<=1.5?0.5:1;}
   const n=(list||[]).length;return {sum,limit,ok:n===4?sum<=limit+1e-9:n===3?sum<limit:false};}
-function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*c,turn:2.0+0.9*c,pass:6+3.2*c};} // 로우는 출발·방향전환이 더 느림
+/* 등급별 능력. 2026-11-15 선수단 체력 기록(쿼드, 측정 74건)에 맞춤 — 예전 값(max 2.3+0.9c)은 실제보다 35~45% 빨랐음
+   max·acc: 20m 달리기(0.5 11.6초 · 1.0 9.2 · 1.5 8.2 · 2.0 7.5 · 3.0 6.9 · 3.5 6.6초)에 맞춘 최고 속도(m/s)와 가속
+   accPass: 정확히 던지는 거리(m) = 던지기 기록(1m 칸 번호: 0.5 5칸 · 1.0 4.3 · 1.5 4.7 · 2.0 5 · 3.0 6.7 · 3.5 7칸). 이보다 멀면 패스 실수가 늘어남(cfg.passErr를 켰을 때)
+   pass: 던질 수 있는 최대 거리(m) — 측정값 없음, 예전 값 그대로 ⚠ / turn: 방향 전환 — 측정값 없음, 그대로 */
+function speedOf(cls){const c=parseFloat(cls);const m=1.8+0.46*c-(c<1?0.2:0);return {max:m,acc:0.8*m,turn:2.0+0.9*c,pass:6+3.2*c,accPass:4+0.9*c};}
 
 /* ---------- 공간 (누가 먼저 닿는 자리인가) ----------
    space(ps, opts) : 코트를 칸(기본 0.25m)으로 나눠, 칸마다 가장 먼저 도착하는 선수를 정한다.
@@ -568,8 +572,8 @@ function doPass(from,to){const s=holdPos(from);const t=P(to.id||to);const dist=h
   // 받는 사람이 움직이는 방향으로 약간 앞
   const lead=Math.min(1.5,dist*0.12);const tx=t.x+Math.cos(t.a)*t.v*lead*0.6,ty=t.y+Math.sin(t.a)*t.v*lead*0.6;
   let far=hyp(tx-s.x,ty-s.y);const maxd=from.pass;const k=far>maxd?maxd/far:1;
-  // 패스 실수(실책): cfg.passErr = 패스 한 번이 빗나갈 기본 확률(0이면 실수 없음). 멀수록 잘 빗나감(가까우면 절반, 최대 거리면 1.5배). 빗나가면 1.6~3.2m 옆으로
-  let ox=0,oy=0;G.err=false;if(cfg.passErr>0&&RNG()<cfg.passErr*(0.5+Math.min(1,far/maxd))){const an=RNG()*Math.PI*2,r=1.6+RNG()*1.6;ox=Math.cos(an)*r;oy=Math.sin(an)*r;G.err=true;ev('miss',{from:from.id,to:t.id});}
+  // 패스 실수(실책): cfg.passErr = 기본 확률(0이면 실수 없음). 정확히 던지는 거리(accPass) 안이면 절반, 그보다 멀면 먼 만큼 늘어남(두 배 거리면 2배). 빗나가면 1.6~3.2m 옆으로
+  let ox=0,oy=0;G.err=false;{const ar=from.accPass||maxd;if(cfg.passErr>0&&RNG()<Math.min(0.9,cfg.passErr*(far<=ar?0.5:0.5+1.5*(far-ar)/ar))){const an=RNG()*Math.PI*2,r=1.6+RNG()*1.6;ox=Math.cos(an)*r;oy=Math.sin(an)*r;G.err=true;ev('miss',{from:from.id,to:t.id});}}
   G.ball={holder:null,x:s.x,y:s.y,fly:{sx:s.x,sy:s.y,tx:s.x+(tx-s.x)*k+ox,ty:s.y+(ty-s.y)*k+oy,t:0,dur:Math.max(0.35,far*k/9),from:from.id,to:t.id}};
   G.holdT=0;if(from.id==='A'+cfg.me)passSel=null;ev('pass',{from:from.id,to:t.id,d:+dist.toFixed(1),over:dist>from.pass});
   if(from.id==='A3'&&!G.inbounded){G.relPt=throwPt(from);G.inbounded=true;ev('inbound',{to:t.id});}

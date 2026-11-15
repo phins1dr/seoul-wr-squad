@@ -561,10 +561,15 @@ if (PLAY) {
     event: (k) => { if (k === 'final') showEnd(); } });
   b = M.brain; M.start(); say('');
 } else {
+  // 롤아웃 판 다시 보기: ?seed=7&align=1set&ib=11&err=0.12&tac=auto — 럭비랩·롤아웃과 같은 설정·같은 씨앗이면 같은 경기가 그대로 나옴(끝나면 같은 판 반복)
+  const QS = new URLSearchParams(location.search), num = k => (QS.get(k) != null && QS.get(k) !== '' ? +QS.get(k) : null);
+  const REPLAY = num('seed') != null ? { seed: num('seed'), cfg: Object.assign({ lineA: ['3.5', '1.5', '1.5', '1.5'], align: QS.get('align') || '1set' },
+    num('ib') != null ? { ibPass: num('ib') } : {}, num('err') != null ? { passErr: num('err') } : {}, QS.get('tac') ? { tac: QS.get('tac') } : {}) } : null;
   b = RB.create({
-    cfg: { trans: false, mode: 'watch', autoNext: true },
+    cfg: Object.assign({ trans: false, mode: 'watch', autoNext: true }, REPLAY ? REPLAY.cfg : {}),
     msg: say,
-    event: (k) => { if (k === 'newGame') { score.plays++; hud.play.textContent = score.plays; } },
+    beforeNew: () => { if (REPLAY) RB.seed(REPLAY.seed); },
+    event: (k, d) => { if (k === 'newGame') { score.plays++; hud.play.textContent = score.plays; } if (k === 'tac' && REPLAY) setTimeout(() => say('다시 보기 · ' + d.why, 4000), 0); },
   });
   b.newGame(); score.plays = 1; hud.play.textContent = '1';
 }
