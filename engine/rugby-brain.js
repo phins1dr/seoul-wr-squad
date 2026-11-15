@@ -8,7 +8,7 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.4.0';
+const VERSION='1.4.1';
 const KEY={d:1.75,w:8}; // 키 에어리어 실제 규격 (판정용, WWR). 화면 그림은 engine/rugby-court.js — 숫자가 같아야 함
 function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*c,turn:2.0+0.9*c,pass:6+3.2*c};} // 로우는 출발·방향전환이 더 느림
 
@@ -100,7 +100,7 @@ const CENTER_X=14;
 /* SCENES: 감독 노션 '26.11.9' 장면 (럭비랩·아카데미가 같이 씀)
    {key,name,memo,cfg:{align,ibPass?},pos:{id:{x,y,a?}}} — 공격 1·2·4번은 ALIGN 자리, pos는 그 위에 덮어쓸 자리(주로 수비).
    불러 쓰기: b=create({cfg:{...장면.cfg}}); b.newGame(); b.setup(장면.pos)  (a는 rad, 0=공격 방향, PI=수비가 바라보는 방향) */
-const PI=Math.PI,IBCHK={x:1.4,y:7.5,a:PI};
+const PI=Math.PI,IBCHK={x:1.75,y:7.5,a:PI}; // 인바체크: 1m 반경 바로 밖 (97조, 1.4→1.75 2026-11-15)
 const SCENES=[
   {key:'1set-high',name:'1셋 · 2번 위',memo:'2번이 센터라인 위에 서서 수비 2명을 데리고 올라감 → 아래는 1·3·4번 3명 vs 수비 2명 = 3:2. 1번or3번 진출공간이 넓음.',
    cfg:{align:'1set'},pos:{D1:{x:5.4,y:3.3,a:PI},D2:{x:16.9,y:11.7,a:PI},D3:{x:15.6,y:8.2,a:PI},D4:{x:5.8,y:6.6,a:PI}}},
@@ -143,15 +143,25 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const hyp=Math.hypot;
 const KEYDRAW={d:1.75,w:8,r:1.75}; // 옛 그림용(예전엔 2.3×9.6으로 키워 그렸음). 화면은 engine/rugby-court.js를 쓸 것
 const R=0.62; // 휠체어 충돌 반지름(m)
-const NEED={40:5,30:7,20:10,10:13.5}; // 인바운드 거리별 필요한 패스 거리(m)
+// 바퀴 접지점 (휠체어 중심 기준 m, 앞=+x): 앞 캐스터 2 + 메인휠 2. 안티팁은 판정에서 항상 제외(감독 확인 2026-11-15).
+// 숫자는 의자 그림 engine/rugby-chairs.js 공격형(캐스터 72단위, 메인휠 허브 -8단위, 1단위=0.635/78m, 옆폭 배율 0.84)에서 옮김.
+const WHEELS=[[0.586,-0.164],[0.586,0.164],[-0.065,-0.431],[-0.065,0.431]];
+function wheelPts(q){const a=q.a||0,c=Math.cos(a),s=Math.sin(a);return WHEELS.map(([fx,fy])=>({x:q.x+c*fx-s*fy,y:q.y+s*fx+c*fy}));}
+// 득점(WWR 68조): 공 가진 선수의 바퀴(캐스터·메인휠) 2개 이상이 트라이 라인(x=28) 너머, 콘 사이(키 폭 8m)에 닿으면
+function tryWheels(q){let n=0;for(const w of wheelPts(q))if(w.x>28&&Math.abs(w.y-7.5)<KEY.w/2)n++;return n;}
+// 인바운드 지점(WWR 97조 1m 파울 기준점): 인바운더 공 위치를 가장 가까운 라인 위로
+function throwPt(ib){const h=holdPos(ib);const x=clamp(h.x,0,28),y=clamp(h.y,0,15);const n=x<=0?{x:1,y:0}:y<=0?{x:0,y:1}:y>=15?{x:0,y:-1}:{x:-1,y:0};return {x,y,n};}
+const ONE_M=1+R; // 1m 반경 안에 휠체어가 걸치면 파울: 기준점~휠체어 중심 < 1m + 휠체어 반지름
+// 휘슬 전에 심판이 1m 반경을 비우게 함: 안에 있는 수비는 반경 밖(+0.15m)으로 밀어냄
+function clearOneM(){const tp=throwPt(P('A3'));const r=ONE_M+0.15;for(const d of G.ps){if(d.team!=='D')continue;const dx=d.x-tp.x,dy=d.y-tp.y,k=hyp(dx,dy);if(k<r){const ux=k>1e-6?dx/k:tp.n.x,uy=k>1e-6?dy/k:tp.n.y;d.x=tp.x+ux*r;d.y=tp.y+uy*r;}}}
 let G=null,passSel=null,flash=0;
 const req={pass:false,bounce:false,pick:false,rev:false};
 const ctl=id=>hooks.control(id);
 function inputVec(){const v=hooks.input()||{x:0,y:0};let x=+v.x||0,y=+v.y||0;const m=hyp(x,y);if(m>1){x/=m;y/=m;}return {x,y};}
 let cfg=Object.assign({lineA:['3.0','2.0','1.5','0.5'],lineD:['3.0','2.0','1.5','0.5'],me:1,dist:40,low:1,ctl:'keyhold',sens:1,autoBounce:false},opts.cfg||{});
-if(!cfg.mode)cfg.mode='watch';if(!cfg.others)cfg.others='ai';cfg.ibAfter='auto';if(!cfg.form)cfg.form='2x2';if(!cfg.inPos)cfg.inPos='11';if(!cfg.press)cfg.press='auto';if(!cfg.ib11)cfg.ib11='auto';if(!cfg.after)cfg.after='delay';if(!cfg.keyDef||cfg.keyDef==='none')cfg.keyDef='onehead';cfg.trapPass='keep';if(!cfg.frontDef)cfg.frontDef='contain';if(!cfg.backPick)cfg.backPick='none';if(!cfg.p1)cfg.p1='key';if(!cfg.p2)cfg.p2='top';if(!cfg.p2s)cfg.p2s='diag';cfg.ctl='keyhold';cfg.sens=1;if(cfg.mode==='watch'){cfg.me=0;cfg.pick='auto';cfg.autoBounce=false;}if(!cfg.transDef)cfg.transDef='man';if(cfg.ibCheck===undefined)cfg.ibCheck=true;if(!cfg.def)cfg.def='man';if(!cfg.ibBy)cfg.ibBy=4;if(!cfg.noIb)cfg.noIb='center';if(!cfg.cAfter)cfg.cAfter='mine';if(!cfg.trapPass)cfg.trapPass='chase';if(cfg.trans===undefined)cfg.trans=true;if(!cfg.pick)cfg.pick='button';
+if(!cfg.mode)cfg.mode='watch';if(!cfg.others)cfg.others='ai';cfg.ibAfter='auto';if(!cfg.form)cfg.form='2x2';if(!cfg.inPos)cfg.inPos='11';if(!cfg.press)cfg.press='auto';if(!cfg.ib11)cfg.ib11='auto';if(!cfg.after)cfg.after='delay';if(!cfg.keyDef||cfg.keyDef==='none')cfg.keyDef='onehead';cfg.trapPass='keep';if(!cfg.backPick)cfg.backPick='none';if(!cfg.p1)cfg.p1='key';if(!cfg.p2)cfg.p2='top';if(!cfg.p2s)cfg.p2s='diag';cfg.ctl='keyhold';cfg.sens=1;if(cfg.mode==='watch'){cfg.me=0;cfg.pick='auto';cfg.autoBounce=false;}if(!cfg.transDef)cfg.transDef='man';if(cfg.ibCheck===undefined)cfg.ibCheck=true;if(!cfg.def)cfg.def='man';if(!cfg.ibBy)cfg.ibBy=4;if(!cfg.noIb)cfg.noIb='center';if(!cfg.cAfter)cfg.cAfter='mine';if(!cfg.trapPass)cfg.trapPass='chase';if(cfg.trans===undefined)cfg.trans=true;if(!cfg.pick)cfg.pick='button';
 if(!Array.isArray(cfg.lineA))cfg.lineA=['3.0','2.0','1.5','0.5'];if(!Array.isArray(cfg.lineD))cfg.lineD=['3.0','2.0','1.5','0.5'];
-const MOVE_AUTO=c=>parseFloat(c)>=1?'check':'delay'; // 0.5는 인바체크 어려움
+const MOVE_AUTO=c=>'check'; // 등급 상관없이 인바체크 (2026-11-15 감독: 공이 떠나면 범퍼 앞에 붙어 막으므로 0.5도 2.0을 막음. 예전엔 0.5면 딜레이)
 function resolveDef(){const c=cfg;if(c.def==='diamond'||c.def==='key')return;if(c.def==='man')c.def='manline';
   if(c.inPos==='center')c.inPos='press';if(c.inPos==='press'){c.ibCheck=false;c.noIb='center';return;}
   if(c.inPos==='11'){const mv=(c.ib11==='auto'||c.ib11==='center'||(c.ib11==='check'&&parseFloat(c.lineD[(c.ibBy||4)-1])<1))?MOVE_AUTO(c.lineD[(c.ibBy||4)-1]):c.ib11;c.mv=mv;
@@ -318,8 +328,8 @@ function rawDef(p){
   const mk=G.sw[p.id]||(MARKS()[p.num]?'A'+MARKS()[p.num]:null);const m=mk?P(mk):null;
   const ib=P('A3');
   if(m&&m.id==='A3'&&!G.sw[p.id]){const f=freeIbTarget(p);if(f)return {...f,slow:false};}
-  if(m&&m.id==='A3'&&!G.inbounded)return {x:ib.x+2.4,y:ib.y,slow:true,kind:'ib'}; // 인바운더 담당: 1m 밖
-  if(m&&m.id==='A3'&&G.inbounded&&ib.x<0.4)return {x:ib.x+1.75,y:ib.y+(p.y<ib.y?-0.35:0.35),slow:true,kind:'ib'}; // 메인휠은 들어오게
+  if(m&&m.id==='A3'&&!G.inbounded){const tp=throwPt(ib);return {x:tp.x+tp.n.x*(ONE_M+0.1),y:tp.y+tp.n.y*(ONE_M+0.1),slow:true,kind:'ib',face:tp};} // 인바운더 담당: 1m 반경 바로 밖, 인바운드 지점을 보고 대기 (97조)
+  if(m&&m.id==='A3'&&G.inbounded&&ib.x<1.2){const ia=ib.a||0;return {x:Math.max(0.3,ib.x+Math.cos(ia)*1.25),y:ib.y+Math.sin(ia)*1.25,slow:false,kind:'ibseal'};} // 공이 떠나면 1m 반경이 사라짐 → 바로 인바운더 범퍼 앞으로 붙어 진입을 막음(파울 아님, 감독 확인 2026-11-15)
   if(!m){const bx=G.ball.x;return {x:Math.max(5,Math.min(bx+4.5,16)),y:7.5,slow:false,kind:'zone'};}
   let tx,ty,kind='man';
   if(!G.inbounded&&m.id!=='A3'&&(hyp(m.x-ib.x,m.y-ib.y)>ib.pass||p.max-m.max>=0.8)){const ih=ib.home||ib;tx=m.x*0.65+ih.x*0.35+0.4;ty=m.y*0.65+ih.y*0.35;return {x:tx,y:ty,slow:false,kind:'deny',m};}
@@ -453,7 +463,7 @@ function defenseAI(p){if(G.ball.roll&&chaser('D')===p)return steerTo(p,G.ball.x,
   const r=rawDef(p);
   if(G.cut&&G.cut.id===p.id){const a=P(G.cut.a);return steerTo(p,a.x+Math.cos(a.a)*a.v*0.9,a.y+Math.sin(a.a)*a.v*0.9,false);} // 넘어가서 길 끊기
   if(G.cfg.def==='manline'&&r.kind==='man'){const sl=lineSlots()[p.id];if(sl)return steerTo(p,sl.x,sl.y,false);}
-  return steerTo(p,r.x,r.y,r.slow);}
+  {const sv=steerTo(p,r.x,r.y,r.slow);if(r.face)sv.face=r.face;return sv;}}
 
 /* ---------- 픽앤롤 ---------- */
 function markOf(d){return G.sw[d.id]||(MARKS()[d.num]?'A'+MARKS()[d.num]:'');}
@@ -496,7 +506,8 @@ function stepChair(p,v,dt){
     // 뒤로 가는 경우: 반대로 돌기보다 후진(느리게)
     if(Math.abs(d)>2.4&&p.team==='D'&&(v.dist??9)<2.2){d=((ta+Math.PI-p.a+Math.PI*3)%(Math.PI*2))-Math.PI;p.a+=clamp(d,-p.turn*dt,p.turn*dt);p.v=Math.max(p.v-p.acc*dt,-p.max*0.45*want);}
     else{p.a+=clamp(d,-p.turn*dt,p.turn*dt);const align=Math.max(0,Math.cos(d));p.v=Math.min(p.v+p.acc*dt*align,p.max*want*Math.max(0.35,align));}
-  }else{p.v*=Math.pow(0.18,dt);if(Math.abs(p.v)<0.05)p.v=0;}
+  }else{p.v*=Math.pow(0.18,dt);if(Math.abs(p.v)<0.05)p.v=0;
+    if(v.face){const ta=Math.atan2(v.face.y-p.y,v.face.x-p.x);const d=((ta-p.a+Math.PI*3)%(Math.PI*2))-Math.PI;p.a+=clamp(d,-p.turn*dt,p.turn*dt);}} // 자리에 서면 볼 곳을 바라봄
   p.x+=Math.cos(p.a)*p.v*dt;p.y+=Math.sin(p.a)*p.v*dt;
 }
 // 갈고리(수비형 체어) 묶임 확률: 묶이는 선수 등급 × 갈고리 선수 등급. 정지해 있으면 1초마다 +10%(최대 +30%)
@@ -517,7 +528,7 @@ function collide(){const ps=G.ps;
     {const cl=(Math.cos(a.a)*a.v-Math.cos(b.a)*b.v)*ux+(Math.sin(a.a)*a.v-Math.sin(b.a)*b.v)*uy;const hk=a.id+b.id,now=G.rt||0;if(cl>0.9&&!(G.hitT&&now-(G.hitT[hk]||-9)<0.6)){(G.hitT||(G.hitT={}))[hk]=now;hooks.event('hit',{a:a.id,b:b.id,x:a.x+ux*R,y:a.y+uy*R,power:+cl.toFixed(2),cross:a.team!==b.team});}} // 충돌 신호 (화면 효과·소리용)
     // 버티기: 멈춰서 자리 잡은 휠체어는 잘 안 밀림 (블로킹·범퍼싸움 기초)
     // 버티는 휠체어: 바퀴(옆)로 받으면 안 밀림(판으로 수비), 범퍼(앞·뒤)로 받으면 미는 쪽 힘(등급)에 따라 조금 밀림
-    const resist=(q,o2,nx,ny)=>{if(Math.abs(q.v)>=0.6)return 1;const side=Math.abs(Math.cos(q.a)*ny-Math.sin(q.a)*nx);if(side>0.7)return 40;return clamp(2.5*(1+(parseFloat(q.cls)-parseFloat(o2.cls))*0.35),0.8,5);};
+    const resist=(q,o2,nx,ny)=>{if(Math.abs(q.v)>=0.6)return 1;if(q.team==='D'&&o2.id==='A3'&&G.inbounded&&o2.x<1.2)return 40; /* 인바운드 직후 범퍼 앞에 붙은 수비: 인바운더는 서서 출발이라 밀 힘이 없음 → 0.5도 2.0을 막음 */const side=Math.abs(Math.cos(q.a)*ny-Math.sin(q.a)*nx);if(side>0.7)return 40;return clamp(2.5*(1+(parseFloat(q.cls)-parseFloat(o2.cls))*0.35),0.8,5);};
     let ra=resist(a,b,ux,uy),rb=resist(b,a,-ux,-uy);
     if(a.team!==b.team&&G.phase!=='trans'){const fa=(Math.cos(a.a)*ux+Math.sin(a.a)*uy),fb=-(Math.cos(b.a)*ux+Math.sin(b.a)*uy);
       if(fa>0.5&&rb>=40)a.v=0; if(fb>0.5&&ra>=40)b.v=0;}
@@ -526,6 +537,7 @@ function collide(){const ps=G.ps;
     // 앞(범퍼)이 막히면 속도 감소
     if(a.team!==b.team&&G.phase!=='trans')for(const [p,s] of [[a,1],[b,-1]]){const fx=Math.cos(p.a),fy=Math.sin(p.a);const facing=(fx*ux+fy*uy)*s;if(facing>0.5)p.v*=0.55;}}}
   const live=G.phase!=='trans';for(const p of ps){const inb=p.id==='A3'&&!G.inbounded;p.x=clamp(p.x,(inb||p.id==='A3')?-1.6:(live?0.25:-0.5),28.6);p.y=live&&!inb?clamp(p.y,0.3,14.7):clamp(p.y,-1.2,16.2);}
+  if(G.phase==='live'&&!G.inbounded){const tp=throwPt(P('A3'));for(const d of ps){if(d.team!=='D'||ctl(d.id))continue;const dx=d.x-tp.x,dy=d.y-tp.y,k=hyp(dx,dy);if(k<ONE_M+0.03&&k>1e-6){d.x=tp.x+dx/k*(ONE_M+0.03);d.y=tp.y+dy/k*(ONE_M+0.03);}}} // AI 수비는 인바운드 전 1m 반경에 안 들어감(97조)
 }
 
 /* ---------- 공 ---------- */
@@ -536,7 +548,7 @@ function doPass(from,to){const s=holdPos(from);const t=P(to.id||to);const dist=h
   const far=hyp(tx-s.x,ty-s.y),maxd=from.pass;const k=far>maxd?maxd/far:1;
   G.ball={holder:null,x:s.x,y:s.y,fly:{sx:s.x,sy:s.y,tx:s.x+(tx-s.x)*k,ty:s.y+(ty-s.y)*k,t:0,dur:Math.max(0.35,far*k/9),from:from.id,to:t.id}};
   G.holdT=0;if(from.id==='A'+cfg.me)passSel=null;ev('pass',{from:from.id,to:t.id,d:+dist.toFixed(1),over:dist>from.pass});
-  if(from.id==='A3'&&!G.inbounded){G.inbounded=true;ev('inbound',{to:t.id});}
+  if(from.id==='A3'&&!G.inbounded){G.relPt=throwPt(from);G.inbounded=true;ev('inbound',{to:t.id});}
 }
 function bounce(p){if(G.ball.holder!==p.id)return;G.holdT=0;ev('bounce',{who:p.id});flash=0.25;}
 
@@ -557,7 +569,7 @@ function stepBall(dt){const b=G.ball;
 }
 
 /* ---------- 규칙·판정 ---------- */
-function whistle(){if(!G||G.phase!=='ready')return;G.phase='live';msg('휘슬! 8초 안에 인바운드',1500);ev('whistle',{});}
+function whistle(){if(!G||G.phase!=='ready')return;clearOneM();G.phase='live';msg('휘슬! 8초 안에 인바운드',1500);ev('whistle',{});}
 function end(kind,text,extra){if(G.phase==='over')return;G.phase='over';G.result=kind;ev(kind,{text,...extra});
   const good=kind==='try'||kind==='foul';log(`${good?'득점':'실패'} · ${text} (${G.t.toFixed(1)}초)`,good?'good':'bad');
   stats.n++;if(good)stats.s++;
@@ -568,9 +580,10 @@ function rules(dt){
   const b=G.ball,holder=b.holder&&P(b.holder);
   const ib=P('A3');
   if(!G.inbounded){G.inboundT+=dt;
-    for(const d of G.ps)if(d.team==='D'&&hyp(d.x-ib.x,d.y-ib.y)<1.85){end('foul','수비 1m 규정 위반 (테크니컬 파울)',{by:d.id});return;}
+    {const tp=throwPt(ib);for(const d of G.ps)if(d.team==='D'&&hyp(d.x-tp.x,d.y-tp.y)<ONE_M){end('foul','수비 1m 규정 위반 (테크니컬 파울)',{by:d.id});return;}}
     if(G.inboundT>8){end('violation','8초 인바운드 바이올레이션');return;}return;}
-  if(ib.x<0){const blocker=G.ps.find(d=>d.team==='D'&&d.x>ib.x&&Math.abs(d.y-ib.y)<0.9&&hyp(d.x-ib.x,d.y-ib.y)<1.3&&(Math.cos(d.a)*d.v*(ib.x-d.x)+Math.sin(d.a)*d.v*(ib.y-d.y))>0.05);if(blocker){end('foul','인바운더 메인휠 진입 방해 (테크니컬 파울)',{by:blocker.id});return;}}
+  // (2026-11-15 뺌) 예전 '인바운더 메인휠 진입 방해' 테크니컬 파울: 공이 떠난 뒤 범퍼 앞을 막는 건 파울 아님(감독)
+  if(G.relPt&&!G.ibIn&&ib.x>=0){G.ibIn=true;if(Math.abs((G.relPt.n.x?ib.y-G.relPt.y:ib.x-G.relPt.x))>1){end('violation','인바운더가 1m 밖으로 코트 진입 (81조 e)');return;}}
   if(holder&&holder.team==='A'&&G.inbounded&&(holder.y<0.32||holder.y>14.68)){end('violation','볼맨이 사이드라인 밖으로 나감');return;}
   G.shotT+=dt;if(G.shotT>40){end('violation','40초 바이올레이션');return;}
   if(!G.crossed){G.backT+=dt;const bx=holder?holder.x:b.x;if(holder&&holder.x>=14&&!b.fly){G.crossed=true;ev('cross',{t:+G.backT.toFixed(1)});msg(`센터라인 통과 ${G.backT.toFixed(1)}초`,1200);}
@@ -579,8 +592,8 @@ function rules(dt){
   if(holder){G.holdT+=dt;if(cfg.autoBounce&&G.holdT>5.5)bounce(holder);
     if(holder.team==='A'&&holder.id===('A'+cfg.me)&&req.bounce)bounce(holder);
     if(G.holdT>8){end('violation','8초 드리블 바이올레이션');return;}
-    // 득점: 볼맨이 골라인을 넘으면 (포스트 사이)
-    const front=holdPos(holder);if(holder.x>27.7&&Math.abs(holder.y-7.5)<KEY.w/2){end('try','골라인 통과');return;}}
+    // 득점(68조): 바퀴 2개 이상이 트라이 라인 너머 콘 사이
+    if(holder.team==='A'&&tryWheels(holder)>=2){end('try','트라이 라인 통과 (바퀴 2개)');return;}}
   // 키 8초 (공격)
   for(const a of G.ps){if(a.team!=='A')continue;const ink=a.x>28-KEY.d&&Math.abs(a.y-7.5)<KEY.w/2;G.keyT[a.id]=ink?(G.keyT[a.id]||0)+dt:0;if(G.keyT[a.id]>8){end('violation',`${a.num}번 키 8초 바이올레이션`);return;}}
 }
@@ -610,7 +623,7 @@ function transStep(dt){G.transT-=dt;const ib=P('A3');const mine=me();
     v=avoid(p,v);{const st=(G.stuck[p.id]||0);if(st>0.8&&hyp(v.x,v.y)>0.2){const an=(p.num%2?1:-1)*1.2,c=Math.cos(an),sn=Math.sin(an);v={x:v.x*c-v.y*sn,y:v.x*sn+v.y*c};}}
     stepChair(p,v,dt);if(Math.abs(p.v)<0.3&&hyp(v.x,v.y)>0.3)G.stuck[p.id]=(G.stuck[p.id]||0)+dt;else G.stuck[p.id]=0;}
   collide();const h=holdPos(ib);G.ball.x=h.x;G.ball.y=h.y;
-  if(G.transT<=0&&(hyp(ib.x-ib.home.x,ib.y-ib.home.y)<0.6||G.transT<-1.5)){ib.x=ib.home.x;ib.y=ib.home.y;ib.a=0;ib.v=0;for(const d of G.ps){if(d.team!=='D')continue;const dx=d.x-ib.x,dy=d.y-ib.y,k=hyp(dx,dy)||1;if(k<2.1){d.x=ib.x+dx/k*2.1;d.y=ib.y+dy/k*2.1;}}G.phase='live';msg('휘슬! 8초 안에 인바운드',1500);ev('whistle',{trans:true});}}
+  if(G.transT<=0&&(hyp(ib.x-ib.home.x,ib.y-ib.home.y)<0.6||G.transT<-1.5)){ib.x=ib.home.x;ib.y=ib.home.y;ib.a=0;ib.v=0;for(const d of G.ps){if(d.team!=='D')continue;const dx=d.x-ib.x,dy=d.y-ib.y,k=hyp(dx,dy)||1;if(k<2.1){d.x=ib.x+dx/k*2.1;d.y=ib.y+dy/k*2.1;}}clearOneM();G.phase='live';msg('휘슬! 8초 안에 인바운드',1500);ev('whistle',{trans:true});}}
 function rec(dt){G.rt=(G.rt||0)+dt;if(G.frames.length&&G.rt-G.frames[G.frames.length-1].rt<0.05)return;
   G.frames.push({rt:G.rt,t:G.t,ib:G.inbounded,ph:G.phase,ps:G.ps.map(p=>[p.x,p.y,p.a]),b:[G.ball.x,G.ball.y,G.ball.holder]});}
 function tick(dt){
