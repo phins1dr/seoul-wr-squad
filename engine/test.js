@@ -5,6 +5,7 @@
    3) 현실 비교: 실제 경기 기록(REAL)과 나란히 보기 — 참고용, 합격/불합격 아님
    옵션: --n=60 (장면당 판수)                                                    */
 const RB = require('./rugby-brain.js');
+const RT = require('./rugby-tactics.js');
 const N = +((process.argv.find(a => a.startsWith('--n=')) || '').slice(4)) || 60;
 let seed = 1; Math.random = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
 
@@ -66,6 +67,22 @@ console.log('럭비두뇌 v' + RB.VERSION + ' 회귀 테스트\n\n1) 규정 확�
   const T = RB.match({ plen: 60 }); T.start(); const live = T.timeout('B'); let k = 0; while (T.brain.G.phase !== 'over' && k++ < 6000) T.step(1 / 30);
   const a = T.timeout('B'), g0 = T.gc; T.step(1); const paused = T.gc === g0 && T.toT > 0; T.toT = 0; T.brain.G.phase = 'over'; const b2 = T.timeout('B'), c = T.timeout('B'), d = T.timeout('B');
   ok('타임아웃: 볼 데드에만, 전·후반 3개, 그동안 시계 멈춤', (live === true || live === false) && a && paused && T.timeouts.B + (live ? 1 : 0) <= 2 && !(live ? c : d), '남은 ' + T.timeouts.B + '개');
+}
+
+console.log('\n1-2) 전술 표 (rugby-tactics.js v' + RT.VERSION + ') — 표의 전술을 두뇌가 읽고 돌리는지');
+{ const bad = RT.check(); ok('표 형식 검사 (수비 ' + RT.DEFENSE.length + ' + 공격 ' + RT.OFFENSE.length + ')', bad.length === 0, bad.join(' / '));
+  for (const t of RT.DEFENSE.filter(t => t.ready)) {
+    const cfg = Object.assign({ trans: false, align: t.demo.align, ibPass: t.demo.ibPass }, t.engine.cfg);
+    const b = RB.create({ cfg: JSON.parse(JSON.stringify(cfg)) }); b.newGame(); const ps = b.G.ps;
+    const sit = RT.situation(ps, t.demo.ibPass), picked = RT.pickDefense(sit).map(x => x.id), S = RT.seats(t.id, ps), ib = b.P('A3'), ball = { x: 0, y: ib.y }; let geo = true;
+    for (const n of Object.keys(t.roles)) { const r = t.roles[n], d = S['D' + n], m = b.P(r.mark), far = q => Math.hypot(q.x - ball.x, q.y - ball.y);
+      if (r.seat === 'long' || r.seat === 'trapTop') geo = geo && d.x > m.x + 0.5;      // 위(트라이라인 쪽)에 섰나
+      if (r.seat === 'short' || r.seat === 'trapBot') geo = geo && far(d) < far(m);     // 볼과 상대 사이에 섰나
+      if (r.seat === 'ibcheck') geo = geo && far(d) >= 1.62; }                           // 1m 반경 밖인가
+    let n = 0, tr = 0, pen = 0; for (let i = 0; i < Math.max(10, N / 3 | 0); i++) { seed = 3000 + i; const q = play(cfg, { before: bb => bb.setup(RT.seats(t.id, bb.G.ps)) }); n++; if (q.e && q.e.kind === 'try') tr++; if (q.e && q.e.kind === 'penalty') pen++; }
+    ok('수비 ' + t.name + ': 상황 인식 · 자리 · 실행', picked.includes(t.id) && geo && pen === 0, '상황 "' + sit.name + '" → ' + (picked.join(',') || '없음') + ' · 상대 공격 성공 ' + Math.round(tr / n * 100) + '% (' + n + '판)' + (pen ? ' · 수비 파울 ' + pen : '')); }
+  for (const t of RT.OFFENSE.filter(t => t.ready)) ok('공격 ' + t.name + ': 두뇌 대형과 연결', !!RB.ALIGN[t.engine.cfg.align], 'align=' + t.engine.cfg.align + ' · 로우 행동 ' + t.low + ' ' + RT.LOW_ACTION[t.low]);
+  const nr = RT.DEFENSE.concat(RT.OFFENSE).filter(t => !t.ready); if (nr.length) console.log('  · 아직 두뇌가 못 돌리는 것: ' + nr.map(t => t.name).join(', '));
 }
 
 console.log('\n2) 흐름 확인 (장면당 ' + N + '판, 같은 난수)');
