@@ -8,8 +8,12 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.4.1';
+const VERSION='1.5.0';
 const KEY={d:1.75,w:8}; // 키 에어리어 실제 규격 (판정용, WWR). 화면 그림은 engine/rugby-court.js — 숫자가 같아야 함
+/* 라인업 점수 (WWR 35조): 코트 위 4명 합 8.0 이하. 여자 선수 한 명마다 0.5~1.5는 +0.5, 2.0~3.5는 +1.0 허용.
+   3명만 뛸 땐 합이 8 미만. list: ['3.0','2.0',...] 또는 [{cls:'2.0',female:true},...] → {sum,limit,ok} */
+function lineup(list){let sum=0,limit=8;for(const it of list||[]){const c=parseFloat(it&&it.cls!=null?it.cls:it);sum+=c;if(it&&it.female)limit+=c<=1.5?0.5:1;}
+  const n=(list||[]).length;return {sum,limit,ok:n===4?sum<=limit+1e-9:n===3?sum<limit:false};}
 function speedOf(cls){const c=parseFloat(cls);return {max:2.3+0.9*c,acc:1.6+1.1*c,turn:2.0+0.9*c,pass:6+3.2*c};} // 로우는 출발·방향전환이 더 느림
 
 /* ---------- 공간 (누가 먼저 닿는 자리인가) ----------
@@ -199,9 +203,12 @@ function newGame(){hooks.beforeNew();resolveDef();
   G={ps,ball:{holder:'A3',x:0,y:0,fly:null},t:0,phase:cfg.trans?'trans':'ready',transT:cfg.trans?rnd(5,8):0,inboundT:0,backT:0,shotT:0,holdT:0,keyT:{},crossed:false,inbounded:false,
      events:[],samples:[],frames:[],rt:0,keepId:null,stuck:{},result:null,sw:{},pick:null,pickCool:0,cfg:{...cfg,lineupA:L.join('-'),lineupD:D.join('-')},
      align:alKey?{key:alKey,name:ALIGN[alKey].name,read:alRead}:null};
+  for(const n of (cfg.box||[])){const q=G.ps.find(p=>p.id==='D'+n);if(q)q.box=true;}pinBox();
   if(G.align)ev('align',{key:G.align.key,name:G.align.name,why:alRead?alRead.why:[]});
   if(cfg.mode==='ctrl')cfg.me=3;passSel=null;if(cfg.trans)msg('트랜지션 · 데드타임이에요. 휘슬 전에 내 자리로!',2600);else msg('휘슬을 기다려요',0);hooks.event('newGame',{});
 }
+// 페널티 박스(88·105조): cfg.box=[수비 번호…] → 그 수비는 코트 밖 박스에 묶여 있고 나머지 3명이 수비
+function pinBox(){let i=0;for(const p of G.ps)if(p.box){p.x=12.6+i*1.1;p.y=-2.6;p.a=Math.PI/2;p.v=0;i++;}}
 const P=id=>G.ps.find(p=>p.id===id);
 const me=()=>G&&P('A'+cfg.me);
 const msg=(t,ms=1600)=>hooks.msg(t,ms);
@@ -536,7 +543,7 @@ function collide(){const ps=G.ps;
     a.x-=ux*o*ka;a.y-=uy*o*ka;b.x+=ux*o*kb;b.y+=uy*o*kb;
     // 앞(범퍼)이 막히면 속도 감소
     if(a.team!==b.team&&G.phase!=='trans')for(const [p,s] of [[a,1],[b,-1]]){const fx=Math.cos(p.a),fy=Math.sin(p.a);const facing=(fx*ux+fy*uy)*s;if(facing>0.5)p.v*=0.55;}}}
-  const live=G.phase!=='trans';for(const p of ps){const inb=p.id==='A3'&&!G.inbounded;p.x=clamp(p.x,(inb||p.id==='A3')?-1.6:(live?0.25:-0.5),28.6);p.y=live&&!inb?clamp(p.y,0.3,14.7):clamp(p.y,-1.2,16.2);}
+  const live=G.phase!=='trans';for(const p of ps){if(p.box)continue;const inb=p.id==='A3'&&!G.inbounded;p.x=clamp(p.x,(inb||p.id==='A3')?-1.6:(live?0.25:-0.5),28.6);p.y=live&&!inb?clamp(p.y,0.3,14.7):clamp(p.y,-1.2,16.2);}
   if(G.phase==='live'&&!G.inbounded){const tp=throwPt(P('A3'));for(const d of ps){if(d.team!=='D'||ctl(d.id))continue;const dx=d.x-tp.x,dy=d.y-tp.y,k=hyp(dx,dy);if(k<ONE_M+0.03&&k>1e-6){d.x=tp.x+dx/k*(ONE_M+0.03);d.y=tp.y+dy/k*(ONE_M+0.03);}}} // AI 수비는 인바운드 전 1m 반경에 안 들어감(97조)
 }
 
@@ -545,8 +552,10 @@ function holdPos(q){const a=q.a||0;return {x:q.x+Math.cos(a)*0.5-Math.sin(a)*0.5
 function doPass(from,to){const s=holdPos(from);const t=P(to.id||to);const dist=hyp(t.x-s.x,t.y-s.y);
   // 받는 사람이 움직이는 방향으로 약간 앞
   const lead=Math.min(1.5,dist*0.12);const tx=t.x+Math.cos(t.a)*t.v*lead*0.6,ty=t.y+Math.sin(t.a)*t.v*lead*0.6;
-  const far=hyp(tx-s.x,ty-s.y),maxd=from.pass;const k=far>maxd?maxd/far:1;
-  G.ball={holder:null,x:s.x,y:s.y,fly:{sx:s.x,sy:s.y,tx:s.x+(tx-s.x)*k,ty:s.y+(ty-s.y)*k,t:0,dur:Math.max(0.35,far*k/9),from:from.id,to:t.id}};
+  let far=hyp(tx-s.x,ty-s.y);const maxd=from.pass;const k=far>maxd?maxd/far:1;
+  // 패스 실수(실책): cfg.passErr = 패스 한 번이 빗나갈 기본 확률(0이면 실수 없음). 멀수록 잘 빗나감(가까우면 절반, 최대 거리면 1.5배). 빗나가면 1.6~3.2m 옆으로
+  let ox=0,oy=0;G.err=false;if(cfg.passErr>0&&Math.random()<cfg.passErr*(0.5+Math.min(1,far/maxd))){const an=Math.random()*Math.PI*2,r=1.6+Math.random()*1.6;ox=Math.cos(an)*r;oy=Math.sin(an)*r;G.err=true;ev('miss',{from:from.id,to:t.id});}
+  G.ball={holder:null,x:s.x,y:s.y,fly:{sx:s.x,sy:s.y,tx:s.x+(tx-s.x)*k+ox,ty:s.y+(ty-s.y)*k+oy,t:0,dur:Math.max(0.35,far*k/9),from:from.id,to:t.id}};
   G.holdT=0;if(from.id==='A'+cfg.me)passSel=null;ev('pass',{from:from.id,to:t.id,d:+dist.toFixed(1),over:dist>from.pass});
   if(from.id==='A3'&&!G.inbounded){G.relPt=throwPt(from);G.inbounded=true;ev('inbound',{to:t.id});}
 }
@@ -557,30 +566,38 @@ function stepBall(dt){const b=G.ball;
     // 가로채기
     const high=hyp(f.tx-f.sx,f.ty-f.sy)>4;if(u>(high?0.7:0.25)&&u<0.92)for(const d of G.ps){if(d.team!=='D')continue;if(hyp(d.x-b.x,d.y-b.y)<0.5){end('turnover','가로채기 당했어요',{by:d.id});return;}}
     // 잡기
-    for(const a of G.ps){if(a.team!=='A'||a.id===f.from)continue;if(u>0.3&&hyp(a.x-b.x,a.y-b.y)<0.95){b.holder=a.id;b.fly=null;G.holdT=0;ev('catch',{who:a.id});return;}}
+    for(const a of G.ps){if(a.team!=='A'||a.id===f.from)continue;if(u>0.3&&hyp(a.x-b.x,a.y-b.y)<0.95){b.holder=a.id;b.fly=null;G.holdT=0;G.err=false;ev('catch',{who:a.id});return;}}
     if(u>=1){ // 아무도 못 잡으면 굴러감
       const dx=f.tx-f.sx,dy=f.ty-f.sy,d=hyp(dx,dy)||1;b.fly=null;b.roll={vx:dx/d*3.2,vy:dy/d*3.2};ev('loose',{x:+b.x.toFixed(1),y:+b.y.toFixed(1)});
       if(!G.inbounded){G.inbounded=true;}}
   }else if(b.roll){const r=b.roll;b.x+=r.vx*dt;b.y+=r.vy*dt;const sp=hyp(r.vx,r.vy);const ns=Math.max(0,sp-2.6*dt);if(sp>0){r.vx*=ns/sp;r.vy*=ns/sp;}
     if(b.x<0||b.x>28||b.y<0||b.y>15){end('turnover','공이 굴러서 코트 밖으로 나갔어요');return;}
     let best=null,bd=0.85;for(const q of G.ps){const d=hyp(q.x-b.x,q.y-b.y);if(d<bd){bd=d;best=q;}}
-    if(best){if(best.team==='D'){end('turnover','굴러간 공을 뺏겼어요',{by:best.id});return;}b.holder=best.id;b.roll=null;G.holdT=0;ev('pickup',{who:best.id});}
+    if(best){if(best.team==='D'){end('turnover','굴러간 공을 뺏겼어요',{by:best.id});return;}b.holder=best.id;b.roll=null;G.holdT=0;G.err=false;ev('pickup',{who:best.id});}
   }else if(b.holder){const q=P(b.holder);const h=holdPos(q);b.x=h.x;b.y=h.y;}
 }
 
 /* ---------- 규칙·판정 ---------- */
 function whistle(){if(!G||G.phase!=='ready')return;clearOneM();G.phase='live';msg('휘슬! 8초 안에 인바운드',1500);ev('whistle',{});}
-function end(kind,text,extra){if(G.phase==='over')return;G.phase='over';G.result=kind;ev(kind,{text,...extra});
-  const good=kind==='try'||kind==='foul';log(`${good?'득점':'실패'} · ${text} (${G.t.toFixed(1)}초)`,good?'good':'bad');
+function end(kind,text,extra){if(G.phase==='over')return;if(kind==='turnover'&&G.err){extra=Object.assign({err:true},extra);text+=' (패스 실수)';}G.phase='over';G.result=kind;ev(kind,{text,...extra});
+  const good=kind==='try'||kind==='foul';log(`${good?'득점':kind==='penalty'?'수비 파울':'실패'} · ${text} (${G.t.toFixed(1)}초)`,good?'good':'bad');
   stats.n++;if(good)stats.s++;
-  hooks.end({kind,text,good,t:G.t});
+  hooks.end({kind,text,good,t:G.t,...extra});
 }
 const stats={n:0,s:0};
+// 수비 커먼 파울(88조 b): 30초 페널티. 공 가진 선수가 트라이 라인 코앞에서 득점하려던 중이면 페널티 트라이(심판 재량 → 여기선 라인 2.5m 안으로 가정)
+function dfoul(by,text){const h=G.ball.holder&&P(G.ball.holder);
+  if(h&&h.team==='A'&&G.inbounded&&h.x>28-KEY.d-2.5&&Math.abs(h.y-7.5)<KEY.w/2+1)end('try',`페널티 트라이 · ${text}`,{by,penaltyTry:true});
+  else end('penalty',`${text} (30초 페널티)`,{by,sec:30});}
 function rules(dt){
   const b=G.ball,holder=b.holder&&P(b.holder);
   const ib=P('A3');
+  // 포 인 더 키(91조): 공격이 공을 가진 동안 수비는 자기 키에 3명까지. 네 번째로 들어온 선수가 파울
+  if(!b.roll){const inK=G.ps.filter(d=>d.team==='D'&&!d.box&&d.x>28-KEY.d&&Math.abs(d.y-7.5)<KEY.w/2).map(d=>d.id);
+    G.keyD=(G.keyD||[]).filter(id=>inK.includes(id));for(const id of inK)if(!G.keyD.includes(id))G.keyD.push(id);
+    if(G.keyD.length>=4){dfoul(G.keyD[3],'포 인 더 키');return;}}
   if(!G.inbounded){G.inboundT+=dt;
-    {const tp=throwPt(ib);for(const d of G.ps)if(d.team==='D'&&hyp(d.x-tp.x,d.y-tp.y)<ONE_M){end('foul','수비 1m 규정 위반 (테크니컬 파울)',{by:d.id});return;}}
+    {const tp=throwPt(ib);for(const d of G.ps)if(d.team==='D'&&!d.box&&hyp(d.x-tp.x,d.y-tp.y)<ONE_M){dfoul(d.id,'수비 1m 파울');return;}}
     if(G.inboundT>8){end('violation','8초 인바운드 바이올레이션');return;}return;}
   // (2026-11-15 뺌) 예전 '인바운더 메인휠 진입 방해' 테크니컬 파울: 공이 떠난 뒤 범퍼 앞을 막는 건 파울 아님(감독)
   if(G.relPt&&!G.ibIn&&ib.x>=0){G.ibIn=true;if(Math.abs((G.relPt.n.x?ib.y-G.relPt.y:ib.x-G.relPt.x))>1){end('violation','인바운더가 1m 밖으로 코트 진입 (81조 e)');return;}}
@@ -613,7 +630,7 @@ function avoid(p,v){const m=hyp(v.x,v.y);if(m<0.05)return v;const ux=v.x/m,uy=v.
     ax+=(-dx/d)*w*0.6+(-uy*side)*w;ay+=(-dy/d)*w*0.6+(ux*side)*w;}
   let nx=v.x+ax,ny=v.y+ay;const n=hyp(nx,ny)||1;return {x:nx/n*m,y:ny/n*m,dist:v.dist};}
 function transStep(dt){G.transT-=dt;const ib=P('A3');const mine=me();
-  for(const p of G.ps){let v;
+  for(const p of G.ps){let v;if(p.box)continue;
     if(p.id!=='A3'&&ctl(p.id))v=ctl(p.id);else if(p===mine&&p.id!=='A3')v=inputVec();
     else if(p.team==='A'&&G.cfg.backPick===String(p.num)){const vic=G.ps.filter(q=>q.team==='D').sort((a,b)=>parseFloat(a.cls)-parseFloat(b.cls))[0];const r=diamondTarget(vic)||rawDef(vic);const dx=r.x-vic.x,dy=r.y-vic.y,d=hyp(dx,dy)||1;
       v=(d>1.5&&vic.x<12.5)?steerTo(p,vic.x+dx/d*1.5,vic.y+dy/d*1.5,false):steerTo(p,p.home.x,p.home.y,true);} // 센터라인 넘어서까지는 안 따라감 // 백픽: 상대가 가려는 길 앞에 서기
@@ -622,7 +639,7 @@ function transStep(dt){G.transT-=dt;const ib=P('A3');const mine=me();
     if(p.id==='A3'){v=steerTo(p,p.home.x,p.home.y,false);}
     v=avoid(p,v);{const st=(G.stuck[p.id]||0);if(st>0.8&&hyp(v.x,v.y)>0.2){const an=(p.num%2?1:-1)*1.2,c=Math.cos(an),sn=Math.sin(an);v={x:v.x*c-v.y*sn,y:v.x*sn+v.y*c};}}
     stepChair(p,v,dt);if(Math.abs(p.v)<0.3&&hyp(v.x,v.y)>0.3)G.stuck[p.id]=(G.stuck[p.id]||0)+dt;else G.stuck[p.id]=0;}
-  collide();const h=holdPos(ib);G.ball.x=h.x;G.ball.y=h.y;
+  collide();pinBox();const h=holdPos(ib);G.ball.x=h.x;G.ball.y=h.y;
   if(G.transT<=0&&(hyp(ib.x-ib.home.x,ib.y-ib.home.y)<0.6||G.transT<-1.5)){ib.x=ib.home.x;ib.y=ib.home.y;ib.a=0;ib.v=0;for(const d of G.ps){if(d.team!=='D')continue;const dx=d.x-ib.x,dy=d.y-ib.y,k=hyp(dx,dy)||1;if(k<2.1){d.x=ib.x+dx/k*2.1;d.y=ib.y+dy/k*2.1;}}clearOneM();G.phase='live';msg('휘슬! 8초 안에 인바운드',1500);ev('whistle',{trans:true});}}
 function rec(dt){G.rt=(G.rt||0)+dt;if(G.frames.length&&G.rt-G.frames[G.frames.length-1].rt<0.05)return;
   G.frames.push({rt:G.rt,t:G.t,ib:G.inbounded,ph:G.phase,ps:G.ps.map(p=>[p.x,p.y,p.a]),b:[G.ball.x,G.ball.y,G.ball.holder]});}
@@ -633,7 +650,8 @@ function tick(dt){
   if(G&&G.phase==='trans'){transStep(dt);}
   if(G&&G.phase==='live'){G.t+=dt;if(G.cfg.def==='manline'&&!G.km)highSwitch(dt);pressCheck(dt);if(G.press)ballAttack(dt);flash=Math.max(0,flash-dt);
     const mine=me();
-    for(const p of G.ps){let v;
+    const moves=[]; // 8명 판단을 먼저 다 하고 그다음 한꺼번에 움직임 (먼저 도는 선수가 유리하지 않게)
+    for(const p of G.ps){let v;if(p.box)continue;
       if(ctl(p.id))v=ctl(p.id);
       else if(p===mine)v=inputVec();
       else if(p.team==='A'&&cfg.mode==='ctrl'&&cfg.others==='stay'&&!(G.ball.roll&&chaser('A')===p))v={x:0,y:0};
@@ -641,7 +659,8 @@ function tick(dt){
           let nd=null,dd=2.5;for(const d of G.ps){if(d.team!=='D')continue;const k=hyp(d.x-p.x,d.y-p.y);if(k<dd){dd=k;nd=d;}}
           if(nd){const side=((nd.y-p.y)*v.x-(nd.x-p.x)*v.y)>0?-1:1;const ang=side*1.25,c=Math.cos(ang),sn=Math.sin(ang);v={x:v.x*c-v.y*sn,y:v.x*sn+v.y*c,dist:v.dist};}}}
       else{curP=p;v=defenseAI(p);curP=null;}
-      if(G.phase!=='live')break;
+      if(G.phase!=='live')break;moves.push([p,v]);}
+    if(G.phase==='live')for(let [p,v] of moves){
       if(p.id==='A3'&&!G.inbounded){p.v=0;continue;}
       if(p.team==='A'&&trapped(p)){v={x:v.x*0.08,y:v.y*0.08};}
       if(p.hook||G.ps.some(q=>q.hook&&q.hook.by===p.id)){v={x:v.x*0.05,y:v.y*0.05};} // 갈고리에 묶임 (묶은 쪽도 같이)
@@ -654,7 +673,7 @@ function tick(dt){
       if(req.pick)startPick();else if(req.rev)startReverse();
       else if(cfg.pick==='auto'&&!G.pick&&G.ball.holder&&!ctl(G.ball.holder)){const h=P(G.ball.holder);if(h.team==='A'&&(G.stuck[h.id]||0)>0.8&&G.inbounded)startPick();}
       stepPick(dt);
-      hookStep(dt);collide();stepBall(dt);if(G.phase==='live')rules(dt);
+      hookStep(dt);collide();pinBox();stepBall(dt);if(G.phase==='live')rules(dt);
       sampT+=dt;if(sampT>=0.2){sampT=0;sample();}}
     }
   req.pass=false;req.bounce=false;req.pick=false;req.rev=false;}
@@ -673,6 +692,7 @@ function setup(pos,o){o=o||{};if(!G)return null;const list=Array.isArray(pos)?po
 return {
   get G(){return G},get cfg(){return cfg},set cfg(v){cfg=v},stats,req,
   get passSel(){return passSel},set passSel(v){passSel=v},get flash(){return flash},
+  unbox(n){const q=G&&P('D'+n);if(q)q.box=false;},
   newGame,tick,whistle,doPass,bounce,startPick,startReverse,P,me,defCount,bestTargetForMe,holdPos,
   KEY,KEYDRAW,R,speedOf,space:o=>space(G.ps,o),readAlign:o=>readAlign(G.ps,o),setup,ALIGN,SCENES};
 }
@@ -683,7 +703,8 @@ return {
            cfg:{엔진 설정}, msg, event, input, aim } */
 function match(opts){opts=opts||{};
   const names=opts.names||{B:'A팀',R:'B팀'};
-  const M={att:'B',per:1,gc:opts.plen||480,plen:opts.plen||480,score:{B:0,R:0},poss:0,fin:false,overT:0,scored:false,flip:false,human:opts.human||null,lines:opts.lines||{B:['3.0','2.0','1.5','0.5'],R:['3.0','2.0','1.5','0.5']}};
+  const M={att:'B',per:1,gc:opts.plen||480,plen:opts.plen||480,score:{B:0,R:0},poss:0,fin:false,overT:0,scored:false,flip:false,human:opts.human||null,lines:opts.lines||{B:['3.0','2.0','1.5','0.5'],R:['3.0','2.0','1.5','0.5']},
+    pens:[],timeouts:{B:3,R:3},toT:0,keep:false}; // pens: 페널티 박스 [{team,num,left}], timeouts: 전·후반 3개씩(56조), toT: 타임아웃 남은 초
   const say=(t,ms)=>(opts.msg||(()=>{}))(t,ms);
   const sc=()=>`${names.B} ${M.score.B} : ${M.score.R} ${names.R}`;
   const other=t=>t==='B'?'R':'B';
@@ -695,21 +716,30 @@ function match(opts){opts=opts||{};
     cfg:Object.assign({mode:'watch',me:0,trans:true,autoBounce:true,pick:'auto',autoNext:false},opts.cfg||{}),
     control:id=>id===M.humanId()?b.inputVec():null,
     end:e=>{lastEnd=e;},
-    beforeNew:()=>{const c=b.cfg;c.lineA=M.lines[M.att].slice();c.lineD=M.lines[other(M.att)].slice();if(opts.beforeNew)opts.beforeNew(M);}
+    beforeNew:()=>{const c=b.cfg;c.lineA=M.lines[M.att].slice();c.lineD=M.lines[other(M.att)].slice();c.box=M.pens.filter(q=>q.team===other(M.att)).map(q=>q.num);if(opts.beforeNew)opts.beforeNew(M);}
   }));
   b.inputVec=()=>{const v=(opts.input||(()=>({x:0,y:0})))()||{x:0,y:0};const f=M.flip?-1:1;let x=(+v.x||0)*f,y=(+v.y||0)*f;const m=Math.hypot(x,y);if(m>1){x/=m;y/=m;}return {x,y};}; // 화면 기준 입력 → 엔진 좌표
   const flipCalc=()=>{const blueRight=M.per<=2;M.flip=!((M.att==='B')===blueRight);};
-  function next(){M.poss++;M.att=other(M.att);M.overT=0;M.scored=false;lastEnd=null;flipCalc();b.newGame();say(`${names[M.att]} 공격`,1500);}
-  M.start=()=>{M.att='B';M.per=1;M.gc=M.plen;M.score={B:0,R:0};M.poss=0;M.fin=false;M.overT=0;M.scored=false;lastEnd=null;flipCalc();b.newGame();say(`1피리어드 시작! ${names.B} 공격부터`,2600);};
+  function next(){M.poss++;if(M.keep)M.keep=false;else M.att=other(M.att); /* 수비 파울 뒤엔 같은 팀이 다시 공격 */M.overT=0;M.scored=false;lastEnd=null;flipCalc();b.newGame();say(`${names[M.att]} 공격`,1500);}
+  M.start=()=>{M.att='B';M.per=1;M.gc=M.plen;M.pens=[];M.timeouts={B:3,R:3};M.toT=0;M.keep=false;M.score={B:0,R:0};M.poss=0;M.fin=false;M.overT=0;M.scored=false;lastEnd=null;flipCalc();b.newGame();say(`1피리어드 시작! ${names.B} 공격부터`,2600);};
+  const evt=(k,d)=>(opts.event||(()=>{}))(k,d);
+  // 타임아웃(56조): 팀당 전·후반 3개, 60초. 볼 데드(공격 끝난 뒤~휘슬 전)에만. 경기 시계는 안 감
+  M.timeout=team=>{const G=b.G;if(!G||M.fin||M.toT>0||!(M.timeouts[team]>0))return false;if(!(G.phase==='over'||G.phase==='trans'||G.phase==='ready'))return false;
+    M.timeouts[team]--;M.toT=opts.toLen==null?60:opts.toLen;say(`${names[team]} 타임아웃 (남은 ${M.timeouts[team]}개)`,2600);evt('timeout',{team,left:M.timeouts[team]});return true;};
   M.step=dt=>{const G=b.G;if(!G)return;
+    if(M.toT>0){M.toT=Math.max(0,M.toT-dt);return;}
     b.tick(dt);
     if(M.fin)return;
-    if(G.phase==='live'){M.gc-=dt;if(M.gc<=0){M.gc=0;G.phase='over';G.result='period';M.scored=true;M.overT=0;say(M.per<4?`${M.per}피리어드 끝 · ${sc()}`:`경기 끝! ${sc()}`,3400);}}
+    if(G.phase==='live'){M.gc-=dt;
+      for(const q of M.pens.slice()){q.left-=dt;if(q.left<=0){M.pens.splice(M.pens.indexOf(q),1);if(q.team!==M.att)b.unbox(q.num);evt('release',{team:q.team,num:q.num,why:'time'});}} // 30초 다 채우면 복귀
+      if(M.gc<=0){M.gc=0;G.phase='over';G.result='period';M.scored=true;M.overT=0;say(M.per<4?`${M.per}피리어드 끝 · ${sc()}`:`경기 끝! ${sc()}`,3400);}}
     if(G.phase==='over'){
       if(!M.scored){M.scored=true;const good=G.result==='try'||G.result==='foul';if(good)M.score[M.att]++;
+        if(G.result==='penalty'&&lastEnd&&lastEnd.by){const q={team:other(M.att),num:+String(lastEnd.by).slice(1),left:lastEnd.sec||30};M.pens.push(q);M.keep=true;evt('penalty',{team:q.team,num:q.num,sec:q.left,text:lastEnd.text});}
+        if(G.result==='try'&&!(lastEnd&&lastEnd.penaltyTry)){const k=M.pens.findIndex(q=>q.team===other(M.att));if(k>=0){const q=M.pens.splice(k,1)[0];evt('release',{team:q.team,num:q.num,why:'try'});}} // 상대가 득점하면 먼저 들어간 선수부터 풀려남(106조)
         say(`${good?names[M.att]+' 득점!':names[M.att]+' 공격 끝'} ${lastEnd?lastEnd.text:''}`,3200);(opts.event||(()=>{}))('possEnd',{att:M.att,good,text:lastEnd&&lastEnd.text});}
       M.overT+=dt;
-      if(M.overT>3.6){if(M.gc<=0){if(M.per>=4){M.fin=true;say(`경기 끝! ${sc()}`,0);(opts.event||(()=>{}))('final',{score:{...M.score}});return;}M.per++;M.gc=M.plen;if(M.per===3)say('후반전! 코트를 바꿔요',2600);}next();}}};
+      if(M.overT>3.6){if(M.gc<=0){if(M.per>=4){M.fin=true;say(`경기 끝! ${sc()}`,0);(opts.event||(()=>{}))('final',{score:{...M.score}});return;}M.per++;M.gc=M.plen;if(M.per===3){M.timeouts={B:3,R:3};say('후반전! 코트를 바꿔요',2600);}}next();}}};
   // 사람 행동: 패스(방향 dir: 화면 기준, 없으면 앞쪽) / 드리블
   function target(q,inp){const G=b.G;const ms=G.ps.filter(t=>t.team==='A'&&t!==q&&!(t.id==='A3'&&!G.inbounded));if(!ms.length)return null;const m=Math.hypot(inp.x||0,inp.y||0);let best=null,bs=-1e9;
     for(const t of ms){const dx=t.x-q.x,dy=t.y-q.y,d=Math.hypot(dx,dy)||1;let s=-d*0.25;if(m>0.3)s+=((dx*inp.x+dy*inp.y)/(d*m))*5;else s+=dx>0?1:0;if(d>q.pass+2)s-=3;if(s>bs){bs=s;best=t;}}return best;}
@@ -721,7 +751,7 @@ function match(opts){opts=opts||{};
   M.brain=b;M.names=names;
   return M;}
 
-const API={VERSION,create,match,speedOf,space,readAlign,ALIGN,SCENES,KEY};
+const API={VERSION,create,match,speedOf,space,readAlign,ALIGN,SCENES,KEY,lineup};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.RugbyBrain=API;
 })(typeof window!=='undefined'?window:globalThis);
