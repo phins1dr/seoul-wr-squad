@@ -16,6 +16,7 @@ const RB = window.RugbyBrain;
 const CS = window.RugbyCourt.SPEC;              // 코트 규격: 엔진 공용 부품 (engine/rugby-court.js)
 const CL = CS.L, CW = CS.W, KD = CS.key.d, KW = CS.key.w, CR = CS.circleR, GW = CS.goalW;                         // 코트
 const MODE = new URLSearchParams(location.search).get('mode') === 'play' ? 'play' : 'watch', PLAY = MODE === 'play';
+let REPLAY = null;                               // 다시 보는 판 {seed, cfg} — 없으면 평소 관전
 let FL = 1;                                      // 플레이: 1 = 엔진 공격 방향이 화면 오른쪽, -1 = 왼쪽 (M.flip)
 const toW = (x, y, h = 0) => new THREE.Vector3(FL * (x - CL / 2), h, FL * (y - CW / 2));
 const BLUE = 0x2f81f7, RED = 0xf04a42;
@@ -561,15 +562,18 @@ if (PLAY) {
     event: (k) => { if (k === 'final') showEnd(); } });
   b = M.brain; M.start(); say('');
 } else {
-  // 롤아웃 판 다시 보기: ?seed=7&align=1set&ib=11&err=0.12&tac=auto — 럭비랩·롤아웃과 같은 설정·같은 씨앗이면 같은 경기가 그대로 나옴(끝나면 같은 판 반복)
+  // 다시 보기: 롤아웃·럭비랩과 같은 설정·같은 씨앗이면 같은 경기가 그대로 나옴(끝나면 같은 판 반복). 주소로(?seed=7&align=1set&ib=11&err=0.12&tac=auto) 또는 롤아웃 보기 화면에서 고름
   const QS = new URLSearchParams(location.search), num = k => (QS.get(k) != null && QS.get(k) !== '' ? +QS.get(k) : null);
-  const REPLAY = num('seed') != null ? { seed: num('seed'), cfg: Object.assign({ lineA: ['3.5', '1.5', '1.5', '1.5'], align: QS.get('align') || '1set' },
+  REPLAY = num('seed') != null ? { seed: num('seed'), cfg: Object.assign({ lineA: ['3.5', '1.5', '1.5', '1.5'], align: QS.get('align') || '1set' },
     num('ib') != null ? { ibPass: num('ib') } : {}, num('err') != null ? { passErr: num('err') } : {}, QS.get('tac') ? { tac: QS.get('tac') } : {}) } : null;
+  makeBrain();
+}
+function makeBrain() {
   b = RB.create({
     cfg: Object.assign({ trans: false, mode: 'watch', autoNext: true }, REPLAY ? REPLAY.cfg : {}),
     msg: say,
-    beforeNew: () => { if (REPLAY) RB.seed(REPLAY.seed); },
-    event: (k, d) => { if (k === 'newGame') { score.plays++; hud.play.textContent = score.plays; } if (k === 'tac' && REPLAY) setTimeout(() => say('다시 보기 · ' + d.why, 4000), 0); },
+    beforeNew: () => { if (REPLAY) RB.seed(REPLAY.seed); else RB.seed(null); },
+    event: (k, d) => { if (k === 'newGame') { score.plays++; hud.play.textContent = score.plays; } if (k === 'tac' && REPLAY) setTimeout(() => say(d.why, 4000), 0); },
   });
   b.newGame(); score.plays = 1; hud.play.textContent = '1';
 }
@@ -725,7 +729,7 @@ function applyJoy(dt) {
 /* ---------- 모드 버튼 ---------- */
 document.querySelectorAll('[data-mode]').forEach(e => {
   e.classList.toggle('on', e.dataset.mode === MODE);
-  e.onclick = () => { if (e.dataset.mode !== MODE) location.search = e.dataset.mode === 'watch' ? '' : '?mode=' + e.dataset.mode; };
+  e.onclick = () => { if (e.dataset.mode !== MODE || e.dataset.mode === 'review') location.search = e.dataset.mode === 'watch' ? '' : '?mode=' + e.dataset.mode; };
 });
 
 /* ---------- 플레이: 조종 (2D 게임 rugby-game과 같은 키·규칙) ---------- */
@@ -833,6 +837,81 @@ async function setupPost() {
 }
 
 /* ---------- 루프 ---------- */
+
+/* ---------- 롤아웃 보기 (?mode=review): 왼쪽 목록에서 판을 고르면 그대로 재생, 아래에서 O/X ---------- */
+const AREA_COL = { A1: '#38bdf8', A2: '#34d399', A3: '#a78bfa', A4: '#facc15', D1: '#fb7185', D2: '#fb923c', D3: '#e879f9', D4: '#a3e635' }; // 선수마다 다른 색
+const AREA_SEC = 2;                                // 범퍼 앞 영역: 이 초 안에 갈 수 있는 곳까지만 (감독: 코트 끝까지는 의미 없음)
+let areaOn = { A1: 1, A2: 1, A3: 1, A4: 1 }, areaT = 0, areaTex = null, areaCv = null, areaG = null; const areaRings = {};
+try { const a = JSON.parse(localStorage.getItem('wr3d.area') || 'null'); if (a) areaOn = a; } catch (e) { }
+function areaInit() {
+  areaCv = document.createElement('canvas'); areaCv.width = 112; areaCv.height = 60; areaG = areaCv.getContext('2d');
+  areaTex = new THREE.CanvasTexture(areaCv); areaTex.colorSpace = THREE.SRGBColorSpace; areaTex.magFilter = THREE.LinearFilter; areaTex.minFilter = THREE.LinearFilter;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(CL, CW), new THREE.MeshBasicMaterial({ map: areaTex, transparent: true, depthWrite: false, toneMapped: false }));
+  m.rotation.x = -Math.PI / 2; m.position.y = 0.012; m.renderOrder = 2; scene.add(m);
+  for (const id in AREA_COL) { const r = ringMesh(0.86, new THREE.Color(AREA_COL[id]).getHex(), 0.95); r.visible = false; r.position.y = 0.02; scene.add(r); areaRings[id] = r; }
+}
+function areaDraw() {
+  const G = b.G, sp = b.space({ cell: 0.25 }), img = areaG.createImageData(112, 60), d = img.data, rgb = {};
+  for (const id in AREA_COL) { const c = new THREE.Color(AREA_COL[id]); rgb[id] = [c.r * 255 | 0, c.g * 255 | 0, c.b * 255 | 0]; }
+  for (let i = 0; i < sp.view.length; i++) { const k = sp.view[i]; if (k < 0) continue; const id = G.ps[k].id; if (!areaOn[id]) continue; const t = sp.time[i]; if (t > AREA_SEC) continue;
+    const c = rgb[id], o = i * 4; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = 200 * (1 - 0.7 * t / AREA_SEC); }   // 멀수록 옅게
+  areaG.putImageData(img, 0, 0); areaTex.needsUpdate = true;
+}
+function areaFrame(dt) {
+  if (!areaTex) return; areaT -= dt;
+  for (const p of b.G.ps) { const r = areaRings[p.id]; if (!r) continue; r.visible = !!areaOn[p.id] && !p.box; if (r.visible) { const w = toW(p.x, p.y); r.position.x = w.x; r.position.z = w.z; } }
+  if (areaT <= 0) { areaT = 0.2; areaDraw(); }
+}
+const REVIEW = new URLSearchParams(location.search).get('mode') === 'review';
+if (REVIEW) {
+  document.body.classList.add('review'); areaInit();
+  // 왼쪽 패널·아래 바가 코트를 가리지 않게 3D 시야를 남은 공간 가운데로 옮김
+  const fitView = () => { const W = innerWidth, H = innerHeight; if (W > 860) camera.setViewOffset(W, H, -164, 44, W, H); else camera.setViewOffset(W, H, 0, 60, W, H); camera.updateProjectionMatrix(); };
+  fitView(); addEventListener('resize', () => setTimeout(fitView, 0));
+  const KIND = { try: '득점', steal: '뺏김', vio: '바이올레이션', err: '실책', pen: '수비 파울' }, BARC = { try: '#4ade80', steal: '#fb7185', vio: '#fbbf24', err: '#a78bfa', pen: '#94a3b8' };
+  const FB = 'rugbyLab.feedback.v1'; let fbs = []; try { fbs = JSON.parse(localStorage.getItem(FB) || '[]') || []; } catch (e) { }
+  const E = id => document.getElementById(id), esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  let data = null, curRow = null, curKind = null;
+  const idOf = (r, k) => [r.off, r.ib, r.def, r.samples[k].seed].join('|'), fbOf = (r, k) => fbs.find(f => f.id === idOf(r, k));
+  const defName = r => r.def === 'base' ? '기본 수비' : (r.why.includes('표에 없음') ? '표에 없는 상황 → 기본 수비' : '전술 표 ' + (r.why.split('→ 표의 ')[1] || ''));
+  function list() {
+    const L = E('rvList'); if (!data) { L.innerHTML = '<div id="rvEmpty">롤아웃 결과가 없어요.<br>PC에서 <b>bun engine/rollout.js</b>를 돌리면 생겨요.</div>'; return; }
+    let h = '', last = '';
+    data.rows.forEach((r, ri) => { if (r.offName !== last) { last = r.offName; h += `<div class="rvG">공격 · ${esc(r.offName)}</div>`; }
+      const bar = Object.keys(KIND).map(k => r[k] ? `<b style="width:${r[k]}%;background:${BARC[k]}"></b>` : '').join('');
+      const plays = Object.keys(KIND).filter(k => r.samples[k]).map(k => { const f = fbOf(r, k); return `<button class="rvPlay${curRow === r && curKind === k ? ' on' : ''}" data-r="${ri}" data-k="${k}">▶ ${KIND[k]} <em>${r[k]}%</em>${f ? `<u class="${f.ox === 'O' ? 'o' : 'x'}">${f.ox}</u>` : ''}</button>`; }).join('');
+      h += `<div class="rvRow${curRow === r ? ' on' : ''}"><div class="rvTop"><div class="rvName">인바운드 ${r.dist} · ${r.def === 'base' ? '기본 수비' : '전술 표'}<small>${esc(defName(r))}</small></div><div class="rvPct">${r.try}%<i>득점</i></div></div><div class="rvBar2">${bar}</div><div class="rvPlays">${plays}</div></div>`; });
+    L.innerHTML = h;
+  }
+  function bar() {
+    E('rvN').textContent = fbs.length; if (!curRow) return; const r = curRow, s = r.samples[curKind], f = fbOf(r, curKind);
+    E('rvInfo').innerHTML = `<b>${esc(r.offName)}</b> · 인바운드 ${r.dist} · ${esc(defName(r))} → 이 판은 <b>${esc(s.text)}</b> (${s.t}초) · ${r.n}판 중 ${KIND[curKind]} ${r[curKind]}%`;
+    E('rvO').classList.toggle('on', !!f && f.ox === 'O'); E('rvX').classList.toggle('on', !!f && f.ox === 'X'); E('rvMemo').value = f ? f.memo : '';
+  }
+  function pick(r, k) {
+    curRow = r; curKind = k; REPLAY = { seed: r.samples[k].seed, cfg: Object.assign({ lineA: data.lineA }, r.cfg) };
+    makeBrain(); for (const id in chairs) chairs[id].prev = null; readyT = 0; acc = 0; lastPhase = b.G.phase; prevFly = null; score.try = 0; score.to = 0; areaT = 0;
+    if (paused) { paused = false; E('bPause').textContent = '멈춤'; }
+    list(); bar(); document.body.classList.remove('rvOpen');
+  }
+  function save(ox) { if (!curRow) return; const r = curRow, s = r.samples[curKind], id = idOf(r, curKind);
+    fbs = fbs.filter(f => f.id !== id); fbs.push({ id, ox, memo: E('rvMemo').value.trim(), off: r.offName, dist: r.dist, why: r.why, end: s.text, seed: s.seed, brain: RB.VERSION, at: new Date().toISOString().slice(0, 10) });
+    try { localStorage.setItem(FB, JSON.stringify(fbs)); } catch (e) { } list(); bar(); say(ox === 'O' ? 'O 저장했어요' : 'X 저장했어요', 1500); }
+  E('rvList').onclick = e => { const t = e.target.closest('.rvPlay'); if (t) pick(data.rows[+t.dataset.r], t.dataset.k); };
+  E('rvO').onclick = () => save('O'); E('rvX').onclick = () => save('X');
+  E('rvMemo').onchange = () => { const f = curRow && fbOf(curRow, curKind); if (f) save(f.ox); };
+  E('rvCopy').onclick = () => { if (!fbs.length) { say('아직 찍은 O/X가 없어요', 2000); return; }
+    const t = '롤아웃 피드백\n' + fbs.map(f => `[${f.ox}] ${f.off} · 인바 ${f.dist} · ${f.why} → ${f.end} (씨앗 ${f.seed}, 두뇌 v${f.brain})${f.memo ? ' — ' + f.memo : ''}`).join('\n');
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => say('복사했어요. Claude에게 붙여 넣어 주세요', 3000), () => prompt('복사해서 Claude에게 붙여 넣기', t)); };
+  E('rvToggle').onclick = () => document.body.classList.toggle('rvOpen');
+  const A = E('rvArea'); for (const id in AREA_COL) { const bt = document.createElement('button'); bt.className = 'rvP' + (areaOn[id] ? ' on' : ''); bt.style.setProperty('--c', AREA_COL[id]);
+    bt.innerHTML = `<i></i>${id[0] === 'A' ? '공격' : '수비'} ${id[1]}`; bt.onclick = () => { areaOn[id] = areaOn[id] ? 0 : 1; bt.classList.toggle('on', !!areaOn[id]); areaT = 0; try { localStorage.setItem('wr3d.area', JSON.stringify(areaOn)); } catch (e) { } }; A.appendChild(bt); }
+  fetch('../lab/rollouts.json').then(r => r.ok ? r.json() : null).then(j => {
+    if (j && j.brain !== RB.VERSION) { E('rvMeta').textContent = `이 결과는 두뇌 v${j.brain}로 만든 거라 지금(v${RB.VERSION})과 다르게 나올 수 있어요. 롤아웃을 다시 돌려 주세요.`; }
+    else if (j) E('rvMeta').textContent = `${j.made} · 상황마다 ${j.n}판 · 패스 실수 ${j.passErr}. 판을 골라 보고 O/X만 찍어 주세요.`;
+    data = j; list(); if (j && j.rows.length) { const r = j.rows.find(x => x.def === 'table') || j.rows[0]; pick(r, Object.keys(KIND).find(k => r.samples[k])); }
+  }).catch(() => list());
+}
 const clock = new THREE.Clock();
 syncChairs(0, 0); setCam('wide');
 await setupPost();
@@ -844,6 +923,7 @@ function frame() {
   rotateAds(clock.elapsedTime);
   msgT -= dt; if (msgT <= 0 && hud.msg.textContent && b.G.phase === 'live') hud.msg.textContent = '';
   if (PLAY) playFrame();
+  areaFrame(dt);
   sbT -= dt;
   if (sbT <= 0 && PLAY) { sbT = 0.2; playHud(); }
   else if (sbT <= 0) {

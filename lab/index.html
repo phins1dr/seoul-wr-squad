@@ -120,19 +120,11 @@ footer{margin-top:16px;font-size:11.5px;color:var(--dim)}
     <button class="btn go" id="bSave">장면 저장</button>
     <button class="btn" id="bExport">내보내기</button>
     <button class="btn" id="bImport">불러오기</button>
+    <a class="btn" href="../game3d/?mode=review" title="두뇌가 여러 판 돌린 결과를 3D로 보고 O/X 찍기" style="text-decoration:none">롤아웃 보기 (3D)</a>
     <input type="file" id="fImport" accept=".json,application/json" hidden>
   </div>
 </header>
 <nav class="scenes" id="scenes" aria-label="장면 고르기"></nav>
-<nav class="scenes" id="rollouts" aria-label="롤아웃 장면 다시 보기" hidden></nav>
-<div class="scenes" id="fb" hidden style="align-items:center;gap:8px;flex-wrap:wrap">
-  <span class="grp" id="fbInfo"></span>
-  <button class="btn go" id="fbO" title="실제로도 이렇게 된다">O 맞아</button>
-  <button class="btn" id="fbX" title="실제와 다르다">X 달라</button>
-  <input id="fbMemo" placeholder="한마디 (안 써도 됨) — 예: 여기선 2번이 내려와서 받아" style="flex:1;min-width:220px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:inherit;font:inherit">
-  <a class="btn" id="fb3d" target="_blank" rel="noopener">3D로 보기</a>
-  <button class="btn" id="fbCopy">피드백 복사 (<span id="fbN">0</span>)</button>
-</div>
 <div class="layout">
   <section class="stage">
     <div class="court"><canvas id="cv" aria-label="코트"></canvas><div class="hint">선수 끌기 · 앞 동그라미 돌리기 = 범퍼 방향</div></div>
@@ -171,7 +163,6 @@ footer{margin-top:16px;font-size:11.5px;color:var(--dim)}
 </form></dialog>
 <div class="toast" id="toast" hidden></div>
 
-<script src="../engine/rugby-tactics.js"></script>
 <script src="../engine/rugby-brain.js"></script>
 <script src="../engine/rugby-chairs.js"></script>
 <script src="../engine/rugby-court.js"></script>
@@ -191,15 +182,11 @@ const r1=v=>Math.round(v*10)/10;
 let mine=ls.get(STORE,[]);if(!Array.isArray(mine))mine=[];
 let scene=null,work={},alignSel='1set',ibLong=false,showD=false,dirty=false;
 let b=null,sp=null,rd=null,running=false,speed=1,acc=0,spT=0,sel=null,logs=[];
-let replay=null,rollouts=null; // replay: {cfg,seed,label} — 롤아웃의 한 판을 다시 보는 중
 
 /* ---------- 두뇌 만들기 (판단은 전부 엔진) ---------- */
 function build(){
   const cfg={lineA:LINE_A.slice(),trans:false,autoWhistle:false,mode:'watch',align:alignSel};
   if(ibLong)cfg.ibPass=17;
-  // 롤아웃 다시 보기: 롤아웃과 같은 설정·같은 씨앗으로 만들면 같은 경기가 그대로 나옴 (장면 자리는 안 덮어씀)
-  if(replay){Object.assign(cfg,replay.cfg);RB.seed(replay.seed);b=RB.create({cfg,event:onEvent});b.newGame();running=false;logs=[];acc=0;recalc();renderAll();return;}
-  RB.seed(null);
   b=RB.create({cfg,event:onEvent});b.newGame();
   // 장면 원래 대형이면 공격 자리까지, 대형을 바꿨으면 수비·인바운더만 장면 그대로 (공격은 ALIGN 자리)
   const same=alignSel===scene.cfg.align;const pos={};
@@ -208,7 +195,7 @@ function build(){
 function recalc(){sp=b.space();rd=b.readAlign({sp});spT=0;}
 
 /* ---------- 장면 ---------- */
-function loadScene(sc){replay=null;renderRollouts();renderFb();scene=sc;work=clone(sc.pos);alignSel=sc.cfg.align||'1set';ibLong=!!sc.cfg.ibPass;sel=null;dirty=false;
+function loadScene(sc){scene=sc;work=clone(sc.pos);alignSel=sc.cfg.align||'1set';ibLong=!!sc.cfg.ibPass;sel=null;dirty=false;
   ls.set(LAST,{src:sc.src,key:sc.key});build();renderScenes();
   const on=document.querySelector('.chip.on');if(on)on.scrollIntoView({block:'nearest',inline:'nearest'});}
 const presets=RB.SCENES.map(s=>Object.assign({src:'preset'},clone(s)));
@@ -227,7 +214,6 @@ function chip(s){const c=document.createElement('button');c.className='chip'+(s.
 const EVK={whistle:'휘슬',inbound:'인바운드',catch:'받음',pass:'패스',cross:'센터라인 넘음',pick:'픽',hook:'갈고리',unhook:'갈고리 풀림',loose:'공이 굴러감',pickup:'주움',switch:'수비 스위치',press:'프레스',bounce:'바운스',reverse:'리버스',keydef:'키 수비',
   try:'득점',turnover:'턴오버',violation:'바이올레이션',foul:'파울'};
 function onEvent(type,x){if(type==='newGame'||type==='align'||type==='hit')return;const t=b&&b.G?b.G.t:0;let s=EVK[type]||type;x=x||{};
-  if(type==='tac')s='수비 전술 · '+x.why;else if(type==='miss')s=`${lbl(x.from)} 패스 실수`;else
   if(type==='pass')s=`${lbl(x.from)} → ${lbl(x.to)} 패스 ${x.d!=null?x.d+'m':''}`;
   else if(type==='inbound')s=`인바운드 → ${lbl(x.to)}`;
   else if(type==='catch'||type==='pickup')s=`${lbl(x.who)} ${EVK[type]}`;
@@ -404,28 +390,6 @@ $('ibLong').onchange=e=>{ibLong=e.target.checked;dirty=true;build();};
 $('showD').onchange=e=>{showD=e.target.checked;renderPanel();draw();};
 for(const bt of $('speed').children)bt.onclick=()=>{speed=+bt.dataset.v;for(const x of $('speed').children)x.classList.toggle('on',x===bt);};
 $('foot').textContent=`럭비두뇌 v${RB.VERSION} · 판단·공간·규칙은 전부 engine/rugby-brain.js · 공격 라인업 ${LINE_A.join('-')} · 내 장면은 이 브라우저(localStorage)에 저장`;
-
-/* ---------- 롤아웃 다시 보기 (engine/rollout.js가 만든 lab/rollouts.json) ---------- */
-const RO_KIND={try:'득점',steal:'뺏김',vio:'바이올레이션',err:'실책',pen:'수비 파울'};
-function renderRollouts(){const nav=$('rollouts');if(!rollouts||!rollouts.rows||!rollouts.rows.length){nav.hidden=true;return;}nav.hidden=false;nav.innerHTML='';
-  const g=document.createElement('span');g.className='grp';g.textContent=`롤아웃 ${rollouts.made} · ${rollouts.n}판씩 · 패스 실수 ${rollouts.passErr}`;nav.appendChild(g);
-  for(const r of rollouts.rows){const head=`${r.offName.split(' (')[0]} · 인바 ${r.dist} · ${r.def==='table'?'표':'기본'} ${r.try}%`;
-    for(const k of Object.keys(RO_KIND)){const sm=r.samples[k];if(!sm)continue;const c=document.createElement('button');
-      const on=replay&&replay.row===r&&replay.seed===sm.seed;c.className='chip'+(on?' on':'');c.title=`${r.why}\n${RO_KIND[k]} ${r[k]}% · 이 판: ${sm.text} (${sm.t}초, 씨앗 ${sm.seed})`;
-      c.textContent=`${head} ▶${RO_KIND[k]}`;c.onclick=()=>{replay={row:r,cfg:r.cfg,seed:sm.seed,kind:k,text:sm.text};alignSel=r.align;sel=null;build();renderRollouts();toast(`${r.why} · ${sm.text}`);togglePlay();};nav.appendChild(c);}}
-  renderFb();}
-/* O/X 피드백: 이 브라우저에 쌓아 두고, 「피드백 복사」로 글로 꺼내 Claude에게 붙여 넣음 */
-const FB='rugbyLab.feedback.v1';let fbs=ls.get(FB,[]);if(!Array.isArray(fbs))fbs=[];
-function renderFb(){const el=$('fb');$('fbN').textContent=fbs.length;if(!replay){el.hidden=true;return;}el.hidden=false;const r=replay.row;
-  $('fbInfo').textContent=`${r.offName.split(' (')[0]} · 인바 ${r.dist} · ${r.why} → ${replay.text}`;
-  const q=new URLSearchParams({seed:replay.seed,align:r.cfg.align,ib:r.cfg.ibPass,err:r.cfg.passErr});if(r.cfg.tac)q.set('tac',r.cfg.tac);$('fb3d').href='../game3d/?'+q;
-  const mine=fbs.find(f=>f.id===fbId());$('fbO').classList.toggle('go',!mine||mine.ox==='O');$('fbX').classList.toggle('go',!!mine&&mine.ox==='X');$('fbMemo').value=mine?mine.memo:'';}
-const fbId=()=>replay?[replay.row.off,replay.row.ib,replay.row.def,replay.seed].join('|'):'';
-function saveFb(ox){if(!replay)return;const r=replay.row;fbs=fbs.filter(f=>f.id!==fbId());fbs.push({id:fbId(),ox,memo:$('fbMemo').value.trim(),off:r.offName,dist:r.dist,why:r.why,end:replay.text,seed:replay.seed,brain:RB.VERSION,at:new Date().toISOString().slice(0,10)});ls.set(FB,fbs);renderFb();toast(ox==='O'?'O 저장':'X 저장');}
-$('fbO').onclick=()=>saveFb('O');$('fbX').onclick=()=>saveFb('X');
-$('fbCopy').onclick=()=>{if(!fbs.length){toast('아직 피드백이 없어요');return;}const t='럭비랩 롤아웃 피드백\n'+fbs.map(f=>`[${f.ox}] ${f.off} · 인바 ${f.dist} · ${f.why} → ${f.end} (씨앗 ${f.seed}, 두뇌 v${f.brain})${f.memo?' — '+f.memo:''}`).join('\n');
-  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('복사했어요. Claude에게 붙여 넣기'),()=>{prompt('복사해서 Claude에게 붙여 넣기',t);});};
-fetch('rollouts.json').then(r=>r.ok?r.json():null).then(j=>{if(j&&j.brain===RB.VERSION){rollouts=j;renderRollouts();}else if(j)console.warn('rollouts.json은 두뇌 v'+j.brain+'로 만든 것 — 지금 v'+RB.VERSION+'. bun engine/rollout.js 다시 돌리기');}).catch(()=>{});
 
 /* ---------- 시작 ---------- */
 addEventListener('resize',()=>fit());

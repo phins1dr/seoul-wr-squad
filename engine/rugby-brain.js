@@ -8,7 +8,7 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.7.0';
+const VERSION='1.7.1';
 // 난수: 평소엔 Math.random. RugbyBrain.seed(숫자)를 부르면 그 씨앗으로 고정 → 같은 씨앗·같은 설정이면 같은 경기가 다시 나옴(롤아웃 장면 다시 보기). seed(null)이면 해제
 let RNG=()=>Math.random();
 function seed(n){if(n==null){RNG=()=>Math.random();return;}let st=(n>>>0)||1;RNG=()=>{st=(st*1664525+1013904223)>>>0;return st/4294967296;};}
@@ -90,7 +90,7 @@ function space(ps,opts){opts=opts||{};const cell=opts.cell||0.25,W=28,H=15,nx=Ma
   for(const id in area){area[id]=r1(area[id]);safe[id]=r1(safe[id]);back[id]=r1(back[id]);fwd[id]=r1(fwd[id]);front[id]=r1(front[id]);}team.A=r1(team.A);team.D=r1(team.D);
   const ownerAt=(x,y)=>{const i=Math.floor(x/cell),j=Math.floor(y/cell);if(i<0||j<0||i>=nx||j>=ny)return null;const k=owner[j*nx+i];return k<0?null:ps[k].id;};
   const cellsOf=(id,mode)=>{const k=ps.findIndex(p=>p.id===id),out=[];for(let i=0;i<N;i++){const ok=mode==='front'?view[i]===k:owner[i]===k&&(!mode||lead[i]>=margin);if(ok)out.push({x:cx(i),y:cy(i)});}return out;};
-  return {cell,nx,ny,owner,lead,view,area,safe,back,fwd,front,stuck,team,ownerAt,cellsOf};}
+  return {cell,nx,ny,owner,lead,view,time:best,area,safe,back,fwd,front,stuck,team,ownerAt,cellsOf};} // time: 칸마다 주인이 닿는 데 걸리는 초 (화면에서 '몇 초 안 거리'만 그릴 때)
 /* ---------- 공격 얼라이먼트 (감독 노션 '26.11.9' 경기분석, 라인업 3.5-1.5-1.5-1.5) ----------
    인바운드 직전 공격 4명 배치. 좌표는 노션 그림에서 옮김 (x: 우리 베이스라인 0 → 공격 방향, 센터라인 14 / y: 1번 쪽 사이드 0)
    그림의 원은 실제 휠체어보다 커서, 붙어 있는 두 선수는 실제 붙은 간격(약 1.4m)으로 줄임 (1셋 1·4번: 1.9m로 두면 1번이 못 빠져나와 12초에 걸림)

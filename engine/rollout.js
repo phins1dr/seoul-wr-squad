@@ -36,4 +36,4 @@ for (const c of cases) { const cfg = { align: c.o.engine.cfg.align, ibPass: c.ib
 
 const out = { made: new Date().toISOString().slice(0, 10), brain: RB.VERSION, tactics: RT.VERSION, n: N, passErr: ERR, lineA: LINE_A, rows };
 const file = path.join(__dirname, '..', 'lab', 'rollouts.json'); fs.writeFileSync(file, JSON.stringify(out, null, 1));
-console.log('\n저장: lab/rollouts.json → 럭비랩 「롤아웃」 줄에서 눌러 다시 보기');
+console.log('\n저장: lab/rollouts.json → 3D 「롤아웃 보기」(game3d/?mode=review)에서 눌러 다시 보기');

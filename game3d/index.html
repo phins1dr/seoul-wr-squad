@@ -56,6 +56,58 @@
   .gBtn{margin-top:16px;width:100%;background:#2ea043;border:0;color:#fff;font-size:16px;font-weight:800;border-radius:12px;padding:12px;cursor:pointer;font-family:inherit}
   .fs{font-size:26px;font-weight:800;margin:6px 0 2px;font-variant-numeric:tabular-nums}
   .kh{font-size:12px;opacity:.6;margin-top:12px;line-height:1.6}
+
+  /* ── 롤아웃 보기 (?mode=review) — 어두운 중계 톤 위에 패널 3개: 왼쪽 목록 · 아래 O/X · 위 범퍼 영역 칩
+        색: slate 계열 중립 + 강조는 파랑(#3b82f6) 하나. 선수 색은 범퍼 영역과 칩에서만 씀. 간격 4px 배수, 모서리 12px/8px 두 가지 */
+  body.review #bug, body.review [data-mode]{display:none}
+  body.review #msg{bottom:auto;top:62px}
+  #rv,#rvBar{display:none}
+  body.review #rv{display:flex} body.review #rvBar{display:flex}
+  body.review #btns{max-width:calc(100vw - 376px)}
+  .rvCard{background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.16);border-radius:12px;backdrop-filter:blur(10px);box-shadow:0 12px 40px rgba(2,6,23,.5)}
+  #rv{position:fixed;left:16px;top:16px;bottom:16px;width:312px;flex-direction:column;overflow:hidden;z-index:3}
+  #rv header{padding:16px 16px 12px;border-bottom:1px solid rgba(148,163,184,.12)}
+  #rv h1{margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em}
+  #rv header p{margin:4px 0 0;font-size:12px;color:#94a3b8;line-height:1.5}
+  #rvList{overflow:auto;padding:8px;flex:1;scrollbar-width:thin}
+  .rvG{font-size:11px;font-weight:600;color:#64748b;letter-spacing:.04em;padding:12px 8px 4px}
+  .rvRow{border-radius:8px;padding:8px}
+  .rvRow.on{background:rgba(59,130,246,.12);outline:1px solid rgba(59,130,246,.35)}
+  .rvTop{display:flex;align-items:baseline;gap:8px}
+  .rvName{font-size:13px;font-weight:600;flex:1;min-width:0}
+  .rvName small{display:block;font-size:11.5px;font-weight:400;color:#94a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rvPct{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:#e2e8f0}
+  .rvPct i{font-style:normal;font-size:10.5px;font-weight:500;color:#64748b;margin-left:2px}
+  .rvBar2{height:4px;border-radius:2px;background:rgba(148,163,184,.14);margin:8px 0;overflow:hidden;display:flex}
+  .rvBar2 b{display:block;height:100%}
+  .rvPlays{display:flex;gap:4px;flex-wrap:wrap}
+  .rvPlay{font:inherit;font-size:12px;font-weight:600;color:#cbd5e1;background:rgba(148,163,184,.1);border:1px solid transparent;border-radius:8px;padding:6px 8px;cursor:pointer;display:flex;align-items:center;gap:4px;min-height:32px;transition:background .15s}
+  .rvPlay:hover{background:rgba(148,163,184,.2)} .rvPlay.on{background:#3b82f6;color:#fff}
+  .rvPlay em{font-style:normal;font-weight:400;opacity:.7;font-variant-numeric:tabular-nums}
+  .rvPlay u{text-decoration:none;font-weight:800;margin-left:2px} .rvPlay u.o{color:#4ade80} .rvPlay u.x{color:#fb7185} .rvPlay.on u{color:#fff}
+  #rvEmpty{padding:24px 16px;font-size:13px;color:#94a3b8;line-height:1.6}
+  #rvBar{position:fixed;left:344px;right:150px;bottom:16px;padding:12px;gap:8px;align-items:center;flex-wrap:wrap;z-index:3}
+  #rvInfo{flex:1 1 100%;font-size:12.5px;color:#cbd5e1;line-height:1.5} #rvInfo b{color:#fff;font-weight:600}
+  #rvBar button{font:inherit;font-size:14px;font-weight:700;border-radius:8px;border:1px solid rgba(148,163,184,.25);background:rgba(148,163,184,.1);color:#e2e8f0;padding:0 16px;height:40px;cursor:pointer;transition:background .15s}
+  #rvBar button:hover{background:rgba(148,163,184,.2)}
+  #rvO.on{background:#16a34a;border-color:#16a34a;color:#fff} #rvX.on{background:#e11d48;border-color:#e11d48;color:#fff}
+  #rvMemo{flex:1;min-width:160px;height:40px;box-sizing:border-box;border-radius:8px;border:1px solid rgba(148,163,184,.25);background:rgba(2,6,23,.45);color:#e2e8f0;font:inherit;font-size:13.5px;padding:0 12px}
+  #rvMemo::placeholder{color:#64748b}
+  #rvCopy{font-weight:600!important;font-size:13px!important}
+  #rvArea{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:12px 16px;border-bottom:1px solid rgba(148,163,184,.12)}
+  #rvArea span{grid-column:1/-1;font-size:11px;color:#64748b;font-weight:600;letter-spacing:.04em;margin-bottom:4px}
+  #rvArea span small{font-weight:400;letter-spacing:0;color:#94a3b8}
+  .rvP{font:inherit;font-size:12px;font-weight:700;border-radius:8px;border:1px solid rgba(148,163,184,.2);background:transparent;color:#94a3b8;padding:0 4px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+  .rvP i{width:10px;height:10px;border-radius:50%;background:var(--c);opacity:.35}
+  .rvP.on{color:#f1f5f9;border-color:var(--c);background:rgba(148,163,184,.1)} .rvP.on i{opacity:1}
+  #rvToggle{display:none}
+  @media (max-width:860px){
+    #rv{width:auto;right:16px;top:auto;bottom:16px;max-height:46vh;transform:translateY(calc(100% + 16px));transition:transform .2s ease-out;z-index:6}
+    body.rvOpen #rv{transform:none}
+    #rvBar{left:16px;right:16px;bottom:16px} body.review #joyWrap{display:none} body.review #btns{max-width:calc(100vw - 110px)}
+    #rvToggle{display:block;position:fixed;left:16px;top:16px;z-index:7;font:inherit;font-size:13px;font-weight:700;height:36px;padding:0 12px;border-radius:8px;border:1px solid rgba(148,163,184,.25);background:rgba(15,23,42,.9);color:#e2e8f0}
+    body:not(.review) #rvToggle{display:none}
+  }
   @media (pointer:fine){#pj,#pb,body.play #pj,body.play #pb{display:none}body.play #keysHint{display:block}.kh.t{display:none}}
   @media (pointer:coarse){.kh.k{display:none}}
   @media (max-width:700px){body.play #bug{top:auto;bottom:auto;top:96px;left:12px;transform:scale(.85);transform-origin:left top}body.play #side{top:150px;left:12px}body.play #msg{top:auto;bottom:160px}#bug{top:auto;bottom:18px;left:12px;transform:scale(.9);transform-origin:left bottom}#msg{bottom:auto;top:62px}#joy{width:96px;height:96px}#btns{max-width:none;left:12px;right:12px;justify-content:flex-start}}
@@ -84,11 +136,25 @@
 <div id="btns">
   <button data-mode="watch">관전</button>
   <button data-mode="play">플레이</button>
+  <button data-mode="review">롤아웃 보기</button>
   <button data-cam="wide" class="on">중계</button>
   <button data-cam="ball">볼 따라가기</button>
   <button data-cam="player">휠체어 클로즈업</button>
   <button id="bSpeed">1x</button>
   <button id="bPause">멈춤</button>
+</div>
+<button id="rvToggle">목록</button>
+<aside id="rv" class="rvCard" aria-label="롤아웃 목록">
+  <header><h1>롤아웃 보기</h1><p id="rvMeta">같은 상황을 여러 판 돌린 결과예요. 판을 골라 보고 O/X만 찍어 주세요.</p></header>
+  <div id="rvArea" aria-label="범퍼 앞 영역"><span>범퍼 앞 영역 <small>· 2초 안에 갈 수 있는 곳 · 눌러서 켜고 끄기</small></span></div>
+  <div id="rvList"></div>
+</aside>
+<div id="rvBar" class="rvCard" aria-label="피드백">
+  <div id="rvInfo">왼쪽 목록에서 판을 고르면 여기서 재생돼요.</div>
+  <button id="rvO" title="실제로도 이렇게 된다">O 맞아</button>
+  <button id="rvX" title="실제와 다르다">X 달라</button>
+  <input id="rvMemo" placeholder="한마디 (안 써도 돼요)" autocomplete="off">
+  <button id="rvCopy">피드백 복사 <span id="rvN">0</span></button>
 </div>
 <div id="side"></div>
 <div id="keysHint">이동 WASD·방향키 · 패스 Space · 1~4 그 번호에게 패스/바꾸기 · B 드리블 · Tab 선수 바꾸기</div>
