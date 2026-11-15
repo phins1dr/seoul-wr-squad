@@ -15,7 +15,8 @@
      ask    감독에게 물어볼 것 / note  감독이 답해 준 것 (없으면 생략)
 
    자리 규칙(seat)  — 좌표: 공격 방향 +x(위 = 트라이라인), 볼 = 인바운더
-     auto    상대가 센터라인 위(탑)에 있으면 숏자리, 아래에 있으면 롱자리 — 작전집 "센터라인 밑으로 가면 롱자리로 전환"을 규칙으로
+     auto    인바운더(볼맨) 패스 거리로 정한다(감독 2026-11-15): 상대 뒤 공간까지 패스가 닿으면 롱자리(숏자리에 섰다가 상대가 달리며
+             롱패스를 받으면 바로 실점), 패스가 상대 너머로 못 가면 숏자리. 탑이든 백코트든 같은 규칙. 볼을 가진 선수 담당은 늘 롱자리
      long    롱자리: 상대보다 위(트라이라인 쪽)에 선다 → 진출을 막는다(눌러주기)
      short   숏자리: 볼과 상대 사이에 선다 → 패스를 막는다(디나이)
      ibcheck 인바체크: 인바운드 지점 1m 반경 바로 밖, 인바운더 정면
@@ -23,14 +24,16 @@
      trapTop / trapBot  트랩: 두 명이 한 선수를 위·아래에서 막는다                              */
 (function (root) {
 'use strict';
-const VERSION = '0.1.1';
+const VERSION = '0.2.0';
 const PI = Math.PI;
 
 /* 인바운드 거리 단계 (전술 사전 2장 + 감독 2026-11-15): 사람이 아니라 인바운더 패스가 베이스라인에서 어디까지 닿는지로 부른다.
    10 = 센터라인을 넘김(14m) / 20 = 바닥을 넘김 / 30 = 바닥 이하 ~ 키 이상 / 40 = 키 이하(1.75m)
-   바닥 = 농구 3점라인 안쪽. 감독도 정확한 m는 모름 → 농구 규격(FIBA 3점라인 꼭대기가 베이스라인에서 8.325m)으로 8.3m를 씀 ⚠ 코트에서 재면 확정
-   need = 그 단계로 치는 최소 도달 거리(m) */
-const BADAK = 8.3;
+   바닥 = 코트에 그려진 농구 3점라인 모양 그대로(베이스라인에서 시작하는 반원), 그 크기를 실제로 씀(감독 2026-11-15).
+          숫자는 농구 규격으로 넣음: 림 중심(베이스라인에서 1.575m)에서 반지름 6.75m, 사이드 쪽은 사이드라인에서 0.9m 직선 → 꼭대기가 베이스라인에서 8.325m
+   need = 그 단계로 치는 최소 도달 거리(m). 20의 기준(바닥을 넘김)은 반원 꼭대기까지 거리 */
+const BADAK = 8.3, HOOP = { x: 1.575, y: 7.5, r: 6.75 };
+const inBadak = (x, y) => x >= 0 && y > 0.9 && y < 14.1 && (x <= HOOP.x || Math.hypot(x - HOOP.x, y - HOOP.y) <= HOOP.r); // 그 자리가 (우리 베이스라인 쪽) 바닥 안인가
 const DIST = [{ code: 10, need: 14, name: '센터라인 이상' }, { code: 20, need: BADAK, name: '바닥 이상' }, { code: 30, need: 1.75, name: '바닥 이하 · 키 이상' }, { code: 40, need: 0, name: '키 이하' }];
 const distOf = reach => DIST.find(d => reach >= d.need).code;
 const TOPS = ['제로탑', '원탑', '투탑', '쓰리탑'];
@@ -152,20 +155,30 @@ function pickDefense(sit) { return DEFENSE.filter(t => t.when && t.when.dist ===
 
 /* 자리 규칙 → 좌표. ps = 지금 선수들. 반환 {D1:{x,y,a}, …} — 두뇌 b.setup()에 그대로 넣는다 */
 const GAP = 1.4, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-function seatPos(role, ps) {
-  const m = ps.find(p => p.id === role.mark), ib = ps.find(p => p.id === 'A3'); const ball = { x: Math.max(0, ib.x), y: ib.y };
-  let x, y;
-  const seat = role.seat === 'auto' ? (m.x > 14 ? 'short' : 'long') : role.seat;
+/* 숏자리가 되나: 볼에서 상대까지 거리 + 여유 1m ≥ 패스 거리 → 상대 뒤로는 패스가 못 감 → 숏자리 가능 */
+const MARGIN = 1;
+const autoSeat = (reach, markDist) => markDist + MARGIN >= reach ? 'short' : 'long';
+/* 한 사람의 자리: role, m = 맡는 상대, ball = 볼 위치, reach = 볼 가진 선수 패스 거리, isHolder = 상대가 볼맨인가, inbounded = 인바운드 됐나 */
+function seatAt(role, m, ball, reach, isHolder, inbounded) {
+  let seat = role.seat, x, y; const md = Math.hypot(m.x - ball.x, m.y - ball.y);
+  if (seat === 'double' && inbounded) seat = 'auto';
+  if (seat === 'auto') seat = autoSeat(reach, md);
+  if (isHolder && (seat === 'short' || seat === 'auto')) seat = 'long';
   if (seat === 'long' || seat === 'trapTop') { x = m.x + GAP; y = m.y + (role.side || 0); }
-  else if (seat === 'short' || seat === 'trapBot') { const dx = ball.x - m.x, dy = ball.y - m.y, d = Math.hypot(dx, dy) || 1; x = m.x + dx / d * GAP; y = m.y + dy / d * GAP; }
+  else if (seat === 'short' || seat === 'trapBot') { const dx = ball.x - m.x, dy = ball.y - m.y, d = md || 1; x = m.x + dx / d * GAP; y = m.y + dy / d * GAP; }
   else if (seat === 'ibcheck') { x = ball.x + 1.75; y = ball.y; }
   else if (seat === 'double') { x = ball.x + 1.9; y = ball.y + (m.y < ball.y ? -1.4 : 1.4); }
   else return null;
-  return { x: clamp(x, 0.6, 27.4), y: clamp(y, 0.7, 14.3), a: PI };
+  return { x: clamp(x, 0.6, 27.4), y: clamp(y, 0.7, 14.3), a: PI, seat };
 }
-function seats(id, ps) {
+function seatPos(role, ps, reach) {
+  const m = ps.find(p => p.id === role.mark), ib = ps.find(p => p.id === 'A3');
+  return seatAt(role, m, { x: Math.max(0, ib.x), y: ib.y }, reach != null ? reach : (ib.pass || 10), false, false);
+}
+/* 휘슬 전 수비 4명 자리. reach = 인바운더 패스 거리(없으면 A3.pass) */
+function seats(id, ps, reach) {
   const t = byId(id); if (!t || t.side !== 'def' || !t.ready) return null; const out = {};
-  for (const n of Object.keys(t.roles)) { const s = seatPos(t.roles[n], ps); if (s) out['D' + n] = s; }
+  for (const n of Object.keys(t.roles)) { const s = seatPos(t.roles[n], ps, reach); if (s) out['D' + n] = s; }
   const ids = Object.keys(out), others = ps.filter(p => p.id[0] === 'A'); // 겹치면 살짝 벌림 (인바체크 자리는 고정)
   for (let k = 0; k < 6; k++) for (const a of ids) { if (t.roles[a.slice(1)].seat === 'ibcheck') continue; const A = out[a];
     for (const o of ids.filter(b => b !== a).map(b => out[b]).concat(others)) { const dx = A.x - o.x, dy = A.y - o.y, d = Math.hypot(dx, dy); if (d < 1.3) { const ux = d > 1e-6 ? dx / d : 0, uy = d > 1e-6 ? dy / d : 1; A.x = clamp(A.x + ux * (1.3 - d), 0.6, 27.4); A.y = clamp(A.y + uy * (1.3 - d), 0.7, 14.3); } } }
@@ -188,7 +201,7 @@ function check() {
   return bad;
 }
 
-const API = { VERSION, DIST, distOf, situation, DEFENSE, OFFENSE, LOW_ACTION, byId, pickDefense, seats, check };
+const API = { VERSION, DIST, distOf, inBadak, situation, DEFENSE, OFFENSE, LOW_ACTION, byId, pickDefense, autoSeat, seatAt, seats, check };
 if (typeof module !== 'undefined' && module.exports) module.exports = API;
 root.RugbyTactics = API;
 })(typeof window !== 'undefined' ? window : globalThis);

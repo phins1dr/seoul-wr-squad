@@ -72,15 +72,22 @@ console.log('럭비두뇌 v' + RB.VERSION + ' 회귀 테스트\n\n1) 규정 확�
 console.log('\n1-2) 전술 표 (rugby-tactics.js v' + RT.VERSION + ') — 표의 전술을 두뇌가 읽고 돌리는지');
 { const bad = RT.check(); ok('표 형식 검사 (수비 ' + RT.DEFENSE.length + ' + 공격 ' + RT.OFFENSE.length + ')', bad.length === 0, bad.join(' / '));
   for (const t of RT.DEFENSE.filter(t => t.ready)) {
-    const cfg = Object.assign({ trans: false, align: t.demo.align, ibPass: t.demo.ibPass }, t.engine.cfg);
-    const b = RB.create({ cfg: JSON.parse(JSON.stringify(cfg)) }); b.newGame(); const ps = b.G.ps;
-    const sit = RT.situation(ps, t.demo.reach != null ? t.demo.reach : t.demo.ibPass), picked = RT.pickDefense(sit).map(x => x.id), S = RT.seats(t.id, ps), ib = b.P('A3'), ball = { x: 0, y: ib.y }; let geo = true;
-    for (const n of Object.keys(t.roles)) { const r = t.roles[n], d = S['D' + n], m = b.P(r.mark), far = q => Math.hypot(q.x - ball.x, q.y - ball.y), seat = r.seat === 'auto' ? (m.x > 14 ? 'short' : 'long') : r.seat;
+    const reach = t.demo.reach != null ? t.demo.reach : t.demo.ibPass;
+    const cfg = { trans: false, align: t.demo.align, ibPass: t.demo.ibPass, tac: t.id };
+    let why = ''; const b = RB.create({ cfg: JSON.parse(JSON.stringify(cfg)), event: (k, d) => { if (k === 'tac') why = d.why; } }); b.newGame(); const ps = b.G.ps;
+    const sit = RT.situation(ps, reach), picked = RT.pickDefense(sit).map(x => x.id), ib = b.P('A3'), ball = { x: 0, y: ib.y }; let geo = true;
+    for (const n of Object.keys(t.roles)) { const r = t.roles[n], d = b.P('D' + n), m = b.P(r.mark), far = q => Math.hypot(q.x - ball.x, q.y - ball.y), seat = r.seat === 'auto' ? RT.autoSeat(ib.pass, far(m)) : r.seat;
       if (seat === 'long' || seat === 'trapTop') geo = geo && d.x > m.x + 0.5;      // 위(트라이라인 쪽)에 섰나
       if (seat === 'short' || seat === 'trapBot') geo = geo && far(d) < far(m);     // 볼과 상대 사이에 섰나
-      if (seat === 'ibcheck') geo = geo && far(d) >= 1.62; }                           // 1m 반경 밖인가
-    let n = 0, tr = 0, pen = 0; for (let i = 0; i < Math.max(10, N / 3 | 0); i++) { seed = 3000 + i; const q = play(cfg, { before: bb => bb.setup(RT.seats(t.id, bb.G.ps)) }); n++; if (q.e && q.e.kind === 'try') tr++; if (q.e && q.e.kind === 'penalty') pen++; }
-    ok('수비 ' + t.name + ': 상황 인식 · 자리 · 실행', picked.includes(t.id) && geo && pen === 0, '상황 "' + sit.name + '" → ' + (picked.join(',') || '없음') + ' · 상대 공격 성공 ' + Math.round(tr / n * 100) + '% (' + n + '판)' + (pen ? ' · 수비 파울 ' + pen : '')); }
+      if (seat === 'ibcheck') geo = geo && far(d) >= 1.62; }                         // 1m 반경 밖인가
+    const run = (tac, pe) => { let n = 0, tr = 0, pen = 0; for (let i = 0; i < Math.max(10, N / 3 | 0); i++) { seed = 3000 + i; const q = play(Object.assign({}, cfg, { tac, passErr: pe })); n++; if (q.e && q.e.kind === 'try') tr++; if (q.e && q.e.kind === 'penalty') pen++; } return { n, tr, pen }; };
+    const on = run(t.id, 0.12), off = run(null, 0.12);
+    ok('수비 ' + t.name + ': 상황 인식 · 자리 · 실행', picked.includes(t.id) && geo && on.pen === 0 && !!b.G.tac, '상황 "' + sit.name + '" · 상대 공격 성공: 표대로 ' + Math.round(on.tr / on.n * 100) + '% / 기본 수비 ' + Math.round(off.tr / off.n * 100) + '% (' + on.n + '판, 패스 실수 0.12)'); }
+  { const a = RT.autoSeat; ok('자리 규칙: 패스가 상대 너머로 닿으면 롱자리, 못 닿으면 숏자리', a(15, 5) === 'long' && a(15, 16) === 'short' && a(6, 5.5) === 'short' && a(11, 4) === 'long');
+    ok('바닥 = 농구 3점라인 반원', RT.inBadak(5, 7.5) && RT.inBadak(8.2, 7.5) && !RT.inBadak(8.5, 7.5) && !RT.inBadak(6, 0.5) && RT.distOf(8.4) === 20 && RT.distOf(14) === 10 && RT.distOf(1.7) === 40); }
+  { // 씨앗: 같은 씨앗이면 같은 경기
+    const g = sd => { RB.seed(sd); const q = play({ trans: false, align: '1set', tac: 'auto', passErr: 0.12 }); RB.seed(null); return q.e.kind + '@' + q.b.G.t.toFixed(3); };
+    ok('씨앗이 같으면 같은 경기가 다시 나옴', g(77) === g(77) && [78, 79, 80, 81].some(x => g(x) !== g(77)), g(77)); }
   for (const t of RT.OFFENSE.filter(t => t.ready)) ok('공격 ' + t.name + ': 두뇌 대형과 연결', !!RB.ALIGN[t.engine.cfg.align], 'align=' + t.engine.cfg.align + ' · 로우 행동 ' + t.low + ' ' + RT.LOW_ACTION[t.low]);
   const nr = RT.DEFENSE.concat(RT.OFFENSE).filter(t => !t.ready); if (nr.length) console.log('  · 아직 두뇌가 못 돌리는 것: ' + nr.map(t => t.name).join(', '));
 }

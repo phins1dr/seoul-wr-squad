@@ -8,7 +8,12 @@
    경기(4피리어드·점수·공수교대)는 RugbyBrain.match(...) 를 써요. */
 (function(root){
 'use strict';
-const VERSION='1.5.0';
+const VERSION='1.6.0';
+// 난수: 평소엔 Math.random. RugbyBrain.seed(숫자)를 부르면 그 씨앗으로 고정 → 같은 씨앗·같은 설정이면 같은 경기가 다시 나옴(롤아웃 장면 다시 보기). seed(null)이면 해제
+let RNG=()=>Math.random();
+function seed(n){if(n==null){RNG=()=>Math.random();return;}let st=(n>>>0)||1;RNG=()=>{st=(st*1664525+1013904223)>>>0;return st/4294967296;};}
+// 전술 표(engine/rugby-tactics.js)가 있으면 씀: 화면에선 먼저 불러온 window.RugbyTactics, bun/node에선 require
+let TACLIB;const tacLib=()=>root.RugbyTactics||(TACLIB!==undefined?TACLIB:(TACLIB=(()=>{try{return typeof require==='function'?require('./rugby-tactics.js'):null;}catch(e){return null;}})()));
 const KEY={d:1.75,w:8}; // 키 에어리어 실제 규격 (판정용, WWR). 화면 그림은 engine/rugby-court.js — 숫자가 같아야 함
 /* 라인업 점수 (WWR 35조): 코트 위 4명 합 8.0 이하. 여자 선수 한 명마다 0.5~1.5는 +0.5, 2.0~3.5는 +1.0 허용.
    3명만 뛸 땐 합이 8 미만. list: ['3.0','2.0',...] 또는 [{cls:'2.0',female:true},...] → {sum,limit,ok} */
@@ -191,19 +196,26 @@ function newGame(){hooks.beforeNew();resolveDef();
   // 공격 대형: cfg.align = '1set'|'2set'|'4gull'|'2setlow'|'auto'(1셋으로 서 보고 수비를 읽어 고름). 없으면 예전 설정
   let alKey=cfg.align&&cfg.align!=='auto'&&ALIGN[cfg.align]?cfg.align:null,alRead=null,ps=place(alKey||(cfg.align==='auto'?'1set':null));
   if(cfg.align==='auto'){alRead=readAlign(ps,{ibLong:cfg.ibLong});alKey=alRead.rec;if(alKey!=='1set')ps=place(alKey);}
+  // 수비 전술 표: cfg.tac = 표의 id 또는 'auto'(지금 상황 — 인바운드 거리·탑 인원 — 에 맞는 세트를 표에서 고름). 표의 자리 규칙대로 세우고, 센터라인을 넘기 전까지 그 자리를 지킴
+  let tac=null,tacWhy=null;
+  if(cfg.tac){const RT=tacLib();if(RT){const sit=RT.situation(ps,ps.find(q=>q.id==='A3').pass);const t=cfg.tac==='auto'?RT.pickDefense(sit)[0]:RT.byId(cfg.tac);
+    if(t&&t.side==='def'&&t.ready){Object.assign(cfg,t.engine.cfg);resolveDef();ps=place(alKey||(cfg.align==='auto'?'1set':null));const S=RT.seats(t.id,ps,ps.find(q=>q.id==='A3').pass);
+      for(const id in S){const q=ps.find(p=>p.id===id);q.x=S[id].x;q.y=S[id].y;q.a=S[id].a;}tac=t;tacWhy=`상황 "${sit.name}" → 표의 「${t.name}」`;}
+    else tacWhy=`상황 "${sit.name}" → 표에 없음, 기본 수비`;}}
   // 홈(얼라이먼트) 위치 저장
   for(const p of ps)p.home={x:p.x,y:p.y};
-  const rnd=(a,b)=>a+Math.random()*(b-a);
+  const rnd=(a,b)=>a+RNG()*(b-a);
   if(cfg.trans){ // 상대가 우리 골라인(아래)에서 득점한 직후: 다들 아래쪽에 흩어져 있음
     // 사이드라인에서 시작: 공격은 오른쪽(y=15 바깥), 수비는 왼쪽(y=0 바깥). 백코트 쪽에 흩어져 있음
-    const slots=[2.5,5.5,8.5,11.5].sort(()=>Math.random()-0.5),slotsD=[2.5,5.5,8.5,11.5].sort(()=>Math.random()-0.5);let ia=0,id=0;
+    const slots=[2.5,5.5,8.5,11.5].sort(()=>RNG()-0.5),slotsD=[2.5,5.5,8.5,11.5].sort(()=>RNG()-0.5);let ia=0,id=0;
     for(const p of ps){if(p.team==='A'){p.x=slots[ia++]+rnd(-0.8,0.8);p.y=15.9;p.a=-Math.PI/2;}else{p.x=slotsD[id++]+rnd(-0.8,0.8);p.y=-0.9;p.a=Math.PI/2;}}
-    for(const p of ps)if(p.team==='D'){const c=parseFloat(p.cls);p.ready=Math.random()<clamp(0.2+0.2*c,0.25,0.85);} // 등급이 높을수록 미리 길목을 막을 확률↑
+    for(const p of ps)if(p.team==='D'){const c=parseFloat(p.cls);p.ready=RNG()<clamp(0.2+0.2*c,0.25,0.85);} // 등급이 높을수록 미리 길목을 막을 확률↑
   }
   G={ps,ball:{holder:'A3',x:0,y:0,fly:null},t:0,phase:cfg.trans?'trans':'ready',transT:cfg.trans?rnd(5,8):0,inboundT:0,backT:0,shotT:0,holdT:0,keyT:{},crossed:false,inbounded:false,
      events:[],samples:[],frames:[],rt:0,keepId:null,stuck:{},result:null,sw:{},pick:null,pickCool:0,cfg:{...cfg,lineupA:L.join('-'),lineupD:D.join('-')},
      align:alKey?{key:alKey,name:ALIGN[alKey].name,read:alRead}:null};
   for(const n of (cfg.box||[])){const q=G.ps.find(p=>p.id==='D'+n);if(q)q.box=true;}pinBox();
+  G.tac=tac;if(tacWhy){G.tacWhy=tacWhy;ev('tac',{id:tac?tac.id:null,name:tac?tac.name:null,why:tacWhy});}
   if(G.align)ev('align',{key:G.align.key,name:G.align.name,why:alRead?alRead.why:[]});
   if(cfg.mode==='ctrl')cfg.me=3;passSel=null;if(cfg.trans)msg('트랜지션 · 데드타임이에요. 휘슬 전에 내 자리로!',2600);else msg('휘슬을 기다려요',0);hooks.event('newGame',{});
 }
@@ -332,6 +344,9 @@ function rawDef(p){
   if(MARKS()[p.num]===4&&!G.sw[p.id]&&c.ibCheck===false&&(c.form==='2x2'||c.form==='3x1')&&(c.noIb==='trap'||G.keepId===p.id||(c.noIb==='delay'&&(!G.inbounded||(c.form==='2x2'&&c.after==='delay2'))))){const t=P(c.form==='3x1'?'A'+c.trap:'A1'),ib=P('A3');const bh=b.holder?P(b.holder):b;const src=!G.inbounded?ib:bh;
     if(bh===t)return {x:t.x+0.9,y:t.y+(p.y<t.y?-1.2:1.2),slow:false,kind:'trap'};const dx=src.x-t.x,dy=src.y-t.y,d=hyp(dx,dy)||1;if(c.form==='3x1'){const an=Math.atan2(dy,dx)+(t.y<7.5?1.3:-1.3);return {x:t.x+Math.cos(an)*1.5,y:t.y+Math.sin(an)*1.5,slow:false,kind:'trap'};}return {x:t.x+dx/d*1.5,y:t.y+dy/d*1.5,slow:false,kind:'trap'};}
   if(b.roll&&chaser('D')===p)return {x:b.x,y:b.y,slow:false,kind:'ball'};
+  // 전술 표의 자리 지키기: 센터라인을 넘기 전까지, 맡은 상대와 볼(패스 거리)에 맞춰 롱자리·숏자리·트랩 자리를 계속 다시 잡음. 인바체크는 아래 기존 로직
+  if(G.tac&&!G.crossed){const r=G.tac.roles[p.num],RT=tacLib();if(r&&RT&&r.seat!=='ibcheck'){const m=P(r.mark);
+    if(m&&!(m.id==='A3'&&!G.inbounded)){const src=holder&&holder.team==='A'?holder:P('A3');const s=RT.seatAt(r,m,{x:Math.max(0,src.x),y:src.y},src.pass,m===holder,G.inbounded);if(s)return {x:s.x,y:s.y,slow:false,kind:'tac'};}}}
   const mk=G.sw[p.id]||(MARKS()[p.num]?'A'+MARKS()[p.num]:null);const m=mk?P(mk):null;
   const ib=P('A3');
   if(m&&m.id==='A3'&&!G.sw[p.id]){const f=freeIbTarget(p);if(f)return {...f,slow:false};}
@@ -498,7 +513,7 @@ function pickAI(p){const k=G.pick;if(!k)return null;const d=P(k.def);const h=P(k
 function stepPick(dt){const k=G.pick;if(!k)return;k.t+=dt;const d=P(k.def),pk=P(k.picker);
   if(k.phase==='go'&&hyp(d.x-pk.x,d.y-pk.y)<1.4){k.phase='set';k.t=0;
     if(k.type==='pnr'){const dPick=defOf(pk);if(dPick&&dPick!==d){G.sw[dPick.id]=k.holder;G.sw[d.id]=pk.id;ev('switch',{a:dPick.id,b:d.id});}}
-    else{const h=P(k.holder),dH=defOf(h),mt=P(k.mate);if(dH){k.choice=Math.random()<0.5?'stay':'switch';if(k.choice==='switch'){G.sw[dH.id]=mt.id;G.sw[d.id]=h.id;}ev('reverse',{choice:k.choice});
+    else{const h=P(k.holder),dH=defOf(h),mt=P(k.mate);if(dH){k.choice=RNG()<0.5?'stay':'switch';if(k.choice==='switch'){G.sw[dH.id]=mt.id;G.sw[d.id]=h.id;}ev('reverse',{choice:k.choice});
       if(h.id==='A'+cfg.me)msg(k.choice==='stay'?`수비가 나를 따라와요 → ${mt.num}번에게 패스!`:'수비가 동료에게 갔어요 → 그대로 몰고 가세요!',1800);
       else if(k.choice==='stay')k.passLater=0.5;}}}
   if(k.phase==='set'&&k.t>0.7){k.phase='roll';k.t=0;if(k.type==='pnr')msg('롤!',800);else if(P(k.holder).id==='A'+cfg.me&&k.choice==='stay')passSel=k.mate;}
@@ -527,8 +542,8 @@ function hookStep(dt){if(G.phase==='trans')return;G.contact=G.contact||{};const 
   for(const k of G.ps){if(k.chair!=='D')continue;for(const v of G.ps){if(v.team===k.team||v.hook||v.id===G.ball.holder&&false)continue;const d=hyp(k.x-v.x,k.y-v.y);if(d>2*R+0.08)continue;
     const key=k.id+v.id;now[key]=1;if(G.contact[key])continue; // 새로 부딪힌 순간만
     const pr=Math.min(0.95,hookProb(v.cls,k.cls)+Math.min(0.3,(v.still||0)*0.1));
-    if(Math.random()<pr){const diff=parseFloat(v.cls)-parseFloat(k.cls); // 등급 차이가 작을수록 오래 묶임 (차이 0.5 이하면 이번 공격 내내)
-      const dur=diff<=0.5?40:diff<=1.0?4+Math.random()*4:diff<=2.0?1.5+Math.random()*2:0.8+Math.random();v.hook={by:k.id,t:0,dur};ev('hook',{who:v.id,by:k.id});}}}
+    if(RNG()<pr){const diff=parseFloat(v.cls)-parseFloat(k.cls); // 등급 차이가 작을수록 오래 묶임 (차이 0.5 이하면 이번 공격 내내)
+      const dur=diff<=0.5?40:diff<=1.0?4+RNG()*4:diff<=2.0?1.5+RNG()*2:0.8+RNG();v.hook={by:k.id,t:0,dur};ev('hook',{who:v.id,by:k.id});}}}
   G.contact=now;}
 function collide(){const ps=G.ps;
   for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const a=ps[i],b=ps[j];const dx=b.x-a.x,dy=b.y-a.y,d=hyp(dx,dy);if(d<2*R&&d>1e-4){const o=(2*R-d),ux=dx/d,uy=dy/d;
@@ -554,7 +569,7 @@ function doPass(from,to){const s=holdPos(from);const t=P(to.id||to);const dist=h
   const lead=Math.min(1.5,dist*0.12);const tx=t.x+Math.cos(t.a)*t.v*lead*0.6,ty=t.y+Math.sin(t.a)*t.v*lead*0.6;
   let far=hyp(tx-s.x,ty-s.y);const maxd=from.pass;const k=far>maxd?maxd/far:1;
   // 패스 실수(실책): cfg.passErr = 패스 한 번이 빗나갈 기본 확률(0이면 실수 없음). 멀수록 잘 빗나감(가까우면 절반, 최대 거리면 1.5배). 빗나가면 1.6~3.2m 옆으로
-  let ox=0,oy=0;G.err=false;if(cfg.passErr>0&&Math.random()<cfg.passErr*(0.5+Math.min(1,far/maxd))){const an=Math.random()*Math.PI*2,r=1.6+Math.random()*1.6;ox=Math.cos(an)*r;oy=Math.sin(an)*r;G.err=true;ev('miss',{from:from.id,to:t.id});}
+  let ox=0,oy=0;G.err=false;if(cfg.passErr>0&&RNG()<cfg.passErr*(0.5+Math.min(1,far/maxd))){const an=RNG()*Math.PI*2,r=1.6+RNG()*1.6;ox=Math.cos(an)*r;oy=Math.sin(an)*r;G.err=true;ev('miss',{from:from.id,to:t.id});}
   G.ball={holder:null,x:s.x,y:s.y,fly:{sx:s.x,sy:s.y,tx:s.x+(tx-s.x)*k+ox,ty:s.y+(ty-s.y)*k+oy,t:0,dur:Math.max(0.35,far*k/9),from:from.id,to:t.id}};
   G.holdT=0;if(from.id==='A'+cfg.me)passSel=null;ev('pass',{from:from.id,to:t.id,d:+dist.toFixed(1),over:dist>from.pass});
   if(from.id==='A3'&&!G.inbounded){G.relPt=throwPt(from);G.inbounded=true;ev('inbound',{to:t.id});}
@@ -751,7 +766,7 @@ function match(opts){opts=opts||{};
   M.brain=b;M.names=names;
   return M;}
 
-const API={VERSION,create,match,speedOf,space,readAlign,ALIGN,SCENES,KEY,lineup};
+const API={VERSION,create,match,speedOf,space,readAlign,ALIGN,SCENES,KEY,lineup,seed};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.RugbyBrain=API;
 })(typeof window!=='undefined'?window:globalThis);
