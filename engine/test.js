@@ -74,11 +74,11 @@ console.log('\n1-2) 전술 표 (rugby-tactics.js v' + RT.VERSION + ') — 표의
   for (const t of RT.DEFENSE.filter(t => t.ready)) {
     const cfg = Object.assign({ trans: false, align: t.demo.align, ibPass: t.demo.ibPass }, t.engine.cfg);
     const b = RB.create({ cfg: JSON.parse(JSON.stringify(cfg)) }); b.newGame(); const ps = b.G.ps;
-    const sit = RT.situation(ps, t.demo.ibPass), picked = RT.pickDefense(sit).map(x => x.id), S = RT.seats(t.id, ps), ib = b.P('A3'), ball = { x: 0, y: ib.y }; let geo = true;
-    for (const n of Object.keys(t.roles)) { const r = t.roles[n], d = S['D' + n], m = b.P(r.mark), far = q => Math.hypot(q.x - ball.x, q.y - ball.y);
-      if (r.seat === 'long' || r.seat === 'trapTop') geo = geo && d.x > m.x + 0.5;      // 위(트라이라인 쪽)에 섰나
-      if (r.seat === 'short' || r.seat === 'trapBot') geo = geo && far(d) < far(m);     // 볼과 상대 사이에 섰나
-      if (r.seat === 'ibcheck') geo = geo && far(d) >= 1.62; }                           // 1m 반경 밖인가
+    const sit = RT.situation(ps, t.demo.reach != null ? t.demo.reach : t.demo.ibPass), picked = RT.pickDefense(sit).map(x => x.id), S = RT.seats(t.id, ps), ib = b.P('A3'), ball = { x: 0, y: ib.y }; let geo = true;
+    for (const n of Object.keys(t.roles)) { const r = t.roles[n], d = S['D' + n], m = b.P(r.mark), far = q => Math.hypot(q.x - ball.x, q.y - ball.y), seat = r.seat === 'auto' ? (m.x > 14 ? 'short' : 'long') : r.seat;
+      if (seat === 'long' || seat === 'trapTop') geo = geo && d.x > m.x + 0.5;      // 위(트라이라인 쪽)에 섰나
+      if (seat === 'short' || seat === 'trapBot') geo = geo && far(d) < far(m);     // 볼과 상대 사이에 섰나
+      if (seat === 'ibcheck') geo = geo && far(d) >= 1.62; }                           // 1m 반경 밖인가
     let n = 0, tr = 0, pen = 0; for (let i = 0; i < Math.max(10, N / 3 | 0); i++) { seed = 3000 + i; const q = play(cfg, { before: bb => bb.setup(RT.seats(t.id, bb.G.ps)) }); n++; if (q.e && q.e.kind === 'try') tr++; if (q.e && q.e.kind === 'penalty') pen++; }
     ok('수비 ' + t.name + ': 상황 인식 · 자리 · 실행', picked.includes(t.id) && geo && pen === 0, '상황 "' + sit.name + '" → ' + (picked.join(',') || '없음') + ' · 상대 공격 성공 ' + Math.round(tr / n * 100) + '% (' + n + '판)' + (pen ? ' · 수비 파울 ' + pen : '')); }
   for (const t of RT.OFFENSE.filter(t => t.ready)) ok('공격 ' + t.name + ': 두뇌 대형과 연결', !!RB.ALIGN[t.engine.cfg.align], 'align=' + t.engine.cfg.align + ' · 로우 행동 ' + t.low + ' ' + RT.LOW_ACTION[t.low]);

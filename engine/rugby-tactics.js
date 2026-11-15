@@ -12,9 +12,10 @@
      planB  실패하면 — [{if: 이런 일이 생기면, then: 이렇게}]
      engine 두뇌 연결 — {cfg: 두뇌 설정, does: 두뇌가 실제로 따라 하는 것, gap: 아직 못 하는 것}
      demo   시험용 상황 — {align: 공격 대형, ibPass: 인바운더 패스 거리(m)}  (회귀 테스트가 씀)
-     ask    감독에게 물어볼 것 (없으면 생략)
+     ask    감독에게 물어볼 것 / note  감독이 답해 준 것 (없으면 생략)
 
    자리 규칙(seat)  — 좌표: 공격 방향 +x(위 = 트라이라인), 볼 = 인바운더
+     auto    상대가 센터라인 위(탑)에 있으면 숏자리, 아래에 있으면 롱자리 — 작전집 "센터라인 밑으로 가면 롱자리로 전환"을 규칙으로
      long    롱자리: 상대보다 위(트라이라인 쪽)에 선다 → 진출을 막는다(눌러주기)
      short   숏자리: 볼과 상대 사이에 선다 → 패스를 막는다(디나이)
      ibcheck 인바체크: 인바운드 지점 1m 반경 바로 밖, 인바운더 정면
@@ -22,12 +23,15 @@
      trapTop / trapBot  트랩: 두 명이 한 선수를 위·아래에서 막는다                              */
 (function (root) {
 'use strict';
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 const PI = Math.PI;
 
-/* 인바운드 거리 단계 (전술 사전 2장): 사람이 아니라 인바운더가 던질 수 있는 거리로 부른다.
-   need = 그 단계로 치는 최소 패스 거리(m). 예전 두뇌에 있던 숫자(40:5, 30:7, 20:10, 10:13.5)를 그대로 가져옴 ⚠ 감독 확인 필요 */
-const DIST = [{ code: 10, need: 13.5, name: '센터라인 이상' }, { code: 20, need: 10, name: '바닥 이상' }, { code: 30, need: 7, name: '바닥 이하' }, { code: 40, need: 0, name: '키 근처' }];
+/* 인바운드 거리 단계 (전술 사전 2장 + 감독 2026-11-15): 사람이 아니라 인바운더 패스가 베이스라인에서 어디까지 닿는지로 부른다.
+   10 = 센터라인을 넘김(14m) / 20 = 바닥을 넘김 / 30 = 바닥 이하 ~ 키 이상 / 40 = 키 이하(1.75m)
+   바닥 = 농구 3점라인 안쪽. 감독도 정확한 m는 모름 → 농구 규격(FIBA 3점라인 꼭대기가 베이스라인에서 8.325m)으로 8.3m를 씀 ⚠ 코트에서 재면 확정
+   need = 그 단계로 치는 최소 도달 거리(m) */
+const BADAK = 8.3;
+const DIST = [{ code: 10, need: 14, name: '센터라인 이상' }, { code: 20, need: BADAK, name: '바닥 이상' }, { code: 30, need: 1.75, name: '바닥 이하 · 키 이상' }, { code: 40, need: 0, name: '키 이하' }];
 const distOf = reach => DIST.find(d => reach >= d.need).code;
 const TOPS = ['제로탑', '원탑', '투탑', '쓰리탑'];
 
@@ -44,19 +48,19 @@ const IB4 = { cfg: { inPos: '11', ib11: 'check', ibBy: 4 }, does: '시작 자리
 const DEFENSE = [
   { id: 'D20-1', name: '20 원탑', side: 'def', src: '작전집 · 인바운드 상황 · 20 원탑 (인바운더 패스거리: 바닥 이상)', ready: true,
     when: { dist: 20, tops: 1 },
-    roles: { 1: { seat: 'long', mark: 'A1', mission: '바닥으로 접근하지 못하도록, 크로스 하지 않도록 수비' },
-             2: { seat: 'long', mark: 'A2', mission: '바닥으로 접근하지 못하도록, 크로스 하지 않도록 수비' },
-             3: { seat: 'short', mark: 'A4', mission: '센터라인 밑으로 못 가게. 센터라인 밑으로 가면 롱자리로 전환' },
+    roles: { 1: { seat: 'auto', mark: 'A1', mission: '바닥으로 접근하지 못하도록, 크로스 하지 않도록 수비' },
+             2: { seat: 'auto', mark: 'A2', mission: '바닥으로 접근하지 못하도록, 크로스 하지 않도록 수비 (상대 2번이 탑이면 숏자리)' },
+             3: { seat: 'auto', mark: 'A4', mission: '탑 선수 담당이면 숏자리: 센터라인 밑으로 못 가게. 밑으로 가면 롱자리로 전환' },
              4: { seat: 'ibcheck', mark: 'A3', mission: '인바체크. 실패하면 1:1 마크' } },
     steps: ['휘슬 전: 1·2번 롱자리, 3번 숏자리, 4번 인바체크 자리', '인바운드 전: 4번은 1m 밖에서 대기', '공이 떠나면: 4번이 인바운더 범퍼 앞을 막음', '볼맨이 올라오면: 1·2번이 위에서 눌러 12초를 씀'],
     planB: [{ if: '인바체크 실패(인바운더가 빠져나감)', then: '4번은 인바운더 1:1 마크' }, { if: '탑 선수가 센터라인 밑으로 내려옴', then: '3번은 숏자리 → 롱자리' }],
     engine: IB4, demo: { align: '1set', ibPass: 11 },
-    ask: '원탑일 때 탑에 서는 상대가 2번이면 우리 2번이 숏자리로 가나요? (원문은 1·2번 롱자리, 3번 숏자리)' },
+    note: '감독 2026-11-15: 탑에 선 상대가 2번이면 우리 2번이 숏자리로 가는 게 기본. 무빙 능력에 따라 3번이나 1번이 갈 수도 있다 → 표는 "같은 번호가 맡고, 탑에 있으면 숏자리"로. 사람 바꾸기는 아직 없음' },
   { id: 'D20-2', name: '20 투탑', side: 'def', src: '작전집 · 20 투탑 (바닥 이상)', ready: true,
     when: { dist: 20, tops: 2 },
     roles: { 1: { seat: 'long', mark: 'A1', mission: '바닥에서 스타트 하지 못하도록 밀착 수비' },
-             2: { seat: 'short', mark: 'A2', mission: '센터라인 밑으로 못 가게. 센터라인 밑으로 가면 롱자리로 전환' },
-             3: { seat: 'short', mark: 'A4', mission: '센터라인 밑으로 못 가게. 센터라인 밑으로 가면 롱자리로 전환' },
+             2: { seat: 'auto', mark: 'A2', mission: '센터라인 밑으로 못 가게. 센터라인 밑으로 가면 롱자리로 전환' },
+             3: { seat: 'auto', mark: 'A4', mission: '센터라인 밑으로 못 가게. 센터라인 밑으로 가면 롱자리로 전환' },
              4: { seat: 'ibcheck', mark: 'A3', mission: '인바체크. 실패하면 1:1 마크' } },
     steps: ['휘슬 전: 1번 롱자리(밀착), 2·3번은 탑 선수 숏자리, 4번 인바체크', '공이 떠나면: 4번 봉쇄, 1번은 첫 리시버 스타트를 막음', '롱패스가 뜨면: 2·3번이 숏자리에서 끊음'],
     planB: [{ if: '인바체크 실패', then: '4번은 인바운더 1:1 마크' }, { if: '탑 선수가 내려옴', then: '그 선수 담당은 롱자리로' }],
@@ -79,7 +83,7 @@ const DEFENSE = [
     steps: ['휘슬 전: 1·3번이 상대 1번 위에 나란히(롱자리), 2번은 탑 선수 숏자리, 4번 인바체크', '공이 떠나면: 4번 봉쇄, 1·3번이 상대 1번을 묶음', '로우포인터가 공을 잡으면(로우볼): 근처 선수 모두 어택'],
     planB: [{ if: '인바체크 실패', then: '4번은 인바운더 1:1' }, { if: '로우볼', then: '1번이 적극 어택, 4번은 다른 선수 접근을 막음' }],
     engine: Object.assign({}, IB4, { gap: '1번 트랩 유지, 로우볼 어택은 아직 없음(상대 4번은 비어 있음)' }), demo: { align: '1set', ibPass: 8 },
-    ask: '3번이 1번을 트랩할 때 상대 4번(로우)은 일부러 비워두는 게 맞나요?' },
+    note: '감독 2026-11-15: 트랩을 하면 가장 약한 상대 4번은 자연스럽게 비워진다' },
   { id: 'D40-0', name: '40 제로탑', side: 'def', src: '작전집 · 40 제로탑 (키 이하)', ready: true,
     when: { dist: 40, tops: 0 },
     roles: { 1: { seat: 'trapTop', mark: 'A1', mission: '4번과 함께 1번을 트랩. 패스를 받지 못하게 해야 한다' },
@@ -88,7 +92,7 @@ const DEFENSE = [
              4: { seat: 'trapBot', mark: 'A1', mission: '1번을 도와서 트랩' } },
     steps: ['휘슬 전: 1번(위)·4번(아래)이 상대 1번을 트랩, 2·3번은 롱자리', '인바운더는 멀리 못 던짐(키 근처) → 받을 사람이 1번뿐이면 8초 인바운드를 노림', '1번에게 볼인되면: 2·3번은 롱패스 대비'],
     planB: [{ if: '트랩이 풀림', then: '바로 콜, 1번은 맨투맨' }, { if: '1번에게 볼인', then: '2·3번 롱패스 대비' }],
-    engine: { cfg: { inPos: '2x2', after: 'keep' }, does: '시작 자리(트랩 모양)', gap: '두뇌의 2x2 트랩 로직은 원문과 맡는 사람이 다름 → 휘슬 뒤 움직임은 근사' }, demo: { align: '2setlow', ibPass: 6 } },
+    engine: { cfg: { inPos: '2x2', after: 'keep' }, does: '시작 자리(트랩 모양)', gap: '두뇌의 2x2 트랩 로직은 원문과 맡는 사람이 다름 → 휘슬 뒤 움직임은 근사' }, demo: { align: '2setlow', ibPass: 6, reach: 1.7 } },
   { id: 'D10-1', name: '10 원탑', side: 'def', src: '작전집 · 10 원탑 (하이포인트 인바운드)', ready: true,
     when: { dist: 10, tops: 1 },
     roles: { 1: { seat: 'long', mark: 'A1', mission: '스타트 하지 못하도록' },
@@ -107,7 +111,7 @@ const DEFENSE = [
     steps: ['하드가 볼러의 방향 하나를 지움', '나머지 3명은 공을 보고 움직이지 않고 예상 패스 코스에 먼저 섬(코스마다 한 명)', '볼이 넘어가면 0.5초 안에 재정렬 — 새 볼러에게 가장 가까운 사람이 하드', '볼러가 방향을 바꾸면 가장 가까운 한 명만 이동'],
     planB: [{ if: '볼러가 하드의 어깨를 반쯤 지나침', then: '즉시 스위치 — 뚫린 하드는 뒤에서 체이스, 가장 가까운 소프트가 새 하드' }, { if: '셋이 공 쪽으로 몰림', then: '볼 쪽 2명·반대편 1명·키 앞 1명으로 복귀' }],
     engine: { cfg: null, does: '없음', gap: '두뇌에 이 수비 모드가 없음 → 3단계에서 def:"hard2soft" 구현' },
-    ask: '우리 팀에서 실제로 쓰는 이름이 "2하드2소프트"인가요, 다른 콜이 있나요?' },
+    note: '감독 2026-11-15: 피클(보라)이 검색해서 알려준 일본 대표팀 전술이고 감독도 아직 내용을 모름 → 우리 팀 전술 아님. 참고 자료로만 두고, 감독이 보고 쓸지 정하기 전엔 두뇌에 구현하지 않는다' },
 ];
 
 /* ───────── 공격 (노션 26.11.9 경기분석의 4개 대형. 얼라이먼트 코드의 로우포인터 행동과 짝지음) ─────────
@@ -151,10 +155,11 @@ const GAP = 1.4, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 function seatPos(role, ps) {
   const m = ps.find(p => p.id === role.mark), ib = ps.find(p => p.id === 'A3'); const ball = { x: Math.max(0, ib.x), y: ib.y };
   let x, y;
-  if (role.seat === 'long' || role.seat === 'trapTop') { x = m.x + GAP; y = m.y + (role.side || 0); }
-  else if (role.seat === 'short' || role.seat === 'trapBot') { const dx = ball.x - m.x, dy = ball.y - m.y, d = Math.hypot(dx, dy) || 1; x = m.x + dx / d * GAP; y = m.y + dy / d * GAP; }
-  else if (role.seat === 'ibcheck') { x = ball.x + 1.75; y = ball.y; }
-  else if (role.seat === 'double') { x = ball.x + 1.9; y = ball.y + (m.y < ball.y ? -1.4 : 1.4); }
+  const seat = role.seat === 'auto' ? (m.x > 14 ? 'short' : 'long') : role.seat;
+  if (seat === 'long' || seat === 'trapTop') { x = m.x + GAP; y = m.y + (role.side || 0); }
+  else if (seat === 'short' || seat === 'trapBot') { const dx = ball.x - m.x, dy = ball.y - m.y, d = Math.hypot(dx, dy) || 1; x = m.x + dx / d * GAP; y = m.y + dy / d * GAP; }
+  else if (seat === 'ibcheck') { x = ball.x + 1.75; y = ball.y; }
+  else if (seat === 'double') { x = ball.x + 1.9; y = ball.y + (m.y < ball.y ? -1.4 : 1.4); }
   else return null;
   return { x: clamp(x, 0.6, 27.4), y: clamp(y, 0.7, 14.3), a: PI };
 }
@@ -169,7 +174,7 @@ function seats(id, ps) {
 
 /* 표가 형식에 맞는지 검사 → 틀린 곳 목록 (비어 있으면 통과) */
 function check() {
-  const bad = [], SEATS = ['long', 'short', 'ibcheck', 'double', 'trapTop', 'trapBot'], seen = {};
+  const bad = [], SEATS = ['auto', 'long', 'short', 'ibcheck', 'double', 'trapTop', 'trapBot'], seen = {};
   for (const t of ALL) { const e = m => bad.push(t.id + ': ' + m);
     if (!t.id || seen[t.id]) e('id가 없거나 겹침'); seen[t.id] = 1;
     for (const k of ['name', 'side', 'src', 'when', 'roles', 'steps', 'planB', 'engine']) if (t[k] == null) e(k + ' 없음');
