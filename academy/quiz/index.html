@@ -6,13 +6,49 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f6f7f9">
 <meta name="description" content="Wheelchair Rugby Quiz Championship — call the 2026 WWR casebook situations, climb the referee path, and top the weekly ranking. 휠체어럭비 판정 퀴즈.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gothic+A1:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<meta property="og:type" content="website">
+<meta property="og:title" content="휠체어럭비 퀴즈 챔피언십 · Wheelchair Rugby Quiz Championship">
+<meta property="og:description" content="내 심판 실력, 몇 점일까? How sharp is your referee eye? 2026 WWR Casebook quiz">
+<meta property="og:image" content="https://phins1dr.github.io/seoul-wr-squad/academy/quiz/og-quiz.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/gothic-a1-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="landing.css">
+<link rel="stylesheet" href="share.css">
 </head>
 <body>
 <div id="loadError" class="load-error" hidden></div>
+
+<!-- ================= 랜딩(소개) 덮개: 시작을 누르면 아래 앱이 그대로 보인다 ================= -->
+<div id="landing" class="landing" hidden role="dialog" aria-modal="true" aria-labelledby="lpTitle">
+  <div class="lp-wrap">
+    <div class="lp-top">
+      <span class="lp-logo" id="lpLogo">휠체어럭비 퀴즈 챔피언십</span>
+      <div class="lp-lang" role="group" aria-label="Language">
+        <button type="button" id="lpLang-ko" aria-pressed="true">한</button>
+        <button type="button" id="lpLang-en" aria-pressed="false">EN</button>
+        <span id="lpJp" aria-disabled="true">日本語 準備中</span>
+      </div>
+    </div>
+    <div class="lp-main">
+      <h1 class="lp-title" id="lpTitle">내 심판 실력,<br><em>몇 점일까?</em></h1>
+      <p class="lp-sub" id="lpSub"></p>
+      <div class="lp-facts">
+        <div><b id="lpQ">–</b><span id="lpQL">문항</span></div>
+        <div><b id="lpG">–</b><span id="lpGL">등급</span></div>
+        <div><b id="lpB">–</b><span id="lpBL">배지</span></div>
+      </div>
+      <details class="lp-aca"><summary id="lpAcaS">아카데미에서 더 배우기 · 준비 중</summary><p id="lpAcaB"></p></details>
+    </div>
+  </div>
+  <div class="lp-cta"><div class="lp-cta-in">
+    <button class="lp-start" id="lpStart" type="button">지금 시작하기</button>
+    <p class="lp-src" id="lpSrc">2026 WWR 공식 케이스북 기준</p>
+  </div></div>
+</div>
 
 <main id="app">
 
@@ -64,7 +100,7 @@
       <div class="level-bar"><span id="homeLadBar"></span></div>
       <p class="lad-count" id="homeLadCount"></p>
       <button class="btn primary big" id="homeBtnExam" type="button">승급 시험 보기</button>
-      <p class="lad-goal">최종 목표 <b>월드 레퍼리</b> → 명예의 전당. 영어로 월드까지 가면 <b>👑 최고 배지</b></p>
+      <p class="lad-goal">최종 목표 <b>WWR 월드 레퍼리</b> → 명예의 전당. 영어로 월드까지 가면 <b>👑 최고 배지</b></p>
     </section>
 
     <!-- 공유 랭킹 -->
@@ -102,7 +138,7 @@
       <button class="aux" id="entryQuiz" type="button">
         <span class="aux-kicker">Ⅱ. 케이스북</span>
         <span class="aux-title">케이스 목록</span>
-        <span class="aux-sub"><b id="caseCount">217</b>문항 · 코트 장면 <b id="sceneCount">7</b> · 장별로 풀기</span>
+        <span class="aux-sub"><b id="caseCount">217</b>문항<span id="sceneBit"> · 코트 장면 <b id="sceneCount">7</b></span> · 장별로 풀기</span>
       </button>
       <button class="aux" id="entryRules" type="button">
         <span class="aux-kicker">Ⅰ. 경기규정</span>
@@ -125,7 +161,8 @@
     <details class="archive">
       <summary>자료실 · 출처와 설명</summary>
       <div class="archive-body">
-        <p class="archive-lead">국제 경기규정 전문을 조항별로 읽고, 케이스북의 상황을 코트 위 움직이는 장면으로 보면서 판정을 맞혀보세요.</p>
+        <!-- 장면 문항 복귀 시 아래 문장을 이 원래 문장으로: 국제 경기규정 전문을 조항별로 읽고, 케이스북의 상황을 코트 위 움직이는 장면으로 보면서 판정을 맞혀보세요. -->
+        <p class="archive-lead">국제 경기규정 전문을 조항별로 읽고, 케이스북의 상황을 판정해 보세요. 코트 장면 그림은 준비 중이라 해당 문항은 글로 풀 수 있습니다.</p>
         <p class="src-label">출처</p>
         <p id="metaSource"></p>
         <p class="muted" id="metaEdition"></p>
@@ -200,7 +237,8 @@
 
     <h2 class="sec-title">장별로 골라 풀기</h2>
     <div id="chapterList" class="chapters"></div>
-    <p class="foot-note">2026 케이스북의 케이스 항목을 하나씩 퀴즈로 옮겼습니다. 장면이 있는 문항은 위치·이동이 판정을 가르는 케이스입니다.</p>
+    <!-- 장면 문항 복귀 시 아래 끝 문장을 이 원래 문장으로: 장면이 있는 문항은 위치·이동이 판정을 가르는 케이스입니다. -->
+    <p class="foot-note">2026 케이스북의 케이스 항목을 하나씩 퀴즈로 옮겼습니다. 코트 장면 그림은 준비 중이라 해당 문항은 글로 풀 수 있습니다.</p>
   </section>
 
   <!-- ================= 장별 케이스 ================= -->
@@ -308,12 +346,12 @@
     <h2 class="sec-title">심판 사다리</h2>
     <ol class="lad-table">
       <li><b>기록심</b><span>테이블에서 시작</span></li>
-      <li><b>코트심 2급</b><span>맞힌 문항 15% → 시험 10문항 80점</span></li>
-      <li><b>코트심 1급</b><span>35% → 시험 20문항 80점</span></li>
-      <li class="intl"><b>WWR 캔디데이트</b><span>도전! 국제심판 · 50% → 필기 20문항 80점</span></li>
-      <li class="intl"><b>WWR 프로비저널</b><span>65% → 20문항 85점</span></li>
-      <li class="intl"><b>존 레퍼리</b><span>80% → 30문항 85점</span></li>
-      <li class="intl"><b>월드 레퍼리</b><span>90% → 30문항, 최근 5회 중 3회 90점↑ + 평균 90점 → 명예의 전당</span></li>
+      <li><b>National 2급</b><span>맞힌 문항 15% → 시험 10문항 80점</span></li>
+      <li><b>National 1급</b><span>35% → 시험 20문항 80점</span></li>
+      <li class="intl"><b>WWR 교육생</b><span>도전! 국제심판 · 50% → 필기 20문항 80점</span></li>
+      <li class="intl"><b>WWR 비기너</b><span>65% → 20문항 85점</span></li>
+      <li class="intl"><b>WWR 존 레퍼리</b><span>80% → 30문항 85점</span></li>
+      <li class="intl"><b>WWR 월드 레퍼리</b><span>90% → 30문항, 최근 5회 중 3회 90점↑ + 평균 90점 → 명예의 전당</span></li>
     </ol>
     <p class="foot-note">실제 WWR 심판 경로(국내 급수 → Candidate → Provisional → Zone → World)를 따랐습니다. 월드 기준은 WWR 평가 규정(최근 5회 중 3회 90점 이상, 평균 90점대)을 퀴즈에 맞게 줄인 것입니다. 시험은 단계마다 하루 한 번입니다.</p>
 
@@ -367,6 +405,9 @@
 <script src="i18n.js"></script>
 <script src="firebase-config.js"></script>
 <script src="rank-online.js"></script>
+<script src="nickfilter.js"></script>
 <script src="app.js"></script>
+<script src="landing.js"></script>
+<script src="share.js"></script>
 </body>
 </html>

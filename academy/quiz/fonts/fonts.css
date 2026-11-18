@@ -1,0 +1,10 @@
+/* 사이트에 직접 넣은 글꼴 (외부 서버 요청 없음). 모두 SIL Open Font License 1.1 — 같은 폴더의 OFL-*.txt 참고.
+   Gothic A1·Do Hyeon: Google Fonts 공식 저장소(github.com/google/fonts, ofl/)의 원본 TTF에서 이 앱이 쓰는 글자만 골라 woff2로 줄인 것.
+   IBM Plex Mono: Google Fonts 공식 서버(fonts.gstatic.com)가 배포하는 라틴 woff2를 그대로 보관(원본 가공 없음, 예약 글꼴 이름 "Plex" 때문). */
+@font-face{font-family:"Gothic A1";font-style:normal;font-weight:400;font-display:swap;src:url(gothic-a1-400.woff2) format("woff2")}
+@font-face{font-family:"Gothic A1";font-style:normal;font-weight:500;font-display:swap;src:url(gothic-a1-500.woff2) format("woff2")}
+@font-face{font-family:"Gothic A1";font-style:normal;font-weight:700;font-display:swap;src:url(gothic-a1-700.woff2) format("woff2")}
+@font-face{font-family:"Gothic A1";font-style:normal;font-weight:800;font-display:swap;src:url(gothic-a1-800.woff2) format("woff2")}
+@font-face{font-family:"Do Hyeon";font-style:normal;font-weight:400;font-display:swap;src:url(do-hyeon-400.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url(ibm-plex-mono-500.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:600;font-display:swap;src:url(ibm-plex-mono-600.woff2) format("woff2")}

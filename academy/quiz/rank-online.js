@@ -6,14 +6,33 @@
      .top(kind, wk)      kind 'week' | 'all' → [{id,nick,score,grade,en,me}]
      .hall()             명예의 전당 → [{id,nick,lang,at,me}] (도달 순서)
      .enterHall(nick, lang)
-   설정은 firebase-config.js. 주소에 ?mock=1 이 있으면 이 브라우저 안의 가짜 서버로 동작한다. */
+   설정은 firebase-config.js. 가짜 서버(mock): 주소에 ?mock=1 이 있거나, 로컬(127.0.0.1 등)에서 열었을 때(기본). 로컬에서 실제 서버는 ?live=1. */
 (function () {
   'use strict';
   const SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
   const cfg = window.FIREBASE_CONFIG || {};
-  let mock = false;
-  try { mock = /[?&]mock=1\b/.test(location.search); } catch (e) {}
-  const R = { mode: mock ? 'mock' : (cfg.apiKey && cfg.projectId ? 'firebase' : 'off') };
+  /* 어디서 열었나: 내 컴퓨터(localhost·127.0.0.1·[::1]·*.localhost, 파일로 열기)면 로컬.
+     로컬에서는 기본이 가짜 서버(mock) → 시험하다 실제 순위표를 건드리지 않는다.
+     로컬에서 실제 서버가 꼭 필요할 때만 주소 뒤에 ?live=1. 공개 주소(github.io 등)는 예전처럼 실제 서버. */
+  let mock = false, isLocal = false, live = false;
+  try {
+    const h = (location.hostname || '').toLowerCase();
+    isLocal = location.protocol === 'file:' || h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || h === '::1' || /\.localhost$/.test(h);
+    live = /[?&]live=1\b/.test(location.search);
+    mock = /[?&]mock=1\b/.test(location.search) || (isLocal && !live);
+  } catch (e) {}
+  const R = { mode: mock ? 'mock' : (cfg.apiKey && cfg.projectId ? 'firebase' : 'off'), isLocal: isLocal, live: live };
+  /* 로컬 + 가짜 서버일 때만 구석에 작은 표시 (공개 주소에서는 isLocal이 거짓이라 절대 안 만들어짐) */
+  if (isLocal && R.mode === 'mock') {
+    const mark = function () {
+      if (document.getElementById('mockBadge')) return;
+      const d = document.createElement('div');
+      d.id = 'mockBadge'; d.textContent = '테스트 모드(가짜 순위) · Test mode';
+      d.style.cssText = 'position:fixed;left:6px;bottom:6px;z-index:2000;font:600 11px/1.2 sans-serif;background:#fde68a;color:#5b4500;border:1px solid #d6a800;border-radius:6px;padding:3px 7px;opacity:.9;pointer-events:none';
+      document.body.appendChild(d);
+    };
+    if (document.body) mark(); else document.addEventListener('DOMContentLoaded', mark);
+  }
 
   function loadScript(src) {
     return new Promise((ok, bad) => {

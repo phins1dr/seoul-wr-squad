@@ -1,0 +1,23 @@
+/* 결과 카드·공유 (share.js) */
+.share-box{background:var(--card,#fff);border:1px solid var(--line,#e3e7ed);border-radius:16px;padding:16px;margin:16px 0;box-shadow:var(--shadow,none)}
+.share-box h2{font-size:17px;margin:0 0 4px}
+.share-box .sh-hint{font-size:13.5px;color:var(--muted,#55606f);margin:0 0 12px;line-height:1.5}
+.sh-preview{display:block;width:100%;max-width:380px;margin:0 auto 12px;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.18);background:#f6f1e7;min-height:160px;object-fit:contain}
+.sh-preview.story{max-width:260px}
+.sh-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.sh-row label{font-size:13.5px;font-weight:700;color:var(--ink2,#333c48)}
+.sh-row input{flex:1 1 150px;min-height:44px;border:1.5px solid var(--line2,#cfd6e0);border-radius:10px;padding:0 12px;font:inherit;font-size:16px;background:#fff;color:var(--ink,#1b1f24)}
+.sh-fmt{display:flex;gap:0;border:1.5px solid var(--line2,#cfd6e0);border-radius:999px;overflow:hidden;width:max-content;max-width:100%}
+.sh-fmt button{min-height:40px;padding:0 14px;font-weight:700;font-size:14px;background:#fff}
+.sh-fmt button[aria-pressed=true]{background:var(--accent,#0f766e);color:#fff}
+.sh-actions{display:grid;gap:8px;margin-top:10px}
+.sh-msg{font-size:13.5px;color:var(--muted,#55606f);min-height:1.2em;margin:6px 0 0}
+.sh-msg.bad{color:var(--bad,#b3261e)}
+.sh-modal{position:fixed;inset:0;z-index:950;background:rgba(10,14,20,.88);overflow-y:auto;display:flex;justify-content:center;padding:20px 16px 40px}
+.sh-modal[hidden]{display:none!important}
+.sh-modal-in{width:100%;max-width:440px;color:#fff}
+.sh-modal-in h3{font-size:18px;margin:6px 0 10px}
+.sh-modal-in img{width:100%;border-radius:6px;display:block;margin:0 auto 12px;-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
+.sh-modal-in p{font-size:14px;line-height:1.55;color:#d6deea;margin:8px 0}
+.sh-modal-in .btn{width:100%;margin-top:8px}
+.sh-inapp{background:#3b2a05;border:1px solid #8a6100;color:#ffe9b0;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5}

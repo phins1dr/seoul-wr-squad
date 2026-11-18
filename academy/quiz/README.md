@@ -147,7 +147,7 @@ academy/quiz/
 - 내 기록 화면에 **기록 모두 지우기** 버튼이 있습니다.
 
 ### 7. 심판 사다리 · 공유 랭킹 (2026-11-13)
-- **등급 = 실제 심판 경로**: 기록심 → 코트심 2급 → 코트심 1급 → (도전! 국제심판) WWR 캔디데이트 → 프로비저널 → 존 레퍼리 → 월드 레퍼리.
+- **등급 = 실제 심판 경로**: 기록심 → National 2급 → National 1급 → (도전! 국제심판) WWR 교육생 → WWR 비기너 → WWR 존 레퍼리 → WWR 월드 레퍼리.
   예전 레벨(새내기·지역·국가대표·국제 심판, 누적 정답 수)은 없앴습니다.
 - **승급 조건**: 맞힌 '서로 다른 문항' 비율(전체 문항 수에 비례) 15/35/50/65/80/90%를 넘기면 승급 시험이 열립니다.
   시험은 전체에서 섞은 10·20·20·20·30·30문항, 합격선 80·80·80·85·85점. 단계마다 **하루 한 번**, 시작하면 그날 기회를 씁니다.
@@ -160,7 +160,7 @@ academy/quiz/
   Firestore 구조: `players/{uid}`(누적), `weeks/{YYYY-Www}/players/{uid}`(주간), `hall/{uid_lang}`(한 번 쓰면 못 고침). 예전 '랭킹 코드' 방식은 없앴습니다.
 - **홈 맨 위 인사 줄**: "닉네임님, 반가워요" + 대표 배지 + 등급·이번 주 점수·연속일 + 이번 주 순위(상위 50명 안). 닉네임이 없으면 그 자리에 "랭킹 참가" 칸. 큰 제목은 한 줄로 줄였습니다.
 - **배지 18종 (SVG로 직접 그린 메달, `badge-art.js`)**: 이름은 영어, 뜻은 작은 한글.
-  등급 7(COURT REFEREE II·I, WWR CANDIDATE·PROVISIONAL, ZONE REFEREE, WORLD REFEREE, WORLD LEGEND=영어 월드) ·
+  등급 7(NATIONAL GRADE 2·1, WWR CANDIDATE·PROVISIONAL, ZONE REFEREE, WORLD REFEREE, WORLD LEGEND=영어 월드) ·
   장 마스터 7(SETUP=3~6장, TIMING=7, PLAY=8, VIOLATION=9, FOUL=11, TECHNICAL=12, PENALTY=10·13장, **그 장 문항을 전부 맞혀야** 받음) ·
   스페셜 4(WEEKLY CHAMPION, ON FIRE=7일 연속, PERFECT 10, CASEBOOK MASTER=전체 전부 맞히기).
   가진 배지는 색·빛·반짝임, 못 가진 배지는 회색+자물쇠+진행 막대. 내 기록 맨 위 '대표 배지', 홈에 최근 배지 4개, 배지를 누르면 크게 보기.

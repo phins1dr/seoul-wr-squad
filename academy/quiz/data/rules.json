@@ -719,7 +719,7 @@
     "ⅰ. 이 장치는 휠체어의 가장 앞으로 튀어나온 부분일 수 없다.",
     "ⅱ. 바닥으로부터의 최소 높이 규정은 없지만, 항상 바닥에 닿으면 안된다.",
     "ⅲ. 바닥에 흠집을 내서는 안 된다.",
-    "ⅳ. 이 장치와 바닥과의 모든 접촉은 신체적 이점 규칙(79조) 에 의하여 판정된다.",
+    "ⅳ. 이 장치와 바닥과의 모든 접촉은 신체적 이점 규칙(78조) 에 의하여 판정된다.",
     "d. 타이어는 경기장 표면에 뚜렷한 자국을 남겨서는 안 된다.",
     "e. 보정 하중은 휠체어에 부착할 수 없다.",
     "f. 최대 10cm의 두께를 갖는 한 개의 쿠션이 휠체어의 좌석에 허용된다.",
@@ -2043,7 +2043,7 @@
    "titleEn": "Illegal use of the hands foul",
    "page": 40,
    "bodyKo": [
-    "선수는 상대편과 의도적 혹은 유리한 접촉을 만들기 위해서 자신의 손이나 팔을 사용하는 것이 허용되지 않는다. 수직 공간 안에서(86조) 불법적인 손의 사용이 있을 때, 접촉이 볼의 소유권을 가진 선수가 시작하였고 볼을 보호하거나 또는 패스하고자 하는 동작의 결과로서 발생한 것이 아닌 경우를 제외하고는 볼의 소유권을 가지지 않은 선수에게 파울이 주어져야 한다. 수직 공간 외부에서 불법적인 손의 사용이 있을 때, 파울은 접촉을 시작한 선수에게 주어져야 한다."
+    "선수는 상대편과 의도적 혹은 유리한 접촉을 만들기 위해서 자신의 손이나 팔을 사용하는 것이 허용되지 않는다. 수직 공간 안에서(87조) 불법적인 손의 사용이 있을 때, 접촉이 볼의 소유권을 가진 선수가 시작하였고 볼을 보호하거나 또는 패스하고자 하는 동작의 결과로서 발생한 것이 아닌 경우를 제외하고는 볼의 소유권을 가지지 않은 선수에게 파울이 주어져야 한다. 수직 공간 외부에서 불법적인 손의 사용이 있을 때, 파울은 접촉을 시작한 선수에게 주어져야 한다."
    ],
    "bodyEn": [
     "A player is not permitted to use his hands or arms to make deliberate or advantageous contact with an opponent. When illegal use of the hands occurs within the vertical space, (Article 87) the foul shall be charged to the player who does not have possession of the ball, unless the contact was initiated by the player who has possession of the ball and was not as the result of movement to protect or pass the ball.",
@@ -2214,7 +2214,7 @@
    "titleEn": "Flagrant foul",
    "page": 43,
    "bodyKo": [
-    "선수는 상대방에 대하여 어떠한 파울도 의도적으로 범해서는 안 된다. 플래그런트 파울이란 볼 또는 체어로 정당하게 플레이를 하는 정도를 넘어서 상대방에게 비-스포츠 적인 접촉을 한 선수에게 범해진다. 플래그런트 파울을 범한 선수는 3개의 페널티가 주어진다. 페널티는 연속적으로 수행된다. 만약 첫 번째 일반 파울에 대한 벌칙이 소유권 상실 또는 페널티 트라이가 부여된다면, 그 선수는 즉시 첫 번째 페널티 이후 두 번째 페널티가 부여된다. 만약 선수가 같은 경기에서 두 번째 플래그랜트 파울을 범할 경우, 경기에서 실격 처리된다.",
+    "선수는 상대방에 대하여 어떠한 파울도 의도적으로 범해서는 안 된다. 플래그런트 파울이란 볼 또는 체어로 정당하게 플레이를 하는 정도를 넘어서 상대방에게 비-스포츠 적인 접촉을 한 선수에게 범해진다. 플래그런트 파울을 범한 선수는 3개의 트라이 릴리즈 페널티가 주어진다. 페널티는 연속적으로 수행된다. 만약 첫 번째 일반 파울에 대한 벌칙이 소유권 상실 또는 페널티 트라이가 부여된다면, 그 선수는 즉시 첫 번째 페널티 이후 두 번째 페널티가 부여된다. 만약 선수가 같은 경기에서 두 번째 플래그랜트 파울을 범할 경우, 경기에서 실격 처리된다.",
     "이러한 상황에서 실격은 플래그런트 파울에 설명된 것과 동일할 것이다. 이 실격된 선수는 즉시 경기장에서 나가야 한다. 이 페널티는 코치가 정한 같은 팀에 있는 선수에게 부여된다. 코치는 알맞은 라인업으로 교체를 진행해야 한다."
    ],
    "bodyEn": [
@@ -2232,13 +2232,13 @@
    "titleEn": "Disqualifying foul",
    "page": 43,
    "bodyKo": [
-    "뻔뻔하게 스포츠맨답지 않은 파울을 범하거나 안전을 분명히 무시하고 파울을 범한 사람은 경기 자격을 박탈당한다. 다음의 행위는 디스퀄리파잉 파울이 된다.",
+    "명백히 스포츠맨답지 않은 파울을 범하거나 안전을 분명히 무시하고 파울을 범한 사람은 경기 자격을 박탈당한다. 다음의 행위는 디스퀄리파잉 파울이 된다.",
     "a. 위험한 플레이",
     "b. 싸움",
     "c. 계속되는 모욕적이고 공격적인 언어",
     "d. 심판을 때리거나 무례하게 신체 접촉하는 행위",
     "e. 판단이 매우 나쁘고 상대에게 위험이나 부상을 초래한 일반 파울",
-    "이 목록은 완전하지 않다. 레퍼리는 허용되는 행동, 예의, 안전을 뻔뻔하게 또는 심각하게 어긴 어떤 경우에도 자기 판단으로 선수나 벤치 관계자에게 디스퀄리파잉 파울을 줄 수 있다.",
+    "이 목록은 완전하지 않다. 레퍼리는 허용되는 행동, 예의, 안전을 명백하게 또는 심각하게 어긴 어떤 경우에도 자기 판단으로 선수나 벤치 관계자에게 디스퀄리파잉 파울을 줄 수 있다.",
     "디스퀄리파잉 파울을 범한 사람은 즉시 경기장을 떠나야 한다. 그는 경기장 안, 경기장 주변, 또는 경기에 계속 영향을 줄 수 있는 다른 어떤 장소에도 머물 수 없다. 자격을 박탈당한 사람이 경기와 다시 관여하면 벤치 관계자에게 테크니컬 파울이 주어진다.",
     "디스퀄리파잉 파울의 제재는 40초 페널티다. 이 페널티는 40초를 모두 수행하며, 페널티를 수행하는 선수는 상대 팀이 트라이를 성공해도 페널티 박스에서 풀려나지 않는다.",
     "디스퀄리파잉 파울을 선수가 범했으면, 자격을 박탈당한 선수와 등급분류 점수가 같은 같은 팀 선수가 페널티를 수행한다. 그런 선수가 없으면 같은 팀에서 자격을 박탈당한 선수의 등급분류 점수에 가장 가까운 선수가 수행한다. 가장 가까운 점수의 선수가 두 명이면 점수가 높은 선수가 수행한다. 수행할 수 있는 선수가 여럿이면 코치가 선수를 고른다.",
@@ -2376,7 +2376,7 @@
     "b. 예정된 시작 시각부터 15분 안에 경기할 준비가 되지 않는 경우 (60조)",
     "c. 예정된 시작 시각부터 15분 안에 코트에 4명의 선수를 내보내 경기를 시작할 수 없는 경우 (60조)",
     "d. 팀의 행동 때문에 레퍼리 1이 경기를 종료한 경우 (110조)",
-    "e. 등급분류 점수 최대치를 지키면서 경기를 계속할 수 없는 경우",
+    "e. 등급분류 점수 최대치를 지키면서 경기를 계속할 수 없는 경우 (35조)",
     "f. 최소 2명의 선수로 경기를 계속할 수 없는 경우",
     "g. 경기 시작 전에 테크니컬 딜리게이트에게 경기하지 않겠다고 통보한 경우",
     "몰수하지 않은 팀이 승자로 선언된다. 몰수한 팀이 몰수 시점에 점수가 뒤져 있었으면 그 시점의 점수를 최종 점수로 기록한다. 몰수한 팀이 몰수 시점에 점수가 앞서 있었으면 상대 팀이 1:0으로 이긴 것으로 최종 점수를 기록한다."
@@ -2387,7 +2387,7 @@
     "b. it is not ready to play within fifteen (15) minutes of the scheduled start time (Article 60),",
     "c. it is unable to begin the game with four (4) players on the court within fifteen (15) minutes of the scheduled start time (Article 60),",
     "d. its actions cause Referee 1 to end the game (Article 110),",
-    "e. it cannot continue the game while respecting the maximum classification point value (), or",
+    "e. it cannot continue the game while respecting the maximum classification point value (Article 35), or",
     "f. it cannot continue the game with at least two (2) players,",
     "g. it notifies the Technical Delegate prior to the scheduled start of the game that it will not play. The team that does not forfeit shall be declared the winner. If the team that forfeits is behind in points at the time of forfeiture, the score at that time shall be recorded as the final score.",
     "If the team that forfeits is ahead in points at the time of forfeiture, a score of one (1) to zero (0) in favor of the other team shall be recorded as the final score."

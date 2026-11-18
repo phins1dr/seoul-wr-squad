@@ -132,7 +132,7 @@
     "21"
    ],
    "question": "경기 중 A2 유니폼 상의의 번호가 레퍼리에게 잘 보이지 않는다. 레퍼리가 A2에게 번호가 잘 보이도록 유니폼을 고칠 기회를 한 번 주고 경기를 이어갔다. 옳은 처리인가?",
-   "questionEn": "During a game the number of the uniform top of A2 is difficult for the referee s to identify. T he referee asks and allows A2 to correct the uniform top, so the number is clearly visible?",
+   "questionEn": "During a game the number of the uniform top of A2 is difficult for the referee s to identify. The referee asks and allows A2 to correct the uniform top, so the number is clearly visible?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -155,7 +155,7 @@
     "21"
    ],
    "question": "두 팀이 비슷한 색의 어두운 상의를 입으려 한다. 레퍼리가 \"A팀이 대조되는 밝은 색 상의를 고른다\"고 판정했다. 옳은 판정인가?",
-   "questionEn": "Team A and Team B wish to wear similarly coloured dark shirts. The referee rules that Team A will choose a contrasting , lighter coloured shirt. Is this decisio n correct?",
+   "questionEn": "Team A and Team B wish to wear similarly coloured dark shirts. The referee rules that Team A will choose a contrasting , lighter coloured shirt. Is this decision correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -192,7 +192,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 3.22.1의 답: 중단 때 레퍼리는 장비 타임아웃을 주고, 경기를 재개하기 전에 버클이 잘 덮여 있는지 확인한다. 수리가 60초 안에 끝나지 않으면 그 선수는 교체되어야 한다.",
-   "explanationEn": "Incorrect. At the stoppage, the referee should provide an equipment time -out and ensure the buckle is well padded prior to resuming play. If the repair cannot be completed within 60 seconds, the player must be substituted.",
+   "explanationEn": "At the stoppage, the referee should provide an equipment time -out and ensure the buckle is well padded prior to resuming play. If the repair cannot be completed within 60 seconds, the player must be substituted.",
    "rule": ""
   },
   {
@@ -215,7 +215,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 4.27.1의 답: 적법하지 않다. 캐스터 휠은 빛을 발해서는 안 된다. 2026년 규정 27조 b에 새로 들어간 문구다.",
-   "explanationEn": "Illegal. Caster wheels are prohibited from emitting light. 4.29 Bumper",
+   "explanationEn": "Illegal. Caster wheels are prohibited from emitting light.",
    "rule": ""
   },
   {
@@ -273,7 +273,7 @@
     "29"
    ],
    "question": "B2가 마찰을 높이지는 않지만 강한 충격을 완화하려고 범퍼에 플라스틱 덮개를 씌웠다. 적법한가?",
-   "questionEn": "Player B2 has a plastic covering o n his bumper, which does not incre ase the fricti on when in contact with a nother chair but does help to cushion the bumper against hard hitting. Is this legal?",
+   "questionEn": "Player B2 has a plastic covering on his bumper, which does not incre ase the fricti on when in contact with a nother chair but does help to cushion the bumper against hard hitting. Is this legal?",
    "choices": [
     "적법하다",
     "적법하지 않다"
@@ -284,7 +284,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 4.29.3의 답: 적법하지 않다. 마찰을 높이지 않아도 범퍼에 덮개를 씌우는 것은 돌출물로 본다.",
-   "explanationEn": "Illegal. (Any covering on a bumper is considered a protrusion) 4.30 Wings",
+   "explanationEn": "Illegal. (Any covering on a bumper is considered a protrusion)",
    "rule": ""
   },
   {
@@ -296,7 +296,7 @@
     "30"
    ],
    "question": "\"윙은 어느 부분이든 바닥에서 20cm보다 높아서는 안 된다\"는 측정이 맞는가?",
-   "questionEn": "Any and all p arts of the wing cannot be any hi gher t han 20 cm from the ground in height. Is this the correct measurement?",
+   "questionEn": "Any and all parts of the wing cannot be any higher than 20 cm from the ground in height. Is this the correct measurement?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -307,7 +307,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 4.30.1의 답: 옳지 않다. 20cm 제한은 상대 휠체어와 접촉하게 되는 부분에만 적용된다. 윙 자체는 어떤 각도로 프레임에 붙어도 된다.",
-   "explanationEn": "Incorrect. This is true only for the area that will come into contact with an opponent's chair. The wing itself may be attached to the frame at any angle. 4.31 Comfort and Safety",
+   "explanationEn": "Incorrect. This is true only for the area that will come into contact with an opponent's chair. The wing itself may be attached to the frame at any angle.",
    "rule": ""
   },
   {
@@ -319,7 +319,7 @@
     "31"
    ],
    "question": "A3가 휠체어에 몸을 묶지 않고 경기하기로 했다. 적법한가?",
-   "questionEn": "Player A3 decid es to play the game with out being strapped i nto his chair. Is this legal?",
+   "questionEn": "Player A3 decides to play the game with out being strapped into his chair. Is this legal?",
    "choices": [
     "적법하다",
     "적법하지 않다"
@@ -448,7 +448,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 5.36.2의 답: 옳지 않다. A팀이 먼저 라인업을 내고 그다음 B팀이 낸다. A팀 코치는 스코어시트를 보며 B팀 라인업을 확인할 수 있지만, 상대 라인업에 맞추는 교체는 허용되지 않는다.",
-   "explanationEn": "No. Team A must Indicate the team line-up first. Then Team B will indicate their line-up. Team A coach will be allowed to view the score sheet to see Team B line- up, but no substitutions will be allowed to match the other team’s line-up. 5.38 Coaches",
+   "explanationEn": "No. Team A must Indicate the team line-up first. Then Team B will indicate their line-up. Team A coach will be allowed to view the score sheet to see Team B line- up, but no substitutions will be allowed to match the other team’s line-up.",
    "rule": ""
   },
   {
@@ -470,7 +470,7 @@
     "No"
    ],
    "answer": 1,
-   "explanation": "케이스북 5.38.1의 답: 할 수 없다. A4는 경기장에서 나가야 하고 보조코치가 그를 대신한다.",
+   "explanation": "케이스북 5.38.1의 답: 할 수 없다. A4는 경기 시설에서 나가야 한다. 그리고 보조코치가 그를 대신한다.",
    "explanationEn": "No. He must be removed from the facility and an assistant coach shall replace him.",
    "rule": ""
   },
@@ -532,7 +532,7 @@
     "104"
    ],
    "question": "결승전 시작 10분 전 워밍업 중 A4(3.0등급)가 B3(0.5등급)에게 욕을 했고, B3가 맞받아 밀치면서 두 선수가 싸웠다가 곧 뜯어말려졌다. 경기가 아직 시작되지 않았으니 두 선수에게 주의만 주고 넘어갔다. 옳은 처리인가?",
-   "questionEn": "Both teams are warming up 10 minutes prior to a championship game. Something provokes A4 (class 3.0) who swears at B3 (class 0.5). B3 retaliates and pushes A4. A fight breaks out between them but is quickly broken up by other players. A) The referee gives both players a reprimand but not much more since the game has not yet officially started. Is this correct? B) After the referee disqualified both players, Coach A protest s the referee's decision to disqualify both players, becaus e the game has not yet officially started. Is this correct?",
+   "questionEn": "Both teams are warming up 10 minutes prior to a championship game. Something provokes A4 (class 3.0) who swears at B3 (class 0.5). B3 retaliates and pushes A4. A fight breaks out between them but is quickly broken up by other players. A) The referee gives both players a reprimand but not much more since the game has not yet officially started. Is this correct? B) After the referee disqualified both players, Coach A protests the referee's decision to disqualify both players, becaus e the game has not yet officially started. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -543,7 +543,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 6.41.1 A)의 답: 옳지 않다. 싸움이었으므로 두 선수 모두 디스퀄리파잉 파울로 퇴장시켜야 한다. 같은 케이스 B)처럼 코치가 \"경기 전이니 퇴장은 부당하다\"고 항의할 수는 있지만, 레퍼리의 권한은 코트에 도착하는 순간 시작되므로 퇴장 판정은 레퍼리 권한 안에 있다.",
-   "explanationEn": "A) Incorrect. Both players should be disqualified for fighting. B) Incorrect. The coach may protest but it is well within the referee's authority to disqualify the players. The referees' authority begins when they arrive on the court. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "A) Incorrect. Both players should be disqualified for fighting. B) Incorrect. The coach may protest but it is well within the referee's authority to disqualify the players. The referees' authority begins when they arrive on the court.",
    "rule": ""
   },
   {
@@ -688,7 +688,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 7.50.1의 답: 옳지 않다. 정규 경기 종료와 첫 연장 피리어드 사이는 3분이다. 연장 피리어드가 더 필요하면 연장 피리어드마다 2분씩 쉰다.",
-   "explanationEn": "Incorrect. There shall be a three (3) minute interval between the end of regulation and the first overtime period, if additional overtime periods are required there shall be a two (2) minute interval following each overtime period 7.56 T ime-outs Statement: Following the warning to resume play, players shall be given time to position themselves. If a referee judges that a player or players are delaying, play shall resume as follows: If the team taking the throw-in is delaying, the referee will begin the throw-in procedure at the appropriate point, placing the ball on the floor. If the in-bounding player takes his position before a violation of the throw- in occurs, the referee shall place the ball at his disposal and continue the ten- second count. If the team not taking the throw-in is late, the referee shall give the ball to the other team for the throw - in and play shall resume. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "Incorrect. There shall be a three (3) minute interval between the end of regulation and the first overtime period, if additional overtime periods are required there shall be a two (2) minute interval following each overtime period",
    "rule": ""
   },
   {
@@ -723,7 +723,7 @@
     "56"
    ],
    "question": "3쿼터 종료까지 10초가 남은 상황에서 A1이 트라이를 하기 전, B팀 코치가 기록석으로 가서 백코트에서 프론트코트로 볼을 옮기기 위한 타임아웃을 요청했다. 코치는 기록석 옆에서 초를 보며 기다리다가 A1이 트라이 라인을 넘기 전에 요청을 철회했다. 허용되는가?",
-   "questionEn": "Team A is advancing the ball toward the try line with 10 seconds remaining in the third quarter. Prior to A1 scoring a try, the coach of Team B approaches the score table and requests a time out to advance the ball to the front court. The coach of Team B r emains by the table, watching the time on the clock tick down. B1 momentarily blocks A1 at the try line, taking additional time off the clock. The coach of Team B decides to withdraw the time out prior to A1 crossing the try line. Is this legal?",
+   "questionEn": "Team A is advancing the ball toward the try line with 10 seconds remaining in the third quarter. Prior to A1 scoring a try, the coach of Team B approaches the score table and requests a time out to advance the ball to the front court. The coach of Team B remains by the table, watching the time on the clock tick down. B1 momentarily blocks A1 at the try line, taking additional time off the clock. The coach of Team B decides to withdraw the time out prior to A1 crossing the try line. Is this legal?",
    "choices": [
     "허용된다",
     "허용되지 않는다"
@@ -816,7 +816,7 @@
     "56"
    ],
    "question": "B팀이 50초 경보를 무시하고 코트로 돌아오지 않았다. 레퍼리가 타임아웃이 끝났음을 알리는 호각을 불었지만 B팀은 벤치 근처에 그대로 있었다. 레퍼리가 A1에게 스로인 볼을 주었고, B팀이 코트로 돌아오기 전에 A팀이 득점했다. 레퍼리의 절차는 옳았는가?",
-   "questionEn": "Team B ignores the fifty (50) second warning and does not return to play. The referee blows their whistle to w arn the Teams that the time out is over; Team B remains near their team bench. The referee gives the ball to A1 for the throw-in. Team A scores before Team B comes back to the court. Did the referee follow proper procedure?",
+   "questionEn": "Team B ignores the fifty (50) second warning and does not return to play. The referee blows their whistle to warn the Teams that the time out is over; Team B remains near their team bench. The referee gives the ball to A1 for the throw-in. Team A scores before Team B comes back to the court. Did the referee follow proper procedure?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -850,7 +850,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 7.56.7의 답: 옳지 않다. 타임아웃이 부여되면 양 팀은 각자 벤치로 가서 50초 경보가 울릴 때까지 있어야 한다. 몸을 풀려고 움직이는 것은 가능하지만 50초 경보 전에 벤치로 돌아와야 하고, 한 팀이 이점을 얻는다고 판단되면 레퍼리가 이를 제한할 수 있다. 경기는 벤치 구역에서 돌아와 재개해야 한다.",
-   "explanationEn": "Incorrect. Teams must go to their respective benches when the time out is awarded and must remain there until the fifty (50) second warning sounds. Players may be permitted move around to stay warm during this period but must return to their team bench area prior to the fifty (50) second horn – the official may restrict this if a team is thought to be taking an advantage. Players must return to play from the team bench area. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "Incorrect. Teams must go to their respective benches when the time out is awarded and must remain there until the fifty (50) second warning sounds. Players may be permitted move around to stay warm during this period but must return to their team bench area prior to the fifty (50) second horn – the official may restrict this if a team is thought to be taking an advantage. Players must return to play from the team bench area.",
    "rule": ""
   },
   {
@@ -874,7 +874,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 7.56.8의 답: 옳지 않다. 이 경우 볼을 선수에게 맡기는 것으로 새 카운트가 시작되지 않는다. 이미 진행 중인 카운트를 그대로 이어가야 한다.",
-   "explanationEn": "No. In this case, placing the ball at the disposal of the player does not start a new count. The referee should simply continue the count that is in progress.",
+   "explanationEn": "No. In this case, placing the ball at the disposal of the player does not start a new count. The referee should simply continue the count that is in progress. (Note: the original Casebook text says ten seconds, but the 2026 Rules say eight seconds [Art. 81].)",
    "rule": ""
   },
   {
@@ -886,7 +886,7 @@
     "56"
    ],
    "question": "타임아웃 동안 벤치 관계자가 선수들에게 물을 주려고 코트로 들어와도 되는가?",
-   "questionEn": "During a t ime-out, are bench personnel allowed to bring water on the court for the players?",
+   "questionEn": "During a time-out, are bench personnel allowed to bring water on the court for the players?",
    "choices": [
     "들어와도 된다",
     "들어올 수 없다"
@@ -909,7 +909,7 @@
     "56"
    ],
    "question": "\"A팀이 트라이를 성공하는 경우에만\" 타임아웃을 달라고 A팀 코치가 요청했다. 이 요청을 받아들여야 하는가?",
-   "questionEn": "Team A coach requests a time-out but only if Team A scores a try. Shall this re quest be granted?",
+   "questionEn": "Team A coach requests a time-out but only if Team A scores a try. Shall this request be granted?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -944,7 +944,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 7.56.11의 답: 받아들일 수 없다. 스코어키퍼와 게임 커미셔너가 남은 타임아웃이 없다고 알려 준 뒤에도 코치가 경기를 중단시키려고 고집하면 테크니컬 파울이 주어진다.",
-   "explanationEn": "No. If the coach insists after he is properly informed by the Scorekeeper as well as the Game Commissioner, t o obtain a stoppage in play, he is penalized with a technical foul.",
+   "explanationEn": "No. If the coach insists after he is properly informed by the Scorekeeper as well as the Game Commissioner, to obtain a stoppage in play, he is penalized with a technical foul.",
    "rule": ""
   },
   {
@@ -1049,7 +1049,7 @@
     "58"
    ],
    "question": "A팀 프론트코트에서 A2가 B1을 적법하게 충돌했고, 그 결과 두 선수의 범퍼가 서로 걸렸다. A1이 득점을 시도하는 상황에서 A2가 장비 타임아웃을 요청했으나 레퍼리가 거절했다. 트라이가 끝난 뒤 두 선수는 스스로 빠져나왔다. 옳은가?",
-   "questionEn": "A2 legally hits B1 in Team A’s frontcourt. As a result of the hit, A2 and B1 are hooked on each other’s bumper. A2 asks for an equipment time-out as A1 is attempting to score. The referee denies the equipment. After the try, A2 and B1 free themselves. Is t his correct?",
+   "questionEn": "A2 legally hits B1 in Team A’s frontcourt. As a result of the hit, A2 and B1 are hooked on each other’s bumper. A2 asks for an equipment time-out as A1 is attempting to score. The referee denies the equipment. After the try, A2 and B1 free themselves. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -1245,7 +1245,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 8.61.3의 답: 옳지 않다. 센터가 볼을 적법하게 쳐서 볼이 바닥에 닿으면 누구든 볼을 가질 수 있다.",
-   "explanationEn": "No. If the ball has been tapped legally by either centre once it touches the floor, anyone can take possession. 8.62 Alternating Possession",
+   "explanationEn": "No. If the ball has been tapped legally by either centre once it touches the floor, anyone can take possession.",
    "rule": ""
   },
   {
@@ -1257,7 +1257,7 @@
     "62"
    ],
    "question": "헬드볼이 선언되어 소유권 화살표에 따라 A팀이 스로인을 얻었다. 그런데 A1이 8초 안에 스로인하지 못해 바이얼레이션을 범했다. 그래도 다음 소유권은 화살표에 따라 B팀으로 넘어가는가?",
-   "questionEn": "A held ball is called and according to the possession arrow, Team A is awarded a throw-in. A1 commits a violation, i .e., 8 sec. to execute a throw-in; bounces the ball out- of-bounds on the throw-in. Does the arrow still change to show Team B possessing the ball next? Important statement: Once a throw-in is awarded due to the alternating process, the possession arrow is changed when the ball is legally inbounded. If an infraction of the rules occurs before the conclusion of the throw- in, it shall be sanctioned according to the rules of the game, and it shall have no effect on the possession arrow. The alternating-possession procedure is a method of putting the ball in play with a throw -in rather than a tip-off. The designated spot for the throw-in shall be on the sideline opposite the scoring table and nearest to the location of the ball at the time of the infraction. The arrow is always changed AFTER the inbound – even if other infractions occur. Rule: Art. 61. To administer the tip-off, Referee 1 shall blow his whistle to indicate the start of legal contact and then enter the centre circle. He shall toss the ball vertically between the centres so that it reaches a height greater than either of them can reach and then drops between them. After the ball has reached its highest point, it must be touched at least once by at least one of the centre s before it touches the floor. Rule: Art. 61. Players outside the circle who are on the same team may not occupy adjacent positions around the circle if an opposing player request one of the positions. Rules for the Sport of Wheelchair Rugby",
+   "questionEn": "A held ball is called and according to the possession arrow, Team A is awarded a throw-in. A1 commits a violation, i .e., 8 sec. to execute a throw-in; bounces the ball out- of-bounds on the throw-in. Does the arrow still change to show Team B possessing the ball next? Important statement: Once a throw-in is awarded due to the alternating process, the possession arrow is changed when the ball is legally inbounded. If an infraction of the rules occurs before the conclusion of the throw- in, it shall be sanctioned according to the rules of the game, and it shall have no effect on the possession arrow. The alternating-possession procedure is a method of putting the ball in play with a throw -in rather than a tip-off. The designated spot for the throw-in shall be on the sideline opposite the scoring table and nearest to the location of the ball at the time of the infraction. The arrow is always changed AFTER the inbound – even if other infractions occur.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -1268,7 +1268,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 8.62.1의 답: 그렇다. B팀에 스로인이 주어지고, 그 인바운드가 끝난 뒤 교대 절차에 따라 다음 소유권도 B팀이 갖는다.",
-   "explanationEn": "Yes. Team B is awarded the throw-in, and the next possession goes to Team B after the inbound as stipulated by the alternatin g process.",
+   "explanationEn": "Yes. Team B is awarded the throw-in, and the next possession goes to Team B after the inbound as stipulated by the alternating process.",
    "rule": ""
   },
   {
@@ -1318,7 +1318,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 8.62.3 b)의 답: 옳다. 팁오프에서 볼을 얻지 못한 팀이 교대 절차를 시작한다. 스로인은 볼이 아웃된 지점의, 기록석 반대편 사이드라인에서 한다. 같은 케이스 a)처럼 누가 쳐서 아웃시켰는지 분명하지 않을 때만 팁오프를 다시 한다.",
-   "explanationEn": "a) Incorrect. The tip-off is re-done only when it is not clear who committed this violation. b) Correct. The team not gaining possession on a tip-off shall start the alternating process. The inbound should occur at the sideline opposite the scoring table at the location the ball went out of bounds. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "a) Incorrect. The tip-off is re-done only when it is not clear who committed this violation. b) Correct. The team not gaining possession on a tip-off shall start the alternating process. The inbound should occur at the sideline opposite the scoring table at the location the ball went out of bounds.",
    "rule": ""
   },
   {
@@ -1342,7 +1342,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 8.62.4의 답: 옳지 않다. 팁오프를 다시 하더라도 경기시계는 이미 흐른 시간을 반영해야 한다.",
-   "explanationEn": "Incorrect. Even though the ball will be re-tipped, the game clock should reflect the time that has already elapsed 8.63 Location of a Person",
+   "explanationEn": "Incorrect. Even though the ball will be re-tipped, the game clock should reflect the time that has already elapsed",
    "rule": ""
   },
   {
@@ -1844,7 +1844,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 8.64.2의 답: 안 된다. 레퍼리는 코트 밖에 있는 것으로 본다. 볼이 레퍼리에 닿은 지점의 사이드라인에서 B팀 볼로 한다.",
-   "explanationEn": "No. The referee is located out of bounds. The ball is awarded to Team B on the sideline at the point it contacted the referee. 8.65 Possession of the Ball",
+   "explanationEn": "No. The referee is located out of bounds. The ball is awarded to Team B on the sideline at the point it contacted the referee.",
    "rule": ""
   },
   {
@@ -1868,7 +1868,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 8.65.1의 답: 옳지 않다. 볼을 바퀴에 끼워 고정한 것은 소유권을 얻은 것이다.",
-   "explanationEn": "Incorrect. Trapping the ball against the wheel established possession. 8.66 Playing the Ball",
+   "explanationEn": "Incorrect. Trapping the ball against the wheel established possession.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -1998,7 +1998,7 @@
     "31"
    ],
    "question": "A1이 볼 홀더에 볼을 넣고 달린다. B1이 볼을 쳐내려 하자 A1이 팔로 볼을 보호한 뒤 다시 달리기 시작했는데, 볼이 75%가 보이는 상태로 돌아오지 않는다. 레퍼리가 보니 A1이 볼을 들고 달리는 여러 플레이 국면에서 볼이 자주 75% 아래로 내려가, 플레이하기 분명히 어려운 상태다. 레퍼리는 다음 순서로 대응했다. 1) 선수에게 볼을 보호한 뒤 75%가 보이게 되돌리라고 요구한다. 2) 계속 75% 아래로 떨어지자 합리적인 데드볼 때 코치에게 말하고 장비 담당자가 해결하도록 요청한다. 3) 그래도 계속 75% 아래로 떨어지자, 수비가 볼을 적법하게 플레이하려는 다음 시도에서 호각을 불고 75% 바이얼레이션이라고 말로 알린다. 레퍼리의 절차는 옳았는가?",
-   "questionEn": "A1 is carrying the ball in their ball holder. B1 attempts to knock the ball away. A1 protects the ball with their arm and begins to wheel again. The referee notices the ball does not return to 75% playable. The referee observes that the ball regularly drop s below 75% when A1 is wheeling with the ball over several play phases, clearly making the ball difficult to play. The referee uses the following steps to address the issue. 1) speaks to the player and requests they return the ball to 75% playable after pr otecting the ball. 2) the ball continues to drop below 75%, so the referee speaks to the coach at a Rules: Art. 65. A player has possession of the ball when: a. He holds the ball in his hands or secured on his lap or against any part of his body or wheelchair, and the ball is not in contact with the floor. b. He has a hand or hands firmly on the ball thus preventing an opponent from having free and easy movement of the ball. c. He is given the ball to execute a throw-in (Art. 70). d. He voluntarily accepts a live ball (Art. 55) or e. He is in the act of dribbling the ball (Art. 68). Rule: Art. 64. The location of the ball is determined by its point of contact with the floor or with a person. When the ball is not in contact with the floor or with a person, its location is determined by its last point of contact. Rules for the Sport of Wheelchair Rugby reasonable dead ball and requests their equipment staff address the issue. 3) the ball continues to drop below 75%. On the next attempt by the defence to legally play the ball the referee blows their whistle and verbally indicates a violation of 75% has occurred, Has the referee followed appropriate steps?",
+   "questionEn": "A1 is carrying the ball in their ball holder. B1 attempts to knock the ball away. A1 protects the ball with their arm and begins to wheel again. The referee notices the ball does not return to 75% playable. The referee observes that the ball regularly drops below 75% when A1 is wheeling with the ball over several play phases, clearly making the ball difficult to play. The referee uses the following steps to address the issue. 1) speaks to the player and requests they return the ball to 75% playable after protecting the ball. 2) the ball continues to drop below 75%, so the referee speaks to the coach at a reasonable dead ball and requests their equipment staff address the issue. 3) the ball continues to drop below 75%. On the next attempt by the defence to legally play the ball the referee blows their whistle and verbally indicates a violation of 75% has occurred, Has the referee followed appropriate steps?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2032,7 +2032,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 8.66.3의 답: 적법하다. 볼을 들고 달리는 동안 볼이 75% 보이면 된다.",
-   "explanationEn": "Legal play. Provided the ball is 75% visible when the player is wheeling with the ball. 8.67 Dribbling the Ball",
+   "explanationEn": "Legal play. Provided the ball is 75% visible when the player is wheeling with the ball.",
    "rule": ""
   },
   {
@@ -2069,7 +2069,7 @@
     "79"
    ],
    "question": "A1이 드리블 없이 5초 카운트에 있던 중 B1이 볼을 쳐서 랩에서 떨어뜨렸다. 볼이 바닥에 있는 동안 5초가 더 흘렀고, A1이 다시 볼을 잡아 드리블 없이 나아갔다. 드리블 바이얼레이션인가?",
-   "questionEn": "A1 is at a 5-second count without a dribble. B1 knocks the ball off his lap. While the ball is on the floor, 5 more seconds elapse. A1 then regains possession of the ball and advances without a dribble. Has he committe d a dribblin g violation?",
+   "questionEn": "A1 is at a 5-second count without a dribble. B1 knocks the ball off his lap. While the ball is on the floor, 5 more seconds elapse. A1 then regains possession of the ball and advances without a dribble. Has he committe d a dribbling violation?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2153,7 +2153,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 8.68.2의 답: 옳지 않다. 안티팁으로는 득점할 수 없다.",
-   "explanationEn": "Incorrect. A player cannot make a try with the anti-tip devices. 8.69 Thr ow-in",
+   "explanationEn": "Incorrect. A player cannot make a try with the anti-tip devices.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -2649,8 +2649,8 @@
    "relatedArticles": [
     "69"
    ],
-   "question": "B3가 페널티 박스에 있을 때 A2와 A3가 나오는 B3를 가두려 했다. A1이 트라이를 성공했고 B4가 인바운드 자리에 서서 레퍼리에게 볼을 받았다. B3가 A팀이 득점하기 전에 이미 인바운더로 나서겠다고 알렸던 경우라면 옳은가?",
-   "questionEn": "B3 is in the penalty box. A2 and A3 set up to trap B3 as he comes out of the box after the penalty. A1 scores and B4 sets up for the inbound and is given the ball by the referee. Is this correct if: a) B3 had declared himself as the in -bounder before the other team scored. Important Note : Once a player identifies himself as the in-bounder, he must inbound the ball. Rules for the Sport of Wheelchair Rugby b) B3 attempted to beat the trap but declared himself the in-bounder a fter B4 is in position for the throw-in and before the ball is administered by the referee .",
+   "question": "B3가 페널티 박스에 있다. A2와 A3가 페널티가 끝나고 나오는 B3를 트랩하려 준비하고 있다. A1이 득점했고, B4가 인바운드를 하려고 자리에 섰다. 다음 각 경우의 처리는 옳은가? (중요: 인바운더로 나선 선수는 반드시 인바운드해야 한다.) a) B3가 A팀이 득점하기 전에 인바운더로 나서겠다고 밝혔다. → B4가 인바운드한다. b) B3가 트랩을 뚫으려 했지만, B4가 스로인 자리에 선 뒤 레퍼리가 볼을 건네기 전에 인바운더로 나서겠다고 밝혔다. → B3가 인바운드한다.",
+   "questionEn": "B3 is in the penalty box. A2 and A3 set up to trap B3 as he comes out of the box after the penalty. A1 scores and B4 sets up for the inbound. Is this correct if: a) B3 had declared himself as the in-bounder before the other team scored. Important Note : Once a player identifies himself as the in-bounder, he must inbound the ball. b) B3 attempted to beat the trap but declared himself the in-bounder after B4 is in position for the throw-in and before the ball is administered by the referee.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2660,8 +2660,8 @@
     "Incorrect"
    ],
    "answer": 0,
-   "explanation": "케이스북 8.69.6 a)의 답: 옳다. B3의 인바운더 요청은 A팀이 득점하기 전에 한 것이라 인정되지 않는다. 인바운더 요청은 득점 뒤에 해야 하므로 B4가 인바운드하는 것이 맞다.",
-   "explanationEn": "a) Correct. The request was made before try and therefore before B4 set up for the throw-in. b) Correct. The request was m ade before the ba ll was placed at the dis posal of B4.",
+   "explanation": "a) 옳다. 득점 전의 선언은 인정되지 않으니, B4가 인바운드하는 것이 맞다. b) 옳다. 레퍼리가 B4에게 볼을 건네기 전이라면 인바운더로 나설 수 있다.",
+   "explanationEn": "a) Correct. The request was made before try and therefore before B4 set up for the throw-in. b) Correct. The request was made before the ball was placed at the disposal of B4.",
    "rule": ""
   },
   {
@@ -2698,7 +2698,7 @@
     "81"
    ],
    "question": "A팀 선수 아무도 인바운더로 나서지 않아 레퍼리가 볼을 바닥에 놓고 8초 카운트를 시작했다. 그때 A2가 인바운드 위치에서 1~1.5m 안쪽 사이드라인으로 나갔고 레퍼리가 볼을 주며 카운트를 이어 갔다. A2가 8초 안에 스로인하지 못했다. 레퍼리는 어떻게 해야 하는가?",
-   "questionEn": "The referee has requested a member of Team A identify themselves as the in -bounder for a sideline inbound. Team A does not acknowledge the request. The referee places the ball on the floor to begin the 8 second count as no player f rom Team A has identified themselves as the in -bounder, creating a delay in the game. A2 wheels off the court on the sideline within a reasonable distance (1 to 1.5 meters) form the inbound location. The referee gives the ball to A2 and continues their count. A2 is not able to in -bound the ball within 8 seconds. Should the referee hold their count while placing the ball at A2’s disposal?",
+   "questionEn": "The referee has requested a member of Team A identify themselves as the in -bounder for a sideline inbound. Team A does not acknowledge the request. The referee places the ball on the floor to begin the 8 second count as no player from Team A has identified themselves as the in -bounder, creating a delay in the game. A2 wheels off the court on the sideline within a reasonable distance (1 to 1.5 meters) form the inbound location. The referee gives the ball to A2 and continues their count. A2 is not able to in -bound the ball within 8 seconds. Should the referee hold their count while placing the ball at A2’s disposal?",
    "choices": [
     "8초를 계속 세어 8초 바이얼레이션을 선언한다",
     "카운트를 멈추고 A팀에 다시 기회를 준다",
@@ -2867,7 +2867,7 @@
     "56"
    ],
    "question": "피리어드 마지막 1분에 A팀이 트라이를 올리고 타임아웃을 얻었다. 레퍼리가 A코치에게 볼을 프론트코트로 옮길지 물었지만 답이 없어 엔드라인에서 스로인을 준비했다. 옳은가?",
-   "questionEn": "After a try in the last minute of a period, Team A is granted a timeout. The referee asks the Team A coach if they want to advance the ball, but the coach does not answer. Therefore, the referee sets up to inbound the ball from the endline. Is this correct? Rules for the Sport of Wheelchair Rugby",
+   "questionEn": "After a try in the last minute of a period, Team A is granted a timeout. The referee asks the Team A coach if they want to advance the ball, but the coach does not answer. Therefore, the referee sets up to inbound the ball from the endline. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2878,7 +2878,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 8.69.11의 답: 옳다. 볼을 옮기려면 코치가 타임아웃이 시작되는 즉시 레퍼리에게 알려야 한다.",
-   "explanationEn": "Correct. The coach is responsible for informing the referee immediately at the start of the timeout if they want to advance the ball to the frontcourt. 8.70 Substitutions",
+   "explanationEn": "Correct. The coach is responsible for informing the referee immediately at the start of the timeout if they want to advance the ball to the frontcourt.",
    "rule": ""
   },
   {
@@ -2890,7 +2890,7 @@
     "70"
    ],
    "question": "A팀이 교체를 요청해 기록석이 다음 기회에 레퍼리에게 알렸고, 레퍼리가 교체 선수를 부르자 나가는 선수가 코트를 떠나기 전에 들어오는 선수가 먼저 코트에 들어왔다. 적법한가?",
-   "questionEn": "Team A requests a substitution . The score bench notif ies the referees at the next opportunity and the referee beckons the s ubstitutes onto the c ourt. The substitutes enter the court before the players being substituted leave the court . Is this legal?",
+   "questionEn": "Team A requests a substitution . The score bench notif ies the referees at the next opportunity and the referee beckons the substitutes onto the court. The substitutes enter the court before the players being substituted leave the court . Is this legal?",
    "choices": [
     "적법하다",
     "적법하지 않다"
@@ -2901,7 +2901,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 8.70.1의 답: 적법하다. 레퍼리가 교체 선수를 부른 순간부터 코트에 들어올 수 있다.",
-   "explanationEn": "Yes. As soon as the referee beckons the substitutes onto the cour t, they may enter the court.",
+   "explanationEn": "Yes. As soon as the referee beckons the substitutes onto the court, they may enter the court.",
    "rule": ""
   },
   {
@@ -2913,7 +2913,7 @@
     "70"
    ],
    "question": "A팀이 교체를 요청했다가 다음 경기 중단 전에 요청을 철회했다. 그런데 중단 때 레퍼리가 교체를 강행하라고 했다. 옳은가?",
-   "questionEn": "Team A request a s ubstitution. Before the next stoppage in play the request is withdrawn. At the next stoppage in play the referee insists the sub stitution must take place. Is this correct?",
+   "questionEn": "Team A request a substitution. Before the next stoppage in play the request is withdrawn. At the next stoppage in play the referee insists the sub stitution must take place. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2937,7 +2937,7 @@
     "98"
    ],
    "question": "A팀의 A5와 A6가 기록석에서 확인을 받고 교체 구역에 앉아 있었다. 데드볼 때 기록석이 교체 신호를 울리자 A5와 A6가 코트로 들어왔지만 심판은 교체 신호를 하지 않았다. 교체 선수는 부름을 받기 전에 들어올 수 없다고 이미 경고했던 터라 레퍼리 1이 A팀에 테크니컬 파울을 주고, A코치가 코트 위 선수를 골라 페널티를 수행하게 했으며 A5와 A6는 경기에 남았다. 옳은 처리인가?",
-   "questionEn": "Team A request a s ubstitution, players A5 and A6 are checked in at the table and sitting in the substitution area. At the next dead ball, the table buzzes for substitutions and players A5 and A6 enter the court. Neither official signalled for substitutions. Having been previously warned that substitutes may not enter the court until called on, Referee 1 issues a technical foul to Team A. The coach for Team A selects a player on the court to serve the penalty and players A5 and A6 remain in the game. Is this the correct procedure?",
+   "questionEn": "Team A request a substitution, players A5 and A6 are checked in at the table and sitting in the substitution area. At the next dead ball, the table buzzes for substitutions and players A5 and A6 enter the court. Neither official signalled for substitutions. Having been previously warned that substitutes may not enter the court until called on, Referee 1 issues a technical foul to Team A. The coach for Team A selects a player on the court to serve the penalty and players A5 and A6 remain in the game. Is this the correct procedure?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -3007,7 +3007,7 @@
     "70"
    ],
    "question": "B2가 교체를 요청해 교체 대기 구역에 가서 B3 대신 들어가려 했다. 다음 교체 기회 전에 B3가 페널티 박스로 가게 되자, B2가 교체 대상이 아니게 되어 대기 구역에서 나왔다. 옳은 절차인가?",
-   "questionEn": "Player B2 requests a substitution, reports to the substitute waiting area and requests to substitute for B3. Prior to the next opportunity for the substitution, B3 is placed in the penalty box. B2 leaves the substitution waiting box area, as the player he was l ooking to replace, B3, is not eligible to substitute. Is this the correct procedure? Rule: Art. 70 Either team may substitute any number of players after a stoppage in play, except after a try has been scored. If there is an additional stoppage after the try, substitutions may be made. Rules for the Sport of Wheelchair Rugby",
+   "questionEn": "Player B2 requests a substitution, reports to the substitute waiting area and requests to substitute for B3. Prior to the next opportunity for the substitution, B3 is placed in the penalty box. B2 leaves the substitution waiting box area, as the player he was looking to replace, B3, is not eligible to substitute. Is this the correct procedure? Rule: Art. 70 Either team may substitute any number of players after a stoppage in play, except after a try has been scored. If there is an additional stoppage after the try, substitutions may be made.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -3079,7 +3079,7 @@
     "70"
    ],
    "question": "교체 구역에 있는 선수는 교체 구역의 어느 쪽(앞·옆)에서든, 그리고 팀 벤치 구역 어느 지점에서든 코트에 들어올 수 있다. 옳은가?",
-   "questionEn": "Substitutions from the substitution area may enter the court from any part of the substitution area (front or side) and at any location on th e team bench area. Is this correct?",
+   "questionEn": "Substitutions from the substitution area may enter the court from any part of the substitution area (front or side) and at any location on the team bench area. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -3113,7 +3113,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 8.70.10의 답: 옳다. 교체 선수는 자기 벤치 앞 교체 구역과 엔드라인 사이 어느 지점에서든 코트에 들어올 수 있다.",
-   "explanationEn": "Correct. Substituting players may enter the court from any point between the substitution area and the end line in front of their team bench. 8.71 Held Ball Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "Correct. Substituting players may enter the court from any point between the substitution area and the end line in front of their team bench.",
    "rule": ""
   },
   {
@@ -3222,7 +3222,7 @@
     "9"
    ],
    "question": "A1이 앞바퀴 두 개를 프론트코트에, 뒷바퀴 두 개를 백코트에 두고 있다가, 똑같이 두 바퀴씩 걸친 A3에게 패스했다. 레퍼리가 백코트 바이얼레이션을 선언했다. 옳은가?",
-   "questionEn": "A1 has two wheels in the frontcourt and two in the backcourt and then passes to A3 who also has two wheels in the frontcourt and two in the backcourt. The referee blows a backcourt violation. Is this correct? Rule: Art. 73. All the following conditions must exist for a backcourt violation to occur: a) A team must have possession of the ball in their frontcourt. b) A player on that team must be the last player to touch the ball before it enters the backcourt. c) The ball must enter the backcourt. d) A player on that team must be the first player to touch the ball after it enters the backcourt. Rule: Art. 71. A held ball occurs when: a) two or more opposing players have possession of the ball at the same time (Article 66) b) two or more opposing players simultaneously cause the ball to go out-of- bounds or c) a live ball becomes stuck between two or more opposing players’ wheelchairs, or a live ball becomes trapped under a wheelchair. Rules for the Sport of Wheelchair Rugby",
+   "questionEn": "A1 has two wheels in the frontcourt and two in the backcourt and then passes to A3 who also has two wheels in the frontcourt and two in the backcourt. The referee blows a backcourt violation. Is this correct? Rule: Art. 73. All the following conditions must exist for a backcourt violation to occur: a) A team must have possession of the ball in their frontcourt. b) A player on that team must be the last player to touch the ball before it enters the backcourt. c) The ball must enter the backcourt. d) A player on that team must be the first player to touch the ball after it enters the backcourt.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -3579,7 +3579,7 @@
     "73"
    ],
    "question": "A팀이 프론트코트에서 볼을 소유하던 중 B2가 패스를 쳐서 볼이 백코트로 굴러갔다. A1이 먼저 달려가 볼을 잡았다. 경기를 계속하게 해야 하는가?",
-   "questionEn": "Team A has possession of the ball in the frontcourt. B2 tips a pass and the ball rolls into the backcourt. A1 wheels and recovers the ball first. Should t he referee allow the play to continue?",
+   "questionEn": "Team A has possession of the ball in the frontcourt. B2 tips a pass and the ball rolls into the backcourt. A1 wheels and recovers the ball first. Should the referee allow the play to continue?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -3927,7 +3927,7 @@
     "73"
    ],
    "question": "A1이 앞바퀴는 프론트코트에, 뒷바퀴는 백코트에 걸친 채 프론트코트의 A2에게 패스하려고 안티팁에 기대 앞바퀴를 들어 올렸다. 어떻게 판정하는가?",
-   "questionEn": "A1 straddles the centre line with the front wheels in the frontcourt and with the back wheels in the backcourt. In an attempt to pass the ball to A2 who is in the frontcourt Rules for the Sport of Wheelchair Rugby he leans back on his anti-tip and lifts up his front wheels. What call should the referee make?",
+   "questionEn": "A1 straddles the centre line with the front wheels in the frontcourt and with the back wheels in the backcourt. In an attempt to pass the ball to A2 who is in the frontcourt he leans back on his anti-tip and lifts up his front wheels. What call should the referee make?",
    "choices": [
     "백코트 바이얼레이션",
     "아무 콜도 하지 않는다",
@@ -4038,7 +4038,7 @@
     "Incorrect"
    ],
    "answer": 0,
-   "explanation": "케이스북 9.73.10의 답: 바이얼레이션이다. A1이 볼에서 손을 떼는 순간 백코트로 돌아간 것이 된다.",
+   "explanation": "케이스북 9.73.10의 답: 바이얼레이션이다. 볼과의 접촉을 잃는 순간 백코트로 돌아간 것이 된다.",
    "explanationEn": "Violation. As soon as A1 loses contact with the ball, he has returned to the backcourt and is penalized accordingly.",
    "rule": ""
   },
@@ -4087,7 +4087,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.74.1의 답: 옳다. 일부러 상대에게 맞혀 볼이 아웃되면 상대 팀 볼로 한다.",
-   "explanationEn": "Yes. If the ball is deliberately thrown off an opponent and goes out of bounds it is awarded to the opposing team. 9.75 Twelve Second Violation",
+   "explanationEn": "Yes. If the ball is deliberately thrown off an opponent and goes out of bounds it is awarded to the opposing team.",
    "rule": ""
   },
   {
@@ -4182,7 +4182,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.75.4의 답: 그렇다. 12초 카운트는 코트 안의 선수가 볼 소유권을 얻을 때 시작된다.",
-   "explanationEn": "Yes. Team A will have 12 seconds as the 12 second count starts when a player on court gains possession. 9.77 Out and In violation",
+   "explanationEn": "Yes. Team A will have 12 seconds as the 12 second count starts when a player on court gains possession.",
    "rule": ""
   },
   {
@@ -4437,7 +4437,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 9.78.1 (b)의 답: 바이얼레이션이다. 넘어진 선수가 바닥에 닿은 뒤 볼을 다시 얻거나 볼이 자기 휠체어(안티팁·윙·범퍼 포함)에 닿으면 피지컬 어드밴티지 바이얼레이션이 된다. 같은 케이스 (a)처럼 바닥에 닿기 전에 볼을 놓쳤다면 바이얼레이션이 아니다.",
-   "explanationEn": "(a) No violation. (b) Violation. (c) Violation. (d) Violation. (e) Violation 9.80 Eight seconds in the key violation",
+   "explanationEn": "(a) No violation. (b) Violation. (c) Violation. (d) Violation. (e) Violation",
    "rule": ""
   },
   {
@@ -4473,7 +4473,7 @@
     "80",
     "28"
    ],
-   "question": "A2가 공격 키 에어리어로 뒤로 물러나다 안티팁이 키 안으로 들어간 채 9초 동안 그 자리에 묶여 있었다. 이때 키 에어리어 카운트 위반인가?",
+   "question": "A팀이 볼을 소유한 채 A2가 공격 키 에어리어로 뒤로 물러나다 안티팁이 키 안으로 들어간 채 9초 동안 그 자리에 묶여 있었다. 이때 키 에어리어 카운트 위반인가?",
    "questionEn": "A2 backs up into the offensive key and his anti-tip device crosses into the key and is blocked into that position for 9 seconds. What is the call if: a) His anti- tip device does not make floor contact in the key. b) His anti-tip device is making floor contact.",
    "choices": [
     "옳다",
@@ -4595,7 +4595,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.80.3의 답: 옳다. 8초 제한은 경기가 진행 중일 때 팀이 볼을 소유할 때마다 적용된다.",
-   "explanationEn": "Correct. The 8 second restriction applies whenever a team has possession of a \"live\" ball. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "Correct. The 8 second restriction applies whenever a team has possession of a \"live\" ball.",
    "rule": ""
   },
   {
@@ -5304,7 +5304,7 @@
     "87"
    ],
    "question": "A1이 사이드라인에서 1m 안쪽에 앞 캐스터를 두고 인바운드하려 한다. B2가 1m 구역 바로 밖에서 A1이 들어오기를 기다린다. A1이 스로인한 뒤 곧장 사이드라인까지 가서 거기서 45도 각도로 B2 바로 옆을 돌아 코트에 들어왔고 레퍼리가 경기를 계속하게 했다. 옳은가?",
-   "questionEn": "A1 is inbounding the ball at the sideline one metre away from the sideline with his front casters. B2 is just outside the one-metre area waiting for A1 to enter the court. After inbounding the ball: Rules for the Sport of Wheelchair Rugby a) A1 goes straight to the sideline and enters the court in a 45 ◦ angle just around B2. The referee allows play to continue. Is this correct. b) A1 turns to a 45◦ angle and enters the court around B2. The referee allows play to continue. Is this correct.",
+   "questionEn": "A1 is inbounding the ball at the sideline one metre away from the sideline with his front casters. B2 is just outside the one-metre area waiting for A1 to enter the court. After inbounding the ball: a) A1 goes straight to the sideline and enters the court in a 45 ◦ angle just around B2. The referee allows play to continue. Is this correct. b) A1 turns to a 45◦ angle and enters the court around B2. The referee allows play to continue. Is this correct.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -5315,7 +5315,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.81.11 a)의 답: 옳다. A1은 사이드라인까지 밀고 올라가 코트에 들어가기 직전에 45도 각도를 만들어야 한다. 같은 케이스 b)처럼 사이드라인 1m 뒤에서 미리 45도 각도를 만들면 들어오는 각도가 45도보다 커져 B2를 피하는 어드밴티지가 되므로 어드밴티지를 선언해야 한다.",
-   "explanationEn": "a) Yes. A1 should push up to the sideline and establish the 45 ◦ angle just prior to entering the court. b) No. By establishing the 45◦ angle while still one metre behind the sideline, the entering angle is greater than 45◦ and an Advantage gained by evading B2. The referee indicates using the Advantage signal. 9.82 Tip-off Violation",
+   "explanationEn": "a) Yes. A1 should push up to the sideline and establish the 45 ◦ angle just prior to entering the court. b) No. By establishing the 45◦ angle while still one metre behind the sideline, the entering angle is greater than 45◦ and an Advantage gained by evading B2. The referee indicates using the Advantage signal.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -5453,7 +5453,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.82.1 A)의 답: 팁오프 바이얼레이션이다. 볼은 B팀에 주고 소유권 화살표는 A팀에 준다.",
-   "explanationEn": "A) Violation of the tip-off. Ball is awarded to Team B and the possession arrow is awarded to Team A. B) B2 committed an illegal use of hands foul. Ball is awarded to Team B and the possessio n arrow is awarded to Team A. C) A3 committed an illegal use of hands foul. A3 is not placed in the penalty box as possession has not yet been established Ball is awarded to Team B and the possession arrow is awarded to Team A. D) Violation of the tip-off. Each centre must remain on their side until the ball has been touched. Ball is awarded to Team B and the possession arrow is awarded to Team A",
+   "explanationEn": "A) Violation of the tip-off. Ball is awarded to Team B and the possession arrow is awarded to Team A. B) B2 committed an illegal use of hands foul. Ball is awarded to Team B and the possession arrow is awarded to Team A. C) A3 committed an illegal use of hands foul. A3 is not placed in the penalty box as possession has not yet been established Ball is awarded to Team B and the possession arrow is awarded to Team A. D) Violation of the tip-off. Each centre must remain on their side until the ball has been touched. Ball is awarded to Team B and the possession arrow is awarded to Team A",
    "rule": ""
   },
   {
@@ -5502,7 +5502,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 9.82.3의 답: 옳지 않다. 득점 방향은 팁오프 때 선 자리를 따르지만, 인바운드는 기록석 반대편 사이드라인의 백코트, 센터라인에 가장 가까운 지점에서 해야 한다. 볼은 A팀에, 소유권 화살표는 B팀에 준다.",
-   "explanationEn": "Incorrect. While teams will continue scoring based on the way they lined up for the tip-off, the inbound should occur at the sideline opposite the scoring table, in the backcourt and nearest to the centreline. Ball is awarded to Team A and possession arrow is awarded to Team B. 9.8 3 Forty Second clock violation",
+   "explanationEn": "Incorrect. While teams will continue scoring based on the way they lined up for the tip-off, the inbound should occur at the sideline opposite the scoring table, in the backcourt and nearest to the centreline. Ball is awarded to Team A and possession arrow is awarded to Team B.",
    "rule": ""
   },
   {
@@ -5515,7 +5515,7 @@
     "88"
    ],
    "question": "40초가 끝나는 순간 A1이 득점을 시도했고 B4가 적법하게 막았다. 그 뒤 40초 장치 신호가 울렸고, 신호 뒤에 B4가 A1에게 파울을 범해 레퍼리가 파울을 선언했다. 옳은가?",
-   "questionEn": "At the end of a forty second period, A1 attempts to score a try. The attempt is legally blocked by B4 and then the forty second device signal sounds. After the signal B4 fouls A1 and the referee calls the foul. Is this correct? Rules for the Sport of Wheelchair Rugby",
+   "questionEn": "At the end of a forty second period, A1 attempts to score a try. The attempt is legally blocked by B4 and then the forty second device signal sounds. After the signal B4 fouls A1 and the referee calls the foul. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -5714,12 +5714,12 @@
    "question": "B1이 트라이 라인 근처에서 A1을 쫓다가 충돌했다. 축보다 뒤에서 충돌했고 수비 각도에 큰 변화는 없었지만 A1이 불리해졌다. B1은 휠체어나 볼에 적법한 수비를 하려고 합리적으로 노력했다. 레퍼리는 어떻게 판정하는가?",
    "questionEn": "B1 is in pursuit of A1 near the try line. B1 hits A1; A) At, or in front, of the axle; the angle of attack allows a clear opportunity to play legal defense? B) Behind the axle; there is no significant change to the defender's angle of attack when the hit occurs, but the contact does place A1 at a disadvantage. The defender makes a reasonable effort to play legal defense on the chair or the ball? C) Well behind the rear axle or rear caster; contact is made in an unsporting manner on an angle that could not result in legal defense on the ball or the chair?",
    "choices": [
-    "불법 접촉 — 수비자 파울",
+    "불법 접촉",
     "적법한 접촉 — 파울 없음",
     "양쪽 모두 파울"
    ],
    "choicesEn": [
-    "Illegal contact - defensive foul",
+    "Illegal contact",
     "Legal contact - no foul",
     "Fouls on both players"
    ],
@@ -5877,7 +5877,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 11.88.3의 답: 옳다. 득점할 수 있는 위치에 있던 A1이 득점을 막혔으므로 페널티 트라이를 주어야 한다.",
-   "explanationEn": "Correct. In this case A1, while in a position to score, was stopped from trying to score and therefore a penalty try must be awarded. 11.89 Charging foul",
+   "explanationEn": "Correct. In this case A1, while in a position to score, was stopped from trying to score and therefore a penalty try must be awarded.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -6039,7 +6039,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.89.3의 답: 옳지 않다. 상대의 방향을 크게 바꾸게 했다고 해서 곧바로 차징 파울은 아니다. 맞은 선수가 경기에 적극적으로 참여하지 않았고 부상 위험이 있었다고 판단될 때라야 한다.",
-   "explanationEn": "Incorrect. Causing an opponent to change direction, even at a major angle, does not automatically result in a charging foul. The referee must first conclude that athlete being hit was not an active participant in the game and that there was a risk of injury to that athlete. Rules for the Sport of Wheelchair Rugby 11.90 Contact Before the Whistle foul",
+   "explanationEn": "Incorrect. Causing an opponent to change direction, even at a major angle, does not automatically result in a charging foul. The referee must first conclude that athlete being hit was not an active participant in the game and that there was a risk of injury to that athlete.",
    "rule": ""
   },
   {
@@ -6062,7 +6062,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.90.1의 답: 무시할 수 없다. A2가 호각 전 접촉으로 불리해졌으므로 B2에게 파울(호각 전 접촉)을 주어야 한다.",
-   "explanationEn": "No. A2 was disadvantaged by B2's contact before the whistle and should be charged with the foul (contact before the whistle).",
+   "explanationEn": "No. A2 was disadvantaged by B2's contact before the whistle and B2 should be charged with the foul (contact before the whistle).",
    "rule": ""
   },
   {
@@ -6108,7 +6108,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.90.3의 답: 옳지 않다. 부딪히는 소리가 나지 않았더라도 그 접촉은 호각 전에 B3를 불리하게 만든 것이다.",
-   "explanationEn": "Incorrect. Although no crashing sound resulted by the contact, the contact is placing B3 at a disadvantage before the whistle. 11.91 Four in the Key foul",
+   "explanationEn": "Incorrect. Although no crashing sound resulted by the contact, the contact is placing B3 at a disadvantage before the whistle.",
    "rule": ""
   },
   {
@@ -6119,7 +6119,7 @@
    "relatedArticles": [
     "91"
    ],
-   "question": "B3가 키 위쪽에서 수비하던 중 A2의 충돌을 받아 키 안으로 굴러 들어가 네 번째 수비수가 되었다. 레퍼리가 B3에게 포 인 더 키 파울을 준 것은 옳은가?",
+   "question": "이미 B팀 선수 세 명이 키 안에 있는 상태에서 B3가 키 위쪽에서 수비하던 중 A2의 충돌을 받아 키 안으로 굴러 들어가 네 번째 수비수가 되었다. 레퍼리가 B3에게 포 인 더 키 파울을 준 것은 옳은가?",
    "questionEn": "B3 is defending near the top of the key. A2 hits him and causes him to roll into the key as the fourth defender. The referee charges B3 with the penalty.",
    "choices": [
     "옳다",
@@ -6240,7 +6240,7 @@
    "relatedArticles": [
     "91"
    ],
-   "question": "키 위쪽에 있던 B2가 A1의 득점을 막으려고 포스트 근처로 이동하면서 키를 잠깐 통과해 순간적으로 네 번째 수비수가 되었다. 레퍼리가 B2에게 파울을 주는 것이 옳은가?",
+   "question": "이미 B팀 선수 세 명이 키 안에 있는 상태에서 키 위쪽에 있던 B2가 A1의 득점을 막으려고 포스트 근처로 이동하면서 키를 잠깐 통과해 순간적으로 네 번째 수비수가 되었다. 레퍼리가 B2에게 파울을 주는 것이 옳은가?",
    "questionEn": "In the follow situations, is the referee correct to charge B2 with a foul? a) B2 rolls from the top of the key to the area near the post, to block A1 from scoring. In doing so he rolls partially through the key and momentarily becomes a fourth defender in the key. b) In similar situation Team A players are crossing the centre line or are in the backcourt when B2 rolls from the top of the key to take a new defensive position to cover the corner. In doing so he partially enters the key and temporarily becomes a fourth defender in the key.",
    "choices": [
     "옳다",
@@ -6388,7 +6388,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.91.3의 답: 옳지 않다. 선수의 위치는 바닥과 닿은 지점으로 정한다.",
-   "explanationEn": "Incorrect. The fourth player’s location on the floor is determined by the point of contact between that person and the floor. Rules for the Sport of Wheelchair Rugby 11.92 Holding foul",
+   "explanationEn": "Incorrect. The fourth player’s location on the floor is determined by the point of contact between that person and the floor.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -6534,7 +6534,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.92.2의 답: 옳지 않다. 짧게 스쳤을 뿐 불리해진 것이 없으므로 경기를 계속하게 해야 한다.",
-   "explanationEn": "Incorrect. B2 only touched A1 shortly and no disadvantage occurred. Play should have been allowed to continue.",
+   "explanationEn": "Incorrect. B2 only touched A2 shortly and no disadvantage occurred. Play should have been allowed to continue.",
    "rule": ""
   },
   {
@@ -6558,7 +6558,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.92.3의 답: 옳지 않다. B1은 접촉을 만들지 않았다. A1이 공격자 홀딩을 범한 것이다.",
-   "explanationEn": "Incorrect. B1 did not cause contact even though they reached in the vertical space of A1. A1 is guilty of offensive holding 11.93 Leaving the Court foul or Advantage",
+   "explanationEn": "Incorrect. B1 did not cause contact even though they reached in the vertical space of A1. A1 is guilty of offensive holding",
    "rule": ""
   },
   {
@@ -6909,7 +6909,7 @@
     "93"
    ],
    "question": "A2가 사이드라인 근처에서 B3와 B4에게 막혀 벗어나려다 코트를 벗어났다. B3와 B4가 A2에게 다가가 코트로 다시 들어오지 못하게 막았다. 레퍼리가 그냥 경기를 계속하게 한 것은 옳은가?",
-   "questionEn": "A2 is blocked by B3 and B4 close to the sideline. While trying to free himself A2 leaves the court. B3 and B4 advance towards A2 and prevent him from re -entering the court. Is the referee correct to ignore the situation and allow play to continue ? Rules for the Sport of Wheelchair Rugby",
+   "questionEn": "A2 is blocked by B3 and B4 close to the sideline. While trying to free himself A2 leaves the court. B3 and B4 advance towards A2 and prevent him from re -entering the court. Is the referee correct to ignore the situation and allow play to continue ?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -7026,7 +7026,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.93.7의 답: 옳지 않다. B1이 트라이 라인으로 가는 길 전체를 막아 A1에게 득점 기회가 없었다. A1이 적법한 자리의 B1을 불법한 자리로 밀어낸 것이므로 B1에게 코트 이탈 페널티를 주고, 볼은 A팀에 코너에서 준다.",
-   "explanationEn": "Incorrect. B1 covered the full path to the try line. There was no opportunity to score. A1 moved B1 from a legal position to an illegal position. The referee should award the ball to Team A in the corner and issue a Leaving the Court penalty to B1. 11.9 4 Pushing foul",
+   "explanationEn": "Incorrect. B1 covered the full path to the try line. There was no opportunity to score. A1 moved B1 from a legal position to an illegal position. The referee should award the ball to Team A in the corner and issue a Leaving the Court penalty to B1.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -7479,7 +7479,7 @@
     "94"
    ],
    "question": "B2와 B3가 트라이 라인 근처에서 A1을 막았지만, 힘이 더 센 A1이 1차 접촉 뒤에도 계속 밀어 B2와 B3를 옆으로 치우고 득점했다. 레퍼리가 트라이를 취소하고 A1에게 푸싱 파울을 준 것은 옳은가?",
-   "questionEn": "B2 and B3 block A1 near the try line. However, A1, being stronger, continues to push B2 and B3 aside (after initial contact) and rolls in for the try. The referee disallows the try and charges A1 for pushing . Is this correct? Rules for the Sport of Wheelchair Rugby",
+   "questionEn": "B2 and B3 block A1 near the try line. However, A1, being stronger, continues to push B2 and B3 aside (after initial contact) and rolls in for the try. The referee disallows the try and charges A1 for pushing . Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -7516,7 +7516,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 11.94.6의 답: 동료를 손으로 밀어 수비나 득점을 돕는 것은 푸싱 파울이다. 상대의 몸을 밀거나 상대 휠체어를 미는 것은 일리걸 유스 오브 더 핸즈 파울이다.",
-   "explanationEn": "a) Pushing foul, a player may not use their hands to assist a team-mate defend or score, by means of a push. b) Illegal use of hands. c) Illegal use of hands. 11.95 Illegal Use of the Hands foul",
+   "explanationEn": "a) Pushing foul, a player may not use their hands to assist a team-mate defend or score, by means of a push. b) Illegal use of hands. c) Illegal use of hands.",
    "rule": ""
   },
   {
@@ -7608,7 +7608,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.95.4의 답: 아니다. 이점도 불이익도 없는 우연한 접촉이므로 경기를 계속한다.",
-   "explanationEn": "No. Since there was no advantage/disadvantage, the contact was incidental, and play should continue. 11.96 Spinning foul",
+   "explanationEn": "No. Since there was no advantage/disadvantage, the contact was incidental, and play should continue.",
    "rule": ""
   },
   {
@@ -7631,7 +7631,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 11.96.1 b)의 답: 버티컬 스피닝 파울이다. A2가 불리해졌고 넘어질 위험으로 위험에 처했다. 같은 케이스 a)처럼 볼을 놓칠 정도로 밀렸을 뿐 위험이 없다면 콜하지 않는다.",
-   "explanationEn": "Rules for the Sport of Wheelchair Rugby a) No call as safety of Player A2 is not at risk. b) Vertical spinning fou l - A2 is disadvantage d and endangere d by a possible fall.",
+   "explanationEn": "a) No call as safety of Player A2 is not at risk. b) Vertical spinning foul - A2 is disadvantage d and endangere d by a possible fall.",
    "rule": ""
   },
   {
@@ -7678,7 +7678,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.96.3의 답: 아니다. A1이 뒤로 가고 있었으므로 휠체어의 뒤쪽이 앞쪽으로 보이고, 접촉은 축보다 앞에서 일어난 것이다.",
-   "explanationEn": "No. Since A1 is wheeling backwards, the back of the chair is considered the front and contact was made in front of the axle. 11.9 7 One -metr e foul",
+   "explanationEn": "No. Since A1 is wheeling backwards, the back of the chair is considered the front and contact was made in front of the axle.",
    "rule": ""
   },
   {
@@ -8006,7 +8006,7 @@
     "98"
    ],
    "question": "B4에게 테크니컬 파울이 주어지는 순간 A1이 트라이를 성공했다. A팀에 페널티 트라이를 주고 B4의 페널티 수행을 면제해야 하는가?",
-   "questionEn": "B4 is called for a technical foul at the same time that A1 scores. Should Team A be awarded a penalty try and B4 be exempted from serving the penalty? Rules for the Sport of Wheelchair Rugby",
+   "questionEn": "B4 is called for a technical foul at the same time that A1 scores. Should Team A be awarded a penalty try and B4 be exempted from serving the penalty?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8052,7 +8052,7 @@
     "99"
    ],
    "question": "A팀이 3대2 속공을 하던 중 B1이 공격수 앞으로 들어와 A1과 우연히 접촉했고, 그 접촉을 이용해 넘어진 선수인 척 바닥에 쓰러져 경기를 멈추게 했다. 레퍼리가 경기를 멈추고 B1에게 테크니컬 파울을 준 것은 옳은가?",
-   "questionEn": "Team A is on a 3 on 2 break away. B1 moves into the path of one of the attackers and makes incidental contact with A1 . In doing so, B1 uses the contact to fall to the floor in an attempt to gain a stoppage as a fallen player. T he referee stops the play and charges B1 with a technical foul. Is he correct?",
+   "questionEn": "Team A is on a 3 on 2 break away. B1 moves into the path of one of the attackers and makes incidental contact with A1 . In doing so, B1 uses the contact to fall to the floor in an attempt to gain a stoppage as a fallen player. The referee stops the play and charges B1 with a technical foul. Is he correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8147,7 +8147,7 @@
     "81"
    ],
    "question": "A1이 사이드라인에서 스로인한 뒤 B1 쪽으로 비스듬히 코트에 들어와 B1과 부딪히지 않고는 완전히 들어올 수 없게 되었다(B1은 1m 구역 밖에 있었다). 레퍼리가 경기 지연으로 B1에게 테크니컬 파울을 주어야 하는가?",
-   "questionEn": "A1 is inbounding the ball at the sideline. B1 stays outside the one-metre area but close to the sideline. After the throw-in, A1 enters the court on an angle towards B1 and therefore he cannot enter completely onto the court. Should t he referee charge B1 with a technical foul for delaying the game?",
+   "questionEn": "A1 is inbounding the ball at the sideline. B1 stays outside the one-metre area but close to the sideline. After the throw-in, A1 enters the court on an angle towards B1 and therefore he cannot enter completely onto the court. Should the referee charge B1 with a technical foul for delaying the game?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8258,7 +8258,7 @@
     "106"
    ],
    "question": "B1이 페널티 박스에 있을 때 A2와 A3가 나오는 B1을 가두려 했다. A1이 트라이를 성공했고, B1이 게이트를 지키지 않고 불법하게 코트로 들어왔다. B1에게 테크니컬 파울을 주고 페널티를 추가로 수행하게 해야 하는가?",
-   "questionEn": "Player B1 is in the penalty box. Player A3 and A2 set up to trap Player B1 when he exits the penalty box. Player A1 scores a try. Player B1, upon trying to enter the court, illegally enters by not respecting the gate. Should the referee issue Player B1 wit h a technical foul and does Player B1 serve an additional penalty?",
+   "questionEn": "Player B1 is in the penalty box. Player A3 and A2 set up to trap Player B1 when he exits the penalty box. Player A1 scores a try. Player B1, upon trying to enter the court, illegally enters by not respecting the gate. Should the referee issue Player B1 with a technical foul and does Player B1 serve an additional penalty?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8269,7 +8269,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.99.8의 답: 그렇다. B1이 게이트를 무시해 이점을 얻었다.",
-   "explanationEn": "Yes. B1 gained an advantage by ignoring the gate. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "Yes. B1 gained an advantage by ignoring the gate.",
    "rule": ""
   },
   {
@@ -8431,7 +8431,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.99.10의 답: 옳다. 피할 수 없는 충돌이었더라도 위험한 플레이이므로 A2에게 책임이 있다. 테크니컬 파울을 주고 A팀은 볼을 계속 갖는다.",
-   "explanationEn": "Yes. Although the collision was unavoidable, this is dangerous play. A2 is still responsible for their actions and should be assessed a technical foul . Team A will retain possession of the ball. 12.100 Technical Foul by Bench Personnel",
+   "explanationEn": "Yes. Although the collision was unavoidable, this is dangerous play. A2 is still responsible for their actions and should be assessed a technical foul . Team A will retain possession of the ball.",
    "rule": ""
   },
   {
@@ -8466,7 +8466,7 @@
     "100"
    ],
    "question": "경기 중 B코치가 코트 위 선수들에게 지시하려고 팀 벤치 구역을 여러 번 벗어나 테이블 오피셜 업무를 방해했다. 레퍼리가 경고한 뒤 테크니컬 파울을 준 것은 옳은가?",
-   "questionEn": "During the course of the game, Coach B repeatedly travels outside the Team Bench area to instruct his players on the court. This interferes with the duties of the table officials. Is the referee correct to charge Coach B with a technical foul after the coa ch has been warned ?",
+   "questionEn": "During the course of the game, Coach B repeatedly travels outside the Team Bench area to instruct his players on the court. This interferes with the duties of the table officials. Is the referee correct to charge Coach B with a technical foul after the coach has been warned ?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8526,7 +8526,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.100.4 a)의 답: 잘못 들어온 선수는 즉시 코트에서 나가고 코치가 지정한 선발 라인업이 들어온다. 테크니컬 파울은 주지 않는다. 경기가 시작된 뒤라면 코치에게 테크니컬 파울을 준다.",
-   "explanationEn": "a) The incorrect player(s) must leave the court immediately and the starting line-up as indicated by the coach must enter the court. No technical foul is charged. b) A technical foul will be assessed against the coach of Team B. The starting line- up as indicated by the coach must take the court, unless approved by the official for a medical or equipment related issue. One player from Team B will be selected by Team B’s coach to serve the penalty. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "a) The incorrect player(s) must leave the court immediately and the starting line-up as indicated by the coach must enter the court. No technical foul is charged. b) A technical foul will be assessed against the coach of Team B. The starting line- up as indicated by the coach must take the court, unless approved by the official for a medical or equipment related issue. One player from Team B will be selected by Team B’s coach to serve the penalty.",
    "rule": ""
   },
   {
@@ -8552,7 +8552,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.100.5의 답: 경기 중, 쿼터 사이 휴식, 추가 연장 피리어드 사이에는 벤치 테크니컬 파울이다. 다만 하프타임과 4쿼터~첫 연장 사이에는 바이얼레이션이 아니어서 B1이 벤치로 돌아갈 수 있다.",
-   "explanationEn": "A) Bench Technical Foul B) Bench Technical Foul C) No Violation player B1 may return to the bench D) No Violation player B1 may return to the bench E) Bench Technical Foul 12.101 Equipment Technical Foul",
+   "explanationEn": "A) Bench Technical Foul B) Bench Technical Foul C) No Violation player B1 may return to the bench D) No Violation player B1 may return to the bench E) Bench Technical Foul",
    "rule": ""
   },
   {
@@ -8577,7 +8577,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.101.1의 답: 휠체어를 다시 점검하고, 적법하다고 판정되면 점검을 요청한 B팀 코치에게 테크니컬 파울을 주어 B팀 코치가 고른 선수가 수행한다.",
-   "explanationEn": "Chair should be re-checked. A) What is the sanction/procedure if the chair is judged legal? Answer: If the chair is legal, the team that requested the check, in this case Team B, is sanctioned with a technical foul which will be served by a player chosen by the coach of Team B. B) What is the sanction/procedure if the chair is judged illegal when the chair/player first enters the game? Answer: If the chair is protested at the point when it first enters a game the player is penalized with a technical foul as chair did not become illegal during game. Procedure : The referee should report the technical foul to the penalty table and place the penalized player behind/outside the penalty box. The penalized player must remain there until his substitute is released from the penalty box. The substitute will take up a position inside the penalty box (try release or 40 seconds served). Rational : The player has been penalized for an illegal chair. He should not be permitted to start fixing the wheelchair before his penalty has been served. Re-check: A re-check can only be performed during a quarter or half time break in order to prevent further delays in the game. It also ensures that team staff have adequate time to repair the chair without rushing. Additionally, the coach of that player is not allowed to ask for a time-out to recheck the chair as the chair first enters the game illegally. Rules for the Sport of Wheelchair Rugby a) What is the sanction/procedure if the chair is judged illegal after the chair/player has had game time? Answer: If the chair is protested after it has had game time the player will be provided an equipment time-out in order to try to fix the chair. If he is unable to fix it within 1 minute, the player will be substituted. No penalty will be applied to the player. The coach may use a time-out to recheck the legality if the chair. b) What is the procedure if the chair has not had any game time and is protested at half time? Answer: A chair can only be protested when it enters the court. When the player enters the court, he will be judged as stated above.",
+   "explanationEn": "Chair should be re-checked. A) What is the sanction/procedure if the chair is judged legal? Answer: If the chair is legal, the team that requested the check, in this case Team B, is sanctioned with a technical foul which will be served by a player chosen by the coach of Team B. B) What is the sanction/procedure if the chair is judged illegal when the chair/player first enters the game? Answer: If the chair is protested at the point when it first enters a game the player is penalized with a technical foul as chair did not become illegal during game. Procedure : The referee should report the technical foul to the penalty table and place the penalized player behind/outside the penalty box. The penalized player must remain there until his substitute is released from the penalty box. The substitute will take up a position inside the penalty box (try release or 40 seconds served). Rational : The player has been penalized for an illegal chair. He should not be permitted to start fixing the wheelchair before his penalty has been served. Re-check: A re-check can only be performed during a quarter or half time break in order to prevent further delays in the game. It also ensures that team staff have adequate time to repair the chair without rushing. Additionally, the coach of that player is not allowed to ask for a time-out to recheck the chair as the chair first enters the game illegally. a) What is the sanction/procedure if the chair is judged illegal after the chair/player has had game time? Answer: If the chair is protested after it has had game time the player will be provided an equipment time-out in order to try to fix the chair. If he is unable to fix it within 1 minute, the player will be substituted. No penalty will be applied to the player. The coach may use a time-out to recheck the legality if the chair. b) What is the procedure if the chair has not had any game time and is protested at half time? Answer: A chair can only be protested when it enters the court. When the player enters the court, he will be judged as stated above.",
    "rule": ""
   },
   {
@@ -8601,7 +8601,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.101.2 A)의 답: 레퍼리는 이 요청을 받아들이지 않고, B1이 경기에 나와 코트에 들어온 뒤에 점검한다고 알린다. B1이 교체 선수라면 교체가 완료되어 경기에 들어올 때 점검한다.",
-   "explanationEn": "A) T he referee disallows this request and indicates that the chair of B1 must be checked once they have entered the court to take part in the game. B) The referee disallows this request and indicates the chair of B1 must be checked when the substitution has been completed during game time. 12.102 Excessive Points on the Court",
+   "explanationEn": "A) The referee disallows this request and indicates that the chair of B1 must be checked once they have entered the court to take part in the game. B) The referee disallows this request and indicates the chair of B1 must be checked when the substitution has been completed during game time.",
    "rule": ""
   },
   {
@@ -8675,7 +8675,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.103.1의 답: 옳다. 비신사적인 플레이다. A팀에 페널티 트라이를 주고 B2는 페널티 두 개를 수행한다.",
-   "explanationEn": "Correct. This is an unsportsmanlike play. Team A is awarded a penalty try and B2 will serve two penalties. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "Correct. This is an unsportsmanlike play. Team A is awarded a penalty try and B2 will serve two penalties.",
    "rule": ""
   },
   {
@@ -8688,7 +8688,7 @@
     "88"
    ],
    "question": "A1이 모든 수비수보다 앞서 트라이 라인을 넘으려는 순간, B2가 속도를 내 달려와 뒷축 근처에서 적법하게 수비할 각도가 없는데도 뒷 캐스터 뒤쪽에 비신사적으로 접촉해 A1을 바닥으로 넘어뜨렸다. 레퍼리가 B2에게 플래그런트 파울을 준 것은 옳은가?",
-   "questionEn": "A1 is about to cross the try line ahead of all defenders. B2 attacks with speed and has no angle to make a legitimate defensive play on the ball or play defence at or near the rear axle. B2 makes u nsportsmanlike contact with the ball carrier behind the rear castor , causing the player to fall to the floor. The referee charges B2 with a flagrant foul. Is this correct?",
+   "questionEn": "A1 is about to cross the try line ahead of all defenders. B2 attacks with speed and has no angle to make a legitimate defensive play on the ball or play defence at or near the rear axle. B2 makes unsportsmanlike contact with the ball carrier behind the rear castor , causing the player to fall to the floor. The referee charges B2 with a flagrant foul. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8807,8 +8807,8 @@
     "103",
     "94"
    ],
-   "question": "A1이 포스트 쪽으로 비스듬히 트라이 라인을 공격하고, B1이 평행하게 옆에서 달리다 A1이 먼저 도착할 것을 알고 A1을 포스트 쪽으로 밀어 득점을 막으려 했다. 축에서의 접촉으로 A1이 포스트로 넘어졌다. 레퍼리가 B1에게 플래그런트 파울을 준 것은 옳은가?",
-   "questionEn": "A1 is attacking the try line on an angle toward the post. B1 is beside A1 on a parallel path to the try line. As B1 realizes A1 will arrive at the try line slightly ahead of him. In an attempt to knock A1 into the post and prevent the try, B1 nudges A1 at the axle, the Rules for the Sport of Wheelchair Rugby contact causes A1 to flip over into the post. The referee issues a flagrant foul to B1 and awards A1 a penalty try. Is the referee correct?",
+   "question": "A1이 포스트 쪽으로 비스듬히 트라이 라인을 공격하고, B1이 평행하게 옆에서 달리다 A1이 먼저 도착할 것을 알고 A1을 포스트 쪽으로 밀어 득점을 막으려 했다. 축에서의 접촉으로 A1이 포스트로 넘어졌다. 레퍼리가 B1에게 플래그런트 파울을 주고 A1에게 페널티 트라이를 준 것은 옳은가?",
+   "questionEn": "A1 is attacking the try line on an angle toward the post. B1 is beside A1 on a parallel path to the try line. As B1 realizes A1 will arrive at the try line slightly ahead of him. In an attempt to knock A1 into the post and prevent the try, B1 nudges A1 at the axle, the contact causes A1 to flip over into the post. The referee issues a flagrant foul to B1 and awards A1 a penalty try. Is the referee correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8832,7 +8832,7 @@
     "78"
    ],
    "question": "A1이 키 위쪽에서 트라이 라인을 공격하고, B2가 A1을 따라잡아 살짝 앞선 뒤 각도가 좋다고 판단해 몸을 돌려 A1을 쳤다. 접촉은 A1 뒷축의 중간(범퍼의 약 50%가 축 뒤, 50%가 축 앞)이었고 A1이 볼을 가진 채 앞으로 넘어졌다. 이 접촉은 무엇인가?",
-   "questionEn": "A1 is attacking the try line at the top of the key. B2 is able to catch, and move slightly ahead of, A1. B2 feels there is a good angle and turns in to hit A1. B2 makes contact in the middle of A1’s rear axle (Approximately 50% of B2’s bumper is behind A1’ s axle and approximately 50% is in front of A1’s axle). The contact causes A1 to fall forward to the floor. A1 is in possession of the ball and touch their frame on the court. The referee charges B2 with a flagrant foul and awards a penalty try to Team A. Is this correct?",
+   "questionEn": "A1 is attacking the try line at the top of the key. B2 is able to catch, and move slightly ahead of, A1. B2 feels there is a good angle and turns in to hit A1. B2 makes contact in the middle of A1’s rear axle (Approximately 50% of B2’s bumper is behind A1’s axle and approximately 50% is in front of A1’s axle). The contact causes A1 to fall forward to the floor. A1 is in possession of the ball and touch their frame on the court. The referee charges B2 with a flagrant foul and awards a penalty try to Team A. Is this correct?",
    "choices": [
     "플래그런트 파울",
     "피지컬 어드밴티지 바이얼레이션 — B팀 사이드라인 볼"
@@ -9040,7 +9040,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 12.104.4의 답: 옳지 않다. 오류 시점으로 돌아가 페널티 수행은 취소하지만, 디스퀄리파잉 파울을 받은 선수는 그대로 퇴장된다. 그 선수는 경기장을 떠나고 교체 선수가 들어온다.",
-   "explanationEn": "Incorrect, the referee will still take the ball back to where the error occurred and erase the sanction for the disqualifying penalty, but the player who received the disqualifying foul will still be ejected from the game. Procedure : The disqualified player must leave the field of play, and a substitute will take his position on court. The sanction of the disqualifying foul ( 40 seconds) will not be applied. Rational : A disqualifying foul is a severe situation that needs to be administered. Rules for the Sport of Wheelchair Rugby",
+   "explanationEn": "Incorrect, the referee will still take the ball back to where the error occurred and erase the sanction for the disqualifying penalty, but the player who received the disqualifying foul will still be ejected from the game. Procedure : The disqualified player must leave the field of play, and a substitute will take his position on court. The sanction of the disqualifying foul ( 40 seconds) will not be applied. Rational : A disqualifying foul is a severe situation that needs to be administered.",
    "rule": ""
   },
   {
@@ -9087,7 +9087,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.104.6의 답: 옳다. 위협적인 행위와 이어지는 여러 차례의 비신사적 접촉은 디스퀄리파잉 파울로 격상한다.",
-   "explanationEn": "Yes, multiple instances of unsporting contact, connected to other incidents of intimidation should be upgraded to a Disqualifying foul. Section 13 PENALITIES 13.106 Release from the Penalty Box",
+   "explanationEn": "Yes, multiple instances of unsporting contact, connected to other incidents of intimidation should be upgraded to a Disqualifying foul.",
    "rule": ""
   },
   {
@@ -9194,7 +9194,7 @@
     "106"
    ],
    "question": "경기시계 4:40에 B1이 플래그런트 파울을 받았고, 처음 파울이 페널티 트라이여서 B1은 트라이 릴리즈 페널티 두 개를 수행해야 한다. 4:30에 B2가 일리걸 유스 오브 더 핸즈로 페널티를 받았다. 4:20에 A1이 트라이를 성공해 B1의 첫 페널티가 끝나고 두 번째가 4:20부터 시작되었다. 4:10에 A1이 다시 득점해, 페널티를 먼저 시작한 B2가 풀려났다. B1의 두 번째 페널티는 (4:10이 아니라) 4:20부터 계산해야 하는가?",
-   "questionEn": "With 4:40 left on the game clock, B1 is called for a flagrant foul. The initial foul was a penalty try and B1 must serve two try release penalties. At 4:30 B2 is called for illegal use of hands. At 4:20 A1 scores a try and B1’s first foul is completed, and the second foul begins at 4:20. At 4:10 A1 scores and B2 is released from the penalty box as his Rules for the Sport of Wheelchair Rugby penalty was the first started. Does B1 continue to serve his second foul from the 4: 20 time mark or the 4:10 time mark?",
+   "questionEn": "With 4:40 left on the game clock, B1 is called for a flagrant foul. The initial foul was a penalty try and B1 must serve two try release penalties. At 4:30 B2 is called for illegal use of hands. At 4:20 A1 scores a try and B1’s first foul is completed, and the second foul begins at 4:20. At 4:10 A1 scores and B2 is released from the penalty box as his penalty was the first started. Does B1 continue to serve his second foul from the 4: 20 time mark or the 4:10 time mark?",
    "choices": [
     "옳다",
     "옳지 않다"

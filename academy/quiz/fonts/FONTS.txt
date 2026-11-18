@@ -1,0 +1,16 @@
+사이트에 직접 넣은 글꼴 (2026-11-18)
+라이선스: 모두 SIL Open Font License 1.1 (재배포·웹 임베딩 허용). 같은 폴더의 OFL-*.txt 가 라이선스 전문입니다.
+
+Gothic A1  400/500/700/800  (gothic-a1-*.woff2)
+  출처: https://github.com/google/fonts/tree/main/ofl/gothica1  (Google Fonts 공식 저장소, 원본 TTF)
+  가공: 이 앱에서 쓰는 글자(한글 약 2,350자 + 앱 본문에 나온 글자 + 영문·기호)만 남겨 woff2로 줄임
+  저작권: (C) HanYang I&C Co.,Ltd.
+Do Hyeon  400  (do-hyeon-400.woff2)
+  출처: https://github.com/google/fonts/tree/main/ofl/dohyeon  (원본 TTF)  가공: 위와 같음
+  저작권: 2018 The Do Hyeon Project Authors
+IBM Plex Mono  500/600  (ibm-plex-mono-*.woff2)
+  출처: Google Fonts 공식 서버(fonts.gstatic.com)가 배포하는 라틴 woff2를 가공 없이 그대로 보관
+  (예약 글꼴 이름 "Plex" 때문에 우리가 줄이지 않음)  저작권: 2017 IBM Corp.
+
+글자를 더 쓰게 되면(예: 새 한글 단어) 같은 방식으로 다시 줄이거나, 없는 글자는 기기 기본 글꼴로 대신 나옵니다.
+일본어 글꼴은 아직 넣지 않았습니다.

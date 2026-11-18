@@ -12,6 +12,12 @@
   const KEY_GAME = 'wracad.game.v3';
   const LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
+  /* 코트 장면 '그림' 숨김 스위치 (2026-11-18). true = 문항 217개는 전부 그대로 풀고, 장면 그림·장면 박스·'장면' 태그만 숨김(장면 문항 45개는 글 문제로 풀림).
+     그림을 다시 보여줄 때는 false 한 줄만 바꾸면 복귀. (data/cases.json 의 scene 데이터는 그대로 있음)
+     복귀 때 같이 확인: index.html 의 「코트 장면 그림은 준비 중」 문장 2곳(주석에 원래 문장), i18n.js 옛 번역 키. */
+  const HIDE_SCENE_GRAPHICS = true;
+  const hasScene = (c) => !!(c && c.scene) && !HIDE_SCENE_GRAPHICS;
+
   let RULES = null, CASES = [], BYID = new Map(), CH = [], CHANGES = null;
   let ART = [], ARTBY = new Map(), RCH = [];
   let progress = load(KEY_PROGRESS, {});
@@ -75,23 +81,23 @@
   function saveGame() { save(KEY_GAME, game); }
   const RANK = window.QuizRank || { mode: 'off', ready: () => Promise.resolve(false), weekKey: () => '' };
 
-  /* ---------- 심판 사다리 (실제 경로: 국내 기록심 → 코트심 2급 → 1급 → WWR Candidate → Provisional → Zone → World) ----------
+  /* ---------- 심판 사다리 (실제 경로: 국내 기록심 → National 2급 → 1급 → WWR Candidate → Provisional → Zone → World) ----------
      need = 맞힌 '서로 다른 문항' 비율(전체 문항 수에 비례). 넘으면 승급 시험(하루 1번)을 볼 수 있다. */
   const LADDER = [
     { id: 'table', name: '기록심', short: '기록', tier: '국내', desc: '테이블에서 시간·점수·파울을 기록하며 시작합니다.' },
-    { id: 'court2', name: '코트심 2급', short: '2급', tier: '국내', need: 0.15, n: 10, pass: 0.8 },
-    { id: 'court1', name: '코트심 1급', short: '1급', tier: '국내', need: 0.35, n: 20, pass: 0.8 },
-    { id: 'cand', name: 'WWR 캔디데이트', short: 'CAND', en: 'Candidate', tier: '국제', need: 0.5, n: 20, pass: 0.8 },
-    { id: 'prov', name: 'WWR 프로비저널', short: 'PROV', en: 'Provisional', tier: '국제', need: 0.65, n: 20, pass: 0.85 },
-    { id: 'zone', name: '존 레퍼리', short: 'ZONE', en: 'Zone Referee', tier: '국제', need: 0.8, n: 30, pass: 0.85 },
-    { id: 'world', name: '월드 레퍼리', short: 'WORLD', en: 'World Referee', tier: '국제', need: 0.9, n: 30, pass: 0.9, five: true },
+    { id: 'court2', name: 'National 2급', short: '2급', tier: '국내', need: 0.15, n: 10, pass: 0.8 },
+    { id: 'court1', name: 'National 1급', short: '1급', tier: '국내', need: 0.35, n: 20, pass: 0.8 },
+    { id: 'cand', name: 'WWR 교육생', short: 'CAND', en: 'Candidate', tier: '국제', need: 0.5, n: 20, pass: 0.8 },
+    { id: 'prov', name: 'WWR 비기너', short: 'PROV', en: 'Provisional', tier: '국제', need: 0.65, n: 20, pass: 0.85 },
+    { id: 'zone', name: 'WWR 존 레퍼리', short: 'ZONE', en: 'Zone Referee', tier: '국제', need: 0.8, n: 30, pass: 0.85 },
+    { id: 'world', name: 'WWR 월드 레퍼리', short: 'WORLD', en: 'World Referee', tier: '국제', need: 0.9, n: 30, pass: 0.9, five: true },
   ];
   const WORLD = LADDER.length - 1;
-  function masteryOf() { return Object.keys(progress).filter((k) => progress[k] && (progress[k].ok || progress[k].best)).length; }
+  function masteryOf() { return Object.keys(progress).filter((k) => BYID.has(k) && progress[k] && (progress[k].ok || progress[k].best)).length; }
   function needOf(r) { return Math.ceil((r.need || 0) * CASES.length); }
   function gradeName() {
     const L = game.lad;
-    if (L.world.en) return T('월드 레퍼리 👑');
+    if (L.world.en) return T('WWR 월드 레퍼리 👑');
     return T(LADDER[L.g].name);
   }
   /* 지금 도전할 다음 단계: {r, lang, idx, kind:'exam'|'track'|'done', key} */
@@ -143,7 +149,11 @@
     if ($('ruleCount')) $('ruleCount').textContent = ART.length;
     if ($('caseCount')) $('caseCount').textContent = CASES.length;
     document.querySelectorAll('.rankCalcMax').forEach((el) => { el.textContent = CASES.length; });
-    if ($('sceneCount')) $('sceneCount').textContent = CASES.filter((c) => c.scene).length;
+    if ($('sceneCount')) {
+      const sn = CASES.filter(hasScene).length;
+      $('sceneCount').textContent = sn;
+      if ($('sceneBit')) $('sceneBit').hidden = !sn; /* 장면 0이면 '코트 장면 0' 문구를 감춤 */
+    }
 
     /* ---- 오늘의 도전 ---- */
     const ids = todayIds();
@@ -181,7 +191,7 @@
     if ($('homeBadgeStrip')) {
       $('homeBadgeStrip').innerHTML = got.length ? got.slice(0, 4).map((b) => `<span class="mini-badge-art">${badgeArt(b, true, 'h')}</span>`).join('') : T('아직 없음');
     }
-    const answered = Object.keys(progress);
+    const answered = Object.keys(progress).filter((k) => BYID.has(k));
     const last = answered.map((k) => ({ k, at: (progress[k] && progress[k].at) || 0 })).sort((a, b) => b.at - a.at)[0];
     const lc = last ? BYID.get(last.k) : null;
     if ($('homeRecent')) {
@@ -221,7 +231,7 @@
     const bar = $(P + 'LadBar');
     let next = '', count = '', label = '', enabled = false, pct = 100;
     if (ns.kind === 'done') {
-      next = L.world.en ? T('영어로 월드 레퍼리까지 올랐습니다. 최고 단계입니다. 명예의 전당에 이름이 올라 있습니다.') : T('최고 단계입니다.');
+      next = L.world.en ? T('영어로 WWR 월드 레퍼리까지 올랐습니다. 최고 단계입니다. 명예의 전당에 이름이 올라 있습니다.') : T('최고 단계입니다.');
       count = T('맞힌 문항 {m} / {n}', { m, n: CASES.length });
       label = T('최고 단계 달성');
     } else if (ns.kind === 'track') {
@@ -234,7 +244,7 @@
       pct = pctBar(m, need);
       const langTxt = ns.lang === 'en' ? ' · English' : '';
       if (ns.enRetry) {
-        next = T('한국어로 월드 레퍼리 달성! 이제 같은 시험을 영어로 통과하면 최고 배지 👑 (30문항, 최근 5회 중 3회 90점 이상 + 평균 90점)');
+        next = T('한국어로 WWR 월드 레퍼리 달성! 이제 같은 시험을 영어로 통과하면 최고 배지 👑 (30문항, 최근 5회 중 3회 90점 이상 + 평균 90점)');
       } else if (r.five) {
         next = T('다음: {name}{l} — 월드 시험 {n}문항, 최근 5회 중 3회 90점 이상 + 5회 평균 90점 이상이면 승급', { name: T(r.name), l: langTxt, n: r.n });
       } else {
@@ -267,7 +277,7 @@
 
   function chooseTrack() {
     popup(T('도전! 국제심판'), T('시험 언어를 고르세요'),
-      T('WWR 국제심판 길(캔디데이트 → 프로비저널 → 존 → 월드)을 어떤 언어로 볼지 정합니다. 한국어로도 월드까지 갈 수 있고, 영어로 월드까지 가면 최고 배지 👑를 받습니다. 나중에 내 기록 화면에서 바꿀 수 있습니다.'),
+      T('WWR 국제심판 길(교육생 → 비기너 → 존 → 월드)을 어떤 언어로 볼지 정합니다. 한국어로도 월드까지 갈 수 있고, 영어로 월드까지 가면 최고 배지 👑를 받습니다. 나중에 내 기록 화면에서 바꿀 수 있습니다.'),
       [{ label: T('한국어로'), primary: true, fn: () => setTrack('ko') }, { label: 'English', primary: true, fn: () => setTrack('en') }, { label: T('나중에') }]);
   }
   function setTrack(t) {
@@ -306,6 +316,7 @@
       passed = pct >= Math.round(ex.pass * 100);
       msg = passed ? '' : T('{s}점 — {p}점 이상이면 합격입니다. 내일 다시 도전하세요.', { s: pct, p: Math.round(ex.pass * 100) });
     }
+    L.last = { idx: ex.idx, right, total, pct, lang: ex.lang, passed, at: Date.now() }; /* 결과 카드용: 마지막 승급 시험 점수 */
     if (!passed) { saveGame(); return { passed, pct, msg }; }
     addXp(50);
     if (ex.idx === WORLD) {
@@ -313,7 +324,7 @@
       if (ex.lang === 'en') { L.world.en = true; L.world.ko = true; giveBadge('worldEn'); giveBadge('world'); }
       else { L.world.ko = true; giveBadge('world'); }
       enterHall(ex.lang);
-      msg = ex.lang === 'en' ? T('영어로 월드 레퍼리가 되었습니다. 최고 배지 👑와 함께 명예의 전당에 올랐습니다.') : T('월드 레퍼리가 되었습니다. 명예의 전당에 올랐습니다. 영어로도 도전해 최고 배지 👑를 노려보세요.');
+      msg = ex.lang === 'en' ? T('영어로 WWR 월드 레퍼리가 되었습니다. 최고 배지 👑와 함께 명예의 전당에 올랐습니다.') : T('WWR 월드 레퍼리가 되었습니다. 명예의 전당에 올랐습니다. 영어로도 도전해 최고 배지 👑를 노려보세요.');
     } else {
       L.g = ex.idx;
       giveBadge(r.id);
@@ -385,7 +396,7 @@
       if (rankTab[where] !== tab) return;
       if (rows == null) { box.innerHTML = `<p class="empty sm">${T('순위를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.')}${RANK.error ? ' (' + esc(RANK.error) + ')' : ''}</p>`; return; }
       if (!rows.length) {
-        box.innerHTML = `<p class="empty sm">${tab === 'hall' ? T('아직 월드 레퍼리에 오른 사람이 없습니다. 첫 번째 주인공이 되어 보세요.') : tab === 'week' ? T('이번 주 기록이 아직 없습니다. 첫 문제를 풀면 1등입니다.') : T('아직 기록이 없습니다.')}</p>`;
+        box.innerHTML = `<p class="empty sm">${tab === 'hall' ? T('아직 WWR 월드 레퍼리에 오른 사람이 없습니다. 첫 번째 주인공이 되어 보세요.') : tab === 'week' ? T('이번 주 기록이 아직 없습니다. 첫 문제를 풀면 1등입니다.') : T('아직 기록이 없습니다.')}</p>`;
         return;
       }
       box.innerHTML = '';
@@ -421,7 +432,10 @@
 
   function saveNick(where) {
     const P = where === 'me' ? 'me' : 'home';
-    const v = (($(P + 'Nick') && $(P + 'Nick').value) || '').trim().slice(0, 14);
+    const raw = (($(P + 'Nick') && $(P + 'Nick').value) || '').trim().slice(0, 14);
+    const cn = window.QuizNick ? window.QuizNick.clean(raw, 14) : { nick: raw, bad: false }; /* 필터는 nickfilter.js 한 곳 */
+    if (cn.bad) { popup('RANKING', T('이 닉네임은 쓸 수 없어요'), T('실명·연락처·욕설은 쓸 수 없어요. 별명으로 바꿔 주세요.')); return; }
+    const v = cn.nick;
     if (!v) { popup('RANKING', T('닉네임을 넣어 주세요'), T('1~14글자. 순위표와 명예의 전당에 이 이름이 나옵니다.')); return; }
     game.rank.nick = v;
     saveGame();
@@ -591,7 +605,7 @@
         const p = progress[c.id];
         b.innerHTML = `<span class="case-no">${T('케이스 {no} · {p}쪽', { no: esc(c.caseNo), p: esc(c.page) })}</span>
           <span class="case-q">${esc(qText(c))}</span>
-          <span class="case-tags">${c.scene ? `<span class="tag scene">${T('장면')}</span>` : `<span class="tag text">${T('글')}</span>`}
+          <span class="case-tags">${hasScene(c) ? `<span class="tag scene">${T('장면')}</span>` : `<span class="tag text">${T('글')}</span>`}
           ${p ? (p.ok ? `<span class="tag ok">${T('✓ 맞힘')}</span>` : `<span class="tag bad">${T('✕ 틀림')}</span>`) : ''}</span>`;
         b.addEventListener('click', () => startSession([c.id], 'case', T('케이스 {no}', { no: c.caseNo }), 'article'));
         list.appendChild(b);
@@ -637,9 +651,9 @@
 
   function renderQuizHome() {
     const total = CASES.length;
-    const sceneN = CASES.filter((c) => c.scene).length;
-    if ($('homeStats')) $('homeStats').textContent = T('전체 {t}문항 · 코트 장면 {s} · 글 문제 {x}', { t: total, s: sceneN, x: total - sceneN });
-    const answered = Object.keys(progress).length;
+    const sceneN = CASES.filter(hasScene).length;
+    if ($('homeStats')) $('homeStats').textContent = sceneN ? T('전체 {t}문항 · 코트 장면 {s} · 글 문제 {x}', { t: total, s: sceneN, x: total - sceneN }) : T('전체 {t}문항', { t: total });
+    const answered = Object.keys(progress).filter((k) => BYID.has(k)).length;
     if ($('homeProgress')) $('homeProgress').textContent = answered ? T('지금까지 {n}문항을 풀었습니다', { n: answered }) : T('아직 푼 문제가 없습니다');
     const list = $('chapterList');
     list.innerHTML = '';
@@ -675,7 +689,7 @@
       el.innerHTML = `<span class="case-no">${T('케이스 {no} · {p}쪽', { no: esc(c.caseNo), p: esc(c.page) })}</span>
         <span class="case-q">${esc(qText(c))}</span>
         <span class="case-tags">
-          ${c.scene ? `<span class="tag scene">${T('장면')}</span>` : `<span class="tag text">${T('글')}</span>`}
+          ${hasScene(c) ? `<span class="tag scene">${T('장면')}</span>` : `<span class="tag text">${T('글')}</span>`}
           ${p ? (p.ok ? `<span class="tag ok">${T('✓ 맞힘')}</span>` : `<span class="tag bad">${T('✕ 틀림')}</span>`) : ''}
         </span>`;
       el.addEventListener('click', () => startSession([c.id], 'case', T('케이스 {no}', { no: c.caseNo }), 'chapter'));
@@ -723,7 +737,7 @@
     if (lb) { lb.textContent = en ? 'KO' : 'EN'; lb.hidden = enLocked(); }
 
     const sceneBox = $('sceneBox'), textBox = $('textOnlyBox');
-    if (c.scene && window.QuizScene) {
+    if (hasScene(c) && window.QuizScene) {
       sceneBox.hidden = false; textBox.hidden = true;
       const wrap = $('sceneWrap');
       wrap.innerHTML = '<canvas id="sceneCanvas"></canvas>';
@@ -732,7 +746,7 @@
         sceneCtl = window.QuizScene.create(wrap, canvas, c.scene, { lang: caseLang });
       });
     } else {
-      sceneBox.hidden = true; textBox.hidden = false;
+      sceneBox.hidden = true; textBox.hidden = !!c.scene; /* 그림을 숨긴 장면 문항에는 '규정·절차가 핵심' 안내를 달지 않음 */
     }
 
     const box = $('choices');
@@ -923,6 +937,7 @@
     finishSession(answers, right, total);
     show('result');
     save(KEY_SESSION, null);
+    document.dispatchEvent(new CustomEvent('quiz:result', { detail: { right, total, mode: session.mode, exam: !!(session.mode === 'exam' && session.exam && session.exam.judged) } }));
   }
 
   /* ================= 게임 요소 ================= */
@@ -1025,13 +1040,13 @@
 
   /* 배지 목록 — 이름은 영어(진짜 배지 느낌), 뜻은 작은 한글 */
   const BADGES = [
-    { id: 'court2', sec: 'grade', name: 'COURT REFEREE II', ko: '코트심 2급 승급', shape: 'medal', c: ['#5eead4', '#0f766e'], glyph: 'stars1', label: 'II' },
-    { id: 'court1', sec: 'grade', name: 'COURT REFEREE I', ko: '코트심 1급 승급', shape: 'medal', c: ['#34d399', '#065f46'], glyph: 'stars2', label: 'I' },
-    { id: 'cand', sec: 'grade', name: 'WWR CANDIDATE', ko: '캔디데이트 승급', shape: 'medal', c: ['#7dd3fc', '#1d4ed8'], glyph: 'globe', label: 'CAND' },
-    { id: 'prov', sec: 'grade', name: 'WWR PROVISIONAL', ko: '프로비저널 승급', shape: 'medal', c: ['#a5b4fc', '#4338ca'], glyph: 'globe', label: 'PROV' },
-    { id: 'zone', sec: 'grade', name: 'ZONE REFEREE', ko: '존 레퍼리 승급', shape: 'medal', c: ['#d8b4fe', '#7e22ce'], glyph: 'globe', label: 'ZONE' },
-    { id: 'world', sec: 'grade', name: 'WORLD REFEREE', ko: '월드 레퍼리 · 명예의 전당', shape: 'star', c: ['#fde68a', '#b45309'], glyph: 'laurel', label: 'WORLD' },
-    { id: 'worldEn', sec: 'grade', name: 'WORLD LEGEND', ko: '영어로 월드 레퍼리 · 최고 배지', shape: 'star', c: ['#fef08a', '#ca8a04'], glyph: 'crown', label: 'LEGEND', top: true },
+    { id: 'court2', sec: 'grade', name: 'NATIONAL GRADE 2', ko: 'National 2급 승급', shape: 'medal', c: ['#5eead4', '#0f766e'], glyph: 'stars1', label: '2' },
+    { id: 'court1', sec: 'grade', name: 'NATIONAL GRADE 1', ko: 'National 1급 승급', shape: 'medal', c: ['#34d399', '#065f46'], glyph: 'stars2', label: '1' },
+    { id: 'cand', sec: 'grade', name: 'WWR CANDIDATE', ko: 'WWR 교육생 승급', shape: 'medal', c: ['#7dd3fc', '#1d4ed8'], glyph: 'globe', label: 'CAND' },
+    { id: 'prov', sec: 'grade', name: 'WWR PROVISIONAL', ko: 'WWR 비기너 승급', shape: 'medal', c: ['#a5b4fc', '#4338ca'], glyph: 'globe', label: 'PROV' },
+    { id: 'zone', sec: 'grade', name: 'ZONE REFEREE', ko: 'WWR 존 레퍼리 승급', shape: 'medal', c: ['#d8b4fe', '#7e22ce'], glyph: 'globe', label: 'ZONE' },
+    { id: 'world', sec: 'grade', name: 'WORLD REFEREE', ko: 'WWR 월드 레퍼리 · 명예의 전당', shape: 'star', c: ['#fde68a', '#b45309'], glyph: 'laurel', label: 'WORLD' },
+    { id: 'worldEn', sec: 'grade', name: 'WORLD LEGEND', ko: '영어로 WWR 월드 레퍼리 · 최고 배지', shape: 'star', c: ['#fef08a', '#ca8a04'], glyph: 'crown', label: 'LEGEND', top: true },
     { id: 'm_setup', sec: 'chapter', name: 'SETUP MASTER', ko: '장비·휠체어·팀·경기임원 전부 맞히기', shape: 'hex', ch: ['3', '4', '5', '6'], c: ['#cbd5e1', '#334155'], glyph: 'wheel' },
     { id: 'm_timing', sec: 'chapter', name: 'TIMING MASTER', ko: '시간 규정 전부 맞히기', shape: 'hex', ch: ['7'], c: ['#7dd3fc', '#0369a1'], glyph: 'clock' },
     { id: 'm_play', sec: 'chapter', name: 'PLAY MASTER', ko: '경기 규정 전부 맞히기', shape: 'hex', ch: ['8'], c: ['#86efac', '#15803d'], glyph: 'ball' },
@@ -1078,7 +1093,7 @@
       show.className = 'showcase' + (lead ? ' got' : '');
       show.innerHTML = lead
         ? `<div class="showcase-art">${badgeArt(lead, true, 'show')}</div><div class="showcase-txt"><p class="showcase-k">MY BADGE</p><p class="showcase-name">${esc(lead.name)}</p><p class="showcase-ko">${esc(T(lead.ko))}</p><p class="showcase-meta">${T('{d} 획득 · 모은 배지 {g} / {n}', { d: esc(game.badges[lead.id]), g: got.length, n: BADGES.length })}</p></div>`
-        : `<div class="showcase-art">${badgeArt(BADGES[0], false, 'show')}</div><div class="showcase-txt"><p class="showcase-k">FIRST BADGE</p><p class="showcase-name">COURT REFEREE II</p><p class="showcase-ko">${T('코트심 2급 승급 시험에 합격하면 첫 배지를 받습니다.')}</p><p class="showcase-meta">${T('모은 배지 0 / {n}', { n: BADGES.length })}</p></div>`;
+        : `<div class="showcase-art">${badgeArt(BADGES[0], false, 'show')}</div><div class="showcase-txt"><p class="showcase-k">FIRST BADGE</p><p class="showcase-name">NATIONAL GRADE 2</p><p class="showcase-ko">${T('National 2급 승급 시험에 합격하면 첫 배지를 받습니다.')}</p><p class="showcase-meta">${T('모은 배지 0 / {n}', { n: BADGES.length })}</p></div>`;
     }
     grid.innerHTML = '';
     for (const [sec, en, ko] of BADGE_SECS) {
@@ -1337,7 +1352,7 @@
     RCH = rules.chapters || [];
     ART = (rules.articles || []).slice().sort((a, b) => a.no - b.no);
     ARTBY = new Map(ART.map((a) => [a.no, a]));
-    CASES = cases.cases || [];
+    CASES = cases.cases || []; /* 217문항 전부 (장면 그림만 HIDE_SCENE_GRAPHICS 로 숨김) */
     CHANGES = changes && changes.ratified ? changes : null;
     const listed = (cases.chapters || []).map((c) => ({ ...c, id: String(c.id) }));
     const extraIds = [...new Set(CASES.map((c) => String(c.chapter)))].filter((id) => !listed.some((c) => c.id === id));
@@ -1349,6 +1364,14 @@
     migrateBadges();
     renderHome();
     syncRank();
+    /* 랜딩·공유 카드가 읽는 값 (읽기 전용) */
+    window.QuizPublic = {
+      caseCount: () => CASES.length, ladder: LADDER, badgeCount: () => BADGES.length,
+      lang: () => LANG,
+      gradeIdx: () => game.lad.g, worldEn: () => !!game.lad.world.en,
+      last: () => game.lad.last || null, nick: () => (game.rank.nick || '').trim()
+    };
+    document.dispatchEvent(new CustomEvent('quiz:ready'));
   }).catch((err) => {
     $('loadError').hidden = false;
     $('loadError').textContent = T('데이터를 불러오지 못했습니다. 웹 주소(http)로 열어 주세요.') + ' (' + err.message + ')';
