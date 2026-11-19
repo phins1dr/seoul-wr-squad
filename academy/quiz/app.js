@@ -871,6 +871,14 @@
     else renderQuiz();
   }
 
+  /* 문의·정정 창구(구글 폼). URL에는 '종류'와 '문항 번호'만 싣는다 (닉네임·점수·기기 정보 금지). */
+  const FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLScoYgLeVU9m19P-Ad2QnEqwfnViXj2IlbIlOuQ0DjrNYg1hbA/viewform';
+  const FORM_KIND = { fix: '정정 요청 (문제·해설 오류) / Correction', ask: '문의 / Question' };
+  function formUrl(kind, no) {
+    let u = FORM_BASE + '?usp=pp_url&entry.2006735835=' + encodeURIComponent(FORM_KIND[kind]);
+    if (no) u += '&entry.954324513=' + encodeURIComponent(no);
+    return u;
+  }
   function renderFeedback(c, picked, ok) {
     const fb = $('feedback');
     const rel = (c.relatedArticles || []).filter((n) => ARTBY.get(Number(n)));
@@ -906,7 +914,8 @@
           const a = ARTBY.get(Number(n));
           return `<button class="art-link inline" data-art="${a.no}" type="button"><span class="no">${T('{n}조', { n: a.no })}</span><span class="ti">${esc(artTitle(a))}</span></button>`;
         }).join('')}</div>` : ''}
-      </div>`;
+      </div>
+      <a class="form-link" id="fbReport" href="${esc(formUrl('fix', 'Case ' + c.caseNo))}" target="_blank" rel="noopener noreferrer">${T('이 문제 정정 요청')}</a>`;
     // 다른 언어 원문은 '다음 문제' 버튼 아래에 따로 둔다
     const ob = $('origBox');
     if (ob) {
@@ -1368,6 +1377,7 @@
     else if (v === 'me') renderMe();
     else renderHome();
   }
+  const askLink = $('homeAsk'); if (askLink) askLink.href = formUrl('ask'); /* 홈 하단 '문의·제안' (문항 번호 없음) */
   document.querySelectorAll('.lang-switch [data-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.getAttribute('data-lang'))));
   applyStatic();
 

@@ -14,6 +14,8 @@ window.I18N_EN = {
   '닉네임 (예: 서울 감독)': 'Nickname (e.g. Coach Seoul)',
   '닉네임': 'Nickname',
   '랭킹 참가': 'Join ranking',
+  '이 문제 정정 요청': 'Report an error in this question',
+  '문의·제안': 'Questions & suggestions',
   'ⓘ 설명 다시 보기': 'ⓘ Show intro again',
   '오늘의 10문제': "Today's 10",
   '오늘의 10문제 도전': "Play today's 10",
