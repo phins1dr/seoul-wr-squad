@@ -996,7 +996,7 @@
     if (!b) return;
     game.badges[id] = todayKey();
     saveGame();
-    if (!silent) popup('NEW BADGE', b.name, T('{d} — 배지를 손에 넣었습니다!', { d: T(b.ko) }), null, { art: badgeArt(b, true, 'pop'), cls: 'pop-badge' });
+    if (!silent) popup('NEW BADGE', b.name, T('{d} — 배지를 손에 넣었습니다!', { d: T(b.ko) }), null, { art: badgeArt(b, true, 'pop'), cls: 'pop-badge' + (b.sec === 'grade' ? ' pop-reward' : '') });
   }
   /* 장 마스터·전체 마스터: 그 범위 문항을 전부 한 번 이상 맞혀야 받는다 */
   function okCount(ids) { return ids.filter((id) => progress[id] && (progress[id].ok || progress[id].best)).length; }
@@ -1074,8 +1074,8 @@
     { id: 'cand', sec: 'grade', name: 'WWR CANDIDATE', ko: 'WWR 교육생 승급', shape: 'medal', c: ['#7dd3fc', '#1d4ed8'], glyph: 'globe', label: 'CAND' },
     { id: 'prov', sec: 'grade', name: 'WWR PROVISIONAL', ko: 'WWR 비기너 승급', shape: 'medal', c: ['#a5b4fc', '#4338ca'], glyph: 'globe', label: 'PROV' },
     { id: 'zone', sec: 'grade', name: 'ZONE REFEREE', ko: 'WWR 존 레퍼리 승급', shape: 'medal', c: ['#d8b4fe', '#7e22ce'], glyph: 'globe', label: 'ZONE' },
-    { id: 'world', sec: 'grade', name: 'WORLD REFEREE', ko: 'WWR 월드 레퍼리 · 명예의 전당', shape: 'star', c: ['#fde68a', '#b45309'], glyph: 'laurel', label: 'WORLD' },
-    { id: 'worldEn', sec: 'grade', name: 'WORLD LEGEND', ko: '영어로 WWR 월드 레퍼리 · 최고 배지', shape: 'star', c: ['#fef08a', '#ca8a04'], glyph: 'crown', label: 'LEGEND', top: true },
+    { id: 'world', sec: 'grade', name: 'WORLD REFEREE', ko: 'WWR 월드 레퍼리 · 명예의 전당', shape: 'star', c: ['#fde68a', '#b45309'], glyph: 'laurel', label: 'WORLD', metal: true },
+    { id: 'worldEn', sec: 'grade', name: 'WORLD LEGEND', ko: '영어로 WWR 월드 레퍼리 · 최고 배지', shape: 'star', c: ['#fef08a', '#ca8a04'], glyph: 'crown', label: 'LEGEND', top: true, metal: true },
     { id: 'm_setup', sec: 'chapter', name: 'SETUP MASTER', ko: '장비·휠체어·팀·경기임원 전부 맞히기', shape: 'hex', ch: ['3', '4', '5', '6'], c: ['#cbd5e1', '#334155'], glyph: 'wheel' },
     { id: 'm_timing', sec: 'chapter', name: 'TIMING MASTER', ko: '시간 규정 전부 맞히기', shape: 'hex', ch: ['7'], c: ['#7dd3fc', '#0369a1'], glyph: 'clock' },
     { id: 'm_play', sec: 'chapter', name: 'PLAY MASTER', ko: '경기 규정 전부 맞히기', shape: 'hex', ch: ['8'], c: ['#86efac', '#15803d'], glyph: 'ball' },
@@ -1151,7 +1151,7 @@
           const p2 = have ? null : badgeProgress(b);
           popup(have ? 'BADGE' : 'LOCKED', b.name,
             have ? T('{d} · {date} 획득', { d: T(b.ko), date: game.badges[b.id] }) : `${T(b.ko)}${p2 && p2.need ? T(' — 지금 {h} / {n}', { h: p2.have, n: p2.need }) : p2 && p2.text ? ` — ${p2.text}` : ''}`,
-            null, { art: badgeArt(b, have, 'pop'), cls: have ? 'pop-badge' : 'pop-badge locked' });
+            null, { art: badgeArt(b, have, 'pop'), cls: have ? 'pop-badge' + (b.sec === 'grade' ? ' pop-reward' : '') : 'pop-badge locked' });
         });
         row.appendChild(el);
       });

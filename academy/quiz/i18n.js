@@ -11,7 +11,7 @@ window.I18N_EN = {
   '{nick}님, 반가워요 👋': 'Hi, {nick} 👋',
   '기록심 · 0점': 'Table Official · 0 pts',
   '이번 주': 'This week',
-  '닉네임 (예: 블리츠 감독)': 'Nickname (e.g. Coach Blitz)',
+  '닉네임 (예: 서울 감독)': 'Nickname (e.g. Coach Seoul)',
   '닉네임': 'Nickname',
   '랭킹 참가': 'Join ranking',
   'ⓘ 설명 다시 보기': 'ⓘ Show intro again',

@@ -17,7 +17,7 @@
   var TXT = {
     ko: {
       title: '내 등급 카드', hint: '카드에는 별명만 들어갑니다. 실명·연락처는 넣지 마세요.',
-      nickLbl: '카드에 넣을 별명', nickPh: '예: 블리츠 감독',
+      nickLbl: '카드에 넣을 별명', nickPh: '예: 서울 감독',
       feed: '인스타 세로', story: '스토리',
       share: '카드 공유하기', save: '이미지 저장', busy: '카드 준비 중…', ready: '', making: '만드는 중…',
       nickBad: '이 별명은 쓸 수 없어요. 카드에는 「익명 심판」으로 들어갑니다.',
@@ -32,7 +32,7 @@
     },
     en: {
       title: 'My grade card', hint: 'Only a nickname goes on the card. Please do not use your real name or contact info.',
-      nickLbl: 'Nickname on the card', nickPh: 'e.g. Coach Blitz',
+      nickLbl: 'Nickname on the card', nickPh: 'e.g. Coach Seoul',
       feed: 'Instagram post', story: 'Story',
       share: 'Share my card', save: 'Save image', busy: 'Preparing card…', ready: '', making: 'Making your card…',
       nickBad: "That nickname can't be used. The card will say “Anonymous Referee”.",

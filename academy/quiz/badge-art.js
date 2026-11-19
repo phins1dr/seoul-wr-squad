@@ -74,18 +74,27 @@
     const gcol = got ? W : '#f6f8fa';
     const shape = def.shape || 'medal';
     const sp = shapePath(shape);
+    const metal = !!(def.metal && got); /* 월드 배지: 금속 질감(그라데이션·광택·테두리) */
     let out = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" class="badge-svg">
 <defs>
   <linearGradient id="${id}g" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>
   <linearGradient id="${id}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".25"/><stop offset="1" stop-color="#ffffff" stop-opacity=".7"/></linearGradient>
   <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
 </defs>`;
+    if (metal) {
+      out = out.replace('</defs>', `<linearGradient id="${id}m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6c8"/><stop offset=".22" stop-color="#f5c84b"/><stop offset=".48" stop-color="#9a6a0e"/><stop offset=".62" stop-color="#e9b83a"/><stop offset=".85" stop-color="#fff0a8"/><stop offset="1" stop-color="#b8841c"/></linearGradient>
+<linearGradient id="${id}e" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffbe6"/><stop offset=".4" stop-color="#d9a21e"/><stop offset="1" stop-color="#7a4f08"/></linearGradient>
+<radialGradient id="${id}x" cx=".35" cy=".28" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<linearGradient id="${id}h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<clipPath id="${id}c"><path d="${sp}"/></clipPath></defs>`);
+    }
     // 메달 리본 꼬리
     if (shape === 'medal' || shape === 'star') {
       out += `<path d="M34 70l-8 24 10-5 6 9 6-22z" fill="${c2}" opacity="${got ? 1 : .7}"/><path d="M66 70l8 24-10-5-6 9-6-22z" fill="${c2}" opacity="${got ? 1 : .7}"/>`;
     }
     if (sp) {
-      out += `<path d="${sp}" fill="url(#${id}g)"/><path d="${sp}" fill="none" stroke="url(#${id}r)" stroke-width="2.4"/>`;
+      out += `<path d="${sp}" fill="url(#${id}${metal ? 'm' : 'g'})"/><path d="${sp}" fill="none" stroke="${metal ? `url(#${id}e)` : `url(#${id}r)`}" stroke-width="${metal ? 3.4 : 2.4}"/>`;
+      if (metal) out += `<path d="${sp}" fill="url(#${id}x)"/>`;
       if (shape === 'hex') out += `<path d="${poly(50, 48, 29, 6, Math.PI / 6)}" fill="none" stroke="${W}" stroke-opacity=".35" stroke-width="1.4"/>`;
       if (shape === 'shield') out += `<path d="M50 17l25 8v19c0 17-11 29-25 36-14-7-25-19-25-36V25z" fill="none" stroke="${W}" stroke-opacity=".35" stroke-width="1.4"/>`;
       if (shape === 'star') out += `<circle cx="50" cy="48" r="27" fill="none" stroke="${W}" stroke-opacity=".45" stroke-width="1.6"/>`;
@@ -95,7 +104,8 @@
     }
     // 위쪽 광택
     out += `<ellipse cx="50" cy="28" rx="24" ry="13" fill="url(#${id}s)"/>`;
-    out += glyph(def.glyph, gcol);
+    out += glyph(def.glyph, metal ? '#5c3a05' : gcol);
+    if (metal) out += `<g clip-path="url(#${id}c)"><rect class="b-sheen" x="-40" y="-10" width="32" height="120" fill="url(#${id}h)"/></g>`;
     // 아래 리본 띠
     if (def.label) {
       const w = Math.max(26, def.label.length * 7 + 12);

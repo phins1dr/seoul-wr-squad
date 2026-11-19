@@ -13,7 +13,7 @@
       start: '지금 시작하기', src: '2026 WWR 공식 케이스북 기준',
       aca: '아카데미에서 더 배우기 · 준비 중', acaBody: '규정 공부와 연결되는 아카데미 페이지를 준비하고 있습니다.',
       jp: '日本語 準備中',
-      nickL: '닉네임', nickChip: '선택', nickSkipNote: '건너뛰면 순위에는 오르지 않아요', nickPh: '예: 블리츠 감독', nickH: '순위표에 이 이름이 나옵니다. 실명·연락처는 쓰지 마세요.',
+      nickL: '닉네임', nickChip: '선택', nickSkipNote: '건너뛰면 순위에는 오르지 않아요', nickPh: '예: 서울 감독', nickH: '순위표에 이 이름이 나옵니다. 실명·연락처는 쓰지 마세요.',
       nickGo: '시작하기', close: '닫기', nickSkip: '건너뛰고 시작', nickBad: '실명·연락처·욕설은 쓸 수 없어요. 별명으로 바꿔 주세요.'
     },
     en: {
@@ -24,7 +24,7 @@
       start: 'Start now', src: 'Based on the official WWR Casebook 2026',
       aca: 'Learn more at the Academy · coming soon', acaBody: 'An Academy page that connects to rule study is on its way.',
       jp: '日本語 coming soon',
-      nickL: 'Nickname', nickChip: 'Optional', nickSkipNote: "Skipping means you won't appear on the leaderboard", nickPh: 'e.g. Coach Blitz', nickH: 'This name shows on the leaderboard. Please do not use your real name or contact info.',
+      nickL: 'Nickname', nickChip: 'Optional', nickSkipNote: "Skipping means you won't appear on the leaderboard", nickPh: 'e.g. Coach Seoul', nickH: 'This name shows on the leaderboard. Please do not use your real name or contact info.',
       nickGo: 'Start', close: 'Close', nickSkip: 'Skip and start', nickBad: 'Real names, contact info and swear words are not allowed. Please pick a nickname.'
     }
   };

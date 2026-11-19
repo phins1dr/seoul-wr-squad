@@ -50,7 +50,7 @@
     try { d = JSON.parse(localStorage.getItem(MK)); } catch (e) {}
     if (!d) {
       d = { players: {
-        a1: { nick: '블리츠', total: 1840, grade: 4, en: false },
+        a1: { nick: '서울팀', total: 1840, grade: 4, en: false },
         a2: { nick: '쿼드킹', total: 1210, grade: 3, en: true },
         a3: { nick: '범퍼카', total: 640, grade: 2, en: false },
         a4: { nick: '인바운더', total: 320, grade: 1, en: false }
