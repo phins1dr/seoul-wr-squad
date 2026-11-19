@@ -86,7 +86,7 @@
     "21"
    ],
    "question": "A팀이 빨간 유니폼 상의 안에 흰 셔츠를 받쳐 입고 나왔다. 두 팀 코치가 흰 속셔츠를 그대로 입기로 합의했는데도 레퍼리가 속셔츠를 벗으라고 한다. 옳은 처리인가?",
-   "questionEn": "Team A appears on the court wearing red uniform tops and white shirts underneath. Does the referee handle the following scenarios correctly? a) Coach B asks for a correctable error review regarding the under shirts . The referee dismisses the correctable error since all players are dressed alike. b) Both coaches accept the white undershirts with the red uniforms, but the referee insists that the undershirts be removed.",
+   "questionEn": "Team A appears on the court wearing red uniform tops and white shirts underneath. Does the referee handle the following scenarios correctly? a) Coach B asks for a correctable error review regarding the under shirts. The referee dismisses the correctable error since all players are dressed alike. b) Both coaches accept the white undershirts with the red uniforms, but the referee insists that the undershirts be removed.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -143,7 +143,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 3.21.3의 답: 옳다. 경기를 제대로 운영하려면 선수 번호가 항상 잘 보여야 한다. 레퍼리는 선수에게 유니폼을 고칠 기회를 한 번 주어야 한다.",
-   "explanationEn": "To administer a game properly and efficiently , the numbers of the players must be always visible. The referee should give the players a single opportunity to fix their uniform.",
+   "explanationEn": "To administer a game properly and efficiently, the numbers of the players must be always visible. The referee should give the players a single opportunity to fix their uniform.",
    "rule": ""
   },
   {
@@ -155,7 +155,7 @@
     "21"
    ],
    "question": "두 팀이 비슷한 색의 어두운 상의를 입으려 한다. 레퍼리가 \"A팀이 대조되는 밝은 색 상의를 고른다\"고 판정했다. 옳은 판정인가?",
-   "questionEn": "Team A and Team B wish to wear similarly coloured dark shirts. The referee rules that Team A will choose a contrasting , lighter coloured shirt. Is this decision correct?",
+   "questionEn": "Team A and Team B wish to wear similarly coloured dark shirts. The referee rules that Team A will choose a contrasting, lighter coloured shirt. Is this decision correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -192,7 +192,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 3.22.1의 답: 중단 때 레퍼리는 장비 타임아웃을 주고, 경기를 재개하기 전에 버클이 잘 덮여 있는지 확인한다. 수리가 60초 안에 끝나지 않으면 그 선수는 교체되어야 한다.",
-   "explanationEn": "At the stoppage, the referee should provide an equipment time -out and ensure the buckle is well padded prior to resuming play. If the repair cannot be completed within 60 seconds, the player must be substituted.",
+   "explanationEn": "At the stoppage, the referee should provide an equipment time-out and ensure the buckle is well padded prior to resuming play. If the repair cannot be completed within 60 seconds, the player must be substituted.",
    "rule": ""
   },
   {
@@ -342,7 +342,7 @@
     "31"
    ],
    "question": "경기에 나오는 동안 선수가 귀걸이, 머리 핀, 손가락 장신구, 팔찌를 착용할 수 있는가?",
-   "questionEn": "Shall players be permitted to wear earrings, hair clips, finger jewellery , or bracelets while participating?",
+   "questionEn": "Shall players be permitted to wear earrings, hair clips, finger jewellery, or bracelets while participating?",
    "choices": [
     "허용된다",
     "허용되지 않는다"
@@ -448,7 +448,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 5.36.2의 답: 옳지 않다. A팀이 먼저 라인업을 내고 그다음 B팀이 낸다. A팀 코치는 스코어시트를 보며 B팀 라인업을 확인할 수 있지만, 상대 라인업에 맞추는 교체는 허용되지 않는다.",
-   "explanationEn": "No. Team A must Indicate the team line-up first. Then Team B will indicate their line-up. Team A coach will be allowed to view the score sheet to see Team B line- up, but no substitutions will be allowed to match the other team’s line-up.",
+   "explanationEn": "No. Team A must Indicate the team line-up first. Then Team B will indicate their line-up. Team A coach will be allowed to view the score sheet to see Team B line-up, but no substitutions will be allowed to match the other team’s line-up.",
    "rule": ""
   },
   {
@@ -839,7 +839,7 @@
     "56"
    ],
    "question": "A팀 코치가 요청한 타임아웃이 부여되어 양 팀이 벤치로 갔다. 13초 뒤 A팀 선수가 경기 재개가 준비되었다고 레퍼리에게 알렸고, 레퍼리는 B팀에 타임아웃이 끝났다는 것을 알리지 않은 채 경기를 재개했다. 레퍼리의 절차는 옳은가?",
-   "questionEn": "The coach from Team A requests and is granted a time- out. The teams proceed to their bench area. After 13 seconds a player from Team A informs the referee that they are ready to resume play. The referee resumes play without informing Team B that the time-out has ended. Is the referee's procedure correct?",
+   "questionEn": "The coach from Team A requests and is granted a time-out. The teams proceed to their bench area. After 13 seconds a player from Team A informs the referee that they are ready to resume play. The referee resumes play without informing Team B that the time-out has ended. Is the referee's procedure correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -1234,7 +1234,7 @@
     "61"
    ],
    "question": "팁오프에서 A1과 B1이 볼을 여러 번 쳤고 볼이 바닥에 떨어졌다. 다른 선수가 닿기 전에 A1이 볼을 잡아 트라이 라인으로 달렸다. 레퍼리가 경기를 멈추고 팁오프를 다시 한 것은 옳은가?",
-   "questionEn": "During the tip-off, A1 and B1 tap the ball several times and then the ball bounces off the floor. Before any other player can get to the ball A1 picks it up and pushes towards the try line. Is the referee correct to stop the play and retake the tip -off?",
+   "questionEn": "During the tip-off, A1 and B1 tap the ball several times and then the ball bounces off the floor. Before any other player can get to the ball A1 picks it up and pushes towards the try line. Is the referee correct to stop the play and retake the tip-off?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -1257,7 +1257,7 @@
     "62"
    ],
    "question": "헬드볼이 선언되어 소유권 화살표에 따라 A팀이 스로인을 얻었다. 그런데 A1이 8초 안에 스로인하지 못해 바이얼레이션을 범했다. 그래도 다음 소유권은 화살표에 따라 B팀으로 넘어가는가?",
-   "questionEn": "A held ball is called and according to the possession arrow, Team A is awarded a throw-in. A1 commits a violation, i .e., 8 sec. to execute a throw-in; bounces the ball out- of-bounds on the throw-in. Does the arrow still change to show Team B possessing the ball next? Important statement: Once a throw-in is awarded due to the alternating process, the possession arrow is changed when the ball is legally inbounded. If an infraction of the rules occurs before the conclusion of the throw- in, it shall be sanctioned according to the rules of the game, and it shall have no effect on the possession arrow. The alternating-possession procedure is a method of putting the ball in play with a throw -in rather than a tip-off. The designated spot for the throw-in shall be on the sideline opposite the scoring table and nearest to the location of the ball at the time of the infraction. The arrow is always changed AFTER the inbound – even if other infractions occur.",
+   "questionEn": "A held ball is called and according to the possession arrow, Team A is awarded a throw-in. A1 commits a violation, i.e., 8 sec. to execute a throw-in; bounces the ball out-of-bounds on the throw-in. Does the arrow still change to show Team B possessing the ball next? Important statement: Once a throw-in is awarded due to the alternating process, the possession arrow is changed when the ball is legally inbounded. If an infraction of the rules occurs before the conclusion of the throw-in, it shall be sanctioned according to the rules of the game, and it shall have no effect on the possession arrow. The alternating-possession procedure is a method of putting the ball in play with a throw-in rather than a tip-off. The designated spot for the throw-in shall be on the sideline opposite the scoring table and nearest to the location of the ball at the time of the infraction. The arrow is always changed AFTER the inbound – even if other infractions occur.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -1281,7 +1281,7 @@
     "97"
    ],
    "question": "헬드볼로 A팀이 스로인을 얻었다. 스로인을 하기 전에 A2가 1m 파울을 범했다. 어떻게 처리하는가?",
-   "questionEn": "A held ball is called and according to the possession arrow, Team A is awarded a throw- in. How do you sanction calls when prior to the throw-in: a) A2 commits a one-metre foul? b) B1 commits a one-metre foul?",
+   "questionEn": "A held ball is called and according to the possession arrow, Team A is awarded a throw-in. How do you sanction calls when prior to the throw-in: a) A2 commits a one-metre foul? b) B1 commits a one-metre foul?",
    "choices": [
     "B팀에 스로인이 주어지고 다음 소유권도 B팀이 갖는다",
     "A팀이 그대로 스로인한다",
@@ -1331,7 +1331,7 @@
     "51"
    ],
    "question": "개막 팁오프에서 누가 볼을 쳐서 아웃시켰는지 알 수 없어 레퍼리가 팁오프를 무효로 하고 다시 했으며, 경기시계를 8:00으로 되돌렸다. 옳은가?",
-   "questionEn": "On the opening tip-off, the ball is tapped out of bounds. The referee declares the tip- off void as it can’t be determined which player tipped the ball out of bounds. The referee restarts the tip-off, and the game clock is reset to 8:00. Is this correct?",
+   "questionEn": "On the opening tip-off, the ball is tapped out of bounds. The referee declares the tip-off void as it can’t be determined which player tipped the ball out of bounds. The referee restarts the tip-off, and the game clock is reset to 8:00. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -1482,7 +1482,7 @@
     "73"
    ],
    "question": "A1이 프론트코트로 나아가다 앞 캐스터로 센터라인을 터치하고 다시 백코트로 돌아왔다. 레퍼리가 백코트 바이얼레이션을 선언한 것은 옳은가?",
-   "questionEn": "Player A1, while advancing to the frontcourt , touches the centre line with a front caster and returns to the backcourt. Is the referee correct to call a backcourt violation?",
+   "questionEn": "Player A1, while advancing to the frontcourt, touches the centre line with a front caster and returns to the backcourt. Is the referee correct to call a backcourt violation?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -1493,7 +1493,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 8.63.3의 답: 옳지 않다. 센터라인은 백코트의 일부다. 라인을 넘지 않았으므로 프론트코트에 들어간 것이 아니다.",
-   "explanationEn": "Incorrect. The centre line is part of the backcourt; since A1 never crossed the line, he never entered the frontcourt .",
+   "explanationEn": "Incorrect. The centre line is part of the backcourt; since A1 never crossed the line, he never entered the frontcourt.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -1694,7 +1694,7 @@
     "63"
    ],
    "question": "A1이 득점한 뒤 반대편으로 들어가려고 엔드라인 뒤로 돌아갔다. 앞 캐스터가 코트에 들어서는 순간 B1이 막아섰고, A1이 다시 코트 밖으로 물러나 다른 지점에서 들어가려 했다. 레퍼리가 경기를 계속하게 한 것은 옳은가?",
-   "questionEn": "After A1 scores, he pushes behind the end line to enter the court on the opposite side. The front casters enter, but B1 comes to block A1. A1 backs off the court to re -enter at a different spot. The referee lets play continue. Is this correct?",
+   "questionEn": "After A1 scores, he pushes behind the end line to enter the court on the opposite side. The front casters enter, but B1 comes to block A1. A1 backs off the court to re-enter at a different spot. The referee lets play continue. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -1810,7 +1810,7 @@
     "75"
    ],
    "question": "A팀이 12초 바이얼레이션에 몰리자 A1이 프론트코트로 볼을 던졌다. 볼이 프론트코트 위 공중에 있을 때 레퍼리가 12초를 선언하고, 볼이 공중에 있던 지점에서 인바운드를 잡았다. 옳은가?",
-   "questionEn": "Team A is close to a 12 second violation. A1 throws the ball to the frontcourt . The referee calls the 12 seconds when the ball is in the air above the frontcourt. He takes the inbound where the ball was in the air. Is he right to do so?",
+   "questionEn": "Team A is close to a 12 second violation. A1 throws the ball to the frontcourt. The referee calls the 12 seconds when the ball is in the air above the frontcourt. He takes the inbound where the ball was in the air. Is he right to do so?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2627,7 +2627,7 @@
     "69"
    ],
    "question": "A1이 스로인 위치에 있지만 아직 볼을 받지 않았고, A2가 자기가 인바운드하겠다고 했다. 레퍼리는 이 요청을 무시해야 하는가?",
-   "questionEn": "A1 is in position for the throw -in and has yet to receive the ball, and A2 asks to be the in-bounder. Should the referee ignore the request?",
+   "questionEn": "A1 is in position for the throw-in and has yet to receive the ball, and A2 asks to be the in-bounder. Should the referee ignore the request?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2650,7 +2650,7 @@
     "69"
    ],
    "question": "B3가 페널티 박스에 있다. A2와 A3가 페널티가 끝나고 나오는 B3를 트랩하려 준비하고 있다. A1이 득점했고, B4가 인바운드를 하려고 자리에 섰다. 다음 각 경우의 처리는 옳은가? (중요: 인바운더로 나선 선수는 반드시 인바운드해야 한다.) a) B3가 A팀이 득점하기 전에 인바운더로 나서겠다고 밝혔다. → B4가 인바운드한다. b) B3가 트랩을 뚫으려 했지만, B4가 스로인 자리에 선 뒤 레퍼리가 볼을 건네기 전에 인바운더로 나서겠다고 밝혔다. → B3가 인바운드한다.",
-   "questionEn": "B3 is in the penalty box. A2 and A3 set up to trap B3 as he comes out of the box after the penalty. A1 scores and B4 sets up for the inbound. Is this correct if: a) B3 had declared himself as the in-bounder before the other team scored. Important Note : Once a player identifies himself as the in-bounder, he must inbound the ball. b) B3 attempted to beat the trap but declared himself the in-bounder after B4 is in position for the throw-in and before the ball is administered by the referee.",
+   "questionEn": "B3 is in the penalty box. A2 and A3 set up to trap B3 as he comes out of the box after the penalty. A1 scores and B4 sets up for the inbound. Is this correct if: a) B3 had declared himself as the in-bounder before the other team scored. Important Note: Once a player identifies himself as the in-bounder, he must inbound the ball. b) B3 attempted to beat the trap but declared himself the in-bounder after B4 is in position for the throw-in and before the ball is administered by the referee.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2698,7 +2698,7 @@
     "81"
    ],
    "question": "A팀 선수 아무도 인바운더로 나서지 않아 레퍼리가 볼을 바닥에 놓고 8초 카운트를 시작했다. 그때 A2가 인바운드 위치에서 1~1.5m 안쪽 사이드라인으로 나갔고 레퍼리가 볼을 주며 카운트를 이어 갔다. A2가 8초 안에 스로인하지 못했다. 레퍼리는 어떻게 해야 하는가?",
-   "questionEn": "The referee has requested a member of Team A identify themselves as the in -bounder for a sideline inbound. Team A does not acknowledge the request. The referee places the ball on the floor to begin the 8 second count as no player from Team A has identified themselves as the in -bounder, creating a delay in the game. A2 wheels off the court on the sideline within a reasonable distance (1 to 1.5 meters) form the inbound location. The referee gives the ball to A2 and continues their count. A2 is not able to in -bound the ball within 8 seconds. Should the referee hold their count while placing the ball at A2’s disposal?",
+   "questionEn": "The referee has requested a member of Team A identify themselves as the in-bounder for a sideline inbound. Team A does not acknowledge the request. The referee places the ball on the floor to begin the 8 second count as no player from Team A has identified themselves as the in-bounder, creating a delay in the game. A2 wheels off the court on the sideline within a reasonable distance (1 to 1.5 meters) form the inbound location. The referee gives the ball to A2 and continues their count. A2 is not able to in-bound the ball within 8 seconds. Should the referee hold their count while placing the ball at A2’s disposal?",
    "choices": [
     "8초를 계속 세어 8초 바이얼레이션을 선언한다",
     "카운트를 멈추고 A팀에 다시 기회를 준다",
@@ -2724,7 +2724,7 @@
     "81"
    ],
    "question": "A팀 선수가 오지 않아 레퍼리가 볼을 바닥에 놓고 8초 카운트를 시작했다. A2가 엔드라인으로 나가 볼을 집었다. 스로인 지점이 엔드라인(트라이 뒤)인 경우와 사이드라인인 경우 각각 어떻게 판정하는가?",
-   "questionEn": "The referee places the ball on the ground to begin the 8 second count as no player from Team A has arrived to inbound the ball. A2 wheels off the court on the end line and picks up the ball. What is the call if the inbound spot is: a) on the end line (after a try) . b) on the sideline.",
+   "questionEn": "The referee places the ball on the ground to begin the 8 second count as no player from Team A has arrived to inbound the ball. A2 wheels off the court on the end line and picks up the ball. What is the call if the inbound spot is: a) on the end line (after a try). b) on the sideline.",
    "choices": [
     "엔드라인이면 콜하지 않고, 사이드라인이면 어드밴티지를 준다",
     "두 경우 모두 8초 바이얼레이션",
@@ -2843,7 +2843,7 @@
     "69"
    ],
    "question": "B2와 B3에게 가둬지던 A3가 트랩을 피하려고 자기가 인바운더라고 알렸다. A3가 스로인 위치로 가던 중 A4가 장비 타임아웃을 요청해 허용되었다. 장비 타임아웃이 끝난 뒤 A4가 스로인을 했다. 옳은가?",
-   "questionEn": "A3 is being trapped by B2 and B3. A3 declares himself as the in-bounder to avoid the trap. As A3 proceeds to the inbound location, A4 requests an equipment time -out. The referee grants the equipment time-out. Upon completion of the equipment time-out, A4 proceeds to and is granted the inbound. Is this correct?",
+   "questionEn": "A3 is being trapped by B2 and B3. A3 declares himself as the in-bounder to avoid the trap. As A3 proceeds to the inbound location, A4 requests an equipment time-out. The referee grants the equipment time-out. Upon completion of the equipment time-out, A4 proceeds to and is granted the inbound. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -2854,7 +2854,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 8.69.10의 답: 옳지 않다. A3는 트랩 상황에서 벗어나려고 인바운더를 자청했으므로 A3가 스로인해야 한다.",
-   "explanationEn": "Incorrect. A3 must be required to inbound the ball as he was removed from an advantage situation, being trapped by B2 and B3, by requesting to be the in -bounder.",
+   "explanationEn": "Incorrect. A3 must be required to inbound the ball as he was removed from an advantage situation, being trapped by B2 and B3, by requesting to be the in-bounder.",
    "rule": ""
   },
   {
@@ -2890,7 +2890,7 @@
     "70"
    ],
    "question": "A팀이 교체를 요청해 기록석이 다음 기회에 레퍼리에게 알렸고, 레퍼리가 교체 선수를 부르자 나가는 선수가 코트를 떠나기 전에 들어오는 선수가 먼저 코트에 들어왔다. 적법한가?",
-   "questionEn": "Team A requests a substitution . The score bench notif ies the referees at the next opportunity and the referee beckons the substitutes onto the court. The substitutes enter the court before the players being substituted leave the court . Is this legal?",
+   "questionEn": "Team A requests a substitution. The score bench notif ies the referees at the next opportunity and the referee beckons the substitutes onto the court. The substitutes enter the court before the players being substituted leave the court. Is this legal?",
    "choices": [
     "적법하다",
     "적법하지 않다"
@@ -2995,7 +2995,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 8.70.5의 답: 옳지 않다. 쿼터 사이와 하프타임 휴식 중에는 레퍼리가 호각을 불어 교체를 알릴 필요가 없다.",
-   "explanationEn": "No. During the quarter time and half -time breaks, the referee does not need to blow his whistle and indicate substitutions.",
+   "explanationEn": "No. During the quarter time and half-time breaks, the referee does not need to blow his whistle and indicate substitutions.",
    "rule": ""
   },
   {
@@ -3233,7 +3233,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.73.1의 답: 옳다. A1이 볼을 가졌을 때 볼은 프론트코트에 있었지만, A3에게 패스되어 백코트에 닿는 순간 볼의 위치가 백코트로 바뀐다(9조).",
-   "explanationEn": "Correct. The ball, while in possession of A1, is in the frontcourt . When it is passed to A3, the location of the ball changes because A3 is viewed as anyone or anything touching the backcourt (see Art. 9).",
+   "explanationEn": "Correct. The ball, while in possession of A1, is in the frontcourt. When it is passed to A3, the location of the ball changes because A3 is viewed as anyone or anything touching the backcourt (see Art. 9).",
    "rule": "",
    "scene": {
     "court": "full",
@@ -3321,7 +3321,7 @@
     "9"
    ],
    "question": "A1이 정지한 채 앞바퀴 두 개는 프론트코트에, 뒷바퀴 두 개는 백코트에 걸치고 있다. A1이 볼을 프론트코트에서 튕기거나 백코트에서 튕기면 각각 어떻게 판정하는가?",
-   "questionEn": "A1 is stationary and has two wheels in the frontcourt and two in the backcourt. What is the call when A1 bounces the ball in the: a) Frontcourt ? b) Backcourt?",
+   "questionEn": "A1 is stationary and has two wheels in the frontcourt and two in the backcourt. What is the call when A1 bounces the ball in the: a) Frontcourt? b) Backcourt?",
    "choices": [
     "둘 다 바이얼레이션",
     "둘 다 바이얼레이션 아님",
@@ -3334,7 +3334,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.73.2의 답: 둘 다 바이얼레이션이다. 볼이 바닥에 닿는 위치가 선수의 위치를 결정한다(9조).",
-   "explanationEn": "Violation for both a and b ( see Art. 9).",
+   "explanationEn": "Violation for both a and b (see Art. 9).",
    "rule": "",
    "scene": {
     "court": "full",
@@ -3443,7 +3443,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 9.73.3의 답: 두 경우 모두 바이얼레이션이 아니다. A1이 볼을 프론트코트로 전진시키는 중이기 때문이다.",
-   "explanationEn": "No. There is no violation in either scenario , as A1 is advancing the ball to the frontcourt .",
+   "explanationEn": "No. There is no violation in either scenario, as A1 is advancing the ball to the frontcourt.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -3556,7 +3556,7 @@
     "73"
    ],
    "question": "백코트에 있던 A1이 A3에게 패스했는데 볼이 프론트코트에 서 있던 레퍼리에 맞고 A1에게 돌아왔다. 백코트 바이얼레이션을 선언해야 하는가?",
-   "questionEn": "A1, in the backcourt, attempts a pass to A3 but the ball strikes the referee who is standing in the frontcourt , and returns to A1. Should the referee call a backcourt violation?",
+   "questionEn": "A1, in the backcourt, attempts a pass to A3 but the ball strikes the referee who is standing in the frontcourt, and returns to A1. Should the referee call a backcourt violation?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -3940,7 +3940,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.73.9의 답: 백코트 바이얼레이션이다. 앞바퀴가 프론트코트에서 떨어진 순간 A1은 백코트로 돌아간 것이 된다.",
-   "explanationEn": "Backcourt violation. As soon as A1 loses contact with the frontcourt , he has returned to the backcourt and is penalized accordingly.",
+   "explanationEn": "Backcourt violation. As soon as A1 loses contact with the frontcourt, he has returned to the backcourt and is penalized accordingly.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -4147,7 +4147,7 @@
     "65"
    ],
    "question": "A1의 스로인 볼을 A4가 터치만 했고 A팀 백코트에서 소유권은 얻지 못했다. A4가 볼을 터치한 순간 12초 카운트가 시작되어야 하는가?",
-   "questionEn": "A throw-in by A1 is touched by A4; but A4 does not gain possession of the ball in Team A's backcourt . Shall the 12 second count begin when A4 touches the ball?",
+   "questionEn": "A throw-in by A1 is touched by A4; but A4 does not gain possession of the ball in Team A's backcourt. Shall the 12 second count begin when A4 touches the ball?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -4171,7 +4171,7 @@
     "65"
    ],
    "question": "A1이 백코트에서 스로인을 하려고 볼을 떠나보냈고, B1이 볼을 쳐서 백코트 바닥에 3초 동안 굴러다녔다. A2가 볼을 주웠다. 이제 A팀에 프론트코트로 갈 12초가 주어지는가?",
-   "questionEn": "A1 has the ball in his backcourt for a throw-in. After releasing the ball, it is tipped by B1 and the ball rolls on the floor, in the backcourt, for 3 seconds. A2 picks up the ball. Team A now has 12 seconds to advance the ball to the frontcourt . Is this correct?",
+   "questionEn": "A1 has the ball in his backcourt for a throw-in. After releasing the ball, it is tipped by B1 and the ball rolls on the floor, in the backcourt, for 3 seconds. A2 picks up the ball. Team A now has 12 seconds to advance the ball to the frontcourt. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -4474,7 +4474,7 @@
     "28"
    ],
    "question": "A팀이 볼을 소유한 채 A2가 공격 키 에어리어로 뒤로 물러나다 안티팁이 키 안으로 들어간 채 9초 동안 그 자리에 묶여 있었다. 이때 키 에어리어 카운트 위반인가?",
-   "questionEn": "A2 backs up into the offensive key and his anti-tip device crosses into the key and is blocked into that position for 9 seconds. What is the call if: a) His anti- tip device does not make floor contact in the key. b) His anti-tip device is making floor contact.",
+   "questionEn": "A2 backs up into the offensive key and his anti-tip device crosses into the key and is blocked into that position for 9 seconds. What is the call if: a) His anti-tip device does not make floor contact in the key. b) His anti-tip device is making floor contact.",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -4621,7 +4621,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.80.4의 답: 공격 선수 휠체어(바퀴·캐스터)의 어느 부분이든 키 에어리어 바닥에 닿는 순간 카운트가 시작되고, 휠체어가 키 에어리어를 떠나는 순간 멈춘다. 2026년 규정 기준 8초다.",
-   "explanationEn": "The count begins as soon as any part of an offensive player’s chair (wheels/casters) touches the floor within the key area. The count ends as soon as the chair (wheels/casters ) leaves the key area.",
+   "explanationEn": "The count begins as soon as any part of an offensive player’s chair (wheels/casters) touches the floor within the key area. The count ends as soon as the chair (wheels/casters) leaves the key area.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -4783,7 +4783,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 9.81.2의 답: A1이 처음 스로인한 지점에서 B팀이 스로인으로 재개한다. 스로인을 할 때도 팀이 볼을 소유한 것으로 보므로 8초 제한이 적용된다.",
-   "explanationEn": "for all situations: Play shall resume with a throw-in to Team B at the point of A1’s original throw-in Statement: The eight second restriction applies not only when a team is in possession of the ball on the court but also while that team is in possession of the ball for a throw -in.",
+   "explanationEn": "for all situations: Play shall resume with a throw-in to Team B at the point of A1’s original throw-in Statement: The eight second restriction applies not only when a team is in possession of the ball on the court but also while that team is in possession of the ball for a throw-in.",
    "rule": ""
   },
   {
@@ -4796,7 +4796,7 @@
     "8"
    ],
    "question": "A1의 스로인 볼이 포스트 위쪽에 맞고 A2의 무릎으로 떨어졌다. 적법한 스로인인가?",
-   "questionEn": "A throw-in by A1 bounces off the top of a post and into A2's lap. Is this a legal throw- in?",
+   "questionEn": "A throw-in by A1 bounces off the top of a post and into A2's lap. Is this a legal throw-in?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -5202,7 +5202,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 9.81.9의 답: 옳지 않다. A1이 인바운더로 자리를 잡았으므로 A2가 코트 밖에서 볼을 만진 순간 스로인 바이얼레이션이 된다.",
-   "explanationEn": "Incorrect. Since A1 set up as the in-bounder, the throw -in violation occurs as soon as A2 touches the ball while out of bounds.",
+   "explanationEn": "Incorrect. Since A1 set up as the in-bounder, the throw-in violation occurs as soon as A2 touches the ball while out of bounds.",
    "rule": ""
   },
   {
@@ -5641,7 +5641,7 @@
     "52"
    ],
    "question": "40초 시계에 7초가 남은 데드볼 상황에서 수비 팀 코치가 타임아웃을 요청해 허용되었지만 40초 시계를 15초로 리셋하지 않았다. 옳은가?",
-   "questionEn": "During a dead ball situation, the defensive team’s coach requests a time -out with seven seconds left on the forty second clock. The time-out is granted, however, the forty second clock is not reset to 15 seconds. Is this correct?",
+   "questionEn": "During a dead ball situation, the defensive team’s coach requests a time-out with seven seconds left on the forty second clock. The time-out is granted, however, the forty second clock is not reset to 15 seconds. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -6688,7 +6688,7 @@
     "94"
    ],
    "question": "A팀이 프론트코트 엔드라인 근처에서 스로인을 얻었다. 접촉을 허용하는 호각 전에 A2가 스로인 지점과 가장 가까운 키 자리를 트라이 라인을 보고 잡았고, B1이 A2 옆(A2와 인바운더 사이)에, B3가 A2 바로 뒤에 자리를 잡았다. 호각이 울려 볼이 라이브 상태가 된 뒤 B3가 A2를 한 번 쳐서 A2가 포스트 사이로 굴러 나갔다. 어떻게 판정하는가?",
-   "questionEn": "Team A is awarded a throw -in in the frontcourt near the end line. A2 immediately takes up the position in the key (facing the try line) nearest to the point of throw -in. He does this before the whistle for legal contact. B1 sets up next to A2 between A2 an d the in- bounder. B3 sets up immediately behind A2. The whistle is blown to make the ball live. What call should the referee make when: a) B3 hits A2 once and causes him to roll out of bounds between the posts? b) B3 hits and continues to push until A2 rolls out-of-bounds?",
+   "questionEn": "Team A is awarded a throw-in in the frontcourt near the end line. A2 immediately takes up the position in the key (facing the try line) nearest to the point of throw-in. He does this before the whistle for legal contact. B1 sets up next to A2 between A2 and the in-bounder. B3 sets up immediately behind A2. The whistle is blown to make the ball live. What call should the referee make when: a) B3 hits A2 once and causes him to roll out of bounds between the posts? b) B3 hits and continues to push until A2 rolls out-of-bounds?",
    "choices": [
     "A2에게 코트 이탈 파울",
     "B3에게 푸싱 파울",
@@ -6805,7 +6805,7 @@
     "93"
    ],
    "question": "A1이 트라이 라인 근처에서 B1의 압박을 받으며 A2에게 패스했고, 패스 후 뒤로 물러나다 키 밖의 포스트에 닿았다. 레퍼리가 코트 이탈 파울을 선언했다. 옳은가?",
-   "questionEn": "A1 is in possession of the ball near the try line, under pressure from B1. A1 passes to A2, but in doing so rolls backwards and contacts the post outside the key area after passing the ball. The referee calls a leaving the court foul. Is this correct ?",
+   "questionEn": "A1 is in possession of the ball near the try line, under pressure from B1. A1 passes to A2, but in doing so rolls backwards and contacts the post outside the key area after passing the ball. The referee calls a leaving the court foul. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -6816,7 +6816,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.93.3의 답: 옳지 않다. A1은 볼을 갖고 있지 않았고 포스트 사이에서 코트를 벗어난 것도 아니므로 콜하지 않는다.",
-   "explanationEn": "No. Player A1 does not have the ball and does not leave the court between the posts , therefore no call.",
+   "explanationEn": "No. Player A1 does not have the ball and does not leave the court between the posts, therefore no call.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -6909,7 +6909,7 @@
     "93"
    ],
    "question": "A2가 사이드라인 근처에서 B3와 B4에게 막혀 벗어나려다 코트를 벗어났다. B3와 B4가 A2에게 다가가 코트로 다시 들어오지 못하게 막았다. 레퍼리가 그냥 경기를 계속하게 한 것은 옳은가?",
-   "questionEn": "A2 is blocked by B3 and B4 close to the sideline. While trying to free himself A2 leaves the court. B3 and B4 advance towards A2 and prevent him from re -entering the court. Is the referee correct to ignore the situation and allow play to continue ?",
+   "questionEn": "A2 is blocked by B3 and B4 close to the sideline. While trying to free himself A2 leaves the court. B3 and B4 advance towards A2 and prevent him from re-entering the court. Is the referee correct to ignore the situation and allow play to continue?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -7134,7 +7134,7 @@
     "73"
    ],
    "question": "A1이 프론트코트에서 센터라인 근처까지 와 멈춰 있었다. B4가 다가와 부딪혀 A1의 뒷바퀴가 센터라인에 닿았다. 레퍼리가 A1을 백코트 바이얼레이션으로 몰았다며 B4에게 푸싱 파울을 준 것은 옳은가?",
-   "questionEn": "A1, while in the frontcourt , has slowed to a stop near the centre line. B4 rolls up to him and bumps him so that A1's back wheel makes contact with the centre line. The referee charges B4 for illegal pushing foul for pushing A1 into a back-court violation. Is this the correct decision?",
+   "questionEn": "A1, while in the frontcourt, has slowed to a stop near the centre line. B4 rolls up to him and bumps him so that A1's back wheel makes contact with the centre line. The referee charges B4 for illegal pushing foul for pushing A1 into a back-court violation. Is this the correct decision?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -7145,7 +7145,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.94.1의 답: 옳지 않다. 처음 접촉이 적법했으므로 파울은 없다. 다만 백코트 바이얼레이션은 선언해야 한다.",
-   "explanationEn": "Incorrect. There is no foul since the initial contact was legal. (See Art. 74) However , the backcourt violation should be called.",
+   "explanationEn": "Incorrect. There is no foul since the initial contact was legal. (See Art. 74) However, the backcourt violation should be called.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -7389,7 +7389,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.94.4의 답: 아니다. 1차 접촉(적법한 충돌) 뒤에 계속 밀어 상대를 불법한 위치로 몰면 미는 쪽에 푸싱 파울을 준다. A3에게 푸싱 파울이다.",
-   "explanationEn": "No. After the initial contact (legal hit), a player cannot continue to push another player into an illegal position. A3 should be charged with a pushing foul .",
+   "explanationEn": "No. After the initial contact (legal hit), a player cannot continue to push another player into an illegal position. A3 should be charged with a pushing foul.",
    "rule": "",
    "scene": {
     "court": "full",
@@ -7479,7 +7479,7 @@
     "94"
    ],
    "question": "B2와 B3가 트라이 라인 근처에서 A1을 막았지만, 힘이 더 센 A1이 1차 접촉 뒤에도 계속 밀어 B2와 B3를 옆으로 치우고 득점했다. 레퍼리가 트라이를 취소하고 A1에게 푸싱 파울을 준 것은 옳은가?",
-   "questionEn": "B2 and B3 block A1 near the try line. However, A1, being stronger, continues to push B2 and B3 aside (after initial contact) and rolls in for the try. The referee disallows the try and charges A1 for pushing . Is this correct?",
+   "questionEn": "B2 and B3 block A1 near the try line. However, A1, being stronger, continues to push B2 and B3 aside (after initial contact) and rolls in for the try. The referee disallows the try and charges A1 for pushing. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -7528,7 +7528,7 @@
     "95"
    ],
    "question": "B2가 A1의 수직 공간으로 손을 뻗어 볼에 닿는 동시에 자기 팔로 A1의 팔을 눌러 A1을 분명히 불리하게 만들었다. 레퍼리는 경기를 계속하게 해야 하는가?",
-   "questionEn": "B2 reaches for the ball within the vertical space of A1. In contacting the ball with his hand, he is also pressing down on the arm of A1 with his own arm, creating a clear disadvantage . Should the referee allow play to continue?",
+   "questionEn": "B2 reaches for the ball within the vertical space of A1. In contacting the ball with his hand, he is also pressing down on the arm of A1 with his own arm, creating a clear disadvantage. Should the referee allow play to continue?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -7539,7 +7539,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 11.95.1의 답: 안 된다. 두 접촉이 동시에 일어나 A1이 불리해졌다면 팔 접촉은 파울로 선언해야 한다.",
-   "explanationEn": "No. If both contacts are simultaneous, and the pressure created on A1’s hand creates a disadvantage, the arm contact becomes a foul and must be called .",
+   "explanationEn": "No. If both contacts are simultaneous, and the pressure created on A1’s hand creates a disadvantage, the arm contact becomes a foul and must be called.",
    "rule": ""
   },
   {
@@ -7620,7 +7620,7 @@
     "96"
    ],
    "question": "A2가 키에서 패스를 기다리는데 B1이 뒤로 붙어 뒷바퀴를 쳐서 앞 캐스터가 들렸다. 그 결과 A2가 균형을 잃고 넘어지지 않으려고 손을 바닥에 짚었다. 이 경우 무엇을 선언하는가?",
-   "questionEn": "A2 is in the key waiting for a pass. B1 moves in behind him and bumps his rear wheel causing his front casters to tip up. What is the call if : a) A2 is displaced enough to miss the ball? b) A2 loses his balance enough to put his hand to the floor to prevent him from falling?",
+   "questionEn": "A2 is in the key waiting for a pass. B1 moves in behind him and bumps his rear wheel causing his front casters to tip up. What is the call if: a) A2 is displaced enough to miss the ball? b) A2 loses his balance enough to put his hand to the floor to prevent him from falling?",
    "choices": [
     "버티컬 스피닝 파울",
     "파울 없음 — 경기 계속"
@@ -7654,7 +7654,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 11.96.2의 답: 옳다. A1을 회전시킨 것은 B2이므로 B2에게 파울을 준다.",
-   "explanationEn": "Correct, B2 caused the spin on A1 and is sanctioned with the foul .",
+   "explanationEn": "Correct, B2 caused the spin on A1 and is sanctioned with the foul.",
    "rule": ""
   },
   {
@@ -8052,7 +8052,7 @@
     "99"
    ],
    "question": "A팀이 3대2 속공을 하던 중 B1이 공격수 앞으로 들어와 A1과 우연히 접촉했고, 그 접촉을 이용해 넘어진 선수인 척 바닥에 쓰러져 경기를 멈추게 했다. 레퍼리가 경기를 멈추고 B1에게 테크니컬 파울을 준 것은 옳은가?",
-   "questionEn": "Team A is on a 3 on 2 break away. B1 moves into the path of one of the attackers and makes incidental contact with A1 . In doing so, B1 uses the contact to fall to the floor in an attempt to gain a stoppage as a fallen player. The referee stops the play and charges B1 with a technical foul. Is he correct?",
+   "questionEn": "Team A is on a 3 on 2 break away. B1 moves into the path of one of the attackers and makes incidental contact with A1. In doing so, B1 uses the contact to fall to the floor in an attempt to gain a stoppage as a fallen player. The referee stops the play and charges B1 with a technical foul. Is he correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8282,7 +8282,7 @@
     "97"
    ],
    "question": "A1이 1m 밖에서 사이드라인 가까이 있는 A2에게 인바운드했고, B1과 B2가 A2를 사이드라인 쪽으로 밀어붙였다. 코트에 들어온 A1이 A2와 접촉해 A2가 코트 밖으로 나가지 않게 막았다. 파울인가?",
-   "questionEn": "Player A1 inbounds the ball to A2 who is sitting close to the point of inbound (beyond the metre) . B1 and B2 jostle A2 close to the sideline. A1 enters the court and contacts A2, preventing him from going out of court. Is there a call to make?",
+   "questionEn": "Player A1 inbounds the ball to A2 who is sitting close to the point of inbound (beyond the metre). B1 and B2 jostle A2 close to the sideline. A1 enters the court and contacts A2, preventing him from going out of court. Is there a call to make?",
    "choices": [
     "A1에게 테크니컬 파울, A팀은 볼 소유 유지",
     "A1에게 테크니컬 파울, 볼은 B팀",
@@ -8420,7 +8420,7 @@
     "84"
    ],
    "question": "B1이 A1의 적법한 충돌을 받아 한 바퀴로 균형을 잃었다. 이미 B1에게 적법한 충돌을 하려던 A2가 B1이 균형을 잃은 상태에서 그 충돌을 피하지 못해 B1이 넘어졌다. 레퍼리가 A2에게 테크니컬 파울을 준 것은 옳은가?",
-   "questionEn": "Player A1 is legally hit by B1 at an angle causing B1 to become momentarily unbalanced on one wheel. A2, who was already attempting a legal hit on B1, is unable to avoid the hit while B1 is still unbalanced. This causes B1 to fall. A2 is charged with a technical foul . Is this correct?",
+   "questionEn": "Player A1 is legally hit by B1 at an angle causing B1 to become momentarily unbalanced on one wheel. A2, who was already attempting a legal hit on B1, is unable to avoid the hit while B1 is still unbalanced. This causes B1 to fall. A2 is charged with a technical foul. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8431,7 +8431,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.99.10의 답: 옳다. 피할 수 없는 충돌이었더라도 위험한 플레이이므로 A2에게 책임이 있다. 테크니컬 파울을 주고 A팀은 볼을 계속 갖는다.",
-   "explanationEn": "Yes. Although the collision was unavoidable, this is dangerous play. A2 is still responsible for their actions and should be assessed a technical foul . Team A will retain possession of the ball.",
+   "explanationEn": "Yes. Although the collision was unavoidable, this is dangerous play. A2 is still responsible for their actions and should be assessed a technical foul. Team A will retain possession of the ball.",
    "rule": ""
   },
   {
@@ -8466,7 +8466,7 @@
     "100"
    ],
    "question": "경기 중 B코치가 코트 위 선수들에게 지시하려고 팀 벤치 구역을 여러 번 벗어나 테이블 오피셜 업무를 방해했다. 레퍼리가 경고한 뒤 테크니컬 파울을 준 것은 옳은가?",
-   "questionEn": "During the course of the game, Coach B repeatedly travels outside the Team Bench area to instruct his players on the court. This interferes with the duties of the table officials. Is the referee correct to charge Coach B with a technical foul after the coach has been warned ?",
+   "questionEn": "During the course of the game, Coach B repeatedly travels outside the Team Bench area to instruct his players on the court. This interferes with the duties of the table officials. Is the referee correct to charge Coach B with a technical foul after the coach has been warned?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8500,7 +8500,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 12.100.3의 답: 아니다. 상식적으로 판단한다. 벤치 관계자가 싸움을 말리는 데 도움을 줬다면 제재하지 않는다.",
-   "explanationEn": "No. Use common sense. If bench personnel assist in stopping the fight, then no sanctions should be applied to bench staff .",
+   "explanationEn": "No. Use common sense. If bench personnel assist in stopping the fight, then no sanctions should be applied to bench staff.",
    "rule": ""
   },
   {
@@ -8526,7 +8526,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.100.4 a)의 답: 잘못 들어온 선수는 즉시 코트에서 나가고 코치가 지정한 선발 라인업이 들어온다. 테크니컬 파울은 주지 않는다. 경기가 시작된 뒤라면 코치에게 테크니컬 파울을 준다.",
-   "explanationEn": "a) The incorrect player(s) must leave the court immediately and the starting line-up as indicated by the coach must enter the court. No technical foul is charged. b) A technical foul will be assessed against the coach of Team B. The starting line- up as indicated by the coach must take the court, unless approved by the official for a medical or equipment related issue. One player from Team B will be selected by Team B’s coach to serve the penalty.",
+   "explanationEn": "a) The incorrect player(s) must leave the court immediately and the starting line-up as indicated by the coach must enter the court. No technical foul is charged. b) A technical foul will be assessed against the coach of Team B. The starting line-up as indicated by the coach must take the court, unless approved by the official for a medical or equipment related issue. One player from Team B will be selected by Team B’s coach to serve the penalty.",
    "rule": ""
   },
   {
@@ -8577,7 +8577,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.101.1의 답: 휠체어를 다시 점검하고, 적법하다고 판정되면 점검을 요청한 B팀 코치에게 테크니컬 파울을 주어 B팀 코치가 고른 선수가 수행한다.",
-   "explanationEn": "Chair should be re-checked. A) What is the sanction/procedure if the chair is judged legal? Answer: If the chair is legal, the team that requested the check, in this case Team B, is sanctioned with a technical foul which will be served by a player chosen by the coach of Team B. B) What is the sanction/procedure if the chair is judged illegal when the chair/player first enters the game? Answer: If the chair is protested at the point when it first enters a game the player is penalized with a technical foul as chair did not become illegal during game. Procedure : The referee should report the technical foul to the penalty table and place the penalized player behind/outside the penalty box. The penalized player must remain there until his substitute is released from the penalty box. The substitute will take up a position inside the penalty box (try release or 40 seconds served). Rational : The player has been penalized for an illegal chair. He should not be permitted to start fixing the wheelchair before his penalty has been served. Re-check: A re-check can only be performed during a quarter or half time break in order to prevent further delays in the game. It also ensures that team staff have adequate time to repair the chair without rushing. Additionally, the coach of that player is not allowed to ask for a time-out to recheck the chair as the chair first enters the game illegally. a) What is the sanction/procedure if the chair is judged illegal after the chair/player has had game time? Answer: If the chair is protested after it has had game time the player will be provided an equipment time-out in order to try to fix the chair. If he is unable to fix it within 1 minute, the player will be substituted. No penalty will be applied to the player. The coach may use a time-out to recheck the legality if the chair. b) What is the procedure if the chair has not had any game time and is protested at half time? Answer: A chair can only be protested when it enters the court. When the player enters the court, he will be judged as stated above.",
+   "explanationEn": "Chair should be re-checked. A) What is the sanction/procedure if the chair is judged legal? Answer: If the chair is legal, the team that requested the check, in this case Team B, is sanctioned with a technical foul which will be served by a player chosen by the coach of Team B. B) What is the sanction/procedure if the chair is judged illegal when the chair/player first enters the game? Answer: If the chair is protested at the point when it first enters a game the player is penalized with a technical foul as chair did not become illegal during game. Procedure: The referee should report the technical foul to the penalty table and place the penalized player behind/outside the penalty box. The penalized player must remain there until his substitute is released from the penalty box. The substitute will take up a position inside the penalty box (try release or 40 seconds served). Rational: The player has been penalized for an illegal chair. He should not be permitted to start fixing the wheelchair before his penalty has been served. Re-check: A re-check can only be performed during a quarter or half time break in order to prevent further delays in the game. It also ensures that team staff have adequate time to repair the chair without rushing. Additionally, the coach of that player is not allowed to ask for a time-out to recheck the chair as the chair first enters the game illegally. a) What is the sanction/procedure if the chair is judged illegal after the chair/player has had game time? Answer: If the chair is protested after it has had game time the player will be provided an equipment time-out in order to try to fix the chair. If he is unable to fix it within 1 minute, the player will be substituted. No penalty will be applied to the player. The coach may use a time-out to recheck the legality if the chair. b) What is the procedure if the chair has not had any game time and is protested at half time? Answer: A chair can only be protested when it enters the court. When the player enters the court, he will be judged as stated above.",
    "rule": ""
   },
   {
@@ -8614,7 +8614,7 @@
     "35"
    ],
    "question": "A팀이 코트 위 등급분류 점수 초과로 테크니컬 파울을 받았다. 레퍼리가 A코치에게 페널티를 수행할 선수를 고르게 한 것은 옳은가?",
-   "questionEn": "Team A is charged with too many points on the court. Is the referee correct in giving the coach of Team A the choice of player to serve the penalty ?",
+   "questionEn": "Team A is charged with too many points on the court. Is the referee correct in giving the coach of Team A the choice of player to serve the penalty?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8625,7 +8625,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.102.1의 답: 옳다. A코치가 코트 위 선수 중 수행할 선수를 고르고, 그다음 점수를 맞추기 위한 교체를 한다.",
-   "explanationEn": "Yes. Procedure : The coach of Team A must select a player from the players on the court to serve the technical foul. A substitution will then be made to achieve the correct point value on court.",
+   "explanationEn": "Yes. Procedure: The coach of Team A must select a player from the players on the court to serve the technical foul. A substitution will then be made to achieve the correct point value on court.",
    "rule": ""
   },
   {
@@ -8664,7 +8664,7 @@
     "88"
    ],
    "question": "A1이 모든 수비수보다 충분히 앞서 있어 적법한 수비 접촉이 불가능한 상황이었다. B2가 비스듬히 쫓아와 볼 소유자의 뒷 캐스터 뒤쪽에 무모하게 접촉해 선수가 회전하거나 균형을 잃게 했다. 레퍼리가 B2에게 플래그런트 파울을 준 것은 옳은가?",
-   "questionEn": "Flagrant Foul A1 is far enough ahead of all defenders that reasonable defensive contact is not possible . B2 pursues at an angle and creates reckless contact with the ball carrier behind the rear castor, causing the player to spin or lose balance. Is the referee correct to charge B2 with a flagrant foul?",
+   "questionEn": "Flagrant Foul A1 is far enough ahead of all defenders that reasonable defensive contact is not possible. B2 pursues at an angle and creates reckless contact with the ball carrier behind the rear castor, causing the player to spin or lose balance. Is the referee correct to charge B2 with a flagrant foul?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8688,7 +8688,7 @@
     "88"
    ],
    "question": "A1이 모든 수비수보다 앞서 트라이 라인을 넘으려는 순간, B2가 속도를 내 달려와 뒷축 근처에서 적법하게 수비할 각도가 없는데도 뒷 캐스터 뒤쪽에 비신사적으로 접촉해 A1을 바닥으로 넘어뜨렸다. 레퍼리가 B2에게 플래그런트 파울을 준 것은 옳은가?",
-   "questionEn": "A1 is about to cross the try line ahead of all defenders. B2 attacks with speed and has no angle to make a legitimate defensive play on the ball or play defence at or near the rear axle. B2 makes unsportsmanlike contact with the ball carrier behind the rear castor , causing the player to fall to the floor. The referee charges B2 with a flagrant foul. Is this correct?",
+   "questionEn": "A1 is about to cross the try line ahead of all defenders. B2 attacks with speed and has no angle to make a legitimate defensive play on the ball or play defence at or near the rear axle. B2 makes unsportsmanlike contact with the ball carrier behind the rear castor, causing the player to fall to the floor. The referee charges B2 with a flagrant foul. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8712,7 +8712,7 @@
     "88"
    ],
    "question": "A1이 볼을 들고 코트를 올라가던 중 B1이 수비를 시도하다 놓쳤다. A1이 B1을 지나칠 때 B1이 볼을 건드리려는 시도 없이 A1의 팔을 잡았다. 선수 안전을 위협하며 경기를 멈춰 트라이를 막으려는 행위였지만, 다른 수비수들에게는 A1을 막을 기회가 있었다. 레퍼리는 이를 고의적 비신사 행위로 보았다. 플래그런트 파울과 함께 페널티 트라이를 주는 것이 옳은가?",
-   "questionEn": "A1 has the ball and is wheeling up the court. B1 attempts to defend A1 but misses. As A1 is passing B1, B1 grabs A1 by the arm with no attempt to play the ball. This action jeopardizing player safety , in a direct attempt to gain a stoppage and prevent a try, despite the opportunity for other defenders to engage A1. The referee sees this action as deliberate and unsportsmanlike and calls a flagrant foul. Should the referee award a flagrant foul and issue penalty try ?",
+   "questionEn": "A1 has the ball and is wheeling up the court. B1 attempts to defend A1 but misses. As A1 is passing B1, B1 grabs A1 by the arm with no attempt to play the ball. This action jeopardizing player safety, in a direct attempt to gain a stoppage and prevent a try, despite the opportunity for other defenders to engage A1. The referee sees this action as deliberate and unsportsmanlike and calls a flagrant foul. Should the referee award a flagrant foul and issue penalty try?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8735,7 +8735,7 @@
     "103"
    ],
    "question": "A1이 B1과 적법하게 충돌해 A1이 한 바퀴로 잠시 균형을 잃었다. 그 상태에서 1m 떨어져 있던 B2가 무모하게 A1을 쳐서 넘어뜨렸다. 레퍼리가 B2에게 플래그런트 파울을 선언한 것은 옳은가?",
-   "questionEn": "Player A1 legally collides with B1, causing A1 to become momentarily unbalanced on one wheel. While A1 is in this position B2 is a meter away and decides to make a reckless attempt to hit A1 and cause them to fall. The referee calls a flagrant foul . Is this correct?",
+   "questionEn": "Player A1 legally collides with B1, causing A1 to become momentarily unbalanced on one wheel. While A1 is in this position B2 is a meter away and decides to make a reckless attempt to hit A1 and cause them to fall. The referee calls a flagrant foul. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8770,7 +8770,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 12.103.5의 답: 옳지 않다. 플래그런트 파울의 제재는 볼 소유권 상실이나 페널티 트라이가 아닌 한 트라이 릴리즈 30초 페널티 세 개다. 페널티 타임키퍼는 페널티 기록지에 퇴장 선수 B2의 플래그런트 파울을 기록하고, B2는 경기장을 떠난다. 코치는 적법한 라인업이 되게 교체할 수 있고, 페널티(플래그런트 파울의 제재)는 규정대로 코치가 고른 같은 팀 선수가 수행한다.",
-   "explanationEn": "Incorrect. The player committed a flagrant foul. The sanction for a flagrant foul is three 30 second try release penalties, unless the flagrant foul constitutes a loss of possession, or a penalty try is awarded. The penalty timekeeper will indicate, on the penalty sheet, the flagrant foul for the disqualified player, B2, who must be sent from the field of play. The coach will be allowed to substitute to create a legal line up. Procedure : As a disqualified player must leave the field of play immediately a player from the same team, selected by the coach as specified in the rules, will serve the penalty.",
+   "explanationEn": "Incorrect. The player committed a flagrant foul. The sanction for a flagrant foul is three 30 second try release penalties, unless the flagrant foul constitutes a loss of possession, or a penalty try is awarded. The penalty timekeeper will indicate, on the penalty sheet, the flagrant foul for the disqualified player, B2, who must be sent from the field of play. The coach will be allowed to substitute to create a legal line up. Procedure: As a disqualified player must leave the field of play immediately a player from the same team, selected by the coach as specified in the rules, will serve the penalty.",
    "rule": ""
   },
   {
@@ -8956,7 +8956,7 @@
     "104"
    ],
    "question": "A1이 B1을 주먹으로 쳤다. 레퍼리가 A1에게 디스퀄리파잉 파울을 주고 경기장에서 내보낸 뒤, 같은 점수이거나 더 높은 점수의 A5로 교체해 40초 페널티를 수행하게 했다. 옳은가?",
-   "questionEn": "A1 punches B1. The referee issues A1 with a disqualifying foul. A1 is sent from the field of play and is substituted with Player A5 (who is of the same point value or higher than the player removed) , who serves a 40 second penalty. Is this correct?",
+   "questionEn": "A1 punches B1. The referee issues A1 with a disqualifying foul. A1 is sent from the field of play and is substituted with Player A5 (who is of the same point value or higher than the player removed), who serves a 40 second penalty. Is this correct?",
    "choices": [
     "옳다",
     "옳지 않다"
@@ -8967,7 +8967,7 @@
    ],
    "answer": 0,
    "explanation": "케이스북 12.104.1의 답: 옳다. A1은 경기장을 떠나야 하고 A5가 40초를 수행한다.",
-   "explanationEn": "Yes. A1 must leave the field of play and A5 serves 40 seconds .",
+   "explanationEn": "Yes. A1 must leave the field of play and A5 serves 40 seconds.",
    "rule": ""
   },
   {
@@ -9040,7 +9040,7 @@
    ],
    "answer": 1,
    "explanation": "케이스북 12.104.4의 답: 옳지 않다. 오류 시점으로 돌아가 페널티 수행은 취소하지만, 디스퀄리파잉 파울을 받은 선수는 그대로 퇴장된다. 그 선수는 경기장을 떠나고 교체 선수가 들어온다.",
-   "explanationEn": "Incorrect, the referee will still take the ball back to where the error occurred and erase the sanction for the disqualifying penalty, but the player who received the disqualifying foul will still be ejected from the game. Procedure : The disqualified player must leave the field of play, and a substitute will take his position on court. The sanction of the disqualifying foul ( 40 seconds) will not be applied. Rational : A disqualifying foul is a severe situation that needs to be administered.",
+   "explanationEn": "Incorrect, the referee will still take the ball back to where the error occurred and erase the sanction for the disqualifying penalty, but the player who received the disqualifying foul will still be ejected from the game. Procedure: The disqualified player must leave the field of play, and a substitute will take his position on court. The sanction of the disqualifying foul (40 seconds) will not be applied. Rational: A disqualifying foul is a severe situation that needs to be administered.",
    "rule": ""
   },
   {

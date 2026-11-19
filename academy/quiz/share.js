@@ -7,7 +7,8 @@
 (function () {
   'use strict';
   var NICK_KEY = 'wracad.cardnick';
-  var GRADE_COLOR = { table: '#7a6a58', court2: '#2f8f83', court1: '#1f5fae', cand: '#ff6b2c', prov: '#b0307a', zone: '#c01f2f', world: '#b8860b' };
+  var GRADE_COLOR = { table: '#5d6b62', court2: '#347560', court1: '#0f766e', cand: '#137a37', prov: '#8f5a06', zone: '#9a3412', world: '#8a6100' };
+  var GOLD = '#f5c84b', GOLD_DEEP = '#d9a400'; /* 월드: 띠·겹도장 바깥 고리 */
   var FONT_SANS = '"Gothic A1", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif';
   var FONT_NUM = '"Gothic A1", "Noto Sans KR", "Malgun Gothic", sans-serif';
   var FONT_MONO = '"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace';
@@ -18,7 +19,7 @@
       title: '내 등급 카드', hint: '카드에는 별명만 들어갑니다. 실명·연락처는 넣지 마세요.',
       nickLbl: '카드에 넣을 별명', nickPh: '예: 블리츠 감독',
       feed: '인스타 세로', story: '스토리',
-      share: '카드 공유하기', save: '이미지 저장', busy: '카드 준비 중…', ready: '',
+      share: '카드 공유하기', save: '이미지 저장', busy: '카드 준비 중…', ready: '', making: '만드는 중…',
       nickBad: '이 별명은 쓸 수 없어요. 카드에는 「익명 심판」으로 들어갑니다.',
       saved: '이미지를 저장했어요.', copied: '링크를 복사했어요.', copyFail: '복사하지 못했어요. 주소창의 링크를 길게 눌러 복사하세요.',
       mTitle: '이미지를 길게 눌러 저장하세요', mHelp: '저장한 이미지를 인스타·카톡에 올리고, 링크를 함께 붙여 주세요.',
@@ -33,7 +34,7 @@
       title: 'My grade card', hint: 'Only a nickname goes on the card. Please do not use your real name or contact info.',
       nickLbl: 'Nickname on the card', nickPh: 'e.g. Coach Blitz',
       feed: 'Instagram post', story: 'Story',
-      share: 'Share my card', save: 'Save image', busy: 'Preparing card…', ready: '',
+      share: 'Share my card', save: 'Save image', busy: 'Preparing card…', ready: '', making: 'Making your card…',
       nickBad: "That nickname can't be used. The card will say “Anonymous Referee”.",
       saved: 'Image saved.', copied: 'Link copied.', copyFail: "Couldn't copy. Long-press the link in the address bar to copy it.",
       mTitle: 'Long-press the image to save it', mHelp: 'Post the saved image on Instagram or chat and add the link.',
@@ -57,11 +58,10 @@
   /* ----- 별명 거르기: nickfilter.js (순위표 닉네임과 같은 함수) ----- */
   function cleanNick(raw) { return window.QuizNick ? window.QuizNick.clean(raw, 12) : { nick: String(raw || '').trim().slice(0, 12), bad: false }; }
 
+  /* 등급 짧은 라벨: 한국어는 g.short(기록·N2·N1·교육생·비기너·존·월드), 영어는 i18n 사전(TABLE·NAT 2·NAT 1·CAND·PROV·ZONE·WORLD) */
   function enShort(g, en) {
-    var sh = String(g.short || '').toUpperCase();
-    if (!en || !/[가-힣]/.test(sh)) return sh;
-    var m = sh.match(/^(\d)급$/); if (m) return 'GRADE ' + m[1];
-    return g.id === 'table' ? 'TABLE' : sh;
+    var sh = String(g.short || '');
+    return (en && window.I18N_EN && window.I18N_EN[sh]) || sh;
   }
 
   /* ----- 카드 데이터: 앱에서 읽은 값만 ----- */
@@ -81,7 +81,7 @@
     return {
       id: g.id, color: GRADE_COLOR[g.id] || '#ff6b2c', name: name, tier: tier, step: gi + 1, steps: lad.length,
       sk: enShort(g, en), big: big, total: total, crit: crit, nick: nick || T.anon,
-      first: enShort(lad[0], en), lastShort: String(lad[lad.length - 1].short || '').toUpperCase(),
+      first: enShort(lad[0], en), lastShort: enShort(lad[lad.length - 1], en),
       crown: g.id === 'world' && pub.worldEn(), T: T
     };
   }
@@ -99,13 +99,13 @@
   }
   function draw(canvas, d, W, H) {
     canvas.width = W; canvas.height = H;
-    var c = canvas.getContext('2d'), INK = '#111827', PAPER = '#f6f1e7', AC = d.color, k = H / 1350, pad = 112, iw = W - pad * 2;
+    var c = canvas.getContext('2d'), INK = '#10201a', PAPER = '#f6f1e7', AC = d.color, k = H / 1350, pad = 112, iw = W - pad * 2;
     c.clearRect(0, 0, W, H);
     c.fillStyle = PAPER; c.fillRect(0, 0, W, H);
     c.fillStyle = 'rgba(0,0,0,.035)'; for (var x = 8; x < W; x += 15) for (var y = 8; y < H; y += 15) c.fillRect(x, y, 1.6, 1.6);
     c.strokeStyle = INK; c.lineWidth = 5; c.strokeRect(44, 44, W - 88, H - 88);
     c.strokeStyle = 'rgba(17,24,39,.35)'; c.lineWidth = 2; c.strokeRect(60, 60, W - 120, H - 120);
-    c.fillStyle = AC; c.fillRect(44, 44, W - 88, 20);
+    c.fillStyle = d.id === 'world' ? GOLD : AC; c.fillRect(44, 44, W - 88, 20);
     c.textBaseline = 'alphabetic';
     // 상단 브랜드
     var y0 = 130 * Math.max(1, k * .8);
@@ -136,7 +136,7 @@
     c.save(); c.translate(sx, sy); c.rotate(-0.19); c.strokeStyle = AC; c.fillStyle = AC;
     c.lineWidth = 9; c.beginPath(); c.arc(0, 0, r, 0, 7); c.stroke();
     c.lineWidth = 3; c.beginPath(); c.arc(0, 0, r - 18, 0, 7); c.stroke();
-    if (d.id === 'world') { c.lineWidth = 3; c.beginPath(); c.arc(0, 0, r + 16, 0, 7); c.stroke(); }
+    if (d.id === 'world') { c.strokeStyle = GOLD_DEEP; c.lineWidth = 5; c.beginPath(); c.arc(0, 0, r + 16, 0, 7); c.stroke(); c.strokeStyle = AC; }
     c.textAlign = 'center'; var skFam = /[가-힣]/.test(d.sk) ? FONT_SANS : FONT_MONO; var ss = fit(c, d.sk, 2 * (r - 40), 74, 800, skFam, 30); c.font = '800 ' + ss + 'px ' + skFam;
     c.fillText(d.sk, 0, 4); c.font = '600 26px ' + FONT_MONO; c.fillText('STEP ' + d.step + '/' + d.steps, 0, 46);
     if (d.crown) { c.font = '44px ' + FONT_SANS; c.fillText('👑', 0, -52); }
@@ -182,6 +182,7 @@
     var cn = cleanNick(ui.nick.value);
     ui.msg.className = 'sh-msg' + (cn.bad ? ' bad' : ''); ui.msg.textContent = cn.bad ? t().nickBad : t().busy;
     ui.share.disabled = true; ui.save.disabled = true;
+    ui.making.hidden = false; ui.making.textContent = t().making; ui.img.style.visibility = 'hidden';
     var d = cardData(detail, cn.nick);
     return fontsReady(d).then(function () {
       var feed = document.createElement('canvas'), story = document.createElement('canvas');
@@ -193,7 +194,7 @@
         if (cards[key]) URL.revokeObjectURL(cards[key].url);
         cards[key] = { blob: bl[i], url: URL.createObjectURL(bl[i]), file: new File([bl[i]], 'referee-card-' + key + '.png', { type: 'image/png' }) };
       });
-      show();
+      show(); ui.making.hidden = true; ui.img.style.visibility = '';
       ui.share.disabled = false; ui.save.disabled = false; if (!cn.bad) ui.msg.textContent = '';
     });
   }
@@ -238,7 +239,7 @@
     var host = document.querySelector('#view-result .result-hero'); if (!host || document.getElementById('shareBox')) return;
     var box = document.createElement('section'); box.className = 'share-box'; box.id = 'shareBox';
     box.innerHTML = '<h2 id="shTitle"></h2><p class="sh-hint" id="shHint"></p>' +
-      '<img class="sh-preview" id="shImg" alt="">' +
+      '<div class="sh-prevwrap"><img class="sh-preview" id="shImg" alt=""><span class="sh-making" id="shMaking" role="status"></span></div>' +
       '<div class="sh-row"><label for="shNick" id="shNickL"></label><input id="shNick" type="text" maxlength="12" autocomplete="off"></div>' +
       '<div class="sh-fmt" role="group"><button type="button" id="shFeed" aria-pressed="true"></button><button type="button" id="shStory" aria-pressed="false"></button></div>' +
       '<div class="sh-actions"><button class="btn primary big" id="shShare" type="button"></button><button class="btn" id="shSave" type="button"></button></div>' +
@@ -248,7 +249,7 @@
     modal.innerHTML = '<div class="sh-modal-in"><h3 id="mTitle"></h3><img id="mImg" alt=""><div class="sh-inapp" id="mInapp" hidden></div><p id="mHelp"></p><button class="btn primary" id="mCopy" type="button"></button><p id="mMsg" role="status"></p><button class="btn" id="mClose" type="button"></button></div>';
     document.body.appendChild(modal);
     var g = function (id) { return document.getElementById(id); };
-    ui = { box: box, img: g('shImg'), nick: g('shNick'), msg: g('shMsg'), share: g('shShare'), save: g('shSave'), feed: g('shFeed'), story: g('shStory'),
+    ui = { box: box, img: g('shImg'), making: g('shMaking'), nick: g('shNick'), msg: g('shMsg'), share: g('shShare'), save: g('shSave'), feed: g('shFeed'), story: g('shStory'),
       modal: modal, mimg: g('mImg'), mclose: g('mClose'), minapp: g('mInapp'), mmsg: g('mMsg'), mcopy: g('mCopy') };
     ui.share.addEventListener('click', doShare); ui.save.addEventListener('click', doSave);
     ui.mcopy.addEventListener('click', copyLink); ui.mclose.addEventListener('click', function () { modal.hidden = true; });

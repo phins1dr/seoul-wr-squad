@@ -28,7 +28,7 @@
       if (document.getElementById('mockBadge')) return;
       const d = document.createElement('div');
       d.id = 'mockBadge'; d.textContent = '테스트 모드(가짜 순위) · Test mode';
-      d.style.cssText = 'position:fixed;left:6px;bottom:6px;z-index:2000;font:600 11px/1.2 sans-serif;background:#fde68a;color:#5b4500;border:1px solid #d6a800;border-radius:6px;padding:3px 7px;opacity:.9;pointer-events:none';
+      d.style.cssText = 'position:fixed;left:50%;top:env(safe-area-inset-top,0px);transform:translateX(-50%);z-index:2000;font:700 12px/1.2 sans-serif;white-space:nowrap;background:#fde68a;color:#5b4500;border:1px solid #d6a800;border-top:0;border-radius:0 0 8px 8px;padding:2px 10px 3px;opacity:.95;pointer-events:none';
       document.body.appendChild(d);
     };
     if (document.body) mark(); else document.addEventListener('DOMContentLoaded', mark);

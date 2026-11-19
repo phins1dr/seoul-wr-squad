@@ -1,32 +1,63 @@
-/* 랜딩(첫 소개) 화면 — 기존 앱 위에 얹는 덮개. 닫으면 원래 홈이 그대로 보인다. */
-.landing{position:fixed;inset:0;z-index:900;background:#0f1722;color:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch;
+/* 랜딩(첫 소개) 화면 — 기존 앱 위에 얹는 덮개. 닫으면 원래 홈이 그대로 보인다.
+   색톤 C(2026-11-19): 위쪽 짙은 초록 띠(.lp-hero) + 밝은 몸통. 색은 style.css 의 토큰(--hero 등)을 그대로 쓴다. */
+.landing{position:fixed;inset:0;z-index:900;background:var(--paper);color:var(--ink);overflow-y:auto;-webkit-overflow-scrolling:touch;
   display:flex;flex-direction:column;font-family:var(--f-body,system-ui,sans-serif)}
 .landing[hidden]{display:none!important}
-.lp-wrap{width:100%;max-width:520px;margin:0 auto;padding:18px 20px 0;display:flex;flex-direction:column;flex:1 1 auto;position:relative}
-.landing:before{content:"";position:fixed;right:-120px;top:-120px;width:340px;height:340px;border:2px solid #ffffff18;border-radius:50%;pointer-events:none}
-.landing:after{content:"";position:fixed;right:-50px;top:-50px;width:190px;height:190px;border:2px solid #ff6b2c55;border-radius:50%;pointer-events:none}
+.lp-hero{position:relative;overflow:hidden;flex:0 0 auto;background:var(--hero);color:var(--hero-ink);border-radius:0 0 28px 28px}
+.lp-hero:before{content:"";position:absolute;right:-120px;top:-120px;width:340px;height:340px;border:2px solid var(--hero-line);border-radius:50%;pointer-events:none}
+.lp-hero:after{content:"";position:absolute;right:-50px;top:-50px;width:190px;height:190px;border:2px solid var(--hero-line);border-radius:50%;pointer-events:none}
+.lp-hero-in{position:relative;z-index:1;width:100%;max-width:520px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top,0px)) 20px 26px}
+.lp-wrap{width:100%;max-width:520px;margin:0 auto;padding:18px 20px 0;display:flex;flex-direction:column;flex:1 1 auto}
 .lp-top{display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative;z-index:1}
-.lp-logo{font:700 12.5px/1.25 var(--f-mono,monospace);letter-spacing:.05em;color:#f2b84b;text-transform:uppercase;max-width:60%}
+.lp-logo{font:700 12.5px/1.35 var(--f-mono,monospace);letter-spacing:.05em;color:var(--gold);text-transform:uppercase;max-width:64%;word-break:keep-all}
 .lp-lang{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.lp-lang button,.lp-lang span{font:700 13px/1 var(--f-body,sans-serif);min-height:36px;padding:0 13px;border-radius:999px;border:1.5px solid #ffffff55;color:#fff;display:inline-flex;align-items:center}
-.lp-lang button[aria-pressed=true]{background:#fff;color:#0f1722;border-color:#fff}
-.lp-lang span{opacity:.45;border-style:dashed}
-.lp-main{margin-top:11vh;position:relative;z-index:1}
-.lp-title{font:900 clamp(32px,9.2vw,44px)/1.18 var(--f-body,sans-serif);margin:0 0 14px;letter-spacing:-.01em;word-break:keep-all;color:#fff}
-.lp-title em{font-style:normal;color:#ff7a3d}
-.lp-sub{font-size:16.5px;line-height:1.6;color:#cdd7e6;margin:0 0 22px;word-break:keep-all}
-.lp-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 20px}
-.lp-facts div{background:#ffffff12;border-radius:14px;padding:12px 6px;text-align:center}
-.lp-facts b{display:block;font:800 30px/1 var(--f-mono,monospace);color:#f2b84b}
-.lp-facts span{display:block;font-size:12.5px;color:#cdd7e6;margin-top:5px}
-.lp-aca{margin:6px 0 0;border:1px dashed #ffffff40;border-radius:12px;padding:10px 14px;font-size:13.5px;color:#9fb0c8}
-.lp-aca summary{cursor:pointer;list-style:none}
+.lp-lang button,.lp-lang span{font:700 13px/1 var(--f-body,sans-serif);min-height:44px;min-width:44px;justify-content:center;padding:0 13px;border-radius:999px;border:1.5px solid var(--hero-line);color:var(--hero-ink);display:inline-flex;align-items:center}
+.lp-lang button[aria-pressed=true]{background:var(--gold);color:var(--hero);border-color:var(--gold)}
+.lp-lang button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.lp-lang span{color:var(--hero-muted);border-style:dashed}
+.lp-main{margin-top:26px;position:relative;z-index:1}
+.lp-title{font:900 clamp(32px,9.2vw,44px)/1.18 var(--f-body,sans-serif);margin:0 0 14px;letter-spacing:-.01em;word-break:keep-all;color:var(--hero-ink)}
+.lp-title em{font-style:normal;color:var(--gold)}
+.lp-sub{font-size:16.5px;line-height:1.6;color:var(--hero-muted);margin:0 0 20px;word-break:keep-all}
+.lp-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0}
+.lp-facts div{background:var(--hero2);border:1px solid var(--hero-line);border-radius:14px;padding:12px 6px;text-align:center}
+.lp-facts b{display:block;font:800 30px/1 var(--f-mono,monospace);color:var(--gold)}
+.lp-facts span{display:block;font-size:12.5px;color:var(--hero-muted);margin-top:5px}
+.lp-aca{margin:0;border:1px dashed var(--line2);border-radius:12px;padding:0 14px;font-size:13.5px;color:var(--muted);background:var(--card);word-break:keep-all}
+.lp-aca summary{cursor:pointer;list-style:none;display:flex;align-items:center;min-height:44px}
 .lp-aca summary::-webkit-details-marker{display:none}
-.lp-aca p{margin:8px 0 0}
+.lp-aca summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.lp-aca p{margin:0;padding:0 0 12px}
 .lp-cta{position:sticky;bottom:0;margin-top:auto;padding:16px 20px calc(18px + env(safe-area-inset-bottom,0px));
-  background:linear-gradient(to top,#0f1722 72%,#0f172200);z-index:2}
+  background:linear-gradient(to top,var(--paper) 72%,rgba(246,247,249,0));z-index:2}
 .lp-cta-in{max-width:520px;margin:0 auto}
-.lp-start{width:100%;min-height:62px;border-radius:16px;background:#ff6b2c;color:#fff;font:900 20px/1 var(--f-body,sans-serif);border:0;box-shadow:0 6px 0 #b8451a;cursor:pointer}
-.lp-start:active{transform:translateY(3px);box-shadow:0 3px 0 #b8451a}
-.lp-start:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.lp-src{text-align:center;font-size:12.5px;color:#9fb0c8;margin:12px 0 0}
+.lp-start{width:100%;min-height:62px;border-radius:16px;background:var(--gold);color:var(--hero);font:900 20px/1 var(--f-body,sans-serif);border:0;box-shadow:0 5px 0 var(--gold-deep);cursor:pointer}
+.lp-start:active{transform:translateY(3px);box-shadow:0 2px 0 var(--gold-deep)}
+.lp-start:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.lp-src{text-align:center;font-size:12.5px;color:var(--muted);margin:12px 0 0;word-break:keep-all}
+
+/* 닉네임 단계 */
+.lp-nick{display:flex;flex-direction:column;gap:8px}
+.lp-nick[hidden]{display:none!important}
+.lp-nick-l{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--ink)}
+.lp-nick-i{min-height:52px;border-radius:12px;border:2px solid var(--line2);background:var(--card);color:var(--ink);font:600 18px var(--f-body,sans-serif);padding:0 14px;width:100%}
+.lp-nick-i::placeholder{color:var(--faint)}
+.lp-nick-i:focus{outline:3px solid var(--accent);outline-offset:2px}
+.lp-nick-h{margin:0;min-height:1.3em;font-size:13px;color:var(--muted);word-break:keep-all}
+.lp-nick-h.bad{color:var(--bad)}
+.lp-nick-s{margin:0;font-size:13px;color:var(--muted);word-break:keep-all}
+.lp-chip{display:inline-block;font-size:12px;font-weight:800;line-height:1;padding:4px 8px;border-radius:999px;background:var(--gold);color:var(--hero)}
+.lp-skip{min-height:48px;border-radius:14px;border:1.5px solid var(--line2);background:var(--card);color:var(--ink);font:700 16px var(--f-body,sans-serif);cursor:pointer}
+.lp-skip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+/* 닉네임 단계: 아카데미 안내 칸은 숨김. 띠는 그대로(높이가 튀지 않게) */
+.landing:has(#lpNickStep:not([hidden])) .lp-aca{display:none}
+/* 닉네임 단계는 아래 입력칸이 길어서, 띠 안의 설명 문장·숫자 3칸은 접어 둔다(제목·언어 버튼은 그대로) */
+.landing:has(#lpNickStep:not([hidden])) .lp-sub,
+.landing:has(#lpNickStep:not([hidden])) .lp-facts{display:none}
+/* 다시 보기로 연 경우의 닫기(×) */
+.lp-lang .lp-close{font-size:22px;padding:0;width:44px;background:var(--hero2);cursor:pointer}
+.lp-lang .lp-close[hidden]{display:none}
+.lp-lang .lp-close:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+/* 닉네임 단계: 입력칸을 띠 바로 아래로 (아래에 붙이지 않음) */
+.landing:has(#lpNickStep:not([hidden])) .lp-wrap{flex:0 0 auto;padding-top:0}
+.landing:has(#lpNickStep:not([hidden])) .lp-cta{position:static;margin-top:0;background:none;padding-top:20px}

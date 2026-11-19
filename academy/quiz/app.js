@@ -85,12 +85,12 @@
      need = 맞힌 '서로 다른 문항' 비율(전체 문항 수에 비례). 넘으면 승급 시험(하루 1번)을 볼 수 있다. */
   const LADDER = [
     { id: 'table', name: '기록심', short: '기록', tier: '국내', desc: '테이블에서 시간·점수·파울을 기록하며 시작합니다.' },
-    { id: 'court2', name: 'National 2급', short: '2급', tier: '국내', need: 0.15, n: 10, pass: 0.8 },
-    { id: 'court1', name: 'National 1급', short: '1급', tier: '국내', need: 0.35, n: 20, pass: 0.8 },
-    { id: 'cand', name: 'WWR 교육생', short: 'CAND', en: 'Candidate', tier: '국제', need: 0.5, n: 20, pass: 0.8 },
-    { id: 'prov', name: 'WWR 비기너', short: 'PROV', en: 'Provisional', tier: '국제', need: 0.65, n: 20, pass: 0.85 },
-    { id: 'zone', name: 'WWR 존 레퍼리', short: 'ZONE', en: 'Zone Referee', tier: '국제', need: 0.8, n: 30, pass: 0.85 },
-    { id: 'world', name: 'WWR 월드 레퍼리', short: 'WORLD', en: 'World Referee', tier: '국제', need: 0.9, n: 30, pass: 0.9, five: true },
+    { id: 'court2', name: 'National 2급', short: 'N2', tier: '국내', need: 0.15, n: 10, pass: 0.8 },
+    { id: 'court1', name: 'National 1급', short: 'N1', tier: '국내', need: 0.35, n: 20, pass: 0.8 },
+    { id: 'cand', name: 'WWR 교육생', short: '교육생', en: 'Candidate', tier: '국제', need: 0.5, n: 20, pass: 0.8 },
+    { id: 'prov', name: 'WWR 비기너', short: '비기너', en: 'Provisional', tier: '국제', need: 0.65, n: 20, pass: 0.85 },
+    { id: 'zone', name: 'WWR 존 레퍼리', short: '존', en: 'Zone Referee', tier: '국제', need: 0.8, n: 30, pass: 0.85 },
+    { id: 'world', name: 'WWR 월드 레퍼리', short: '월드', en: 'World Referee', tier: '국제', need: 0.9, n: 30, pass: 0.9, five: true },
   ];
   const WORLD = LADDER.length - 1;
   function masteryOf() { return Object.keys(progress).filter((k) => BYID.has(k) && progress[k] && (progress[k].ok || progress[k].best)).length; }
@@ -137,7 +137,32 @@
     VIEWS.forEach((x) => { $('view-' + x).hidden = x !== v; });
     if (v !== 'quiz') { if (sceneCtl) { sceneCtl.destroy(); sceneCtl = null; } }
     window.scrollTo(0, 0);
+    syncHistory(v);
   }
+
+  /* ---------- 뒤로가기 (브라우저·폰 뒤로가기 = 화면의 ← 버튼) ----------
+     기록 칸은 최대 2개: 맨 아래 = 홈(q:0), 그 위 = 지금 보는 홈 아닌 화면(q:1).
+     홈 아닌 화면으로 들어갈 때 한 칸 쌓고(화면끼리 옮길 땐 같은 칸을 덮어씀), 홈으로 돌아올 때 그 칸을 걷어낸다.
+     뒤로가기를 누르면 그 화면의 ← 버튼을 누른 것과 똑같이 움직인다 → 사이트 밖(빈 화면)으로 나가지 않는다. */
+  let skipPop = false;
+  function syncHistory(v) {
+    try {
+      const st = history.state || {};
+      if (v === 'home') {
+        if (st.q === 1) { skipPop = true; history.back(); } else history.replaceState({ q: 0 }, '');
+      } else if (st.q === 1) history.replaceState({ q: 1, v }, '');
+      else history.pushState({ q: 1, v }, '');
+    } catch (e) {}
+  }
+  try { history.replaceState({ q: 0 }, ''); } catch (e) {}
+  window.addEventListener('popstate', () => {
+    if (skipPop) { skipPop = false; return; }
+    if (curView === 'home') return;
+    if (curView === 'quiz' && $('btnQuizBack') && $('btnQuizBack').onclick) { $('btnQuizBack').onclick(); return; }
+    if (curView === 'result' && $('btnHome')) { $('btnHome').click(); return; }
+    const b = document.querySelector('#view-' + curView + ' [data-back]');
+    if (b) b.click(); else renderHome();
+  });
 
   /* ================= 홈 (게임 우선) ================= */
   function savedSession() {
@@ -168,7 +193,7 @@
     }
     if ($('dailyNote')) {
       $('dailyNote').textContent = done
-        ? T('오늘 몫은 끝냈습니다. 내일 또 새 10문제가 나옵니다. (최고 {b}일)', { b: st.best || st.days || 1 })
+        ? ((st.best || st.days || 1) === 1 ? T('오늘 몫은 끝냈습니다. 내일 또 새 10문제가 나옵니다. (최고 1일)') : T('오늘 몫은 끝냈습니다. 내일 또 새 10문제가 나옵니다. (최고 {b}일)', { b: st.best || st.days || 1 }))
         : (st.days ? T('연속 {d}일째 도전 중 · 최고 {b}일', { d: st.days, b: st.best }) : T('아직 연속 도전 기록이 없습니다.'));
     }
     const resume = $('btnResume');
@@ -721,6 +746,7 @@
     const from = session.from || 'quizhome';
 
     $('quizStep').textContent = `${session.i + 1} / ${session.ids.length}`;
+    $('view-quiz').style.setProperty('--qp', Math.round(((session.i + 1) / session.ids.length) * 100)); /* 위쪽 띠 진행 막대 */
     $('quizScore').textContent = T('{n}점', { n: session.answers.filter((a) => a.ok).length });
     $('quizMode').textContent = session.label || '';
     $('btnQuizBack').onclick = () => {
@@ -817,6 +843,7 @@
 
   function checkAnswer(c, box, picked) {
     if (picked === null) return;
+    if (session.answers.some((a) => a.id === c.id)) return; /* 이미 답한 문제: 연타·고스트 클릭으로 중복 집계 방지 */
     const ok = picked === c.answer;
     markChoices(c, box, picked);
     session.answers.push({ id: c.id, pick: picked, ok });
@@ -836,6 +863,8 @@
   }
 
   function next() {
+    const cur = currentCase();
+    if (cur && !session.answers.some((a) => a.id === cur.id)) return; /* 답하지 않은 문제는 넘어가지 않음 */
     session.i += 1;
     save(KEY_SESSION, session);
     if (session.i >= session.ids.length) renderResult();
@@ -896,7 +925,7 @@
   function renderResult() {
     if (!session) return renderQuizHome();
     const answers = session.answers;
-    const total = answers.length;
+    const total = session.ids.length;
     const right = answers.filter((a) => a.ok).length;
     const pct = total ? Math.round((right / total) * 100) : 0;
     $('resScore').textContent = `${right} / ${total}`;
@@ -1040,8 +1069,8 @@
 
   /* 배지 목록 — 이름은 영어(진짜 배지 느낌), 뜻은 작은 한글 */
   const BADGES = [
-    { id: 'court2', sec: 'grade', name: 'NATIONAL GRADE 2', ko: 'National 2급 승급', shape: 'medal', c: ['#5eead4', '#0f766e'], glyph: 'stars1', label: '2' },
-    { id: 'court1', sec: 'grade', name: 'NATIONAL GRADE 1', ko: 'National 1급 승급', shape: 'medal', c: ['#34d399', '#065f46'], glyph: 'stars2', label: '1' },
+    { id: 'court2', sec: 'grade', name: 'NATIONAL GRADE 2', ko: 'National 2급 승급', shape: 'medal', c: ['#5eead4', '#0f766e'], glyph: 'stars1', label: 'NAT 2' },
+    { id: 'court1', sec: 'grade', name: 'NATIONAL GRADE 1', ko: 'National 1급 승급', shape: 'medal', c: ['#34d399', '#065f46'], glyph: 'stars2', label: 'NAT 1' },
     { id: 'cand', sec: 'grade', name: 'WWR CANDIDATE', ko: 'WWR 교육생 승급', shape: 'medal', c: ['#7dd3fc', '#1d4ed8'], glyph: 'globe', label: 'CAND' },
     { id: 'prov', sec: 'grade', name: 'WWR PROVISIONAL', ko: 'WWR 비기너 승급', shape: 'medal', c: ['#a5b4fc', '#4338ca'], glyph: 'globe', label: 'PROV' },
     { id: 'zone', sec: 'grade', name: 'ZONE REFEREE', ko: 'WWR 존 레퍼리 승급', shape: 'medal', c: ['#d8b4fe', '#7e22ce'], glyph: 'globe', label: 'ZONE' },

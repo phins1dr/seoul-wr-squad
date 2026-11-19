@@ -24,13 +24,14 @@
 
 <!-- ================= 랜딩(소개) 덮개: 시작을 누르면 아래 앱이 그대로 보인다 ================= -->
 <div id="landing" class="landing" hidden role="dialog" aria-modal="true" aria-labelledby="lpTitle">
-  <div class="lp-wrap">
+  <div class="lp-hero"><div class="lp-hero-in">
     <div class="lp-top">
       <span class="lp-logo" id="lpLogo">휠체어럭비 퀴즈 챔피언십</span>
       <div class="lp-lang" role="group" aria-label="Language">
         <button type="button" id="lpLang-ko" aria-pressed="true">한</button>
         <button type="button" id="lpLang-en" aria-pressed="false">EN</button>
         <span id="lpJp" aria-disabled="true">日本語 準備中</span>
+        <button type="button" id="lpClose" class="lp-close" hidden aria-label="닫기">×</button>
       </div>
     </div>
     <div class="lp-main">
@@ -41,12 +42,23 @@
         <div><b id="lpG">–</b><span id="lpGL">등급</span></div>
         <div><b id="lpB">–</b><span id="lpBL">배지</span></div>
       </div>
-      <details class="lp-aca"><summary id="lpAcaS">아카데미에서 더 배우기 · 준비 중</summary><p id="lpAcaB"></p></details>
     </div>
+  </div></div>
+  <div class="lp-wrap">
+    <details class="lp-aca"><summary id="lpAcaS">아카데미에서 더 배우기 · 준비 중</summary><p id="lpAcaB"></p></details>
   </div>
   <div class="lp-cta"><div class="lp-cta-in">
     <button class="lp-start" id="lpStart" type="button">지금 시작하기</button>
     <p class="lp-src" id="lpSrc">2026 WWR 공식 케이스북 기준</p>
+    <!-- 시작을 누른 뒤 나오는 닉네임 단계 (건너뛰기 가능) -->
+    <div class="lp-nick" id="lpNickStep" hidden>
+      <label class="lp-nick-l" for="lpNick"><span id="lpNickL">닉네임</span><span class="lp-chip" id="lpNickChip">선택</span></label>
+      <input class="lp-nick-i" id="lpNick" type="text" maxlength="14" autocomplete="off" placeholder="예: 블리츠 감독">
+      <p class="lp-nick-h" id="lpNickH" role="status"></p>
+      <p class="lp-nick-s" id="lpNickS">건너뛰면 순위에는 오르지 않아요</p>
+      <button class="lp-start" id="lpNickGo" type="button">시작하기</button>
+      <button class="lp-skip" id="lpNickSkip" type="button">건너뛰고 시작</button>
+    </div>
   </div></div>
 </div>
 
@@ -86,6 +98,8 @@
       </div>
       <p class="mode-desc">풀 때마다 새로 섞입니다. 연속 도전일수에는 반영되지 않지만, 맞힌 문항은 등급과 경험치에 똑같이 쌓입니다.</p>
     </section>
+
+    <button class="text-link intro-link" id="btnIntro" type="button">ⓘ 설명 다시 보기</button>
 
     <!-- 심판 사다리 -->
     <section class="home-rank ladder-card">
@@ -135,15 +149,15 @@
 
     <!-- 보조: 찾으면 보는 메뉴 -->
     <nav class="aux-grid" aria-label="자료와 다른 메뉴">
-      <button class="aux" id="entryQuiz" type="button">
-        <span class="aux-kicker">Ⅱ. 케이스북</span>
-        <span class="aux-title">케이스 목록</span>
-        <span class="aux-sub"><b id="caseCount">217</b>문항<span id="sceneBit"> · 코트 장면 <b id="sceneCount">7</b></span> · 장별로 풀기</span>
-      </button>
       <button class="aux" id="entryRules" type="button">
         <span class="aux-kicker">Ⅰ. 경기규정</span>
         <span class="aux-title">규정 보기</span>
         <span class="aux-sub"><b id="ruleCount">111</b>개 조항 · 14장 · 조항 검색</span>
+      </button>
+      <button class="aux" id="entryQuiz" type="button">
+        <span class="aux-kicker">Ⅱ. 케이스북</span>
+        <span class="aux-title">케이스 목록</span>
+        <span class="aux-sub"><b id="caseCount">217</b>문항<span id="sceneBit"> · 코트 장면 <b id="sceneCount">7</b></span> · 장별로 풀기</span>
       </button>
       <button class="aux" id="entryChanges" type="button">
         <span class="aux-kicker">Ⅲ. 2026 개정</span>
@@ -180,7 +194,7 @@
 
     <div class="search-wrap">
       <input id="ruleSearch" type="search" inputmode="search" enterkeyhint="search"
-             placeholder="조항 번호·키워드 검색 (예: 29, 범퍼, throw-in)" aria-label="규정 검색" autocomplete="off">
+             placeholder="조항 번호·키워드 (예: 29, 범퍼)" aria-label="규정 검색" autocomplete="off">
       <button id="searchClear" class="search-clear" type="button" aria-label="검색어 지우기" hidden>✕</button>
     </div>
 
